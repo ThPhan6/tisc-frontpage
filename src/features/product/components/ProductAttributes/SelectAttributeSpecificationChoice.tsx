@@ -24,6 +24,8 @@ interface SelectAttributeSpecificationChoiceProps {
   setCurAttributeSelect: (curAttributeSelect: AttributeSelectedProps) => void;
   collapsible: ActiveKeyType;
   setCollapsible: (collapsible: ActiveKeyType) => void;
+  onCheckedAttributeOption?: (isOptChecked: boolean) => void;
+  onCheckedAttributeGroup?: (isOptChecked: boolean) => void;
 }
 
 export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecificationChoiceProps> = ({
@@ -36,12 +38,16 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
   setCurAttributeSelect,
   collapsible,
   setCollapsible,
+  onCheckedAttributeOption,
+  onCheckedAttributeGroup,
 }) => {
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const attrGroupItem = attributeGroup[groupIndex];
 
-  const { onSelectSpecificationOption } = useProductAttributeForm(activeKey, productId);
+  const { onSelectSpecificationOption } = useProductAttributeForm(activeKey, productId, {
+    isSpecifiedModal,
+  });
 
   if (isTiscAdmin || activeKey !== 'specification' || !attrGroupItem.selection) {
     return null;
@@ -79,7 +85,7 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
               customClass={`cursor-pointer attribute-label ${
                 isSpecifiedModal ? 'left-none' : 'left-space'
               }`}
-              onClick={() => {
+              onClick={async () => {
                 if (attrGroupItem.id && attrGroupItem.attributes.length) {
                   const newSelectAttribute: AttributeSelectedProps = {
                     groupId: attrGroupItem.id,
@@ -94,13 +100,15 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
                     ? attribute.basis_options.find((option) => option.isChecked)
                     : undefined;
 
-                  onSelectSpecificationOption(
+                  const specificationGrp = await onSelectSpecificationOption(
                     groupIndex,
                     attribute.id,
-                    isSpecifiedModal ? false : isTiscAdmin ? false : true,
                     haveBasisOption?.id,
-                    false, // dont reset attribute selected
+                    false, /// dont reset attribute selected
                   );
+
+                  onCheckedAttributeOption?.(!!specificationGrp?.haveCheckedOptionAttribute);
+                  onCheckedAttributeGroup?.(!!specificationGrp?.haveCheckedAttributeGroup);
                 }
               }}
             >

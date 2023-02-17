@@ -118,6 +118,7 @@
       display: flex;
       align-items: center;
       width: 100%;
+      box-shadow: @border-bottom-light;
     }
     .form {
       display: flex;
@@ -149,6 +150,21 @@
               width: auto !important;
               margin: 0 8px;
             }
+          }
+          :global(.product-id-input) {
+            width: 100%;
+            padding: 0 0 0 12px;
+            color: @primary-color-dark;
+          }
+          :global(.product-id-label) {
+            color: @mono-color-dark;
+            font-weight: 300;
+            font-size: 14px;
+            font-family: @font-secondary;
+            font-style: normal;
+            line-height: 21px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
           }
         }
       }

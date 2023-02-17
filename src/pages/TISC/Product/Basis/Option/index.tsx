@@ -64,6 +64,11 @@ const BasisOptionList: React.FC = () => {
         noBoxShadow: noBoxShadow,
       },
       {
+        title: 'Product ID',
+        dataIndex: 'product_id',
+        noBoxShadow: noBoxShadow,
+      },
+      {
         title: 'Count',
         dataIndex: 'count',
         width: '5%',
@@ -171,7 +176,7 @@ const BasisOptionList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
         title="OPTIONS"
-        columns={setDefaultWidthForEachColumn(MainColumns, 6)}
+        columns={setDefaultWidthForEachColumn(MainColumns, 7)}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{

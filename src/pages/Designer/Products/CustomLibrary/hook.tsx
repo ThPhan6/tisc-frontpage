@@ -7,9 +7,11 @@ import { useHistory } from 'umi';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 
-import { useBoolean, useQuery } from '@/helper/hook';
+import { getOneCustomProduct } from './services';
+import { useBoolean, useGetParamId, useQuery } from '@/helper/hook';
 import { getValueByCondition, removeUrlParams, updateUrlParams } from '@/helper/utils';
 import { getCollections } from '@/services';
+import { sortBy } from 'lodash';
 
 import { CustomResourceType } from '../../CustomResource/type';
 import { ProductFilterType } from './types';
@@ -28,7 +30,7 @@ import {
 } from '@/features/product/components/ProductTopBarItem';
 
 import { getAllCustomResource } from '../../CustomResource/api';
-import { setCustomProductFilter } from './slice';
+import { resetCustomProductDetail, setCustomProductFilter } from './slice';
 
 export const onCollectionFilterClick = (
   id: string,
@@ -387,4 +389,37 @@ export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?
     renderDefaultCompanyLabel,
     rederDefaultCollectionLabel,
   };
+};
+
+export const useGetOneCustomProduct = () => {
+  const productId = useGetParamId();
+
+  const {
+    specifications, // specification data(edit mode)
+    options,
+  } = useAppSelector((state) => state.customProduct.details);
+
+  /// using for edit and view mode
+  const [specOptionData, setSpecOptionData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (productId) {
+      getOneCustomProduct(productId);
+    }
+
+    return () => {
+      store.dispatch(resetCustomProductDetail());
+      setSpecOptionData([]);
+    };
+  }, [productId]);
+
+  useEffect(() => {
+    /// sort by sequence order
+    const specOptionSequenceData = [...specifications, ...options];
+    const newData: any[] = sortBy(specOptionSequenceData, 'sequence');
+
+    setSpecOptionData(newData);
+  }, [specifications, options]);
+
+  return { productId, specOptionData, setSpecOptionData };
 };

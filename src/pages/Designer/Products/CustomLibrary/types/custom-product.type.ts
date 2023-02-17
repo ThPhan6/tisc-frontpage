@@ -28,6 +28,8 @@ export interface NameContentProps {
   id: string;
   name: string;
   content: string;
+  sequence: number;
+  type?: 'attribute' | 'specification';
 }
 
 export interface ProductOptionContentProps {
@@ -42,6 +44,9 @@ export interface ProductOptionProps {
   tag: string;
   title: string;
   items: ProductOptionContentProps[];
+  sequence: number;
+  type?: 'option';
+  isCollapse?: string | string[];
 }
 
 export interface CustomProductDetailProps {
@@ -81,6 +86,7 @@ export interface CustomProductRequestBody {
 
 export interface OptionGroupProps {
   data: ProductOptionProps[];
+  setSpecOptionData?: (data: any) => void;
   dataIndex: number;
   specification: SpecificationBodyRequest;
   specifiedDetail?: SpecifiedDetail;
@@ -88,4 +94,5 @@ export interface OptionGroupProps {
   specifying?: boolean;
   isPublicPage?: boolean;
   viewOnly?: boolean;
+  icon?: JSX.Element;
 }

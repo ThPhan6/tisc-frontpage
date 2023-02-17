@@ -245,6 +245,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       const itemOptions: SubBasisOption[] = sub.subs.map((optionItem: SubBasisOption) => {
         let requiredValue = {
           ...getSubItemValue(optionItem),
+          product_id: optionItem.product_id,
         };
         /// if it has ID, include ID
         if (optionItem.id) {

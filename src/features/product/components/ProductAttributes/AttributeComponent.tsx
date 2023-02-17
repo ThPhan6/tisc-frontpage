@@ -98,7 +98,11 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
         >
           {showChosenOption()}
         </BodyText>
-        {isPublicPage ? null : <ActionRightIcon className={styles.singlerRighIcon} />}
+        {isPublicPage ? null : (
+          <div style={{ width: 16, height: 16, marginLeft: 8 }}>
+            <ActionRightIcon className={styles.singlerRighIcon} />
+          </div>
+        )}
       </div>
       {isPublicPage ? null : (
         <Popover

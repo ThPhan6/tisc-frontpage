@@ -7,6 +7,7 @@ export interface SubBasisOption {
   unit_1: string;
   unit_2: string;
   isBase64?: boolean;
+  product_id: string;
 }
 export interface BasisOptionListResponse {
   id: string;

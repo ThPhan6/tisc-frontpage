@@ -59,7 +59,7 @@ export interface AttributeSelectedProps {
 }
 
 export interface ProductAttributeFormInput {
-  id?: string;
+  id: string;
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
