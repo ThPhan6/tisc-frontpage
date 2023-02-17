@@ -61,12 +61,12 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
 export default CustomCollapse;
 
 export const ActiveOneCustomCollapse: FC<
-  Omit<CustomCollapseProps, 'activeKey'> & {
-    onchange?: (key: string | string[]) => void;
+  CustomCollapseProps & {
+    onChange?: (key: string | string[]) => void;
     groupIndex?: number | string;
     groupName: string;
   }
-> = ({ groupIndex, groupName, onchange, ...props }) => {
+> = ({ groupIndex, groupName, onChange, ...props }) => {
   const [ramdomId] = useState<number>(Math.random());
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
     groupName,
@@ -77,8 +77,11 @@ export const ActiveOneCustomCollapse: FC<
     <CustomCollapse
       activeKey={curActiveKey}
       onChange={(key) => {
-        onKeyChange(key);
-        onchange?.(key);
+        if (onChange) {
+          onChange(key);
+        } else {
+          onKeyChange(key);
+        }
       }}
       {...props}
     />

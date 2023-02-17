@@ -27,6 +27,8 @@ interface DimensionWeightProps {
   noPadding?: boolean;
   collapseStyles?: boolean;
   customClass?: string;
+  activeCollapse?: string | string[];
+  onChangeCollapse?: (key: string | string[]) => void;
 }
 
 export const DimensionWeight: FC<DimensionWeightProps> = ({
@@ -39,6 +41,8 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   noPadding,
   collapseStyles = true,
   customClass = '',
+  activeCollapse,
+  onChangeCollapse,
 }) => {
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
     'specification' as ProductInfoTab,
@@ -114,7 +118,11 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   };
 
   const renderDiameterToggle = () => {
-    if (!curActiveKey && curActiveKey?.length === 0) return null;
+    if (
+      (activeCollapse && (activeCollapse?.[0] == '' || activeCollapse == '')) ||
+      (!curActiveKey && curActiveKey?.length === 0)
+    )
+      return null;
 
     return (
       <div className="slice">
@@ -159,9 +167,14 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
   return (
     <CustomCollapse
-      activeKey={curActiveKey}
+      activeKey={activeCollapse ?? curActiveKey}
       onChange={(key) => {
-        onKeyChange(key);
+        if (onChangeCollapse) {
+          onChangeCollapse?.(key);
+        } else {
+          onKeyChange(key);
+        }
+
         store.dispatch(closeProductFooterTab());
       }}
       customHeaderClass={`${styles.dimensionCollapse} ${customClass} ${
@@ -176,7 +189,9 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
           <RobotoBodyText level={6} customClass="label">
             {data.name}
           </RobotoBodyText>
-          {editable && curActiveKey?.length ? renderDiameterToggle() : null}
+          {editable && (curActiveKey?.length || activeCollapse?.length)
+            ? renderDiameterToggle()
+            : null}
         </div>
       }
     >
