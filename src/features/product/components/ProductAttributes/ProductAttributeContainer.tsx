@@ -102,6 +102,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
               {(dragProvided: any) => (
                 <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
                   <ProductAttributeGroup
+                    key={attrGroupItem.id}
                     activeKey={activeKey}
                     attributeGroup={attributeGroup}
                     attrGroupItem={attrGroupItem}

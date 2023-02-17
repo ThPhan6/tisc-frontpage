@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep, countBy } from 'lodash';
+import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -184,11 +184,13 @@ export const useProductAttributeForm = (
   };
 
   const addNewProductAttribute = () => {
+    const randomId = uniqueId();
     dispatch(
       setPartialProductDetail({
         [attributeGroupKey]: [
           ...attributeGroup,
           {
+            id: randomId,
             name: '',
             attributes: [],
           },
