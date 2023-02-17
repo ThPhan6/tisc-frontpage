@@ -1,7 +1,5 @@
 import { FC, useEffect, useState } from 'react';
 
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
-
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
@@ -41,6 +39,7 @@ interface ProductAttributeGroupProps extends ProductAttributeContainerProps {
   attrGroupItem: ProductAttributeFormInput;
   groupIndex: number;
   curProductId: string;
+  icon?: JSX.Element;
 }
 
 export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
@@ -53,11 +52,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   noBorder,
   curProductId,
   isSpecifiedModal,
+  icon,
 }) => {
   const isTablet = useScreen().isTablet;
+  const [randomId] = useState<number>(Math.random());
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
     activeKey,
-    groupIndex + 1, // Spare index 0 for Dimension & Weight group
+    randomId, // groupIndex + 1, // Spare index 0 for Dimension & Weight group
   );
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
@@ -120,7 +121,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <InputGroup
           horizontal
           fontLevel={4}
-          label={<ScrollIcon />}
+          label={icon}
           placeholder="type title"
           noWrap
           value={group.name}
