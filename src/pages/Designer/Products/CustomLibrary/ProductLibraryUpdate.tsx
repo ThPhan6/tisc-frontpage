@@ -39,11 +39,40 @@ const ProductLibraryUpdate: React.FC = () => {
 
   const { productId, specOptionData, setSpecOptionData } = useGetOneCustomProduct();
 
-  const { invalidAttributes, invalidSpecifications, invalidOptions } = useAppSelector(
-    invalidCustomProductSelector,
-  );
+  const { invalidAttributes } = useAppSelector(invalidCustomProductSelector);
 
-  const onSave = () => {
+  const onSave = async () => {
+    /// filter option data and delete its field type
+    const productOptions: ProductOptionProps[] =
+      (await specOptionData
+        ?.filter((el) => el.type === 'option')
+        .map(({ type, isCollapse, ...el }) => {
+          if (el.id && !isNaN(Number(el.id))) {
+            return {
+              items: el.items,
+              sequence: el.sequence,
+              tag: el.tag,
+              title: el.title,
+              use_image: el.use_image,
+            };
+          }
+
+          return el;
+        })) || [];
+
+    const invalidOptions =
+      productOptions.length > 0 && productOptions.some((el) => !el.title || el.items.length === 0);
+
+    /// filter specification data and delete its field type
+    const productSpecificationData: NameContentProps[] =
+      (await specOptionData
+        ?.filter((el) => el.type === 'specification')
+        .map(({ type, isCollapse, id, ...el }) => el)) || [];
+
+    const invalidSpecifications =
+      productSpecificationData.length > 0 &&
+      productSpecificationData.some((el) => !el.content || !el.name);
+
     switch (true) {
       case !productData.company.name:
         message.error('Company is required');
@@ -74,12 +103,7 @@ const ProductLibraryUpdate: React.FC = () => {
         return;
     }
 
-    /// filter option data and delete its field type
-    const productOptions: ProductOptionProps[] =
-      specOptionData
-        ?.filter((el) => el.type === 'option')
-        .map(({ type, isCollapse, ...el }) => el) || [];
-    const productOptionData: ProductOptionProps[] = productOptions.map((el) => ({
+    const productOptionData: ProductOptionProps[] = await productOptions.map((el) => ({
       ...el,
       id: el.id || undefined,
       items: el.items.map((item) => ({
@@ -88,12 +112,6 @@ const ProductLibraryUpdate: React.FC = () => {
         image: el.use_image && item.image ? formatImageIfBase64(item.image) : undefined,
       })),
     }));
-
-    /// filter specification data and delete its field type
-    const productSpecificationData: NameContentProps[] =
-      specOptionData
-        ?.filter((el) => el.type === 'specification')
-        .map(({ type, isCollapse, ...el }) => el) || [];
 
     const data: CustomProductRequestBody = {
       company_id: productData.company.id,

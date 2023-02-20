@@ -9,7 +9,6 @@ import { debounce } from 'lodash';
 
 import {
   setPartialProductDetail,
-  setProductDetail,
   setProductList,
   setProductSummary,
   setRelatedProduct,
