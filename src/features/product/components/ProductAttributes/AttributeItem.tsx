@@ -39,7 +39,12 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
   return '';
 };
 
-export const getConversionText = (content: any) => {
+export const getConversionText = (content: {
+  value_1: string;
+  unit_1?: string;
+  value_2?: string;
+  unit_2?: string;
+}) => {
   if (!content) {
     return '';
   }
@@ -330,7 +335,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           className="product-id-input"
           fontLevel={6}
           tabIndex={index}
-          value={option.option_code}
+          value={option.option_code !== '' ? option.option_code : option.product_id || ''}
           onChange={(e) => {
             const newBasisOptions = [...basisOptions];
             newBasisOptions[index] = {

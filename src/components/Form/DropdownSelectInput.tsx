@@ -20,6 +20,7 @@ interface DropdownSelectInputProps extends CustomInputProps {
   noPadding?: boolean;
   placement?: DropdownProps['placement'];
   showCloseFooter?: boolean;
+  offsetAlign?: [number, number];
 }
 
 export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
@@ -30,12 +31,13 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   noPadding,
   placement = 'bottom',
   showCloseFooter,
+  offsetAlign,
   ...props
 }) => {
   return (
     <CustomDropDown
       placement={placement}
-      align={checkBrowser().isSafari ? { offset: [36, 0] } : {}}
+      align={{ offset: offsetAlign ? offsetAlign : checkBrowser().isSafari ? [36, 0] : undefined }}
       hideDropdownIcon
       overlay={
         <div

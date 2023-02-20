@@ -318,6 +318,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                   level={6}
                   fontFamily="Roboto"
                   color={country ? 'mono-color' : 'mono-color-medium'}
+                  style={{ fontWeight: 300 }}
                 >
                   {getCountryName()}
                 </BodyText>
