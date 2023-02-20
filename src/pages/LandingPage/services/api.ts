@@ -23,7 +23,7 @@ import { setUserProfile } from '@/reducers/user';
 import { Quotation } from '@/types';
 import { UserDetail } from '@/types/user.type';
 
-import { setQuotationData, setQuotationLoaded } from '../quotionReducer';
+import { setQuotationData } from '../quotionReducer';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface QuotationPaginationResponse {
@@ -214,15 +214,14 @@ export async function getListPolicy() {
 
 export async function getListQuotation(
   params: PaginationRequestParams,
-  callback: (data: DataTableResponse) => void,
+  callback?: (data: DataTableResponse) => void,
 ) {
   request(`/api/quotation/landing-page/get-list`, { method: 'GET', params })
     .then((response: QuotationPaginationResponse) => {
       const { quotations, pagination, summary } = response.data;
       store.dispatch(setQuotationData(quotations));
-      store.dispatch(setQuotationLoaded(true));
 
-      callback({
+      callback?.({
         data: quotations,
         pagination: {
           current: pagination.page,

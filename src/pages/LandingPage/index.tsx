@@ -15,7 +15,7 @@ import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
 import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
-import { getBooking, validateToken, verifyAccount } from './services/api';
+import { getBooking, getListQuotation, validateToken, verifyAccount } from './services/api';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useGetParamId, useQuery } from '@/helper/hook';
@@ -39,6 +39,10 @@ const LandingPage = () => {
   const isMobile = useScreen().isMobile;
 
   const bookingId = useGetParamId();
+
+  useEffect(() => {
+    getListQuotation({ page: 1, pageSize: 99999 });
+  }, []);
 
   // You can use useEffect to trigger the verification as soon as the component being loaded
 
