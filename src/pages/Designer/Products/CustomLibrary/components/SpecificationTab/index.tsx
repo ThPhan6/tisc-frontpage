@@ -317,7 +317,7 @@ export const SpecificationTab: FC<{
                           />
                         ) : (
                           <DoubleInput
-                            key={index}
+                            key={el.id}
                             fontLevel={6}
                             doubleInputClass="mb-8"
                             leftIcon={
