@@ -184,6 +184,7 @@ export const useProductAttributeForm = (
   };
 
   const addNewProductAttribute = () => {
+    /// type of id must be string to handle dragging
     const randomId = uniqueId();
     dispatch(
       setPartialProductDetail({

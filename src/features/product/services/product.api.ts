@@ -187,7 +187,6 @@ export const updateProductCard = async (productId: string, data: ProductFormData
   })
     .then((res) => {
       hidePageLoading();
-      store.dispatch(setProductDetail(res.data));
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
       return res.data;
     })
