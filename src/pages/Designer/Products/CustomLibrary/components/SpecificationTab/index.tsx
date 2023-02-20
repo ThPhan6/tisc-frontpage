@@ -302,13 +302,13 @@ export const SpecificationTab: FC<{
                 : `${el.title}-${el.tag}-${el.sequence}-${index}`;
 
               return (
-                <Draggable key={draggableId} draggableId={draggableId} index={index}>
+                <Draggable key={el.sequence} draggableId={draggableId} index={index}>
                   {(dragProvided: any) => (
                     <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
                       {specType ? (
                         viewOnly ? (
                           <SimpleContentTable
-                            key={`spec-${el.id}` || `spec-${index}`}
+                            key={index}
                             items={[el]}
                             tdStyle={specifying ? { paddingLeft: 0 } : {}}
                             flex={specifying ? '30-70' : '25-75'}
@@ -317,7 +317,7 @@ export const SpecificationTab: FC<{
                           />
                         ) : (
                           <DoubleInput
-                            key={`spec-${el.id}` || `spec-${index}`}
+                            key={index}
                             fontLevel={6}
                             doubleInputClass="mb-8"
                             leftIcon={
