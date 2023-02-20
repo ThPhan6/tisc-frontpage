@@ -36,6 +36,13 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './LoginModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
+const QUOTATION_DEFAULT: Quotation = {
+  id: '1',
+  identity: 'Microsoft co-founder',
+  author: 'Bill Gate',
+  quotation: 'Your most unhappy customers are your greatest source of learning.',
+};
+
 export const LoginModal: FC<{
   tiscLogin?: boolean;
 }> = ({ tiscLogin }) => {
@@ -54,23 +61,15 @@ export const LoginModal: FC<{
   const verifyEmail = useString('');
   const showForgotPassword = useBoolean(false);
 
-  const [randomQuotation, setRandomQuotation] = useState<Quotation>();
+  const [randomQuotation, setRandomQuotation] = useState<Quotation>(QUOTATION_DEFAULT);
 
-  const pickRandomQuotation = () => {
-    if (!quotation?.length) {
+  useEffect(() => {
+    const randomQuote = sample(quotation);
+    if (!quotation?.length || !randomQuote) {
       return;
     }
 
-    const randomQuote = sample(quotation);
-    if (randomQuote === randomQuotation && quotation.length > 1) {
-      pickRandomQuotation();
-    } else {
-      setRandomQuotation(randomQuote);
-    }
-  };
-
-  useEffect(() => {
-    pickRandomQuotation();
+    setRandomQuotation(randomQuote);
   }, [quotation]);
 
   useEffect(() => {

@@ -41,7 +41,7 @@ const LandingPage = () => {
   const bookingId = useGetParamId();
 
   useEffect(() => {
-    getListQuotation({ page: 1, pageSize: 99999 });
+    getListQuotation();
   }, []);
 
   // You can use useEffect to trigger the verification as soon as the component being loaded
