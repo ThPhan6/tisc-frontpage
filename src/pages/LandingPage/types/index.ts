@@ -81,13 +81,6 @@ export type Policy = {
   };
 };
 
-export type Quotation = {
-  id: string;
-  author: string;
-  identity: string;
-  quotation: string;
-};
-
 export interface InformationBooking {
   brand_name: string;
   website: string;
