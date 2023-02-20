@@ -308,7 +308,7 @@ export const SpecificationTab: FC<{
                       {specType ? (
                         viewOnly ? (
                           <SimpleContentTable
-                            key={index}
+                            key={index} // data returned dont have id
                             items={[el]}
                             tdStyle={specifying ? { paddingLeft: 0 } : {}}
                             flex={specifying ? '30-70' : '25-75'}
@@ -317,7 +317,7 @@ export const SpecificationTab: FC<{
                           />
                         ) : (
                           <DoubleInput
-                            key={el.id}
+                            key={el.id} // id from FE
                             fontLevel={6}
                             doubleInputClass="mb-8"
                             leftIcon={
