@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { Col, Row } from 'antd';
@@ -8,11 +8,10 @@ import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
-import { sortBy, uniqueId } from 'lodash';
+import { uniqueId } from 'lodash';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
-import { useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
@@ -99,7 +98,7 @@ export const SpecificationTab: FC<{
     const randomId = uniqueId();
     setSpecOptionData?.((prevState: any) => [
       ...prevState,
-      { ...DEFAULT_CONTENT, sequence: specOptionData.length, id: `spec-${randomId}` },
+      { ...DEFAULT_CONTENT, sequence: specOptionData.length, id: randomId },
     ]);
 
     // const newSpecOptionData = [...specOptionData];
@@ -151,10 +150,11 @@ export const SpecificationTab: FC<{
     };
 
   const handleAddOptionGroup = () => {
+    /// type of id must string to handle dragging
     const randomId = uniqueId();
     setSpecOptionData?.((prevState: any) => [
       ...prevState,
-      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length, id: `option-${randomId}` },
+      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length, id: randomId },
     ]);
 
     // store.dispatch(
@@ -302,13 +302,13 @@ export const SpecificationTab: FC<{
                 : `${el.title}-${el.tag}-${el.sequence}-${index}`;
 
               return (
-                <Draggable key={el.sequence} draggableId={draggableId} index={index}>
+                <Draggable key={draggableId} draggableId={draggableId} index={index}>
                   {(dragProvided: any) => (
                     <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
                       {specType ? (
                         viewOnly ? (
                           <SimpleContentTable
-                            key={el.sequence}
+                            key={`spec-${el.id}` || `spec-${index}`}
                             items={[el]}
                             tdStyle={specifying ? { paddingLeft: 0 } : {}}
                             flex={specifying ? '30-70' : '25-75'}
@@ -317,7 +317,7 @@ export const SpecificationTab: FC<{
                           />
                         ) : (
                           <DoubleInput
-                            key={el.id || index}
+                            key={`spec-${el.id}` || `spec-${index}`}
                             fontLevel={6}
                             doubleInputClass="mb-8"
                             leftIcon={
@@ -369,7 +369,7 @@ export const SpecificationTab: FC<{
                           arrowAlignRight={specifying}
                           header={
                             <OptionCollapseHeader
-                              key={el.id}
+                              key={`option-${el.id}`}
                               data={[el]}
                               setSpecOptionData={setSpecOptionData}
                               dataIndex={index}
