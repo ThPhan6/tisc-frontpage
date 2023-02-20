@@ -26,9 +26,10 @@ import {
 import { sample } from 'lodash';
 
 import { DataTableResponse } from '@/components/Table/types';
-import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
+import type { LoginInput } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { Quotation } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
@@ -41,6 +42,8 @@ export const LoginModal: FC<{
   tiscLogin?: boolean;
 }> = ({ tiscLogin }) => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const { quotations, loaded } = useAppSelector((state) => state.quotation);
+
   const { handleReCaptchaVerify } = useReCaptcha();
   const popupStylesProps = useLandingPageStyles(darkTheme);
   const [inputValue, setInputValue] = useState<LoginInput>({
@@ -63,6 +66,12 @@ export const LoginModal: FC<{
   };
 
   useEffect(() => {
+    if (quotations.length && loaded) {
+      setQuotation(quotations);
+      pickRandomQuotation(quotations);
+      return;
+    }
+
     getListQuotation({ page: 1, pageSize: 99999 }, (data: DataTableResponse<Quotation[]>) => {
       setQuotation(data.data);
       pickRandomQuotation(data.data);

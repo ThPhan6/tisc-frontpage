@@ -10,7 +10,6 @@ import type {
   LoginInput,
   LoginResponseProps,
   PasswordRequestBody,
-  Quotation,
   SignUpDesignerRequestBody,
 } from '../types';
 import {
@@ -21,8 +20,10 @@ import {
 } from '@/components/Table/types';
 import store from '@/reducers';
 import { setUserProfile } from '@/reducers/user';
+import { Quotation } from '@/types';
 import { UserDetail } from '@/types/user.type';
 
+import { setQuotationData, setQuotationLoaded } from '../quotionReducer';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface QuotationPaginationResponse {
@@ -218,6 +219,9 @@ export async function getListQuotation(
   request(`/api/quotation/landing-page/get-list`, { method: 'GET', params })
     .then((response: QuotationPaginationResponse) => {
       const { quotations, pagination, summary } = response.data;
+      store.dispatch(setQuotationData(quotations));
+      store.dispatch(setQuotationLoaded(true));
+
       callback({
         data: quotations,
         pagination: {
