@@ -4,7 +4,6 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
-import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { selectProductSpecification } from '../product/services';
@@ -289,10 +288,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
     const renderRightIcon = () => {
       if (isPublicPage) return null;
-
-      if (isTiscAdmin) {
-        return <DropDownIcon className="mono-color" style={{ marginLeft: '12px' }} />;
-      }
 
       return <SingleRightIcon className="mono-color" style={{ marginLeft: '12px' }} />;
     };
