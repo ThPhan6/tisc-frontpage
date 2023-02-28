@@ -381,7 +381,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           curImages[(imageBox.index + curImages.length - 1) % curImages.length],
         )}
         onCloseRequest={() => setImageBox({ index: 0, isOpen: false })}
-        animationDuration={100}
+        animationDuration={200}
         onMovePrevRequest={() =>
           setImageBox((prevState) => ({
             ...prevState,
