@@ -438,16 +438,14 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                 <Col span={8} key={key}>
                   <div
                     className={styles.fileItem}
-                    onClick={() => {
-                      console.log('11');
-
-                      return isEditable
+                    onClick={() =>
+                      isEditable
                         ? undefined
                         : setImageBox({
                             index: key + 1, // primary image has index 0
                             isOpen: true,
-                          });
-                    }}
+                          })
+                    }
                   >
                     <div
                       className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}
