@@ -6,6 +6,7 @@ import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-lef
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
+import { isEmpty, isNull, isUndefined } from 'lodash';
 
 import { ProductAttributeFormInput } from '../types';
 import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
@@ -21,18 +22,26 @@ import { BodyText } from '@/components/Typography';
 import { CollectionModal } from '../modals/CollectionModal';
 import styles from './detail.less';
 
-export const getProductVariant = (specGroup: ProductAttributeFormInput[]) => {
-  let variants = '';
+export const getProductVariant = (specGroup: ProductAttributeFormInput[]): string => {
+  const variants: string[] = [];
+
   specGroup.forEach((el) => {
     el.attributes.forEach((attr) => {
-      attr.basis_options?.some((opt) => {
-        const dash = opt.option_code === '' ? '' : ' - ';
-        variants += opt.option_code + dash;
-      });
+      if (attr.type === 'Options' && attr.basis_options) {
+        attr.basis_options.forEach((opt) => {
+          if (
+            !isUndefined(opt.option_code) &&
+            !isNull(opt.option_code) &&
+            !isEmpty(opt.option_code)
+          ) {
+            variants.push(opt.option_code);
+          }
+        });
+      }
     });
   });
 
-  return variants.length > 2 ? variants.slice(0, -2) : variants;
+  return variants.join(' - ');
 };
 
 export const ProductBasicInfo: React.FC = () => {

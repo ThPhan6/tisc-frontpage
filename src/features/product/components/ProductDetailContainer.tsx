@@ -10,13 +10,11 @@ import { useHistory, useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
-import { getSpecificationRequest } from './ProductAttributes/hooks';
 import {
   createProductCard,
   getProductById,
   getRelatedCollectionProducts,
   updateProductCard,
-  useSelectProductSpecification,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
@@ -69,8 +67,6 @@ const ProductDetailContainer: React.FC = () => {
   const isPublicPage = signature ? true : false;
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
-
-  const selectProductSpecification = useSelectProductSpecification();
 
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
@@ -157,16 +153,7 @@ const ProductDetailContainer: React.FC = () => {
     };
 
     if (productId) {
-      updateProductCard(productId, data).then((res) => {
-        if (res) {
-          selectProductSpecification(productId, {
-            specification: {
-              is_refer_document: false,
-              attribute_groups: getSpecificationRequest(productSpecData),
-            },
-          });
-        }
-      });
+      updateProductCard(productId, data);
       return;
     }
 
