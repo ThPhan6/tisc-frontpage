@@ -29,11 +29,7 @@ export const getProductVariant = (specGroup: ProductAttributeFormInput[]): strin
     el.attributes.forEach((attr) => {
       if (attr.type === 'Options' && attr.basis_options) {
         attr.basis_options.forEach((opt) => {
-          if (
-            !isUndefined(opt.option_code) &&
-            !isNull(opt.option_code) &&
-            !isEmpty(opt.option_code)
-          ) {
+          if (!isEmpty(opt.option_code)) {
             variants.push(opt.option_code);
           }
         });
