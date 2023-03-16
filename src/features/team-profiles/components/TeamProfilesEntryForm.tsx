@@ -150,7 +150,7 @@ const TeamProfilesEntryForm = () => {
     updateTeamProfile(userIdParam, submitData);
   };
 
-  const handleSubmit = (callBack?: (id: string) => void) => {
+  const handleSubmit = (callBack?: (id: string) => void) => () => {
     /// check email
     const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
 
@@ -222,7 +222,7 @@ const TeamProfilesEntryForm = () => {
 
       <EntryFormWrapper
         handleCancel={history.goBack}
-        handleSubmit={handleSubmit}
+        handleSubmit={handleSubmit()}
         handleDelete={handleDeleteTeamProfile}
         entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
         submitButtonStatus={submitButtonStatus.value}
