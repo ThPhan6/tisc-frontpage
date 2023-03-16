@@ -124,13 +124,14 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             if (attributeItem.basis_options?.some((opt) => opt.id === subBasis.id)) {
               return {
                 ...subBasis,
-                option_code: attributeItem.basis_options.find((opt) => opt.id === subBasis.id)
-                  ?.option_code,
+                option_code:
+                  attributeItem.basis_options.find((opt) => opt.id === subBasis.id)?.option_code ||
+                  subBasis.product_id,
               };
             } else {
               return {
                 ...subBasis,
-                option_code: '',
+                option_code: subBasis.product_id,
               };
             }
           });
@@ -191,14 +192,13 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       const changedBasisOption = basisOptions.find((option) => option?.id === itemSelected.value);
       if (changedBasisOption) {
         return {
-          id: changedBasisOption.id || '',
-          option_code: changedBasisOption.option_code || '',
+          ...changedBasisOption,
         };
       }
 
       return {
+        ...(changedBasisOption as any),
         id: itemSelected.value as string,
-        option_code: '',
       };
     });
 
@@ -210,6 +210,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           ? getBasisOptionsText(activeBasisOptions)
           : newItemAttributes[attributeItemIndex].text,
     };
+
     newAttributes[attributeGroupIndex] = {
       ...newAttributes[attributeGroupIndex],
       attributes: newItemAttributes,
@@ -335,7 +336,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           className="product-id-input"
           fontLevel={6}
           tabIndex={index}
-          value={option.option_code !== '' ? option.option_code : option.product_id || ''}
+          value={option.option_code}
           onChange={(e) => {
             const newBasisOptions = [...basisOptions];
             newBasisOptions[index] = {
