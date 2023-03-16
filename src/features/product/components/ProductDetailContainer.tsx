@@ -10,11 +10,13 @@ import { useHistory, useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
+import { getSpecificationRequest } from './ProductAttributes/hooks';
 import {
   createProductCard,
   getProductById,
   getRelatedCollectionProducts,
   updateProductCard,
+  useSelectProductSpecification,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
@@ -67,6 +69,8 @@ const ProductDetailContainer: React.FC = () => {
   const isPublicPage = signature ? true : false;
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
+
+  const selectProductSpecification = useSelectProductSpecification();
 
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
@@ -123,6 +127,8 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
+    const productSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
@@ -131,9 +137,7 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
       feature_attribute_groups: filterDataHasIdTypeNumber(details.feature_attribute_groups),
-      specification_attribute_groups: filterDataHasIdTypeNumber(
-        details.specification_attribute_groups,
-      ),
+      specification_attribute_groups: productSpecData,
       dimension_and_weight: {
         with_diameter: details.dimension_and_weight.with_diameter,
         attributes: details.dimension_and_weight.attributes
@@ -153,7 +157,16 @@ const ProductDetailContainer: React.FC = () => {
     };
 
     if (productId) {
-      updateProductCard(productId, data);
+      updateProductCard(productId, data).then((res) => {
+        if (res) {
+          selectProductSpecification(productId, {
+            specification: {
+              is_refer_document: false,
+              attribute_groups: getSpecificationRequest(productSpecData),
+            },
+          });
+        }
+      });
       return;
     }
 

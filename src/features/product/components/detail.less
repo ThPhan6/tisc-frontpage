@@ -255,6 +255,13 @@
           color: #000 !important;
         }
       }
+
+      .inputVariant {
+        :global(.ant-input) {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
     :global(.ant-collapse-header) {
       display: flex !important;

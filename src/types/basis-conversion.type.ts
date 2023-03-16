@@ -9,6 +9,7 @@ export interface SubBasisConversion {
   conversion_between: string;
   first_formula: string;
   second_formula: string;
+  product_id?: string;
 }
 export interface BasisConversionListResponse {
   id: string;
