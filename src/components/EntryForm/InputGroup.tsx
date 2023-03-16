@@ -48,6 +48,7 @@ interface InputGroupProps extends CustomInputProps {
   isTableFormat?: boolean;
   labelColor?: CustomTypography['color'];
   autoResize?: boolean;
+  inputTitle?: string;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -74,6 +75,7 @@ const InputGroup: FC<InputGroupProps> = ({
   isTableFormat,
   labelColor = 'mono-color',
   autoResize,
+  inputTitle,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -128,6 +130,7 @@ const InputGroup: FC<InputGroupProps> = ({
         ) : (
           <CustomInput
             {...props}
+            title={inputTitle}
             value={value}
             fontLevel={fontSize}
             readOnly={rightIcon || readOnly ? true : false}
