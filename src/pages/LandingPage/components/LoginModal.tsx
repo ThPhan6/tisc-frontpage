@@ -11,7 +11,6 @@ import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.sv
 import {
   ForgotType,
   forgotPasswordMiddleware,
-  getListQuotation,
   loginByBrandOrDesigner,
   loginMiddleware,
 } from '../../../pages/LandingPage/services/api';
@@ -25,10 +24,10 @@ import {
 } from '@/pages/LandingPage/components/hook';
 import { sample } from 'lodash';
 
-import { DataTableResponse } from '@/components/Table/types';
-import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
+import type { LoginInput } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { Quotation } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
@@ -37,49 +36,47 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './LoginModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
+const QUOTATION_DEFAULT: Quotation = {
+  id: '1',
+  identity: 'Microsoft co-founder',
+  author: 'Bill Gate',
+  quotation: 'Your most unhappy customers are your greatest source of learning.',
+};
+
 export const LoginModal: FC<{
   tiscLogin?: boolean;
 }> = ({ tiscLogin }) => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
-  const { handleReCaptchaVerify } = useReCaptcha();
   const popupStylesProps = useLandingPageStyles(darkTheme);
+
+  const quotation = useAppSelector((state) => state.quotation.quotations);
+
+  const { handleReCaptchaVerify } = useReCaptcha();
+  const { fetchUserInfo } = useCustomInitialState();
+
   const [inputValue, setInputValue] = useState<LoginInput>({
     email: '',
     password: '',
   });
   const verifyEmail = useString('');
   const showForgotPassword = useBoolean(false);
-  const [quotation, setQuotation] = useState<Quotation[]>([]);
-  const [randomQuotation, setRandomQuotation] = useState<Quotation>();
-  const { fetchUserInfo } = useCustomInitialState();
 
-  const pickRandomQuotation = (quotes: Quotation[]) => {
-    const randomQuote = sample(quotes);
-    if (randomQuote === randomQuotation && quotes.length > 1) {
-      pickRandomQuotation(quotes);
-    } else {
-      setRandomQuotation(randomQuote);
-    }
-  };
+  const [randomQuotation, setRandomQuotation] = useState<Quotation>(QUOTATION_DEFAULT);
 
   useEffect(() => {
-    getListQuotation({ page: 1, pageSize: 99999 }, (data: DataTableResponse<Quotation[]>) => {
-      setQuotation(data.data);
-      pickRandomQuotation(data.data);
-    });
-  }, []);
+    const randomQuote = sample(quotation);
+    if (!quotation?.length || !randomQuote) {
+      return;
+    }
+
+    setRandomQuotation(randomQuote);
+  }, [quotation]);
 
   useEffect(() => {
     if (!showForgotPassword.value) {
       verifyEmail.setValue('');
     }
   }, [showForgotPassword.value]);
-
-  useEffect(() => {
-    if (quotation.length) {
-      pickRandomQuotation(quotation);
-    }
-  }, [quotation]);
 
   const handleDisableButton = () => {
     if (showForgotPassword.value) {

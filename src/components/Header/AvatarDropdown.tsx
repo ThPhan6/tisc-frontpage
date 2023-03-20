@@ -9,7 +9,7 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { getFullName, showImageUrl } from '@/helper/utils';
+import { getFullName } from '@/helper/utils';
 
 import store from '@/reducers';
 
@@ -77,10 +77,21 @@ export const AvatarDropdown = () => {
       className={`${styles.container}`}
       onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}
     >
-      <TeamIcon
-        customClass={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
-        avatar={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
-      />
+      {currentUser?.avatar ? (
+        <TeamIcon customClass={styles.avatar} avatar={currentUser?.avatar} />
+      ) : (
+        <img
+          className={`default ${styles.avatar}`}
+          src={DefaultAvatarIcon}
+          alt="avatar"
+          style={{
+            height: 20,
+            width: 20,
+            borderRadius: '50%',
+            objectFit: 'cover',
+          }}
+        />
+      )}
       {isMobile ? null : (
         <BodyText
           fontFamily="Roboto"

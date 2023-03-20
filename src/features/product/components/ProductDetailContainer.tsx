@@ -22,7 +22,7 @@ import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
-import { ProductFormData, ProductKeyword } from '../types';
+import { ProductAttributeFormInput, ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
@@ -41,6 +41,21 @@ import ProductDetailHeader from './ProductDetailHeader';
 import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
 import Cookies from 'js-cookie';
+
+const filterDataHasIdTypeNumber = (
+  data: ProductAttributeFormInput[],
+): ProductAttributeFormInput[] =>
+  data.map((el: any) => {
+    if (el.id && !isNaN(Number(el.id))) {
+      return {
+        name: el?.name || '',
+        attributes: el?.attributes || [],
+        selection: el?.selection || false,
+      };
+    }
+
+    return el;
+  });
 
 const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();
@@ -108,21 +123,23 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
+    const productSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
       collection_id: details.collection?.id || '',
       name: details.name.trim(),
       description: details.description.trim(),
-      general_attribute_groups: details.general_attribute_groups,
-      feature_attribute_groups: details.feature_attribute_groups,
+      general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
+      feature_attribute_groups: filterDataHasIdTypeNumber(details.feature_attribute_groups),
+      specification_attribute_groups: productSpecData,
       dimension_and_weight: {
         with_diameter: details.dimension_and_weight.with_diameter,
         attributes: details.dimension_and_weight.attributes
           .filter((el) => (el.conversion_value_1 ? true : false))
           .map((el) => pick(el, 'id', 'conversion_value_1', 'conversion_value_2', 'with_diameter')),
       } as ProductDimensionWeight,
-      specification_attribute_groups: details.specification_attribute_groups,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
         if (image.indexOf('data:image') > -1) {

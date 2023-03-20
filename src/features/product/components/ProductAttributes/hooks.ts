@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep, countBy } from 'lodash';
+import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -184,11 +184,14 @@ export const useProductAttributeForm = (
   };
 
   const addNewProductAttribute = () => {
+    /// type of id must be string to handle dragging
+    const randomId = uniqueId();
     dispatch(
       setPartialProductDetail({
         [attributeGroupKey]: [
           ...attributeGroup,
           {
+            id: randomId,
             name: '',
             attributes: [],
           },
@@ -240,7 +243,6 @@ export const useProductAttributeForm = (
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeId: string,
-    updatedOnchange: boolean = true, // disabled TISC
     optionId?: string,
     resetAttrbiteOptionIsChecked: boolean = true,
   ) => {
@@ -291,32 +293,40 @@ export const useProductAttributeForm = (
       };
     });
 
-    const haveCheckedOptionAttribute = newState[groupIndex].attributes.some(
+    let haveCheckedOptionAttribute = newState[groupIndex].attributes.some(
       (attr) => attr.type === 'Options' && attr.basis_options?.some((opt) => opt.isChecked),
     );
 
-    newState[groupIndex].isChecked = haveCheckedOptionAttribute && !!optionId;
+    if (!optionId) {
+      haveCheckedOptionAttribute = false;
+    }
+
+    newState[groupIndex].isChecked = haveCheckedOptionAttribute;
 
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
-    if (updatedOnchange) {
-      if (!props?.isSpecifiedModal) {
-        selectProductSpecification(id, {
-          specification: {
-            is_refer_document: !haveCheckedAttributeGroup || false,
-            attribute_groups: getSpecificationRequest(newState),
-          },
-        });
-      }
-
-      dispatch(
-        setPartialProductDetail({
-          specification_attribute_groups: newState,
-        }),
-      );
-
-      dispatch(setReferToDesignDocument(!haveCheckedAttributeGroup));
+    if (isTiscAdmin) {
+      return;
     }
+
+    if (!props?.isSpecifiedModal) {
+      selectProductSpecification(id, {
+        specification: {
+          is_refer_document: !haveCheckedAttributeGroup || false,
+          attribute_groups: getSpecificationRequest(newState),
+        },
+      });
+    }
+
+    dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: newState,
+      }),
+    );
+
+    dispatch(setReferToDesignDocument(!haveCheckedAttributeGroup));
+
+    return { haveCheckedOptionAttribute, haveCheckedAttributeGroup };
   };
 
   const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {

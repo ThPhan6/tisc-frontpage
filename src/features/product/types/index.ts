@@ -29,6 +29,7 @@ export type ProductAttributeType = 'Text' | 'Conversions' | 'Presets' | 'Options
 export interface SpecificationAttributeBasisOptionProps {
   id: string;
   option_code: string;
+  product_id?: string;
   image?: string | null;
   unit_1?: string;
   unit_2?: string;
@@ -59,7 +60,7 @@ export interface AttributeSelectedProps {
 }
 
 export interface ProductAttributeFormInput {
-  id?: string;
+  id: string;
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;

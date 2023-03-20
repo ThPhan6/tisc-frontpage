@@ -68,6 +68,7 @@ const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
   value_2: '',
   unit_2: '',
   unit_1: '',
+  product_id: '',
 };
 
 const SubItemOption: FC<SubItemOptionProps> = ({ is_have_image, subItemOption, onChange }) => {
@@ -121,6 +122,25 @@ const SubItemOption: FC<SubItemOptionProps> = ({ is_have_image, subItemOption, o
             />
           </Col>
         ))}
+        <div
+          style={{
+            margin: '0 8px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <span className="product-id-label">Product ID:</span>
+          <CustomInput
+            placeholder="type here"
+            className="product-id-input"
+            fontLevel={6}
+            name="product_id"
+            onChange={handleChangeInput}
+            value={subItemOption.product_id}
+          />
+        </div>
       </Row>
     </div>
   );

@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react';
+import { Draggable } from 'react-beautiful-dnd';
 
 import { useParams } from 'umi';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
+import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { trimStart, uniqueId } from 'lodash';
 
@@ -13,6 +14,7 @@ import { TextFormProps } from '@/components/Form/types';
 import store, { useAppSelector } from '@/reducers';
 import { CollectionRelationType } from '@/types';
 
+import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
@@ -30,6 +32,7 @@ const DEFAULT_CONTENT: NameContentProps = {
   id: '',
   name: '',
   content: '',
+  sequence: -1,
 };
 
 export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
@@ -237,30 +240,59 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
     );
   };
 
+  const onDragEnd = (result: any) => {
+    const newAttributes = getNewDataAfterReordering(result, attributes) as NameContentProps[];
+
+    store.dispatch(setCustomProductDetail({ attributes: newAttributes }));
+  };
+
   const renderAttributes = () => {
     if (viewOnly) {
       return <SimpleContentTable flexOnMobile items={attributes} customClass="mt-8" />;
     }
-    return attributes?.map((attribute, index) => (
-      <DoubleInput
-        key={attribute.id || index}
-        fontLevel={6}
-        leftIcon={<ScrollIcon />}
-        rightIcon={
-          <DeleteIcon
-            className={styles.deleteIcon}
-            onClick={() => handleDeleteAttribute(attribute.id)}
-          />
-        }
-        firstValue={attribute.name}
-        firstPlaceholder="type name"
-        firstOnChange={onChangeAttribute('name', attribute, index)}
-        secondValue={attribute.content}
-        secondPlaceholder="type content"
-        secondOnChange={onChangeAttribute('content', attribute, index)}
-        doubleInputClass="mb-8"
-      />
-    ));
+
+    return (
+      <>
+        {!attributes?.length ? null : (
+          <DragDropContainer onDragEnd={onDragEnd}>
+            {attributes.map((attribute, index) => (
+              <Draggable
+                key={attribute.id}
+                draggableId={`${attribute?.id || index}-${attribute.name}-${attribute.content}`}
+                index={index}
+              >
+                {(dragProvided: any) => (
+                  <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
+                    <DoubleInput
+                      key={attribute.id || index}
+                      fontLevel={6}
+                      leftIcon={
+                        <div {...dragProvided.dragHandleProps}>
+                          <DragIcon />
+                        </div>
+                      }
+                      rightIcon={
+                        <DeleteIcon
+                          className={styles.deleteIcon}
+                          onClick={() => handleDeleteAttribute(attribute.id)}
+                        />
+                      }
+                      firstValue={attribute.name}
+                      firstPlaceholder="type name"
+                      firstOnChange={onChangeAttribute('name', attribute, index)}
+                      secondValue={attribute.content}
+                      secondPlaceholder="type content"
+                      secondOnChange={onChangeAttribute('content', attribute, index)}
+                      doubleInputClass="mb-8"
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+          </DragDropContainer>
+        )}
+      </>
+    );
   };
 
   return (

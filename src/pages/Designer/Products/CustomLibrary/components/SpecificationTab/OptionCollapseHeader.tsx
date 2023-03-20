@@ -2,8 +2,6 @@ import { FC } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
-
 import { selectProductSpecification } from '@/features/product/services';
 
 import { OptionGroupProps } from '../../types';
@@ -17,7 +15,8 @@ import { setCustomProductDetail } from '../../slice';
 import styles from './index.less';
 
 export const OptionCollapseHeader: FC<OptionGroupProps> = ({
-  data,
+  data, // data combined between specification and option
+  setSpecOptionData,
   dataIndex,
   productId,
   specifiedDetail,
@@ -25,19 +24,20 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
   specifying,
   isPublicPage,
   viewOnly,
+  icon,
 }) => {
-  const option = data[dataIndex];
+  const option = data[0];
+  // [dataIndex];
   const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
+  // using for onchange
 
-  const onChangeOptionTitle = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newOptionGroup = [...data];
-    newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
+  const onChangeOptionTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSpecOptionData?.((prevState: any) => {
+      const newData = [...prevState];
+      newData[dataIndex] = { ...newData[dataIndex], title: e.target.value };
 
-    store.dispatch(
-      setCustomProductDetail({
-        options: newOptionGroup,
-      }),
-    );
+      return newData;
+    });
   };
 
   if (!viewOnly) {
@@ -47,10 +47,10 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
         noWrap
         fontLevel={4}
         containerClass={styles.content}
-        label={<ScrollIcon />}
+        label={icon}
         placeholder="type title eg Colour Rand or Material Options"
         value={option.title}
-        onChange={onChangeOptionTitle(dataIndex)}
+        onChange={onChangeOptionTitle}
       />
     );
   }

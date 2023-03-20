@@ -10,28 +10,16 @@ import type {
   LoginInput,
   LoginResponseProps,
   PasswordRequestBody,
-  Quotation,
   SignUpDesignerRequestBody,
 } from '../types';
-import {
-  DataTableResponse,
-  PaginationRequestParams,
-  PaginationResponse,
-  SummaryResponse,
-} from '@/components/Table/types';
 import store from '@/reducers';
 import { setUserProfile } from '@/reducers/user';
+import { Quotation } from '@/types';
 import { UserDetail } from '@/types/user.type';
 
+import { setQuotationData } from '../quotionReducer';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-interface QuotationPaginationResponse {
-  data: {
-    pagination: PaginationResponse;
-    quotations: Quotation[];
-    summary: SummaryResponse[];
-  };
-}
 export async function loginMiddleware(
   data: LoginInput,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
@@ -211,22 +199,13 @@ export async function getListPolicy() {
     });
 }
 
-export async function getListQuotation(
-  params: PaginationRequestParams,
-  callback: (data: DataTableResponse) => void,
-) {
-  request(`/api/quotation/landing-page/get-list`, { method: 'GET', params })
-    .then((response: QuotationPaginationResponse) => {
-      const { quotations, pagination, summary } = response.data;
-      callback({
-        data: quotations,
-        pagination: {
-          current: pagination.page,
-          pageSize: pagination.page_size,
-          total: pagination.total,
-        },
-        summary,
-      });
+export async function getListQuotation() {
+  request(`/api/quotation/landing-page/get-list`, {
+    method: 'GET',
+    params: { page: 1, pageSize: 99999 },
+  })
+    .then((response: { data: { quotations: Quotation[] } }) => {
+      store.dispatch(setQuotationData(response.data.quotations));
     })
     .catch((error) => {
       message.error(error.message);

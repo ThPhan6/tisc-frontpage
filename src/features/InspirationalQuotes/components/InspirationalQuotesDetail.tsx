@@ -14,6 +14,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { InspirationalQuotationEntryForm } from './InspirationalQuotesEntryForm';
 
 const DEFAULT_INPUT: Quotation = {
+  id: '',
   author: '',
   identity: '',
   quotation: '',

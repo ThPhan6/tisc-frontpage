@@ -9,7 +9,7 @@ import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 export type ProductFooterTabs = 'collection' | 'tip' | 'download' | '';
 interface ActiveState {
   collapse: {
-    [key in string]?: number;
+    [key in string]?: number | string;
   };
   productFooter: ProductFooterTabs;
 }
@@ -23,7 +23,10 @@ const activeSlice = createSlice({
   name: 'active',
   initialState,
   reducers: {
-    setActiveCollapseItem(state, action: PayloadAction<{ type: string; activeKey?: number }>) {
+    setActiveCollapseItem(
+      state,
+      action: PayloadAction<{ type: string; activeKey?: number | string }>,
+    ) {
       state.collapse[action.payload.type] =
         state.collapse[action.payload.type] === action.payload.activeKey
           ? undefined
@@ -49,12 +52,16 @@ export const activeReducer = activeSlice.reducer;
 
 export const activeSelector = (state: RootState) => state.active;
 
-export const collapseSelector = (type?: string, index?: number) =>
+export const collapseSelector = (type?: string, index?: number | string) =>
   createSelector(activeSelector, ({ collapse }) =>
-    type && typeof index === 'number' ? (collapse[type] === index ? ['1'] : []) : undefined,
+    type && (typeof index === 'number' || typeof index === 'string')
+      ? collapse[type] === index
+        ? ['1']
+        : []
+      : undefined,
   );
 
-export const setActiveCollapse = (type: string, activeKey: number) => () =>
+export const setActiveCollapse = (type: string, activeKey: number | string) => () =>
   store.dispatch(setActiveCollapseItem({ type, activeKey }));
 
 export const clearActiveCollapse = (type: string) =>
@@ -62,14 +69,15 @@ export const clearActiveCollapse = (type: string) =>
 
 export const useCollapseGroupActiveCheck = (
   groupType?: string,
-  groupIndex?: number,
+  groupIndex?: number | string,
   activeKey?: string | string[],
 ) => {
   const [collapse, setCollapse] = useState<string | string[]>(); // Use for have activeKey case
 
   const activeKeyInState = useAppSelector(collapseSelector(groupType, groupIndex));
 
-  const activeOneInGroup = groupType && typeof groupIndex === 'number';
+  const activeOneInGroup =
+    groupType && (typeof groupIndex === 'number' || typeof groupIndex === 'string');
 
   const curActiveKey = activeOneInGroup ? activeKeyInState : collapse;
 
