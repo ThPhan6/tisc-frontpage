@@ -101,9 +101,16 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
             };
           }
 
+          const node = column.render?.(value, record, index) || value;
+
           return {
             ...cellClassName,
-            children: column.render?.(value, record, index) || value,
+            children:
+              typeof node === 'object' ? (
+                node
+              ) : (
+                <span data-text={typeof node === 'string' ? node : ''}>{node}</span>
+              ),
           };
         },
       };
@@ -116,7 +123,6 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   };
 };
 
-const EXPANDED_DELAY = 50; // ms
 const RETRY_INTERVAL = 100; // ms
 let injectedCell = '';
 

@@ -309,3 +309,14 @@ li.ant-menu-submenu {
     stroke-width: 0.2px;
   }
 }
+
+.hover-on-row td > span::after {
+  display: block;
+  height: 1px;
+  margin-bottom: -1px;
+  overflow: hidden;
+  color: transparent;
+  font-weight: 600;
+  visibility: hidden;
+  content: attr(data-text);
+}

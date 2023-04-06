@@ -83,7 +83,9 @@ const ProjectList: React.FC = () => {
       });
     };
 
-  const showAssignTeams = (projectInfo: ProjectListProps) => () => {
+  const showAssignTeams = (projectInfo: ProjectListProps) => (event: any) => {
+    event?.stopPropagation();
+
     const openAssignTeamModal = (teams: TeamProfileGroupCountry[]) =>
       store.dispatch(
         openModal({

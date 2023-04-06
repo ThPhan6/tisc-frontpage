@@ -70,7 +70,9 @@ const BrandList: React.FC = () => {
       });
     };
 
-  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+  const showAssignTeams = (brandInfo: BrandListItem) => (event: any) => {
+    event?.stopPropagation();
+
     const openAssignTeamModal = (teams: BrandAssignTeamForm[]) =>
       store.dispatch(
         openModal({
