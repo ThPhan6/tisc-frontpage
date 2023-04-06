@@ -209,8 +209,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const fetchData = (params: PaginationParams) => {
     showPageLoading();
     fetchDataFunc(formatPaginationParams(params), (response) => {
-      console.log('response', response);
-
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
       hidePageLoading();
