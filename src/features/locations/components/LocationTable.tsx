@@ -130,6 +130,11 @@ const LocationTable: React.FC = () => {
         columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getLocationPagination}
         hasPagination
+        onRow={(rowRecord: LocationDetail) => ({
+          onClick: () => {
+            handleUpdateLocation(rowRecord.id);
+          },
+        })}
       />
     </div>
   );

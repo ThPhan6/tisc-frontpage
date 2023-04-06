@@ -113,6 +113,11 @@ const Distributors = () => {
           brand_id: user.brand.id,
         }}
         hasPagination
+        onRow={(rowRecord: Distributor) => ({
+          onClick: () => {
+            handleUpdateDistributor(rowRecord.id);
+          },
+        })}
       />
     </>
   );

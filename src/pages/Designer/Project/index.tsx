@@ -275,6 +275,11 @@ const ProjectList: React.FC = () => {
           ref={tableRef}
           hasPagination
           autoLoad={false}
+          onRow={(rowRecord: ProjectListProps) => ({
+            onClick: () => {
+              goToUpdateProject(rowRecord.id);
+            },
+          })}
         />
       </PageContainer>
     </div>
