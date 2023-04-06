@@ -19,6 +19,10 @@ const PolicyTemplatePage: React.FC = () => {
   useAutoExpandNestedTableColumn(0, [2]);
   const tableRef = useRef<any>();
 
+  const goToUpdatePage = (id: string) => {
+    pushTo(PATH.policyUpdate.replace(':id', id));
+  };
+
   const mainColumns: TableColumnItem<Documentation>[] = [
     {
       title: 'Last Updated',
@@ -52,7 +56,7 @@ const PolicyTemplatePage: React.FC = () => {
               {
                 type: 'updated',
                 label: 'Edit',
-                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
+                onClick: () => goToUpdatePage(record.id),
               },
             ]}
           />
@@ -68,6 +72,11 @@ const PolicyTemplatePage: React.FC = () => {
       fetchDataFunc={getPolicyTemplates}
       title="AGREEMENT / POLICIES / TERMS"
       hasPagination
+      onRow={(rowRecord: Documentation) => ({
+        onClick: () => {
+          goToUpdatePage(rowRecord.id);
+        },
+      })}
     />
   );
 };

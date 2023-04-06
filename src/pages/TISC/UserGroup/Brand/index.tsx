@@ -103,6 +103,10 @@ const BrandList: React.FC = () => {
     if (brandId) inviteBrand(brandId);
   };
 
+  const goToSeeViewDetailPage = (id: string) => {
+    pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', id));
+  };
+
   const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
       title: '',
@@ -185,7 +189,7 @@ const BrandList: React.FC = () => {
           actionItems={[
             {
               type: 'view',
-              onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+              onClick: () => goToSeeViewDetailPage(record.id),
             },
             {
               type: 'invite',
@@ -211,6 +215,11 @@ const BrandList: React.FC = () => {
           ref={tableRef}
           fetchDataFunc={getBrandPagination}
           hasPagination
+          onRow={(rowRecord) => ({
+            onClick: () => {
+              goToSeeViewDetailPage(rowRecord.id);
+            },
+          })}
         />
       </PageContainer>
     </div>

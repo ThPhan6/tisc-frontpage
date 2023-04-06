@@ -112,6 +112,11 @@ const BilledServices = () => {
       autoLoad={false}
       title="BILLED SERVICES"
       ref={tableRef}
+      onRow={(rowRecord) => ({
+        onClick: () => {
+          handleViewService(rowRecord.id);
+        },
+      })}
     />
   );
 };
