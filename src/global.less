@@ -296,9 +296,16 @@ li.ant-menu-submenu {
 }
 
 .hover-on-row:hover {
-  text-shadow: 0 0 0 @mono-color;
-}
+  // text-shadow: 0 0 0 @mono-color;
+  font-weight: 400;
 
-.hover-on-row svg:hover path {
-  fill: @mono-color;
+  span,
+  p {
+    font-weight: 400;
+  }
+
+  svg path {
+    stroke: @mono-color;
+    stroke-width: 0.2px;
+  }
 }
