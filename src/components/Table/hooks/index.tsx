@@ -123,6 +123,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   };
 };
 
+const EXPANDED_DELAY = 50; // ms
 const RETRY_INTERVAL = 100; // ms
 let injectedCell = '';
 
