@@ -73,7 +73,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     if (selected?.find((itemSelected) => itemSelected.value == option.value)) {
       return 'item-option-checked';
     }
-    return '';
+    return 'item-option-uncheck';
   };
 
   return (
