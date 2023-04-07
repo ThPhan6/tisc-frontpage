@@ -383,7 +383,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           collapsible={group.count === 0 ? 'disabled' : undefined}
           header={
             <div className="header-text">
-              <BodyText level={5} fontFamily="Roboto">
+              <BodyText data-text={`${group.name} (${group.count})`} level={5} fontFamily="Roboto">
                 {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
 
                 {truncate(capitalize(group.name), { length: 40 })}
