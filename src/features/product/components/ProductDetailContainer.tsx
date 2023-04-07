@@ -123,6 +123,8 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
+    const productSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
@@ -131,9 +133,7 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
       feature_attribute_groups: filterDataHasIdTypeNumber(details.feature_attribute_groups),
-      specification_attribute_groups: filterDataHasIdTypeNumber(
-        details.specification_attribute_groups,
-      ),
+      specification_attribute_groups: productSpecData,
       dimension_and_weight: {
         with_diameter: details.dimension_and_weight.with_diameter,
         attributes: details.dimension_and_weight.attributes

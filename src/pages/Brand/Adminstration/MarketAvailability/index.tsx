@@ -116,6 +116,11 @@ const MarketAvailabilityList = () => {
         hasPagination
         headerClass={styles.customTitle}
         rowKey="id"
+        onRow={(rowRecord: MarketAvailabilityDataList) => ({
+          onClick: () => {
+            handleUpdateMarketAvailability(rowRecord.collection_id);
+          },
+        })}
       />
     </>
   );

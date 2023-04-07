@@ -114,6 +114,9 @@ const MaterialProductCode = () => {
       title: 'Sub-List',
       dataIndex: 'name',
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     ...getSameColumns(false),
 

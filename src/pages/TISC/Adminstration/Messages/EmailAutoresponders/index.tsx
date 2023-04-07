@@ -65,6 +65,11 @@ const EmailAutoList = () => {
         columns={setDefaultWidthForEachColumn(mainColumns, 2)}
         fetchDataFunc={getEmailTemplatePagination}
         hasPagination
+        onRow={(rowRecord) => ({
+          onClick: () => {
+            handleUpdateEmailAuto(rowRecord.id);
+          },
+        })}
       />
     </div>
   );

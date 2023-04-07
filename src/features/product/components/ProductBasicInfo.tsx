@@ -6,7 +6,9 @@ import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-lef
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
+import { isEmpty, isNull, isUndefined } from 'lodash';
 
+import { ProductAttributeFormInput } from '../types';
 import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 import { CollectionRelationType } from '@/types';
@@ -20,15 +22,39 @@ import { BodyText } from '@/components/Typography';
 import { CollectionModal } from '../modals/CollectionModal';
 import styles from './detail.less';
 
+export const getProductVariant = (specGroup: ProductAttributeFormInput[]): string => {
+  const variants: string[] = [];
+
+  specGroup.forEach((el) => {
+    el.attributes.forEach((attr) => {
+      if (attr.type === 'Options' && attr.basis_options) {
+        attr.basis_options.forEach((opt) => {
+          if (!isEmpty(opt.option_code)) {
+            variants.push(opt.option_code);
+          }
+        });
+      }
+    });
+  });
+
+  return variants.join(' - ');
+};
+
 export const ProductBasicInfo: React.FC = () => {
   const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
-  const editable = useCheckPermission(['TISC Admin', 'Consultant Team']) && !isTablet;
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const editable = isTiscAdmin && !isTablet;
 
   const brand = useAppSelector((state) => state.product.brand);
+  const spec = useAppSelector((state) => state.product.details.specification_attribute_groups);
+  /// brand and designer
+  const productVariant = useAppSelector(productVariantsSelector);
+
   const { name, description, collection } = useAppSelector((state) => state.product.details);
-  const productId = useAppSelector(productVariantsSelector);
   const [visible, setVisible] = useState(false);
+
+  const productId = isTiscAdmin ? getProductVariant(spec) : productVariant;
 
   return (
     <>
@@ -91,11 +117,12 @@ export const ProductBasicInfo: React.FC = () => {
         <InputGroup
           horizontal
           fontLevel={4}
-          containerClass={!editable ? styles.viewInfo : ''}
+          containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
           label="Product ID"
           readOnly={true}
           noWrap
           value={productId}
+          inputTitle={productId}
         />
         {/* Description */}
         <FormGroup
