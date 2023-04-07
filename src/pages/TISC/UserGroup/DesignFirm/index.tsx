@@ -85,6 +85,11 @@ const DesignFirmList: React.FC = () => {
         ref={tableRef}
         fetchDataFunc={getDesignFirmPagination}
         hasPagination
+        onRow={(rowRecord: DesignFirm) => ({
+          onClick: () => {
+            handleViewDesignFirm(rowRecord.id);
+          },
+        })}
       />
     </PageContainer>
   );
