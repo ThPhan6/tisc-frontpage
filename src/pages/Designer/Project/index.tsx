@@ -83,7 +83,9 @@ const ProjectList: React.FC = () => {
       });
     };
 
-  const showAssignTeams = (projectInfo: ProjectListProps) => () => {
+  const showAssignTeams = (projectInfo: ProjectListProps) => (event: any) => {
+    event?.stopPropagation();
+
     const openAssignTeamModal = (teams: TeamProfileGroupCountry[]) =>
       store.dispatch(
         openModal({
@@ -275,6 +277,11 @@ const ProjectList: React.FC = () => {
           ref={tableRef}
           hasPagination
           autoLoad={false}
+          onRow={(rowRecord: ProjectListProps) => ({
+            onClick: () => {
+              goToUpdateProject(rowRecord.id);
+            },
+          })}
         />
       </PageContainer>
     </div>

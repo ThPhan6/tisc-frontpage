@@ -57,10 +57,11 @@ const BrandProductListPage: React.FC = () => {
       firstLoad.setValue(false);
     }
 
+    /// show product list defailt by collection
     if (!filter) {
       getProductListByBrandId({
         brand_id: userBrand.id,
-        category_id: 'all',
+        collection_id: 'all',
       });
       return;
     }
@@ -70,7 +71,7 @@ const BrandProductListPage: React.FC = () => {
       category_id: filter?.name === 'category_id' ? filter?.value : undefined,
       collection_id: filter?.name === 'collection_id' ? filter?.value : undefined,
     });
-  }, [filter?.value]);
+  }, [filter?.value, filter?.name]);
 
   const renderPageHeader = () => (
     <TopBarContainer
