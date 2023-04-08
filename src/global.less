@@ -294,3 +294,58 @@ li.ant-menu-submenu {
 .white-space {
   white-space: nowrap;
 }
+
+.hover-on-row:hover {
+  // text-shadow: 0 0 0 @mono-color;
+  font-weight: 400;
+
+  span,
+  p {
+    font-weight: 400;
+  }
+
+  svg path {
+    stroke: @mono-color;
+    stroke-width: 0.2px;
+  }
+}
+
+.hover-on-row td > span::after {
+  display: block;
+  height: 1px;
+  margin-bottom: -1px;
+  overflow: hidden;
+  color: transparent;
+  font-weight: 600;
+  visibility: hidden;
+  content: attr(data-text);
+}
+
+.onRowActive {
+  :global(.ant-table-row:hover) {
+    font-weight: 400;
+
+    span,
+    p {
+      font-weight: 400;
+    }
+
+    svg path {
+      stroke: @mono-color;
+      stroke-width: 0.2px;
+    }
+  }
+
+  :global(.ant-table-row) {
+    td > span::after {
+      display: block;
+      height: 1px;
+      margin-bottom: -1px;
+      overflow: hidden;
+      color: transparent;
+      font-weight: 600;
+      visibility: hidden;
+      content: attr(data-text);
+    }
+  }
+}

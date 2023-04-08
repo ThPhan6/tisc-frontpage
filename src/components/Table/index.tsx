@@ -119,6 +119,7 @@ export interface CustomTableProps {
   autoLoad?: boolean;
   onFilterLoad?: boolean;
   onRow?: GetComponentProps<any>;
+  isActiveOnRow?: boolean;
 }
 
 const converseOrder = (order: SortOrder | undefined) =>
@@ -137,6 +138,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     tableClass = '',
     footerClass = '',
     onRow,
+    isActiveOnRow,
     rowKey = 'id',
     autoLoad = true,
     onFilterLoad = true,
@@ -270,10 +272,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         rowKey={rowKey}
         rowClassName={(record) => {
           if (record[rowKey] === expanded) {
-            return 'custom-expanded' as any;
+            return `custom-expanded ${isActiveOnRow ? 'hover-on-row hover-table-on-row' : ''} ${
+              onRow ? 'cursor-pointer hover-on-row' : ''
+            } ` as any;
           }
           if (onRow) {
-            return 'cursor-pointer';
+            return 'cursor-pointer hover-on-row';
           }
         }}
         onRow={onRow}

@@ -152,9 +152,35 @@
 }
 
 .productCardCollapse {
+  @text-bold: 400;
+
   margin-bottom: 8px;
   background-color: @mono-color-light !important;
   border: 0 !important;
+
+  :global(.header-text p:hover) {
+    font-weight: @text-bold;
+
+    p,
+    span {
+      font-weight: @text-bold;
+
+      p,
+      span {
+        font-weight: @text-bold;
+      }
+    }
+  }
+  :global(.header-text p::after) {
+    display: block;
+    height: 1px;
+    margin-bottom: -1px;
+    overflow: hidden;
+    color: transparent;
+    font-weight: 600;
+    visibility: hidden;
+    content: attr(data-text);
+  }
 
   :global(.ant-collapse-item.ant-collapse-item-disabled > .ant-collapse-header) {
     cursor: default;

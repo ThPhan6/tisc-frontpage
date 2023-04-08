@@ -146,6 +146,11 @@ const TeamProfilesTable = () => {
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}
       hasPagination
+      onRow={(rowRecord: TeamProfileTableProps) => ({
+        onClick: () => {
+          handleUpdateTeamProfile(rowRecord.id);
+        },
+      })}
     />
   );
 };

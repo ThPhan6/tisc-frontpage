@@ -23,6 +23,7 @@ import {
   deleteMaterialProductCode,
   getMaterialProductCodeList,
 } from '@/features/material-product-code/api';
+import styles from '@/global.less';
 
 const MaterialProductCode = () => {
   useAutoExpandNestedTableColumn(2, [3]);
@@ -114,6 +115,9 @@ const MaterialProductCode = () => {
       title: 'Sub-List',
       dataIndex: 'name',
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     ...getSameColumns(false),
 
@@ -137,6 +141,8 @@ const MaterialProductCode = () => {
   return (
     <>
       <CustomTable
+        isActiveOnRow
+        tableClass={styles.onRowActive}
         rightAction={
           <CustomPlusButton onClick={() => pushTo(PATH.designerMaterialProductCodeCreate)} />
         }

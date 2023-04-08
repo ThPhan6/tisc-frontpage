@@ -158,6 +158,12 @@ const RevenueService = () => {
             <CustomPlusButton onClick={() => pushTo(PATH.tiscRevenueServiceCreate)} />
           )
         }
+        onRow={(rowRecord: ServicesResponse) => ({
+          onClick: () => {
+            // to see bill
+            handleViewService(rowRecord.id);
+          },
+        })}
       />
     </ServiceHeader>
   );

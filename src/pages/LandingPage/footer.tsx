@@ -11,6 +11,7 @@ import { ModalType, openModal } from '@/reducers/modal';
 import { BodyText } from '@/components/Typography';
 
 import styles from './index.less';
+import moment from 'moment';
 
 interface LandingPageFooteProps {
   listMenuFooter: ModalType[];
@@ -35,7 +36,7 @@ export const LandingPageFooter: FC<LandingPageFooteProps> = ({
           <div className={styles.footer}>
             {isMobile ? null : (
               <BodyText level={5} fontFamily="Roboto">
-                © TISC 2022
+                © TISC {moment().format('YYYY')}
               </BodyText>
             )}
             <div

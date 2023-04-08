@@ -70,7 +70,9 @@ const BrandList: React.FC = () => {
       });
     };
 
-  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+  const showAssignTeams = (brandInfo: BrandListItem) => (event: any) => {
+    event?.stopPropagation();
+
     const openAssignTeamModal = (teams: BrandAssignTeamForm[]) =>
       store.dispatch(
         openModal({
@@ -101,6 +103,10 @@ const BrandList: React.FC = () => {
 
   const handleEmailInvite = (brandId: string) => {
     if (brandId) inviteBrand(brandId);
+  };
+
+  const goToSeeViewDetailPage = (id: string) => {
+    pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', id));
   };
 
   const TableColumns: TableColumnItem<BrandListItem>[] = [
@@ -185,7 +191,7 @@ const BrandList: React.FC = () => {
           actionItems={[
             {
               type: 'view',
-              onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+              onClick: () => goToSeeViewDetailPage(record.id),
             },
             {
               type: 'invite',
@@ -211,6 +217,11 @@ const BrandList: React.FC = () => {
           ref={tableRef}
           fetchDataFunc={getBrandPagination}
           hasPagination
+          onRow={(rowRecord) => ({
+            onClick: () => {
+              goToSeeViewDetailPage(rowRecord.id);
+            },
+          })}
         />
       </PageContainer>
     </div>
