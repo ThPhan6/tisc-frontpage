@@ -5,6 +5,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
+import { sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 
@@ -111,7 +112,7 @@ const BrandProductListPage: React.FC = () => {
             bottomEnable={summary ? true : false}
             bottomValue={renderFilterDropdown(
               'Categories',
-              categoryDropDownData,
+              sortBy(categoryDropDownData, (el) => el.label),
               true,
               'Categories',
               'bottomRight',
@@ -125,7 +126,7 @@ const BrandProductListPage: React.FC = () => {
             bottomEnable={summary ? true : false}
             bottomValue={renderFilterDropdown(
               'Collections',
-              brandDropDownData,
+              sortBy(brandDropDownData, (el) => el.label),
               true,
               'Collections',
               undefined,
