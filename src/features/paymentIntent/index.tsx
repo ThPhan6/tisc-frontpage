@@ -126,11 +126,11 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
       setVisible={setVisible}
     >
       <div className="flex-between payment-summary">
-        <BodyText fontFamily="Roboto" level={4}>
+        <BodyText fontFamily="Roboto" level={4} style={{ fontWeight: 400 }}>
           Order Summary
         </BodyText>
 
-        <BodyText fontFamily="Roboto" level={4}>
+        <BodyText fontFamily="Roboto" level={4} style={{ fontWeight: 400 }}>
           ${paymentIntentData.amount}
         </BodyText>
       </div>
