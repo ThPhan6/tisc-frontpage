@@ -55,8 +55,6 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         currency: paymentData.currency,
       });
 
-      console.log('dropIn', dropIn);
-
       if (!dropIn) {
         setErrorMessage('Cannot create Drop-In integration');
         return;
@@ -138,7 +136,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
 
       <div style={{ height: '100%' }}>
         {/* Example below: display response message block */}
-        {errorMessage.length > 0 ? (
+        {errorMessage?.length > 0 ? (
           <BodyText fontFamily="Roboto" level={5} color="tertiary-color" id="error">
             {errorMessage}
           </BodyText>
