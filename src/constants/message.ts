@@ -343,6 +343,10 @@ export const MESSAGE_NOTIFICATION = {
   MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
   DELETE_SERVICE_SUCCESS: 'Delete service successfully',
 
+  /// billed services // payment intent
+  CREATE_PAYMENT_INTENT_SUCCESS: 'Create payment intent successfully',
+  CREATE_PAYMENT_INTENT_ERROR: 'Failed to create payment intent',
+
   //schedule booking
   CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
   CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',

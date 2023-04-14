@@ -3,6 +3,7 @@ import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { PaymentIntentResponse } from '../paymentIntent/types';
 import { setSummaryServices } from './reducer';
 import { ServicesForm, ServicesResponse, SummaryService } from './type';
 import {
