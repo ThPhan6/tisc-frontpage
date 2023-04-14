@@ -79,6 +79,8 @@ export interface PopoverProps {
   forceUpdateCurrentValue?: boolean;
 
   secondaryModal?: boolean;
+
+  maskClosable?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -108,6 +110,7 @@ const Popover: FC<PopoverProps> = ({
   hasOrtherInput = true,
   forceUpdateCurrentValue = true,
   secondaryModal,
+  maskClosable,
 }) => {
   const { isMobile } = useScreen();
 
@@ -303,6 +306,7 @@ const Popover: FC<PopoverProps> = ({
           </MainTitle>
         }
         centered
+        maskClosable={maskClosable}
         visible={visible}
         onCancel={onCancel}
         width={576}
