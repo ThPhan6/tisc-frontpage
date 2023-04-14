@@ -94,7 +94,8 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
 
     const onError = (event: any) => {
       const { error } = event.detail;
-      setErrorMessage(error.message);
+
+      setErrorMessage(error);
       // console.error('There was an error', error);
     };
 
