@@ -1,3 +1,4 @@
+import BilledServicesInfo from '@/features/billed-services/BilledServicesModal';
 import { BrandCompanyModal } from '@/features/services/components/BrandCompanyModal';
 import { useScreen } from '@/helper/common';
 
@@ -98,6 +99,8 @@ export const ModalController = () => {
         return <BrandCompanyModal />;
 
       // Brand
+      case 'Billed Services':
+        return <BilledServicesInfo />;
 
       // design firms
       case 'Assign Product':
