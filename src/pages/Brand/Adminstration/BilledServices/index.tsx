@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getServicesPagination } from '@/features/services/api';
 import styles from '@/features/services/index.less';
@@ -11,6 +13,8 @@ import { pushTo } from '@/helper/history';
 import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
+import store from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
@@ -106,6 +110,14 @@ const BilledServices = () => {
   ];
   return (
     <CustomTable
+      headerClass="customHeaderTitle"
+      rightAction={
+        <InfoIcon
+          onClick={() =>
+            store.dispatch(openModal({ type: 'Billed Services', title: 'BILLED SERVICES' }))
+          }
+        />
+      }
       columns={setDefaultWidthForEachColumn(mainColumns, 4)}
       fetchDataFunc={getServicesPagination}
       hasPagination
