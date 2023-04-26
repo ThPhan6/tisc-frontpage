@@ -82,18 +82,19 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
 
   const submitButtonStatus = useBoolean();
 
-  const showBillingAmount = checkShowBillingAmount(detailData);
-
   const quantityWidth =
     String(Number(detailData?.billing_amount) + Number(detailData?.overdue_amount)).length < 5
       ? '5%'
       : String(Number(detailData?.billing_amount) + Number(detailData?.overdue_amount)).length * 10;
 
-  const hideOverdueFines =
-    (detailData?.status === InvoiceStatus.Paid &&
-      moment(detailData.due_date).diff(moment(detailData.payment_date)) > 0) ||
-    detailData?.status === InvoiceStatus.Pending ||
-    detailData?.status === InvoiceStatus.Outstanding;
+  /* overdue fines */
+  // const showBillingAmount = checkShowBillingAmount(detailData);
+
+  // const hideOverdueFines =
+  //   (detailData?.status === InvoiceStatus.Paid &&
+  //     moment(detailData.due_date).diff(moment(detailData.payment_date)) > 0) ||
+  //   detailData?.status === InvoiceStatus.Pending ||
+  //   detailData?.status === InvoiceStatus.Outstanding;
 
   const getService = () => {
     getOneService(id).then((res) => {
@@ -189,8 +190,6 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         </>
       );
     }
-
-    console.log('detailData', detailData);
 
     return (
       <div className="flex-start">
@@ -415,7 +414,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                ${formatToMoneyValue(Number(detailData?.total_gross))}
+                {/* ${formatToMoneyValue(Number(detailData?.total_gross))} */}$
+                {Number(detailData?.total_gross)}
               </td>
             </tr>
             <tr>
@@ -430,7 +430,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                ${formatToMoneyValue(Number(detailData?.sale_tax_amount))}
+                {/* {formatToMoneyValue(Number(detailData?.sale_tax_amount))} */}$
+                {Number(detailData?.sale_tax_amount)}
               </td>
             </tr>
             <tr className={styles.borderBottom}>
@@ -445,7 +446,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                ${formatToMoneyValue(Number(detailData?.overdue_amount))}
+                {/* ${formatToMoneyValue(Number(detailData?.overdue_amount))} */}$
+                {Number(detailData?.overdue_amount)}
               </td>
             </tr>
             <tr>
@@ -460,7 +462,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                ${formatToMoneyValue(Number(detailData?.billing_amount))}
+                {/* ${formatToMoneyValue(Number(detailData?.billing_overdue_amount))} */}$
+                {Number(detailData?.billing_overdue_amount)}
               </td>
             </tr>
             <tr>
@@ -470,7 +473,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 </BodyText>
                 <PlusIcon className={styles.iconStyles} />
               </td>
-              <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td>
+              {/* <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td> */}
+              <td>${Number(detailData?.surcharge)}</td>
             </tr>
             <tr className={styles.total}>
               <td className={styles.label}>
@@ -481,7 +485,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title>
+                {/* <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title> */}
+                <Title level={8}>${Number(detailData?.grand_total)}</Title>
               </td>
             </tr>
           </table>
