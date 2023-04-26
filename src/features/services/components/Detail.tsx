@@ -290,6 +290,13 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           </div>
         </FormGroup>
 
+        {/* TISC  - brand company */}
+        {type === 'tisc' ? (
+          <TextForm boxShadow label="Brand Company">
+            {detailData?.brand_name}
+          </TextForm>
+        ) : null}
+
         {/* order by */}
         <TextForm boxShadow label="Ordered By">
           {getFullName(detailData?.ordered_user)}
@@ -304,13 +311,6 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         <TextForm boxShadow label="Service Type">
           {detailData?.service_type_name}
         </TextForm>
-
-        {/* TISC  - brand company */}
-        {type === 'tisc' ? (
-          <TextForm boxShadow label="Brand Company">
-            {detailData?.brand_name}
-          </TextForm>
-        ) : null}
 
         {/* overdue fines */}
         {/* {hideOverdueFines ? null : (
