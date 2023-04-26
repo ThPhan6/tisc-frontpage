@@ -57,7 +57,10 @@ const DEFAULT_VALUE: ServicesResponse = {
   billing_amount: 0,
   overdue_days: 0,
   overdue_amount: 0,
+  billing_overdue_amount: 0,
   total_gross: 0,
+  surcharge: 0,
+  grand_total: 0,
   sale_tax_amount: 0,
   firstname: '',
   lastname: '',
@@ -187,6 +190,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
       );
     }
 
+    console.log('detailData', detailData);
+
     return (
       <div className="flex-start">
         {detailData.status !== InvoiceStatus.Paid &&
@@ -246,105 +251,21 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         isRenderFooterContent={!!detailData}
         footerStyles={{ display: isTablet && type == 'tisc' ? 'none' : '' }}
       >
+        {/* status */}
+        <TextForm
+          boxShadow
+          label="Status"
+          bodyTextClass={detailData?.status === InvoiceStatus.Overdue ? styles.overdue : ''}
+        >
+          {InvoiceStatus[detailData?.status]}
+        </TextForm>
+
+        {/* billed date */}
         <TextForm boxShadow label="Billed Date">
           {moment(detailData?.created_at).format('YYYY-MM-DD')}
         </TextForm>
-        <TextForm boxShadow label="Service Type">
-          {detailData?.service_type_name}
-        </TextForm>
-        {type === 'tisc' ? (
-          <TextForm boxShadow label="Brand Company">
-            {detailData?.brand_name}
-          </TextForm>
-        ) : null}
-        <TextForm boxShadow label="Ordered By">
-          {getFullName(detailData?.ordered_user)}
-        </TextForm>
-        <TextForm boxShadow label="Billing Number">
-          {detailData?.name}
-        </TextForm>
 
-        <FormGroup
-          label="Billed Amount"
-          layout="vertical"
-          formClass={styles.customTable}
-          labelColor="mono-color-dark"
-        >
-          <table style={{ width: '100%' }}>
-            <tr>
-              <td className={styles.label}>
-                <BodyText level={5} fontFamily="Roboto">
-                  Unit Rate
-                </BodyText>
-              </td>
-              <td
-                style={{
-                  width: quantityWidth,
-                }}
-              >
-                ${formatToMoneyValue(Number(detailData?.unit_rate))}
-              </td>
-            </tr>
-            <tr className={styles.totalQuantity}>
-              <td className={styles.label}>
-                <BodyText level={5} fontFamily="Roboto">
-                  Quantity
-                </BodyText>
-                <CloseIcon className={styles.iconStyles} />
-              </td>
-              <td
-                style={{
-                  width: quantityWidth,
-                }}
-              >
-                {formatCurrencyNumber(Number(detailData?.quantity))}
-              </td>
-            </tr>
-            <tr>
-              <td className={styles.label}>
-                <BodyText level={5} fontFamily="Roboto">
-                  Gross Total
-                </BodyText>
-                <EqualIcon className={styles.iconStyles} />
-              </td>
-              <td
-                style={{
-                  width: quantityWidth,
-                }}
-              >
-                ${formatToMoneyValue(Number(detailData?.total_gross))}
-              </td>
-            </tr>
-            <tr>
-              <td className={styles.label}>
-                <BodyText level={5} fontFamily="Roboto">
-                  Sales Tax (GST) - {detailData?.tax}%
-                </BodyText>
-                <PlusIcon className={styles.iconStyles} />
-              </td>
-              <td
-                style={{
-                  width: quantityWidth,
-                }}
-              >
-                ${formatToMoneyValue(Number(detailData?.sale_tax_amount))}
-              </td>
-            </tr>
-            <tr className={styles.total}>
-              <td className={styles.label}>
-                <Title level={8}>TOTAL AMOUNT</Title>
-              </td>
-              <td
-                style={{
-                  width: quantityWidth,
-                }}
-              >
-                <Title level={8}>${formatToMoneyValue(Number(detailData?.billing_amount))}</Title>
-              </td>
-            </tr>
-          </table>
-        </FormGroup>
-
+        {/* due date */}
         <FormGroup
           label="Due Date"
           layout="vertical"
@@ -370,7 +291,30 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           </div>
         </FormGroup>
 
-        {hideOverdueFines ? null : (
+        {/* order by */}
+        <TextForm boxShadow label="Ordered By">
+          {getFullName(detailData?.ordered_user)}
+        </TextForm>
+
+        {/* billing number */}
+        <TextForm boxShadow label="Billing Number">
+          {detailData?.name}
+        </TextForm>
+
+        {/* service type */}
+        <TextForm boxShadow label="Service Type">
+          {detailData?.service_type_name}
+        </TextForm>
+
+        {/* TISC  - brand company */}
+        {type === 'tisc' ? (
+          <TextForm boxShadow label="Brand Company">
+            {detailData?.brand_name}
+          </TextForm>
+        ) : null}
+
+        {/* overdue fines */}
+        {/* {hideOverdueFines ? null : (
           <FormGroup
             label="Overdue Fines"
             layout="vertical"
@@ -421,15 +365,127 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
               ) : null}
             </table>
           </FormGroup>
-        )}
+        )} */}
 
-        <TextForm
-          boxShadow
-          label="Status"
-          bodyTextClass={detailData?.status === InvoiceStatus.Overdue ? styles.overdue : ''}
+        <FormGroup
+          label="Billed Amount"
+          layout="vertical"
+          formClass={styles.customTable}
+          labelColor="mono-color-dark"
         >
-          {InvoiceStatus[detailData?.status]}
-        </TextForm>
+          <table style={{ width: '100%' }}>
+            <tr>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  Unit Rate
+                </BodyText>
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                ${formatToMoneyValue(Number(detailData?.unit_rate))}
+              </td>
+            </tr>
+            <tr className={styles.borderBottom}>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  Quantity
+                </BodyText>
+                <CloseIcon className={styles.iconStyles} />
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                {formatCurrencyNumber(Number(detailData?.quantity))}
+              </td>
+            </tr>
+            <tr>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  Gross Total
+                </BodyText>
+                <EqualIcon className={styles.iconStyles} />
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                ${formatToMoneyValue(Number(detailData?.total_gross))}
+              </td>
+            </tr>
+            <tr>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  Sales Tax (GST) - {detailData?.tax}%
+                </BodyText>
+                <PlusIcon className={styles.iconStyles} />
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                ${formatToMoneyValue(Number(detailData?.sale_tax_amount))}
+              </td>
+            </tr>
+            <tr className={styles.borderBottom}>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  Overdue Payment Charges
+                </BodyText>
+                <PlusIcon className={styles.iconStyles} />
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                ${formatToMoneyValue(Number(detailData?.overdue_amount))}
+              </td>
+            </tr>
+            <tr>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  TOTAL
+                </BodyText>
+                <EqualIcon className={styles.iconStyles} />
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                ${formatToMoneyValue(Number(detailData?.billing_amount))}
+              </td>
+            </tr>
+            <tr>
+              <td className={styles.label}>
+                <BodyText level={5} fontFamily="Roboto">
+                  3rd Party Payment Gateway Surcharge @3.5%
+                </BodyText>
+                <PlusIcon className={styles.iconStyles} />
+              </td>
+              <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td>
+            </tr>
+            <tr className={styles.total}>
+              <td className={styles.label}>
+                <Title level={8}>GRAND TOTAL</Title>
+              </td>
+              <td
+                style={{
+                  width: quantityWidth,
+                }}
+              >
+                <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title>
+              </td>
+            </tr>
+          </table>
+        </FormGroup>
       </EntryFormWrapper>
 
       <PaymentIntent visible={visible} setVisible={setVisible} onPaymentSuccess={setDetailData} />
