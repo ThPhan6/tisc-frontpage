@@ -469,7 +469,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
-                  3rd Party Payment Gateway Surcharge @3.5%
+                  3rd Party Payment Gateway Surcharge @ 3.5%
                 </BodyText>
                 <PlusIcon className={styles.iconStyles} />
               </td>
