@@ -130,7 +130,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         </BodyText>
 
         <BodyText fontFamily="Roboto" level={4} style={{ fontWeight: 400 }}>
-          ${paymentIntentData.amount}
+          {paymentIntentData.currency} ${paymentIntentData.amount}
         </BodyText>
       </div>
 
