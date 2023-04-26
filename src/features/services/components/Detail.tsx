@@ -479,6 +479,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <tr className={styles.total}>
               <td className={styles.label}>
                 <Title level={8}>GRAND TOTAL</Title>
+                <EqualIcon className={styles.iconStyles} />
               </td>
               <td
                 style={{
