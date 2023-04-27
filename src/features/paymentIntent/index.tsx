@@ -4,6 +4,7 @@ import { message } from 'antd';
 
 import { getOneService } from '../services/api';
 import { ServicesResponse } from '../services/type';
+import { formatToMoneyValue } from '../services/util';
 import { createPaymentIntent } from './services';
 import { useGetParamId } from '@/helper/hook';
 
@@ -130,7 +131,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         </BodyText>
 
         <BodyText fontFamily="Roboto" level={4} style={{ fontWeight: 400 }}>
-          {paymentIntentData.currency} ${paymentIntentData.amount}
+          {paymentIntentData.currency} ${formatToMoneyValue(paymentIntentData.amount)}
         </BodyText>
       </div>
 

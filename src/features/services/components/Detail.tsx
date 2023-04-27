@@ -366,6 +366,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           </FormGroup>
         )} */}
 
+        {/* billed amount */}
         <FormGroup
           label="Billed Amount"
           layout="vertical"
@@ -373,6 +374,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           labelColor="mono-color-dark"
         >
           <table style={{ width: '100%' }}>
+            {/* unit rate */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -387,6 +389,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 ${formatToMoneyValue(Number(detailData?.unit_rate))}
               </td>
             </tr>
+
+            {/* quantuty */}
             <tr className={styles.borderBottom}>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -402,6 +406,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 {formatCurrencyNumber(Number(detailData?.quantity))}
               </td>
             </tr>
+
+            {/* gross total */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -414,10 +420,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* ${formatToMoneyValue(Number(detailData?.total_gross))} */}$
-                {Number(detailData?.total_gross)}
+                ${formatToMoneyValue(Number(detailData?.total_gross))}
               </td>
             </tr>
+
+            {/* sales tax */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -430,10 +437,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* {formatToMoneyValue(Number(detailData?.sale_tax_amount))} */}$
-                {Number(detailData?.sale_tax_amount)}
+                {formatToMoneyValue(Number(detailData?.sale_tax_amount))}
               </td>
             </tr>
+
+            {/* overdue payment charges */}
             <tr className={styles.borderBottom}>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -446,10 +454,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* ${formatToMoneyValue(Number(detailData?.overdue_amount))} */}$
-                {Number(detailData?.overdue_amount)}
+                ${formatToMoneyValue(Number(detailData?.overdue_amount))}
               </td>
             </tr>
+
+            {/* total */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -462,20 +471,24 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* ${formatToMoneyValue(Number(detailData?.billing_overdue_amount))} */}$
-                {Number(detailData?.billing_overdue_amount)}
+                ${formatToMoneyValue(Number(detailData?.billing_overdue_amount))}
               </td>
             </tr>
+
+            {/* 3rd Party Payment Gateway Surcharge */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
                   3rd Party Payment Gateway Surcharge @ 3.5%
                 </BodyText>
-                <PlusIcon className={styles.iconStyles} />
+                <div>
+                  <PlusIcon className={styles.iconStyles} />
+                </div>
               </td>
-              {/* <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td> */}
-              <td>${Number(detailData?.surcharge)}</td>
+              <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td>
             </tr>
+
+            {/* grand total */}
             <tr className={styles.total}>
               <td className={styles.label}>
                 <Title level={8}>GRAND TOTAL</Title>
@@ -488,8 +501,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title> */}
-                <Title level={8}>${Number(detailData?.grand_total)}</Title>
+                <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title>
               </td>
             </tr>
           </table>
