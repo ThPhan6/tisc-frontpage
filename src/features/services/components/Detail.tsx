@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 import { history } from 'umi';
 
-import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
-import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as EqualIcon } from '@/assets/icons/equal-icon.svg';
+import { ReactComponent as Multi } from '@/assets/icons/multi-icon-18.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/plus-18-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -396,7 +396,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 <BodyText level={5} fontFamily="Roboto">
                   Quantity
                 </BodyText>
-                <CloseIcon className={styles.iconStyles} />
+                <div className={styles.iconStyles}>
+                  <Multi />
+                </div>
               </td>
               <td
                 style={{
@@ -430,7 +432,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 <BodyText level={5} fontFamily="Roboto">
                   Sales Tax (GST) - {detailData?.tax}%
                 </BodyText>
-                <PlusIcon className={styles.iconStyles} />
+                <div className={styles.iconStyles}>
+                  <CloseIcon />
+                </div>
               </td>
               <td
                 style={{
@@ -447,7 +451,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 <BodyText level={5} fontFamily="Roboto">
                   Overdue Payment Charges
                 </BodyText>
-                <PlusIcon className={styles.iconStyles} />
+                <div className={styles.iconStyles}>
+                  <CloseIcon />
+                </div>
               </td>
               <td
                 style={{
@@ -482,7 +488,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   3rd Party Payment Gateway Surcharge @ 3.5%
                 </BodyText>
                 <div>
-                  <PlusIcon className={styles.iconStyles} />
+                  <div className={styles.iconStyles}>
+                    <CloseIcon />
+                  </div>
                 </div>
               </td>
               <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td>
