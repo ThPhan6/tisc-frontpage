@@ -308,14 +308,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         rowClassName={(record) => {
           if (record[rowKey] === expanded) {
             return `custom-expanded ${isActiveOnRow ? 'hover-on-row hover-table-on-row' : ''} ${
-              onRow ? 'cursor-pointer hover-on-row table-row' : ''
+              onRow ? 'cursor-pointer hover-on-row' : ''
             } ` as any;
           }
           if (onRow) {
-            return 'cursor-pointer hover-on-row table-row';
+            return 'cursor-pointer hover-on-row';
           }
-
-          return 'table-row';
         }}
         onRow={onRow}
         dataSource={data}
