@@ -95,7 +95,7 @@ export const TopBarContainer: React.FC<TopBarContainerProps> = ({
   LeftSideContent,
   RightSideContent,
   BottomContent,
-  customClass,
+  customClass = '',
 }) => {
   const { isMobile } = useScreen();
   return (
