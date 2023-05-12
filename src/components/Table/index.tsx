@@ -147,6 +147,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     dynamicPageSize,
   } = props;
 
+  const DEFAULT_TABLE_ROW = 44;
   const DEFAULT_PAGE_NUMBER = 1;
   const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -225,35 +226,18 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const getTablePaginationSize = (): number => {
     if (!dynamicPageSize) return DEFAULT_PAGESIZE;
 
-    const headerLayout = document.querySelector('ant-layout-header');
+    const headerLayout = document.querySelector('.ant-layout-header');
     const headerHeight = headerLayout?.clientHeight || 48;
 
-    console.log('headerLayout', headerLayout);
-    console.log('headerHeight', headerHeight);
-
-    const paginationLayout = document.querySelector('pagination-layout');
+    const paginationLayout = document.querySelector('.pagination-layout');
     const paginationHeight = paginationLayout?.clientHeight || 40;
-
-    console.log('paginationLayout', paginationLayout);
-    console.log('paginationHeight', paginationHeight);
-
-    const tableRow = document.querySelector('ant-table-row');
-    const tableRowHeight = tableRow?.clientHeight || 44;
-
-    console.log('tableRow', tableRow);
-    console.log('tableRowHeight', tableRowHeight);
 
     const table = document.querySelector('.ant-table-tbody');
     const clientBouding = table?.getBoundingClientRect() || { top: 200 };
 
-    console.log('table', table);
-    console.log('clientBouding', clientBouding);
-
     const tableTBody = window.innerHeight - clientBouding?.top - headerHeight - paginationHeight;
 
-    console.log('tableTBody', tableTBody);
-
-    return Number((tableTBody / tableRowHeight).toFixed(0));
+    return Number((tableTBody / DEFAULT_TABLE_ROW).toFixed(0));
   };
 
   useEffect(() => {
@@ -324,12 +308,14 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         rowClassName={(record) => {
           if (record[rowKey] === expanded) {
             return `custom-expanded ${isActiveOnRow ? 'hover-on-row hover-table-on-row' : ''} ${
-              onRow ? 'cursor-pointer hover-on-row' : ''
+              onRow ? 'cursor-pointer hover-on-row table-row' : ''
             } ` as any;
           }
           if (onRow) {
-            return 'cursor-pointer hover-on-row';
+            return 'cursor-pointer hover-on-row table-row';
           }
+
+          return 'table-row';
         }}
         onRow={onRow}
         dataSource={data}
