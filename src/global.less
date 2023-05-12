@@ -310,6 +310,44 @@ li.ant-menu-submenu {
   }
 }
 
+.customHeaderTitle {
+  gap: 0;
+  justify-content: flex-start;
+
+  > p {
+    padding-top: 3px;
+    padding-right: 8px;
+  }
+
+  svg {
+    cursor: pointer;
+  }
+}
+
+.infoModalContent {
+  .customText {
+    font-weight: 600;
+    font-size: 14px;
+    font-family: @font-secondary;
+    line-height: 21px;
+    letter-spacing: 0.02em;
+  }
+
+  .text {
+    margin-bottom: 8px;
+    padding: 8px 16px;
+    box-shadow: inset 0 -0.7px 0 @mono-color-medium;
+
+    .title {
+      margin-bottom: 4px;
+    }
+
+    .textContent {
+      margin-top: 24px;
+    }
+  }
+}
+
 .hover-on-row td > span::after {
   display: block;
   height: 1px;

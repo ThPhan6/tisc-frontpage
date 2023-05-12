@@ -1,3 +1,10 @@
+export enum InvoiceStatus {
+  Outstanding,
+  Overdue,
+  Paid,
+  Pending,
+  Processing,
+}
 export interface ServicesResponse {
   billed_date: string;
   created_at: string;
@@ -26,19 +33,15 @@ export interface ServicesResponse {
   };
   brand_name: string;
   billing_amount: number;
+  billing_overdue_amount: number;
+  grand_total: number;
   overdue_days: number;
   overdue_amount: number;
+  surcharge: number;
   total_gross: number;
   sale_tax_amount: number;
   firstname: string;
   lastname: string;
-}
-
-export enum InvoiceStatus {
-  Outstanding,
-  Overdue,
-  Paid,
-  Pending,
 }
 
 export interface ServicesForm {
