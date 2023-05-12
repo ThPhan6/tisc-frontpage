@@ -426,8 +426,8 @@ const LibraryDesign: FC<RequiredValueProps> = ({ id }) => {
           }}
         >
           <LibraryItem data={libraryData} type="brand" />
-          <LibraryItem data={libraryData} type="distributor" />
           <LibraryItem data={libraryData} type="collection" />
+          <LibraryItem data={libraryData} type="distributor" />
           <LibraryItem data={libraryData} type="product" />
         </div>
       </ResponsiveCol>

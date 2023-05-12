@@ -9,7 +9,7 @@ import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
 import { getProductListForDesigner } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
-import { removeUrlParams, setUrlParams } from '@/helper/utils';
+import { formatNumber, removeUrlParams, setUrlParams } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import {
@@ -112,7 +112,7 @@ const BrandProductListPage: React.FC = () => {
     });
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
-  const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
+  const renderInfoItem = (info: string, count: number | string, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
       <BodyText level={5} fontFamily="Roboto" style={{ marginRight: 8 }}>
         {info}:
@@ -195,9 +195,9 @@ const BrandProductListPage: React.FC = () => {
             </div>
 
             <div className="flex-end">
-              {renderInfoItem('Collections', brandSummary.collection_count)}
-              {renderInfoItem('Cards', brandSummary.card_count)}
-              {renderInfoItem('Products', brandSummary.product_count, true)}
+              {renderInfoItem('Collections', formatNumber(brandSummary.collection_count))}
+              {renderInfoItem('Cards', formatNumber(brandSummary.card_count))}
+              {renderInfoItem('Products', formatNumber(brandSummary.product_count), true)}
             </div>
           </>
         ) : undefined

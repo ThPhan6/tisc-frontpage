@@ -77,11 +77,13 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       return (
         <>
           <div className={styles.brandName}>
-            <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
-              {info.name}
-            </BodyText>
+            <div className="flex-between">
+              <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
+                {info.name}
+              </BodyText>
+              <LogoIcon logo={info.logo} /* className={styles.img} */ size={24} />
+            </div>
           </div>
-          <LogoIcon logo={info.logo} className={styles.img} size={24} />
           <BodyText level={6} fontFamily="Roboto">
             {info.country}
           </BodyText>

@@ -122,8 +122,9 @@ export interface CustomTableProps {
   isActiveOnRow?: boolean;
 }
 
+/// update order compared to BE
 const converseOrder = (order: SortOrder | undefined) =>
-  order ? (order === 'descend' ? 'DESC' : 'ASC') : undefined;
+  order ? (order === 'descend' ? 'ASC' : 'DESC') : undefined;
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const {
