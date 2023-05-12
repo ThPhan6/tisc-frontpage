@@ -180,6 +180,7 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'zone_order',
       sorter: { multiple: 1 },
       isExpandable: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (_value, record) => <span>{record.name}</span>,
     },
     {
