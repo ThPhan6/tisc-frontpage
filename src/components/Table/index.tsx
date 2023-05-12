@@ -120,6 +120,7 @@ export interface CustomTableProps {
   onFilterLoad?: boolean;
   onRow?: GetComponentProps<any>;
   isActiveOnRow?: boolean;
+  isExtendList?: boolean;
 }
 
 /// update order compared to BE
@@ -143,6 +144,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     rowKey = 'id',
     autoLoad = true,
     onFilterLoad = true,
+    isExtendList,
   } = props;
 
   const DEFAULT_PAGE_NUMBER = 1;
@@ -221,6 +223,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   };
 
   const getTablePaginationSize = (): number => {
+    if (!isExtendList) return DEFAULT_PAGESIZE;
+
     const headerLayout = document.querySelector('ant-layout-header');
     const headerHeight = headerLayout?.clientHeight || 48;
 
