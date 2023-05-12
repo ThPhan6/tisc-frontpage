@@ -79,7 +79,7 @@ const InspirationalQuotationsList: React.FC = () => {
       fetchDataFunc={getQuotationPagination}
       title="INSPIRATIONAL QUOTES"
       hasPagination
-      isExtendList
+      dynamicPageSize
       onRow={(rowRecord) => ({
         onClick: () => {
           handleUpdateQuotation(rowRecord.id);
