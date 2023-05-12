@@ -228,16 +228,30 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const headerLayout = document.querySelector('ant-layout-header');
     const headerHeight = headerLayout?.clientHeight || 48;
 
+    console.log('headerLayout', headerLayout);
+    console.log('headerHeight', headerHeight);
+
     const paginationLayout = document.querySelector('pagination-layout');
     const paginationHeight = paginationLayout?.clientHeight || 40;
+
+    console.log('paginationLayout', paginationLayout);
+    console.log('paginationHeight', paginationHeight);
 
     const tableRow = document.querySelector('ant-table-row');
     const tableRowHeight = tableRow?.clientHeight || 44;
 
+    console.log('tableRow', tableRow);
+    console.log('tableRowHeight', tableRowHeight);
+
     const table = document.querySelector('.ant-table-tbody');
     const clientBouding = table?.getBoundingClientRect() || { top: 200 };
 
+    console.log('table', table);
+    console.log('clientBouding', clientBouding);
+
     const tableTBody = window.innerHeight - clientBouding?.top - headerHeight - paginationHeight;
+
+    console.log('tableTBody', tableTBody);
 
     return Number((tableTBody / tableRowHeight).toFixed(0));
   };
