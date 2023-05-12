@@ -146,16 +146,16 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
 
   const DEFAULT_PAGE_NUMBER = 1;
   const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
-
-  const { columns, expanded } = useCustomTable(props.columns);
-  const [data, setData] = useState<any>([]);
-  const [summary, setSummary] = useState<SummaryResponse[]>([]);
-  const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: DEFAULT_PAGE_NUMBER,
     pageSize: DEFAULT_PAGESIZE,
     total: 0,
   });
+
+  const { columns, expanded } = useCustomTable(props.columns);
+  const [data, setData] = useState<any>([]);
+  const [summary, setSummary] = useState<SummaryResponse[]>([]);
+  const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
   const customExpandable = props.expandableConfig
     ? GetExpandableTableConfig(props.expandableConfig)
     : undefined;
@@ -219,9 +219,30 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     });
   };
 
+  const getTablePaginationSize = (): number => {
+    const headerLayout = document.querySelector('ant-layout-header');
+    const headerHeight = headerLayout?.clientHeight || 48;
+
+    const paginationLayout = document.querySelector('pagination-layout');
+    const paginationHeight = paginationLayout?.clientHeight || 40;
+
+    const tableRow = document.querySelector('ant-table-row');
+    const tableRowHeight = tableRow?.clientHeight || 44;
+
+    const table = document.querySelector('.ant-table-tbody');
+    const clientBouding = table?.getBoundingClientRect() || { top: 200 };
+
+    const tableTBody = window.innerHeight - clientBouding?.top - headerHeight - paginationHeight;
+
+    return Number((tableTBody / tableRowHeight).toFixed(0));
+  };
+
   useEffect(() => {
     if (autoLoad) {
-      fetchData({ pagination, sorter: currentSorter });
+      fetchData({
+        pagination: { ...pagination, pageSize: getTablePaginationSize() },
+        sorter: currentSorter,
+      });
     }
     // react-hooks/exhaustive-deps
   }, []);
@@ -234,7 +255,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     setCurrentSorter(sorter);
     if (onFilterLoad) {
       fetchData({
-        pagination: newPagination,
+        pagination: { ...newPagination, pageSize: getTablePaginationSize() },
         sorter,
         ...filters,
       });
@@ -244,21 +265,32 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   // The component instance will be extended
   // with whatever you return from the callback passed
   // as the second argument
-  useImperativeHandle(ref, () => ({
-    reload() {
-      fetchData({ pagination, sorter: currentSorter });
-    },
-    reloadWithFilter() {
-      fetchData({
-        pagination: {
-          ...pagination,
-          current: DEFAULT_PAGE_NUMBER,
-          pageSize: DEFAULT_PAGESIZE,
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        reload() {
+          fetchData({
+            pagination: { ...pagination, pageSize: getTablePaginationSize() },
+            sorter: currentSorter,
+          });
         },
-        sorter: currentSorter,
-      });
+
+        reloadWithFilter() {
+          fetchData({
+            pagination: {
+              ...pagination,
+              current: DEFAULT_PAGE_NUMBER,
+              pageSize: getTablePaginationSize(),
+            },
+            sorter: currentSorter,
+          });
+        },
+      };
     },
-  }));
+
+    [pagination.pageSize],
+  );
 
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
