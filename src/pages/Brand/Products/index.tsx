@@ -5,6 +5,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
+import { formatNumber } from '@/helper/utils';
 import { sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
@@ -79,25 +80,25 @@ const BrandProductListPage: React.FC = () => {
       LeftSideContent={
         <>
           <TopBarItem
-            topValue={summary?.category_count ?? '0'}
+            topValue={formatNumber(summary?.category_count ?? 0)}
             disabled={summary ? false : true}
             bottomValue="Categories"
             customClass={`${summary?.category_count ? 'bold' : ''}`}
           />
           <TopBarItem
-            topValue={summary?.collection_count ?? '0'}
+            topValue={formatNumber(summary?.collection_count ?? 0)}
             disabled={summary ? false : true}
             bottomValue="Collections"
             customClass={`left-divider ${summary?.collection_count ? 'bold' : ''}`}
           />
           <TopBarItem
-            topValue={summary?.card_count ?? '0'}
+            topValue={formatNumber(summary?.card_count ?? 0)}
             disabled={summary ? false : true}
             bottomValue="Cards"
             customClass={`left-divider ${summary?.card_count ? 'bold' : ''}`}
           />
           <TopBarItem
-            topValue={summary?.product_count ?? '0'}
+            topValue={formatNumber(summary?.product_count ?? 0)}
             disabled={summary ? false : true}
             bottomValue="Products"
             customClass={`left-divider mr-12 ${summary?.product_count ? 'bold' : ''}`}
