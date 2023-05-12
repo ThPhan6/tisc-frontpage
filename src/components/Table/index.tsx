@@ -229,21 +229,35 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const headerLayout = document.querySelector('.ant-layout-header');
     const headerHeight = headerLayout?.clientHeight || 48;
 
+    console.log('headerLayout', headerLayout);
+    console.log('headerHeight', headerHeight);
+
     const paginationLayout = document.querySelector('.pagination-layout');
     const paginationHeight = paginationLayout?.clientHeight || 40;
 
-    const table = document.querySelector('.ant-table-tbody');
-    const clientBouding = table?.getBoundingClientRect() || { top: 200 };
+    console.log('paginationLayout', paginationLayout);
+    console.log('paginationHeight', paginationHeight);
+
+    const tableBody = document.querySelector('.ant-table-tbody');
+    const clientBouding = tableBody?.getBoundingClientRect() || { top: 200 };
+
+    console.log('tableBody', tableBody);
+    console.log('clientBouding', clientBouding);
 
     const tableTBody = window.innerHeight - clientBouding?.top - headerHeight - paginationHeight;
 
-    return Number((tableTBody / DEFAULT_TABLE_ROW).toFixed(0));
+    return Number((tableTBody / DEFAULT_TABLE_ROW || DEFAULT_PAGESIZE).toFixed(0));
   };
 
   useEffect(() => {
     if (autoLoad) {
+      const newPagination: TablePaginationConfig = {
+        ...pagination,
+        pageSize: getTablePaginationSize(),
+      };
+
       fetchData({
-        pagination: { ...pagination, pageSize: getTablePaginationSize() },
+        pagination: newPagination,
         sorter: currentSorter,
       });
     }
@@ -257,8 +271,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   ) => {
     setCurrentSorter(sorter);
     if (onFilterLoad) {
+      const lastestPagination = { ...newPagination, pageSize: getTablePaginationSize() };
+
       fetchData({
-        pagination: { ...newPagination, pageSize: getTablePaginationSize() },
+        pagination: lastestPagination,
         sorter,
         ...filters,
       });
@@ -271,10 +287,15 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   useImperativeHandle(
     ref,
     () => {
+      const newPagination: TablePaginationConfig = {
+        ...pagination,
+        pageSize: getTablePaginationSize(),
+      };
+
       return {
         reload() {
           fetchData({
-            pagination: { ...pagination, pageSize: getTablePaginationSize() },
+            pagination: newPagination,
             sorter: currentSorter,
           });
         },
@@ -282,9 +303,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         reloadWithFilter() {
           fetchData({
             pagination: {
-              ...pagination,
+              ...newPagination,
               current: DEFAULT_PAGE_NUMBER,
-              pageSize: getTablePaginationSize(),
             },
             sorter: currentSorter,
           });
