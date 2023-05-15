@@ -208,11 +208,14 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const marginSpace = isMobile ? 12 : 24;
     const tableHeaderHeight = 48;
     const tableThreadHeight = 36;
-    const totalHeight = tableHeaderHeight + tableThreadHeight + marginSpace;
+    const paddingBottom = 40;
+    const totalHeight = tableHeaderHeight + tableThreadHeight + marginSpace + headerHeight;
 
-    const tableTBodyHeight = window.innerHeight - totalHeight - headerHeight - paginationHeight;
+    console.log('totalHeight', totalHeight);
 
-    // console.log('tableTBodyHeight', tableTBodyHeight);
+    const tableTBodyHeight = window.innerHeight - totalHeight - paddingBottom - paginationHeight;
+
+    console.log('tableTBodyHeight', tableTBodyHeight);
 
     return Number((tableTBodyHeight / DEFAULT_TABLE_ROW || DEFAULT_PAGESIZE).toFixed(0));
   };
