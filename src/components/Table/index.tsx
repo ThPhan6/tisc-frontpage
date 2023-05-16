@@ -1,4 +1,12 @@
-import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  ReactNode,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Table } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
@@ -10,6 +18,7 @@ import type {
 } from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
+import { useScreen } from '@/helper/common';
 import { isArray, isEmpty, isNumber, reverse, uniqBy } from 'lodash';
 
 import type {
@@ -147,6 +156,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     dynamicPageSize,
   } = props;
 
+  const DEFAULT_TABLE_ROW = 44;
   const DEFAULT_PAGE_NUMBER = 1;
   const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -155,6 +165,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     total: 0,
   });
 
+  const { isMobile } = useScreen();
+
   const { columns, expanded } = useCustomTable(props.columns);
   const [data, setData] = useState<any>([]);
   const [summary, setSummary] = useState<SummaryResponse[]>([]);
@@ -162,6 +174,51 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const customExpandable = props.expandableConfig
     ? GetExpandableTableConfig(props.expandableConfig)
     : undefined;
+
+  const getTablePaginationSize = (): number => {
+    if (!dynamicPageSize) return DEFAULT_PAGESIZE;
+
+    const headerLayout = document.querySelector('.ant-layout-header');
+    const headerHeight = headerLayout?.clientHeight || 48;
+
+    // console.log('headerLayout', headerLayout);
+    // console.log('headerHeight', headerHeight);
+
+    // const ttable = document.querySelector('.ttable-layout');
+    // const ttableHeight = ttable?.getBoundingClientRect() || { top: 156 };
+
+    // console.log('ttable', ttable);
+    // console.log('ttableHeight --->>>', ttableHeight);
+
+    const paginationLayout = document.querySelector('.pagination-layout');
+    const paginationHeight = paginationLayout?.clientHeight || 40;
+
+    // console.log('paginationLayout', paginationLayout);
+    // console.log('paginationHeight', paginationHeight);
+
+    // const tableBody = document.querySelector('.tbodyLayout');
+    // const clientBouding = tableBody?.getBoundingClientRect() || { top: 200 };
+
+    // console.log('tableBody', tableBody);
+    // console.log('clientBouding', clientBouding);
+    // console.log('divRef', divRef.current?.getBoundingClientRect());
+
+    // const a = divRef.current?.getBoundingClientRect().top + 48 + 36;
+
+    const marginSpace = isMobile ? 12 : 24;
+    const tableHeaderHeight = 48;
+    const tableThreadHeight = 36;
+    const paddingBottom = 40;
+    const totalHeight = tableHeaderHeight + tableThreadHeight + marginSpace + headerHeight;
+
+    // console.log('totalHeight', totalHeight);
+
+    const tableTBodyHeight = window.innerHeight - totalHeight - paddingBottom - paginationHeight;
+
+    // console.log('tableTBodyHeight', tableTBodyHeight);
+
+    return Number((tableTBodyHeight / DEFAULT_TABLE_ROW || DEFAULT_PAGESIZE).toFixed(0));
+  };
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
@@ -222,30 +279,15 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     });
   };
 
-  const getTablePaginationSize = (): number => {
-    if (!dynamicPageSize) return DEFAULT_PAGESIZE;
-
-    const headerLayout = document.querySelector('ant-layout-header');
-    const headerHeight = headerLayout?.clientHeight || 48;
-
-    const paginationLayout = document.querySelector('pagination-layout');
-    const paginationHeight = paginationLayout?.clientHeight || 40;
-
-    const tableRow = document.querySelector('ant-table-row');
-    const tableRowHeight = tableRow?.clientHeight || 44;
-
-    const table = document.querySelector('.ant-table-tbody');
-    const clientBouding = table?.getBoundingClientRect() || { top: 200 };
-
-    const tableTBody = window.innerHeight - clientBouding?.top - headerHeight - paginationHeight;
-
-    return Number((tableTBody / tableRowHeight).toFixed(0));
-  };
-
   useEffect(() => {
     if (autoLoad) {
+      const newPagination: TablePaginationConfig = {
+        ...pagination,
+        pageSize: getTablePaginationSize(),
+      };
+
       fetchData({
-        pagination: { ...pagination, pageSize: getTablePaginationSize() },
+        pagination: newPagination,
         sorter: currentSorter,
       });
     }
@@ -259,8 +301,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   ) => {
     setCurrentSorter(sorter);
     if (onFilterLoad) {
+      const lastestPagination = { ...newPagination, pageSize: getTablePaginationSize() };
+
       fetchData({
-        pagination: { ...newPagination, pageSize: getTablePaginationSize() },
+        pagination: lastestPagination,
         sorter,
         ...filters,
       });
@@ -273,10 +317,15 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   useImperativeHandle(
     ref,
     () => {
+      const newPagination: TablePaginationConfig = {
+        ...pagination,
+        pageSize: getTablePaginationSize(),
+      };
+
       return {
         reload() {
           fetchData({
-            pagination: { ...pagination, pageSize: getTablePaginationSize() },
+            pagination: newPagination,
             sorter: currentSorter,
           });
         },
@@ -284,9 +333,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         reloadWithFilter() {
           fetchData({
             pagination: {
-              ...pagination,
+              ...newPagination,
               current: DEFAULT_PAGE_NUMBER,
-              pageSize: getTablePaginationSize(),
             },
             sorter: currentSorter,
           });
@@ -298,7 +346,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   );
 
   return (
-    <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
+    <div
+      className={`ttable-layout ${styles.customTable} ${
+        customExpandable ? styles['sub-grid'] : ''
+      }`}
+    >
       {title ? (
         <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />
       ) : null}
