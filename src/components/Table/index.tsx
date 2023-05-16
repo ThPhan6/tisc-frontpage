@@ -211,11 +211,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const paddingBottom = 40;
     const totalHeight = tableHeaderHeight + tableThreadHeight + marginSpace + headerHeight;
 
-    console.log('totalHeight', totalHeight);
+    // console.log('totalHeight', totalHeight);
 
     const tableTBodyHeight = window.innerHeight - totalHeight - paddingBottom - paginationHeight;
 
-    console.log('tableTBodyHeight', tableTBodyHeight);
+    // console.log('tableTBodyHeight', tableTBodyHeight);
 
     return Number((tableTBodyHeight / DEFAULT_TABLE_ROW || DEFAULT_PAGESIZE).toFixed(0));
   };
