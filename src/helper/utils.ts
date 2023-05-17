@@ -81,7 +81,9 @@ export const throttleAction = (
   });
 
 export const redirectAfterLogin = (access: any, userType: UserType) => {
-  const routesByUserType = routes.filter((el) => el.access?.includes(ACCESS_BY_TYPE[userType]));
+  const routesByUserType = routes.filter((el: any) =>
+    el.access?.includes(ACCESS_BY_TYPE[userType]),
+  );
 
   const accessableMenu = findFirstAccessibleMenu(0, routesByUserType, access) || '/404';
 
@@ -400,8 +402,8 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   return result;
 };
 
-export const formatNumber = (number: number) => {
-  return number.toLocaleString(undefined, {
+export const formatNumber = (number: number | string) => {
+  return Number(number).toLocaleString(undefined, {
     maximumFractionDigits: 2,
   });
 };
