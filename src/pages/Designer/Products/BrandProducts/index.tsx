@@ -129,7 +129,7 @@ const BrandProductListPage: React.FC = () => {
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
   const fetchData = async () => {
@@ -153,7 +153,7 @@ const BrandProductListPage: React.FC = () => {
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
@@ -249,9 +249,6 @@ const BrandProductListPage: React.FC = () => {
     />
   );
 
-  console.log('isLoading', isLoading);
-  console.log('isLoadMoreData', isLoadMoreData);
-
   window.onscroll = function (_e) {
     if (isLoading || !isLoadMoreData) {
       return;
@@ -259,8 +256,6 @@ const BrandProductListPage: React.FC = () => {
 
     // you're at the bottom of the page
     if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
-      console.log("you're at the bottom of the page");
-
       fetchData();
     }
   };
