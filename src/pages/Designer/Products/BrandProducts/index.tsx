@@ -75,6 +75,8 @@ const BrandProductListPage: React.FC = () => {
         removeUrlParams('search');
       }
       setSearchCount((prev) => prev + 1);
+      /// scroll to top
+      window.scrollTo({ top: 0 });
     }, 300),
     [setSearchCount],
   );
