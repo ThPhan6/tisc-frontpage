@@ -105,7 +105,7 @@ const BrandProductListPage: React.FC = () => {
       category_id:
         filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
       brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-      name: search || undefined,
+      name: searchInputRef.current?.input?.value || undefined,
       sort: sort?.sort,
       order: sort?.order,
       page: 1,
@@ -119,9 +119,9 @@ const BrandProductListPage: React.FC = () => {
 
     dispatch(setProductList({ data: [] }));
 
-    const noFiltering = !filter && !sort && !search;
+    const noFiltering = !filter && !sort && !searchInputRef.current?.input?.value;
 
-    // Prevent first laod call both no-filter api and have-filter api
+    // Prevent first load call both no-filter api and have-filter api
     if ((cate_id || brand_id || sort_order || searchParam) && noFiltering && firstLoad.value) {
       return;
     }
