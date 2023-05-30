@@ -16,7 +16,11 @@ export async function getFavouriteProductList(params: GetListProductForDesignerR
     `/api/favourite/product-list`,
     {
       method: 'GET',
-      params,
+      params: {
+        ...params,
+        page: 1,
+        pageSize: 99999,
+      },
     },
   )
     .then(({ data, brand_summary }) => {

@@ -10,7 +10,7 @@ import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 import { getProductListForDesigner } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { formatNumber, removeUrlParams, setUrlParams } from '@/helper/utils';
-import { debounce } from 'lodash';
+import { debounce, isUndefined } from 'lodash';
 
 import {
   resetProductState,
@@ -43,6 +43,10 @@ const BrandProductListPage: React.FC = () => {
   const searchParam = query.get(QUERY_KEY.search);
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
+
+  /// to prevent load more data while api is calling
+  const [isLoading, setIsLoading] = useState(false);
+  /// check if have more data when its limit
   const [isLoadMoreData, setIsLoadMoreData] = useState(false);
 
   const {
@@ -94,6 +98,20 @@ const BrandProductListPage: React.FC = () => {
     };
   }, []);
 
+  const getProductList = async () => {
+    await getProductListForDesigner({
+      category_id:
+        filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+      brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+      name: search || undefined,
+      sort: sort?.sort,
+      order: sort?.order,
+      page: 1,
+      pageSize: PAGINATION_TOTAL_DEFAULT,
+    }).then(({ allProducts, pagination: paging }) => {
+      setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
+    });
+  };
   useEffect(() => {
     firstLoad.setValue(false);
 
@@ -105,43 +123,19 @@ const BrandProductListPage: React.FC = () => {
     if ((cate_id || brand_id || sort_order || searchParam) && noFiltering && firstLoad.value) {
       return;
     }
+    setIsLoading(true);
 
-    const params =
-      filter?.value || sort?.sort || searchInputRef.current?.input?.value
-        ? {
-            category_id:
-              filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-            brand_id:
-              filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-            name: search || undefined,
-            sort: sort?.sort,
-            order: sort?.order,
-          }
-        : {
-            category_id:
-              filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-            brand_id:
-              filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-            name: search || undefined,
-            sort: sort?.sort,
-            order: sort?.order,
-            page: pagination.current ?? 1,
-            pageSize: PAGINATION_TOTAL_DEFAULT,
-          };
+    getProductList();
 
-    getProductListForDesigner(params).then(({ pagination: paging }) => {
-      if (paging?.total > PAGINATION_TOTAL_DEFAULT) {
-        setIsLoadMoreData(true);
-      }
-    });
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
-  const fetchData = () => {
-    if (!isLoadMoreData || pagination.pageCount <= 1) {
-      return;
-    }
+  const fetchData = async () => {
+    setIsLoading(true);
 
-    getProductListForDesigner(
+    await getProductListForDesigner(
       {
         category_id:
           filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
@@ -154,12 +148,12 @@ const BrandProductListPage: React.FC = () => {
       },
       { isConcat: true },
     ).then(({ allProducts, pagination: paging }) => {
-      if (!allProducts || allProducts.length >= paging.pageSize) {
-        return;
-      }
-
-      setIsLoadMoreData(false);
+      setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
     });
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   };
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
@@ -255,13 +249,19 @@ const BrandProductListPage: React.FC = () => {
     />
   );
 
+  console.log('isLoading', isLoading);
+  console.log('isLoadMoreData', isLoadMoreData);
+
   window.onscroll = function (_e) {
-    /// when each of these has a value, don't load data
-    if (!filter && !sort && !searchInputRef.current?.input?.value) {
-      // you're at the bottom of the page
-      if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
-        fetchData();
-      }
+    if (isLoading || !isLoadMoreData) {
+      return;
+    }
+
+    // you're at the bottom of the page
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+      console.log("you're at the bottom of the page");
+
+      fetchData();
     }
   };
 
