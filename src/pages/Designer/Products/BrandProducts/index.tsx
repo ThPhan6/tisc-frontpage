@@ -109,7 +109,7 @@ const BrandProductListPage: React.FC = () => {
       sort: sort?.sort,
       order: sort?.order,
       page: 1,
-      pageSize: PAGINATION_TOTAL_DEFAULT,
+      pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
     }).then(({ allProducts, pagination: paging }) => {
       setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
     });
@@ -146,7 +146,7 @@ const BrandProductListPage: React.FC = () => {
         sort: sort?.sort,
         order: sort?.order,
         page: pagination.current ? pagination.current + 1 : 1,
-        pageSize: PAGINATION_TOTAL_DEFAULT,
+        pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
       },
       { isConcat: true },
     ).then(({ allProducts, pagination: paging }) => {
