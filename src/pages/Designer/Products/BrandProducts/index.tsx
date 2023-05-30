@@ -32,6 +32,8 @@ import { useProductListFilterAndSorter } from '@/features/product/components/Fil
 
 import styles from './index.less';
 
+const PAGINATION_TOTAL_DEFAULT = 20;
+
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
   const query = useQuery();
@@ -41,6 +43,7 @@ const BrandProductListPage: React.FC = () => {
   const searchParam = query.get(QUERY_KEY.search);
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
+  const [isLoadMoreData, setIsLoadMoreData] = useState(false);
 
   const {
     filter,
@@ -49,6 +52,7 @@ const BrandProductListPage: React.FC = () => {
     search,
     categories,
     brandSummary,
+    pagination,
     dispatch,
     renderFilterDropdown,
     renderItemTopBar,
@@ -102,17 +106,63 @@ const BrandProductListPage: React.FC = () => {
       return;
     }
 
-    getProductListForDesigner({
-      category_id:
-        filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-      brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-      name: search || undefined,
-      sort: sort?.sort,
-      order: sort?.order,
+    const params =
+      filter?.value || sort?.sort || searchInputRef.current?.input?.value
+        ? {
+            category_id:
+              filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+            brand_id:
+              filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+            name: search || undefined,
+            sort: sort?.sort,
+            order: sort?.order,
+          }
+        : {
+            category_id:
+              filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+            brand_id:
+              filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+            name: search || undefined,
+            sort: sort?.sort,
+            order: sort?.order,
+            page: pagination.current ?? 1,
+            pageSize: PAGINATION_TOTAL_DEFAULT,
+          };
+
+    getProductListForDesigner(params).then(({ pagination: paging }) => {
+      if (paging?.total > PAGINATION_TOTAL_DEFAULT) {
+        setIsLoadMoreData(true);
+      }
     });
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
-  const renderInfoItem = (info: string, count: number | string, lastOne?: boolean) => (
+  const fetchData = () => {
+    if (!isLoadMoreData || pagination.pageCount <= 1) {
+      return;
+    }
+
+    getProductListForDesigner(
+      {
+        category_id:
+          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+        name: search || undefined,
+        sort: sort?.sort,
+        order: sort?.order,
+        page: pagination.current ? pagination.current + 1 : 1,
+        pageSize: PAGINATION_TOTAL_DEFAULT,
+      },
+      { isConcat: true },
+    ).then(({ allProducts, pagination: paging }) => {
+      if (!allProducts || allProducts.length >= paging.pageSize) {
+        return;
+      }
+
+      setIsLoadMoreData(false);
+    });
+  };
+
+  const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
       <BodyText level={5} fontFamily="Roboto" style={{ marginRight: 8 }}>
         {info}:
@@ -204,6 +254,16 @@ const BrandProductListPage: React.FC = () => {
       }
     />
   );
+
+  window.onscroll = function (_e) {
+    /// when each of these has a value, don't load data
+    if (!filter && !sort && !searchInputRef.current?.input?.value) {
+      // you're at the bottom of the page
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+        fetchData();
+      }
+    }
+  };
 
   return (
     <PageContainer pageHeaderRender={PageHeader}>
