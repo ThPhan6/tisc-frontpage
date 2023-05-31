@@ -1,3 +1,5 @@
+import { TablePaginationConfig } from 'antd/es/table/interface';
+
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import {
   OrderMethod,
@@ -223,6 +225,7 @@ export interface ProductList {
   sort?: SortParams;
   brandSummary?: BrandSummary;
   allProducts?: ProductItem[];
+  pagination: TablePaginationConfig;
 }
 
 export interface GetListProductForDesignerRequestParams {
@@ -231,6 +234,8 @@ export interface GetListProductForDesignerRequestParams {
   name?: string;
   sort?: string;
   order?: SortOrder;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface ProductCatelogueData {
