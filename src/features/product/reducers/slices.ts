@@ -74,6 +74,12 @@ const initialState: ProductState = {
   relatedProduct: [],
   list: {
     data: [],
+    pagination: {
+      current: 1,
+      pageSize: 20,
+      total: 0,
+      pageCount: 1,
+    },
   },
 };
 

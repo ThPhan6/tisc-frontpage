@@ -60,6 +60,7 @@
     "react-dom": "^17.0.0",
     "react-google-recaptcha-v3": "^1.10.1",
     "react-horizontal-scrolling-menu": "^3.1.0",
+    "react-image-lightbox": "^5.1.4",
     "react-pdf": "^5.7.2",
     "react-text-mask": "^5.5.0",
     "redux-persist": "^6.0.0",

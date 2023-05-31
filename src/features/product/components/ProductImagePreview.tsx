@@ -1,4 +1,6 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 import { useDispatch } from 'react-redux';
 
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
@@ -104,6 +106,11 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   const signature = useQuery().get('signature');
   const isPublicPage = !!signature;
+
+  const [imageBox, setImageBox] = useState<{ index: number; isOpen: boolean }>({
+    index: 0,
+    isOpen: false,
+  });
 
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
@@ -327,8 +334,22 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   const renderMainImage = () => {
     if (product.images[0]) {
-      return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
+      return (
+        <img
+          src={showImageUrl(product.images[0])}
+          className={styles.primaryPhoto}
+          onClick={() =>
+            isEditable
+              ? undefined
+              : setImageBox({
+                  index: 0, // primary image has index 0
+                  isOpen: true,
+                })
+          }
+        />
+      );
     }
+
     if (isEditable) {
       return (
         <div className={styles.dropzoneNote}>
@@ -349,12 +370,42 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     );
   };
 
+  const renderImageLightBox = () => {
+    const curImages: string[] = product.images;
+
+    return curImages[0] && imageBox.isOpen && !isEditable ? (
+      <Lightbox
+        mainSrc={showImageUrl(curImages[imageBox.index])}
+        nextSrc={showImageUrl(curImages[(imageBox.index + 1) % curImages.length])}
+        prevSrc={showImageUrl(
+          curImages[(imageBox.index + curImages.length - 1) % curImages.length],
+        )}
+        onCloseRequest={() => setImageBox({ index: 0, isOpen: false })}
+        animationDuration={200}
+        onMovePrevRequest={() =>
+          setImageBox((prevState) => ({
+            ...prevState,
+            index: (prevState.index + curImages.length - 1) % curImages.length,
+          }))
+        }
+        onMoveNextRequest={() =>
+          setImageBox((prevState) => ({
+            ...prevState,
+            index: (prevState.index + 1) % curImages.length,
+          }))
+        }
+      />
+    ) : null;
+  };
+
   return (
     <div className={styles.productContent}>
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
             {renderMainImage()}
+
+            {renderImageLightBox()}
 
             {isEditable ? (
               <div className={styles.primaryAction}>
@@ -385,7 +436,17 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             <Row gutter={8} className={styles.listWrapper}>
               {product.images.slice(1).map((image, key) => (
                 <Col span={8} key={key}>
-                  <div className={styles.fileItem}>
+                  <div
+                    className={styles.fileItem}
+                    onClick={() =>
+                      isEditable
+                        ? undefined
+                        : setImageBox({
+                            index: key + 1, // primary image has index 0
+                            isOpen: true,
+                          })
+                    }
+                  >
                     <div
                       className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}
                     >
@@ -394,7 +455,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                         <div className={styles.subPhotoAction}>
                           <SmallIconButton
                             icon={<DeleteIcon />}
-                            onClick={(e) => deletePhoto(e, key + 1)}
+                            onClick={(e) => deletePhoto(e, key + 1)} // primary image has index 0
                           />
                         </div>
                       ) : null}
