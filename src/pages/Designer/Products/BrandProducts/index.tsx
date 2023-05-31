@@ -32,6 +32,8 @@ import { useProductListFilterAndSorter } from '@/features/product/components/Fil
 
 import styles from './index.less';
 
+const PAGINATION_TOTAL_DEFAULT = 20;
+
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
   const query = useQuery();
@@ -42,6 +44,11 @@ const BrandProductListPage: React.FC = () => {
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
 
+  /// to prevent load more data while api is calling
+  const [isLoading, setIsLoading] = useState(false);
+  /// check if have more data when its limit
+  const [isLoadMoreData, setIsLoadMoreData] = useState(false);
+
   const {
     filter,
     sort,
@@ -49,6 +56,7 @@ const BrandProductListPage: React.FC = () => {
     search,
     categories,
     brandSummary,
+    pagination,
     dispatch,
     renderFilterDropdown,
     renderItemTopBar,
@@ -67,6 +75,8 @@ const BrandProductListPage: React.FC = () => {
         removeUrlParams('search');
       }
       setSearchCount((prev) => prev + 1);
+      /// scroll to top
+      window.scrollTo({ top: 0 });
     }, 300),
     [setSearchCount],
   );
@@ -90,29 +100,55 @@ const BrandProductListPage: React.FC = () => {
     };
   }, []);
 
+  const getProductList = async (props: { page: number; isConcat: boolean }) => {
+    await getProductListForDesigner(
+      {
+        category_id:
+          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+        name: searchInputRef.current?.input?.value || undefined,
+        sort: sort?.sort,
+        order: sort?.order,
+        page: props.page,
+        pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
+      },
+      { isConcat: props.isConcat },
+    ).then(({ allProducts, pagination: paging }) => {
+      setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
+    });
+  };
+
   useEffect(() => {
     firstLoad.setValue(false);
 
     dispatch(setProductList({ data: [] }));
 
-    const noFiltering = !filter && !sort && !search;
+    const noFiltering = !filter && !sort && !searchInputRef.current?.input?.value;
 
-    // Prevent first laod call both no-filter api and have-filter api
+    // Prevent first load call both no-filter api and have-filter api
     if ((cate_id || brand_id || sort_order || searchParam) && noFiltering && firstLoad.value) {
       return;
     }
+    setIsLoading(true);
 
-    getProductListForDesigner({
-      category_id:
-        filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-      brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-      name: search || undefined,
-      sort: sort?.sort,
-      order: sort?.order,
-    });
+    getProductList({ page: 1, isConcat: false });
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
-  const renderInfoItem = (info: string, count: number | string, lastOne?: boolean) => (
+  const fetchData = async () => {
+    setIsLoading(true);
+
+    getProductList({ page: pagination.current ? pagination.current + 1 : 1, isConcat: true });
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  };
+
+  const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
       <BodyText level={5} fontFamily="Roboto" style={{ marginRight: 8 }}>
         {info}:
@@ -204,6 +240,17 @@ const BrandProductListPage: React.FC = () => {
       }
     />
   );
+
+  window.onscroll = function (_e) {
+    if (isLoading || !isLoadMoreData) {
+      return;
+    }
+
+    // you're at the bottom of the page
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+      fetchData();
+    }
+  };
 
   return (
     <PageContainer pageHeaderRender={PageHeader}>

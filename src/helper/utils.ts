@@ -403,9 +403,11 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
 };
 
 export const formatNumber = (number: number | string) => {
-  return Number(number).toLocaleString(undefined, {
-    maximumFractionDigits: 2,
-  });
+  return Number(
+    Number(number).toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    }),
+  );
 };
 
 export const formatImageIfBase64 = (img: string) =>
