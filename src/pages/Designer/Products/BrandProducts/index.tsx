@@ -10,7 +10,7 @@ import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 import { getProductListForDesigner } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { formatNumber, removeUrlParams, setUrlParams } from '@/helper/utils';
-import { debounce, isUndefined } from 'lodash';
+import { debounce } from 'lodash';
 
 import {
   resetProductState,
@@ -100,20 +100,24 @@ const BrandProductListPage: React.FC = () => {
     };
   }, []);
 
-  const getProductList = async () => {
-    await getProductListForDesigner({
-      category_id:
-        filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-      brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-      name: searchInputRef.current?.input?.value || undefined,
-      sort: sort?.sort,
-      order: sort?.order,
-      page: 1,
-      pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
-    }).then(({ allProducts, pagination: paging }) => {
+  const getProductList = async (props: { page: number; isConcat: boolean }) => {
+    await getProductListForDesigner(
+      {
+        category_id:
+          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+        name: searchInputRef.current?.input?.value || undefined,
+        sort: sort?.sort,
+        order: sort?.order,
+        page: props.page,
+        pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
+      },
+      { isConcat: props.isConcat },
+    ).then(({ allProducts, pagination: paging }) => {
       setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
     });
   };
+
   useEffect(() => {
     firstLoad.setValue(false);
 
@@ -127,7 +131,7 @@ const BrandProductListPage: React.FC = () => {
     }
     setIsLoading(true);
 
-    getProductList();
+    getProductList({ page: 1, isConcat: false });
 
     setTimeout(() => {
       setIsLoading(false);
@@ -137,21 +141,7 @@ const BrandProductListPage: React.FC = () => {
   const fetchData = async () => {
     setIsLoading(true);
 
-    await getProductListForDesigner(
-      {
-        category_id:
-          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-        name: search || undefined,
-        sort: sort?.sort,
-        order: sort?.order,
-        page: pagination.current ? pagination.current + 1 : 1,
-        pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
-      },
-      { isConcat: true },
-    ).then(({ allProducts, pagination: paging }) => {
-      setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
-    });
+    getProductList({ page: pagination.current ? pagination.current + 1 : 1, isConcat: true });
 
     setTimeout(() => {
       setIsLoading(false);
