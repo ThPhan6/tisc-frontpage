@@ -267,7 +267,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className={styles.imageWrapper_image}
           />
           <div className={styles.imagePlaceholder}>
-            <BodyText level={5} fontFamily="Roboto">
+            <BodyText level={5} fontFamily="Roboto" style={{ fontSize: 13 }}>
               {product.description}
             </BodyText>
           </div>
