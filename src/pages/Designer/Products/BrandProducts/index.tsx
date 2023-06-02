@@ -115,9 +115,12 @@ const BrandProductListPage: React.FC = () => {
       },
       { isConcat: props.isConcat },
     ).then(({ allProducts, pagination: paging }) => {
-      setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
+      const isLoadMore = Boolean(Number(allProducts?.length) === paging.pageSize);
+      setIsLoadMoreData(isLoadMore);
 
-      onCheckAtBottomPage();
+      if (isLoadMore) {
+        onCheckAtBottomPage();
+      }
     });
   };
 
