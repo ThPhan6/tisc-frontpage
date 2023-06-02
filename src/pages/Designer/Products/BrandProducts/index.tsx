@@ -32,8 +32,6 @@ import { useProductListFilterAndSorter } from '@/features/product/components/Fil
 
 import styles from './index.less';
 
-const PAGINATION_TOTAL_DEFAULT = 20;
-
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
   const query = useQuery();
@@ -101,6 +99,18 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   const getProductList = async (props: { page: number; isConcat: boolean }) => {
+    const getPageSize = () => {
+      if (filter?.value) {
+        return 99999;
+      }
+
+      if (window.screen.height < 1200) {
+        return 20;
+      }
+
+      return 35;
+    };
+
     await getProductListForDesigner(
       {
         category_id:
@@ -110,7 +120,7 @@ const BrandProductListPage: React.FC = () => {
         sort: sort?.sort,
         order: sort?.order,
         page: props.page,
-        pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
+        pageSize: getPageSize(),
       },
       { isConcat: props.isConcat },
     ).then(({ allProducts, pagination: paging }) => {
