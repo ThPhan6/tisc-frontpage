@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
-import { TablePaginationConfig } from 'antd/es/table/interface';
+// import { TablePaginationConfig } from 'antd/es/table/interface';
 import { request } from 'umi';
 
 import { debounce } from 'lodash';
@@ -120,10 +120,10 @@ export const getProductListForDesigner = async (
   })
     .then(({ data, brand_summary, allProducts, pagination }) => {
       const newPagination = {
-        current: pagination?.page,
-        pageSize: !pagination || pagination.page_size < 20 ? 20 : pagination.page_size,
-        total: pagination?.total,
-        pageCount: pagination?.page_count,
+        current: pagination?.page || 1,
+        pageSize: pagination ? pagination.page_size : params.pageSize || 20,
+        total: pagination?.total || 0,
+        pageCount: pagination?.page_count || 0,
       };
 
       const oldProducts = store.getState().product.list.allProducts;
@@ -147,7 +147,6 @@ export const getProductListForDesigner = async (
           }),
         );
       }
-
       return { allProducts, pagination: newPagination };
     })
     .catch((error) => {
