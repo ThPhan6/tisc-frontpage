@@ -26,6 +26,7 @@ declare const API_URL: string;
 declare const STORE_URL: string;
 declare const RECAPTCHA_SITE_KEY: string;
 declare const ENABLE_RECAPTCHA: boolean;
+declare const AIRWALLEX_ENVIRONMENT: 'staging' | 'demo' | 'prod';
 
 declare module '*.svg' {
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
