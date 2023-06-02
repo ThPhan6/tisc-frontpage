@@ -47,7 +47,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
     setPaymentIntentData(paymentData);
 
     loadAirwallex({
-      env: 'demo', // Can choose other production environments, 'staging | 'demo' | 'prod'
+      env: AIRWALLEX_ENVIRONMENT, // Can choose other production environments, 'staging | 'demo' | 'prod'
       origin: window.location.origin, // Setup your event target to receive the browser events message
     }).then(async () => {
       dropIn = createElement(paymentIntegration, {
