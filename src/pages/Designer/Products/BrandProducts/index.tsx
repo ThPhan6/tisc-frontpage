@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -32,7 +32,7 @@ import { useProductListFilterAndSorter } from '@/features/product/components/Fil
 
 import styles from './index.less';
 
-const PAGINATION_TOTAL_DEFAULT = 20;
+const DEFAULT_PAGESIZE = 20;
 
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
@@ -97,6 +97,7 @@ const BrandProductListPage: React.FC = () => {
     /// clear all product
     return () => {
       dispatch(resetProductState());
+      window.removeEventListener('onscroll', () => {});
     };
   }, []);
 
@@ -110,12 +111,34 @@ const BrandProductListPage: React.FC = () => {
         sort: sort?.sort,
         order: sort?.order,
         page: props.page,
-        pageSize: filter?.value ? 99999 : PAGINATION_TOTAL_DEFAULT,
+        pageSize: filter?.value ? 99999 : 20,
       },
       { isConcat: props.isConcat },
     ).then(({ allProducts, pagination: paging }) => {
-      setIsLoadMoreData(Boolean(Number(allProducts?.length) === paging.pageSize));
+      const isLoadMore = Boolean(Number(allProducts?.length) === paging.pageSize);
+      setIsLoadMoreData(isLoadMore);
+
+      if (isLoadMore) {
+        onCheckAtBottomPage();
+      }
     });
+  };
+
+  const fetchData = () => {
+    setIsLoading(true);
+
+    getProductList({ page: pagination.current ? pagination.current + 1 : 1, isConcat: true });
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  };
+
+  const onCheckAtBottomPage = () => {
+    // you're at the bottom of the page
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+      fetchData();
+    }
   };
 
   useEffect(() => {
@@ -137,16 +160,6 @@ const BrandProductListPage: React.FC = () => {
       setIsLoading(false);
     }, 500);
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
-
-  const fetchData = async () => {
-    setIsLoading(true);
-
-    getProductList({ page: pagination.current ? pagination.current + 1 : 1, isConcat: true });
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  };
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
@@ -241,15 +254,12 @@ const BrandProductListPage: React.FC = () => {
     />
   );
 
-  window.onscroll = function (_e) {
+  window.onscroll = (_e) => {
     if (isLoading || !isLoadMoreData) {
       return;
     }
 
-    // you're at the bottom of the page
-    if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
-      fetchData();
-    }
+    onCheckAtBottomPage();
   };
 
   return (
