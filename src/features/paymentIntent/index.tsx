@@ -34,7 +34,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
 
   const billId = useGetParamId();
 
-  const [elementShow, setElementShow] = useState<boolean>(false); // Example, set element show state
+  // const [elementShow, setElementShow] = useState<boolean>(false); // Example, set element show state
   const [errorMessage, setErrorMessage] = useState<string>(''); // Example: set error state
 
   let dropIn: any;
@@ -54,6 +54,10 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         intent_id: paymentData.id,
         client_secret: paymentData.client_secret,
         currency: paymentData.currency,
+        applePayRequestOptions: {
+          countryCode: 'US',
+          buttonType: 'buy', // Indicate the type of button you want displayed on your payments form. Like 'buy'
+        },
       });
 
       if (!dropIn) {
@@ -70,10 +74,10 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
 
     createNewPayment();
 
-    const onReady = () => {
-      setElementShow(true);
-      // console.log(`Element is mounted: ${JSON.stringify(event)}`);
-    };
+    // const onReady = () => {
+    //   setElementShow(true);
+    //   // console.log(`Element is mounted: ${JSON.stringify(event)}`);
+    // };
 
     const onSuccess = () => {
       // payment succeeded, then close popup
@@ -98,12 +102,12 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
       // console.error('There was an error', error);
     };
 
-    window.addEventListener('onReady', onReady);
+    // window.addEventListener('onReady', onReady);
     window.addEventListener('onSuccess', onSuccess);
     window.addEventListener('onError', onError);
 
     return () => {
-      window.removeEventListener('onReady', onReady);
+      // window.removeEventListener('onReady', onReady);
       window.removeEventListener('onSuccess', onSuccess);
       window.removeEventListener('onError', onError);
 
@@ -153,7 +157,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
           style={{
             width: '100%',
             margin: '48px auto',
-            display: elementShow ? 'block' : 'none', // Example: only show element when mounted
+            // display: elementShow ? 'block' : 'none', // Example: only show element when mounted
           }}
         />
       </div>
