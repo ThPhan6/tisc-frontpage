@@ -16,7 +16,30 @@ import { BodyText } from '@/components/Typography';
 import styles from './index.less';
 import { createElement, loadAirwallex } from 'airwallex-payment-elements';
 
+enum PaymentItentMethod {
+  paymentIntegration = 'dropIn',
+  countryCode = 'US',
+  buttonType = 'buy',
+}
+
 const paymentIntegration = 'dropIn';
+const countryCode = 'US';
+const buttonType = 'buy';
+
+const applePayRequestOptions = {
+  countryCode: countryCode,
+  buttonType: buttonType, // Indicate the type of button you want displayed on your payments form. Like 'buy'
+  // buttonColor: 'white-with-line', // Indicate the color of the button. Default value is 'black'
+};
+
+const googlePayRequestOptions = {
+  countryCode: countryCode,
+  merchantInfo: {
+    merchantName: 'Example Merchant',
+    merchantId: '0123456789',
+  },
+  buttonType: buttonType, // Indicate the type of button you want displayed on your payments form. Like 'buy'
+};
 
 interface PaymentIntentProps {
   visible: boolean;
@@ -55,8 +78,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         client_secret: paymentData.client_secret,
         currency: paymentData.currency,
         applePayRequestOptions: {
-          countryCode: 'US',
-          buttonType: 'buy', // Indicate the type of button you want displayed on your payments form. Like 'buy'
+          countryCode: 'SG',
         },
       });
 
