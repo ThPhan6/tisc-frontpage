@@ -5,7 +5,7 @@ import { message } from 'antd';
 import { getOneService } from '../services/api';
 import { ServicesResponse } from '../services/type';
 import { formatToMoneyValue } from '../services/util';
-import { createPaymentIntent } from './services';
+import { createPaymentIntent, updatePaidStatusTemprorarily } from './services';
 import { useGetParamId } from '@/helper/hook';
 
 import { PAYMENT_INTENT_DEFAULT, PaymentIntentResponse } from './types';
@@ -16,41 +16,20 @@ import { BodyText } from '@/components/Typography';
 import styles from './index.less';
 import { createElement, loadAirwallex } from 'airwallex-payment-elements';
 
-enum PaymentItentMethod {
-  paymentIntegration = 'dropIn',
-  countryCode = 'US',
-  buttonType = 'buy',
-}
-
 const paymentIntegration = 'dropIn';
-const countryCode = 'US';
-const buttonType = 'buy';
-
-const applePayRequestOptions = {
-  countryCode: countryCode,
-  buttonType: buttonType, // Indicate the type of button you want displayed on your payments form. Like 'buy'
-  // buttonColor: 'white-with-line', // Indicate the color of the button. Default value is 'black'
-};
-
-const googlePayRequestOptions = {
-  countryCode: countryCode,
-  merchantInfo: {
-    merchantName: 'Example Merchant',
-    merchantId: '0123456789',
-  },
-  buttonType: buttonType, // Indicate the type of button you want displayed on your payments form. Like 'buy'
-};
 
 interface PaymentIntentProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   onPaymentSuccess?: (data: ServicesResponse) => void;
+  onPaymentProcessing?: (isProcessing: boolean) => void;
 }
 
 export const PaymentIntent: FC<PaymentIntentProps> = ({
   visible,
   setVisible,
   onPaymentSuccess,
+  onPaymentProcessing,
 }) => {
   const [paymentIntentData, setPaymentIntentData] =
     useState<PaymentIntentResponse>(PAYMENT_INTENT_DEFAULT);
@@ -105,6 +84,10 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
       // payment succeeded, then close popup
       setVisible(false);
 
+      updatePaidStatusTemprorarily(billId).then((isProcessing) => {
+        onPaymentProcessing?.(isProcessing);
+      });
+
       /// update billed data
       setTimeout(() => {
         getOneService(billId).then((res) => {
@@ -114,7 +97,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         });
       }, 1000);
 
-      message.success('The payment was successful, no further action required.');
+      message.success('The payment is being processed, no further action required.');
     };
 
     const onError = (event: any) => {

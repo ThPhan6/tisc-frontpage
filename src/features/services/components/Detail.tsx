@@ -194,14 +194,13 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
 
     return (
       <div className="flex-start">
-        {detailData.status !== InvoiceStatus.Paid &&
-        detailData.status !== InvoiceStatus.Processing ? (
+        {detailData.status !== InvoiceStatus.Paid ? (
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
             buttonClass={styles.rightSpace}
-            disabled={disabledPay}
+            disabled={disabledPay ? disabledPay : detailData.status === InvoiceStatus.Processing}
             onClick={() => {
               setVisible(true);
             }}
@@ -521,12 +520,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
       <PaymentIntent
         visible={visible}
         setVisible={setVisible}
-        onPaymentSuccess={(newData) => {
-          if (newData) {
-            setDetailData(newData);
-            setDisabledPayment(true);
-          }
-        }}
+        onPaymentSuccess={setDetailData}
+        onPaymentProcessing={setDisabledPayment}
       />
     </div>
   );
