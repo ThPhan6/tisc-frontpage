@@ -66,19 +66,19 @@ export const ColorDetection = () => {
 
     colorDetectData.data?.images?.forEach((item, index) => {
       /// handle to show product image color
-      if (index === 0) {
+      if (index == 0) {
         newColorPanel.push({
           'Main Image': {
             ...item.color_specification,
           },
         });
+      } else {
+        newColorPanel.push({
+          [`Sub Image ${index}`]: {
+            ...item.color_specification,
+          },
+        });
       }
-
-      newColorPanel.push({
-        [`Sub Image ${index}`]: {
-          ...item.color_specification,
-        },
-      });
     });
 
     setColorDetection([...newColorPanel]);
