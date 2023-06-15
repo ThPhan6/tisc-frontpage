@@ -68,10 +68,6 @@ export const hex2hsb = (hex: string) => {
 
 // Converts an RGB object to a hex string
 export const rgb2hex = (rgb: RBGProps) => {
-  if (!rgb?.r || !rgb?.g || !rgb?.b) {
-    return;
-  }
-
   const hex = [rgb.r.toString(16), rgb.g.toString(16), rgb.b.toString(16)];
 
   forEach(hex, (val, nr) => {
@@ -83,19 +79,11 @@ export const rgb2hex = (rgb: RBGProps) => {
 
 // Converts an HSB object to a hex string
 export const hsb2hex = (hsb: HSBProps) => {
-  if (!hsb?.h || !hsb?.s || !hsb?.b) {
-    return;
-  }
-
   return rgb2hex(hsb2rgb(hsb) as any);
 };
 
 // Converts an HSB object to an RGB object
 function hsb2rgb(hsb: HSBProps) {
-  if (!hsb?.h || !hsb?.s || !hsb?.b) {
-    return;
-  }
-
   const newhsb = inherit(hsb);
 
   const rgb: any = {};

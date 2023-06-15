@@ -13,7 +13,6 @@ import {
   ColorCoversionAnalysisProps,
   ColorOriginRrops,
   ColourAIResponse,
-  fdata,
 } from './types';
 import store, { useAppSelector } from '@/reducers';
 import { closeModal } from '@/reducers/modal';

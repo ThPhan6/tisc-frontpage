@@ -129,9 +129,9 @@ export const AnalogousPalette: FC<ColourPaletteProps> = ({ className, style, col
 
     const hsb = hex2hsb(color) as HSBProps;
 
-    const analagous = symmetry('analagous', [Object.assign({}, hsb)]);
+    const analogous = symmetry('analogous', [Object.assign({}, hsb)]);
 
-    setPalette([hsb, ...analagous.defaults]);
+    setPalette([hsb, ...analogous.defaults]);
 
     return () => {
       setPalette([]);
