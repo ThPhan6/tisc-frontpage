@@ -108,6 +108,7 @@ export const ColorDetection = () => {
 
     return () => {
       setColorSwitch(undefined);
+      setChosenColor({ name: '' });
     };
   }, [visible]);
 
@@ -171,11 +172,7 @@ export const ColorDetection = () => {
 
   const renderColorAnalysis = () => (
     <div className="flex-start">
-      <RobotoBodyText
-        level={5}
-        color={colorSwitch ? 'mono-color' : 'mono-color-dark'}
-        style={{ marginRight: 32, fontWeight: colorSwitch ? 500 : 300 }}
-      >
+      <RobotoBodyText level={5} style={{ marginRight: 32, fontWeight: colorSwitch ? 500 : 300 }}>
         COLOUR ANALYSIS
       </RobotoBodyText>
       <SwitchDynamic
@@ -293,172 +290,180 @@ export const ColorDetection = () => {
           <Col span={isTablet ? 24 : 12} style={{ paddingLeft: isTablet ? 0 : 16 }}>
             <div className={styles.colorHeader}>{colorSwitch ? renderColorAnalysis() : null}</div>
             <div style={isTablet ? undefined : { overflow: 'auto', height: 586 }}>
-              {/* Basic */}
-              <div>
-                <Title level={8} customClass={styles.title}>
-                  Basic
-                </Title>
-                <table className={styles.tableColor}>
-                  <tbody>
-                    {basicData.map((el, index) => {
-                      const key = Object.keys(el)[0];
+              {!chosenColor.name ? (
+                <RobotoBodyText level={5} color="mono-color-dark">
+                  Click on a colour to view the colour analysis
+                </RobotoBodyText>
+              ) : (
+                <div>
+                  {/* Basic */}
+                  <div>
+                    <Title level={8} customClass={styles.title}>
+                      Basic
+                    </Title>
+                    <table className={styles.tableColor}>
+                      <tbody>
+                        {basicData.map((el, index) => {
+                          const key = Object.keys(el)[0];
 
-                      return (
-                        <TableContent
-                          key={index}
-                          customClass={styles.label}
-                          textLeftWidth={tableTdLeftWidth}
-                          textLeft={
-                            <BodyText
-                              level={4}
-                              style={{ fontWeight: 600, textTransform: 'capitalize' }}
-                            >
-                              {key}
-                            </BodyText>
-                          }
-                          textRightWidth={tableTdRightWidth}
-                          textRight={
-                            key === 'Color Temperature' || key === 'Hue' ? (
-                              <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
-                                {el[key]}
-                              </RobotoBodyText>
-                            ) : (
-                              <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
-                                {formatNumber((el[key] / 100) * 10000)}%
-                              </RobotoBodyText>
-                            )
-                          }
-                        />
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Conversion */}
-              <div>
-                <Title level={8} customClass={styles.title}>
-                  Conversion
-                </Title>
-                <table className={styles.tableColor}>
-                  <tbody>
-                    {conversionData.map((el, index) => {
-                      const key = Object.keys(el)[0];
-                      const values = Object.values(el);
-
-                      const renderColourInfo = () => {
-                        return (
-                          <div key={index}>
-                            {values.map((elvalue: any, elValueIds) => {
-                              if (typeof elvalue === 'object') {
-                                const subKeys = Object.keys(elvalue);
-
-                                return (
-                                  <div className="flex-between" key={elValueIds}>
-                                    {subKeys.map((subKey, subIdx) => {
-                                      return (
-                                        <div
-                                          key={subIdx}
-                                          className="flex-start"
-                                          style={{
-                                            width: `calc(${tableTdRightWidth} / ${subKeys.length})`,
-                                          }}
-                                          title={`${subKey}: ${formatNumber(elvalue[subKey])}`}
-                                        >
-                                          <RobotoBodyText
-                                            level={5}
-                                            style={{
-                                              fontWeight: 500,
-                                              textTransform: 'uppercase',
-                                              marginRight: 8,
-                                            }}
-                                          >
-                                            {subKey}:
-                                          </RobotoBodyText>
-
-                                          <RobotoBodyText level={5}>
-                                            {formatNumber(elvalue[subKey])}
-                                          </RobotoBodyText>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                );
-                              }
-
-                              return (
-                                <RobotoBodyText
-                                  key={index}
-                                  level={5}
-                                  style={{
-                                    textTransform: 'uppercase',
-                                  }}
+                          return (
+                            <TableContent
+                              key={index}
+                              customClass={styles.label}
+                              textLeftWidth={tableTdLeftWidth}
+                              textLeft={
+                                <BodyText
+                                  level={4}
+                                  style={{ fontWeight: 600, textTransform: 'capitalize' }}
                                 >
-                                  {elvalue}
-                                </RobotoBodyText>
-                              );
-                            })}
-                          </div>
-                        );
-                      };
+                                  {key}
+                                </BodyText>
+                              }
+                              textRightWidth={tableTdRightWidth}
+                              textRight={
+                                key === 'Color Temperature' || key === 'Hue' ? (
+                                  <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
+                                    {el[key]}
+                                  </RobotoBodyText>
+                                ) : (
+                                  <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
+                                    {formatNumber((el[key] / 100) * 10000)}%
+                                  </RobotoBodyText>
+                                )
+                              }
+                            />
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
 
-                      return (
-                        <TableContent
-                          key={index}
-                          customClass={styles.label}
-                          textLeftWidth={tableTdLeftWidth}
-                          textLeft={
-                            key === 'hex' ? (
-                              <BodyText
-                                key={index}
-                                level={4}
-                                style={{ fontWeight: 600, textTransform: 'capitalize' }}
-                              >
-                                HEX Code
-                              </BodyText>
-                            ) : (
-                              <BodyText
-                                key={index}
-                                level={4}
-                                style={{ fontWeight: 600, textTransform: 'uppercase' }}
-                              >
-                                {key}
-                              </BodyText>
-                            )
-                          }
-                          textRightWidth={tableTdRightWidth}
-                          textRight={renderColourInfo()}
-                        />
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                  {/* Conversion */}
+                  <div>
+                    <Title level={8} customClass={styles.title}>
+                      Conversion
+                    </Title>
+                    <table className={styles.tableColor}>
+                      <tbody>
+                        {conversionData.map((el, index) => {
+                          const key = Object.keys(el)[0];
+                          const values = Object.values(el);
 
-              {/* Colour Palatte */}
-              <div>
-                <Title level={8} customClass={styles.title}>
-                  Color Palette
-                </Title>
+                          const renderColourInfo = () => {
+                            return (
+                              <div key={index}>
+                                {values.map((elvalue: any, elValueIds) => {
+                                  if (typeof elvalue === 'object') {
+                                    const subKeys = Object.keys(elvalue);
 
-                <TintPalette {...colorProps} />
+                                    return (
+                                      <div className="flex-between" key={elValueIds}>
+                                        {subKeys.map((subKey, subIdx) => {
+                                          return (
+                                            <div
+                                              key={subIdx}
+                                              className="flex-start"
+                                              style={{
+                                                width: `calc(${tableTdRightWidth} / ${subKeys.length})`,
+                                              }}
+                                              title={`${subKey}: ${formatNumber(elvalue[subKey])}`}
+                                            >
+                                              <RobotoBodyText
+                                                level={5}
+                                                style={{
+                                                  fontWeight: 500,
+                                                  textTransform: 'uppercase',
+                                                  marginRight: 8,
+                                                }}
+                                              >
+                                                {subKey}:
+                                              </RobotoBodyText>
 
-                <ShadePalette {...colorProps} />
+                                              <RobotoBodyText level={5}>
+                                                {formatNumber(elvalue[subKey])}
+                                              </RobotoBodyText>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    );
+                                  }
 
-                <MonoChromaticPalette {...colorProps} />
+                                  return (
+                                    <RobotoBodyText
+                                      key={index}
+                                      level={5}
+                                      style={{
+                                        textTransform: 'uppercase',
+                                      }}
+                                    >
+                                      {elvalue}
+                                    </RobotoBodyText>
+                                  );
+                                })}
+                              </div>
+                            );
+                          };
 
-                <AnalogousPalette {...colorProps} />
+                          return (
+                            <TableContent
+                              key={index}
+                              customClass={styles.label}
+                              textLeftWidth={tableTdLeftWidth}
+                              textLeft={
+                                key === 'hex' ? (
+                                  <BodyText
+                                    key={index}
+                                    level={4}
+                                    style={{ fontWeight: 600, textTransform: 'capitalize' }}
+                                  >
+                                    HEX Code
+                                  </BodyText>
+                                ) : (
+                                  <BodyText
+                                    key={index}
+                                    level={4}
+                                    style={{ fontWeight: 600, textTransform: 'uppercase' }}
+                                  >
+                                    {key}
+                                  </BodyText>
+                                )
+                              }
+                              textRightWidth={tableTdRightWidth}
+                              textRight={renderColourInfo()}
+                            />
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
 
-                <ComplementaryPalette {...colorProps} />
+                  {/* Colour Palatte */}
+                  <div>
+                    <Title level={8} customClass={styles.title}>
+                      Color Palette
+                    </Title>
 
-                <SplitComplementaryPalette {...colorProps} />
+                    <TintPalette {...colorProps} />
 
-                <TriadicPalette {...colorProps} />
+                    <ShadePalette {...colorProps} />
 
-                <SquarePalette {...colorProps} />
+                    <MonoChromaticPalette {...colorProps} />
 
-                <TetradicPalette {...colorProps} />
-              </div>
+                    <AnalogousPalette {...colorProps} />
+
+                    <ComplementaryPalette {...colorProps} />
+
+                    <SplitComplementaryPalette {...colorProps} />
+
+                    <TriadicPalette {...colorProps} />
+
+                    <SquarePalette {...colorProps} />
+
+                    <TetradicPalette {...colorProps} />
+                  </div>
+                </div>
+              )}
             </div>
           </Col>
         ) : null}
