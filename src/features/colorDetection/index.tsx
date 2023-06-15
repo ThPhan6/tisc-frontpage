@@ -70,7 +70,7 @@ export const ColorDetection = () => {
 
     const newColorPanel: any[] = [];
 
-    fdata.data?.images?.forEach((item, index) => {
+    colorDetectData.data?.images?.forEach((item, index) => {
       /// handle to show product image color
       if (index == 0) {
         newColorPanel.push({
@@ -89,8 +89,8 @@ export const ColorDetection = () => {
 
     setColorDetection([...newColorPanel]);
 
-    if (fdata.data?.recommendation_collection) {
-      setCollectionRecommnedation(fdata.data.recommendation_collection);
+    if (colorDetectData.data?.recommendation_collection) {
+      setCollectionRecommnedation(colorDetectData.data.recommendation_collection);
     }
   };
 
