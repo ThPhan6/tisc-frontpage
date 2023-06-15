@@ -12,8 +12,10 @@ import {
   ColorCoversionAnalysisProps,
   ColorOriginRrops,
   ColourAIResponse,
+  fdata,
 } from './types';
 import store, { useAppSelector } from '@/reducers';
+import { closeModal } from '@/reducers/modal';
 
 import Popover from '../../components/Modal/Popover';
 import TableContent from '../../components/Table/TableContent';
@@ -40,11 +42,15 @@ export const ColorDetection = () => {
   const [colorDetection, setColorDetection] = useState<any[]>([]);
   const [conversionData, setConversionData] = useState<ColorCoversionAnalysisProps[]>([]);
   const [basicData, setBasicData] = useState<ColorConversionProps['conversion']['origin'][]>([]);
-  const [collectionRecommendation, setCollectionRecommnedation] = useState<string>('');
+  const [collectionRecommendation, setCollectionRecommnedation] = useState<
+    ColourAIResponse['data']['recommendation_collection']
+  >({ id: '', name: '' });
   ///
 
   const [colorSwitch, setColorSwitch] = useState<boolean>();
-  const [chosenColor, setChosenColor] = useState<string>('');
+  const [chosenColor, setChosenColor] = useState<{ index?: number; name: string }>({
+    name: '',
+  });
 
   /// required to detect image color
   const productImages = useAppSelector((state) => state.product.details.images);
@@ -64,7 +70,7 @@ export const ColorDetection = () => {
 
     const newColorPanel: any[] = [];
 
-    colorDetectData.data?.images?.forEach((item, index) => {
+    fdata.data?.images?.forEach((item, index) => {
       /// handle to show product image color
       if (index == 0) {
         newColorPanel.push({
@@ -83,17 +89,8 @@ export const ColorDetection = () => {
 
     setColorDetection([...newColorPanel]);
 
-    if (colorDetectData.data?.recommendation_collection?.name) {
-      setCollectionRecommnedation(colorDetectData.data.recommendation_collection.name);
-
-      store.dispatch(
-        setPartialProductDetail({
-          collection: {
-            id: colorDetectData.data.recommendation_collection.id,
-            name: colorDetectData.data.recommendation_collection.name,
-          },
-        }),
-      );
+    if (fdata.data?.recommendation_collection) {
+      setCollectionRecommnedation(fdata.data.recommendation_collection);
     }
   };
 
@@ -110,13 +107,13 @@ export const ColorDetection = () => {
   }, [visible]);
 
   const showColorAnalysis =
-    (colorDetail: ColorConversionProps['conversion'], color: string) => () => {
+    (colorDetail: ColorConversionProps['conversion'], color: string, index: number) => () => {
       if (!colorSwitch) {
         return;
       }
 
       ///
-      setChosenColor(color);
+      setChosenColor({ name: color, index });
 
       const newBasicInfo: ColorOriginRrops[] = [
         { Hue: colorDetail.origin.hue ?? '' },
@@ -193,15 +190,27 @@ export const ColorDetection = () => {
 
   const colorProps = {
     style: { marginBottom: 16 },
-    color: chosenColor,
+    color: chosenColor.name,
   };
 
   return (
     <Popover
       title="COLOUR AI"
-      visible={true}
+      visible
       className={`${isUndefined(colorSwitch) ? '' : 'xTransition'} ${styles.modal} `}
       width={colorSwitch ? '70%' : 576}
+      onFormSubmit={() => {
+        store.dispatch(
+          setPartialProductDetail({
+            collection: {
+              id: collectionRecommendation.id,
+              name: collectionRecommendation.name,
+            },
+          }),
+        );
+
+        closeModal();
+      }}
     >
       <Row className="h-full">
         {/* left side */}
@@ -236,8 +245,12 @@ export const ColorDetection = () => {
                               style={{ width: `${density}%` }}
                             >
                               <div
-                                className={styles.activeHover}
-                                onClick={showColorAnalysis(info[el]['conversion'], hex)}
+                                className={`${
+                                  chosenColor.name === hex && chosenColor.index === elIdx
+                                    ? styles.activeColor
+                                    : ''
+                                } ${styles.activeHover}`}
+                                onClick={showColorAnalysis(info[el]['conversion'], hex, elIdx)}
                                 style={{
                                   background: hex,
                                   height: 48,
@@ -262,7 +275,7 @@ export const ColorDetection = () => {
             <div className="flex-start">
               <Title level={8}>Recommendation:</Title>
               <RobotoBodyText level={4} style={{ marginLeft: 16, textTransform: 'capitalize' }}>
-                {collectionRecommendation}
+                {collectionRecommendation.name}
               </RobotoBodyText>
             </div>
           </div>
