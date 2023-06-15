@@ -1,0 +1,23 @@
+.switchBtn {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  cursor: default;
+
+  :global(.ant-switch-handle::before) {
+    top: 1px;
+  }
+
+  :global(.ant-switch-inner) {
+    font-weight: 500 !important;
+    font-size: 8px !important;
+  }
+
+  :global(.ant-switch) {
+    box-shadow: none !important;
+  }
+
+  :global(.ant-click-animating-node) {
+    animation: none !important;
+  }
+}
