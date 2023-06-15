@@ -291,7 +291,7 @@ export const ColorDetection = () => {
             <div className={styles.colorHeader}>{colorSwitch ? renderColorAnalysis() : null}</div>
             <div style={isTablet ? undefined : { overflow: 'auto', height: 586 }}>
               {!chosenColor.name ? (
-                <RobotoBodyText className="h-full flex-center" level={5} color="mono-color-dark">
+                <RobotoBodyText customClass="h-full flex-center" level={5} color="mono-color-dark">
                   Click on a colour to view the colour analysis
                 </RobotoBodyText>
               ) : (
