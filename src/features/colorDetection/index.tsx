@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 
 import { detectImageColor } from './services';
+import { useScreen } from '@/helper/common';
 import { formatNumber } from '@/helper/utils';
 import { isUndefined } from 'lodash';
 
@@ -37,6 +38,8 @@ import styles from './index.less';
 
 export const ColorDetection = () => {
   const visible = useAppSelector((state) => state.modal.type);
+
+  const { isTablet } = useScreen();
 
   /// data
   const [colorDetection, setColorDetection] = useState<any[]>([]);
@@ -197,8 +200,10 @@ export const ColorDetection = () => {
     <Popover
       title="COLOUR AI"
       visible
-      className={`${isUndefined(colorSwitch) ? '' : 'xTransition'} ${styles.modal} `}
-      width={colorSwitch ? '70%' : 576}
+      className={`${isUndefined(colorSwitch) ? '' : 'xTransition'} ${
+        isTablet ? styles.modalOnTablet : styles.modal
+      } `}
+      width={colorSwitch && !isTablet ? '70%' : 576}
       onFormSubmit={() => {
         store.dispatch(
           setPartialProductDetail({
@@ -212,16 +217,16 @@ export const ColorDetection = () => {
         closeModal();
       }}
     >
-      <Row className="h-full">
+      <Row style={{ display: 'flex', flexFlow: isTablet ? 'column' : 'row wrap' }}>
         {/* left side */}
-        <Col span={colorSwitch ? 12 : 24}>
+        <Col span={colorSwitch && !isTablet ? 12 : 24}>
           <div className="h-full">
             <div className={styles.colorHeader}>
               <Title level={8}> COLOUR DETECTION </Title>
 
               {colorSwitch ? null : renderColorAnalysis()}
             </div>
-            <div style={{ height: 566, overflow: 'auto' }}>
+            <div style={isTablet ? undefined : { height: 566, overflow: 'auto' }}>
               <div>
                 {colorDetection.map((item, index) => {
                   const conversionKey = Object.keys(item)[0];
@@ -283,9 +288,9 @@ export const ColorDetection = () => {
 
         {/* right side */}
         {colorSwitch ? (
-          <Col span={12} style={{ paddingLeft: 16 }}>
+          <Col span={isTablet ? 24 : 12} style={{ paddingLeft: isTablet ? 0 : 16 }}>
             <div className={styles.colorHeader}>{colorSwitch ? renderColorAnalysis() : null}</div>
-            <div style={{ overflow: 'auto', height: 586 }}>
+            <div style={isTablet ? undefined : { overflow: 'auto', height: 586 }}>
               {/* Basic */}
               <div>
                 <Title level={8} customClass={styles.title}>

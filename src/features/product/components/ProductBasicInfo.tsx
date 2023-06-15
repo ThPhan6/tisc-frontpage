@@ -60,19 +60,44 @@ export const ProductBasicInfo: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const categories = useAppSelector((state) => state.product.details.categories);
+  const images = useAppSelector((state) => state.product.details.images);
   const supportCategory = categories.some(
     (el) => el.name.includes(SupportCategories.wood) || el.name.includes(SupportCategories.stone),
   );
+  const activeColorAI = isTiscAdmin && !!images.length && supportCategory;
 
   const productId = isTiscAdmin ? getProductVariant(spec) : productVariant;
 
   const openColorAI = () => {
-    if (supportCategory) {
+    if (activeColorAI) {
       store.dispatch(openModal({ type: 'Color AI', title: 'COLOUR AI' }));
       return;
     }
 
-    message.info('Please pick supported category');
+    if (isTablet) {
+      return;
+    }
+
+    if (!images.length) {
+      message.info('Please upload at least three images');
+      return;
+    }
+
+    if (!supportCategory) {
+      message.info('Please pick supported category');
+    }
+  };
+
+  const setActiveColorAIIcon = () => {
+    if (isTablet && activeColorAI) {
+      return true;
+    }
+
+    if (activeColorAI) {
+      return true;
+    }
+
+    return false;
   };
 
   return (
@@ -100,17 +125,24 @@ export const ProductBasicInfo: React.FC = () => {
           label="Collection"
           placeholder={editable ? 'create or assign from the list' : ''}
           rightIcon={
-            editable ? (
-              <div className="flex-end">
-                {/* Color detection */}
-                <ColorDetectionIcon className={styles.colorDetection} onClick={openColorAI} />
+            <div className="flex-end">
+              {/* Color detection */}
+              {isTiscAdmin ? (
+                <ColorDetectionIcon
+                  className={setActiveColorAIIcon() ? styles.activeColorIcon : ''}
+                  onClick={openColorAI}
+                />
+              ) : null}
 
+              {/* Collection */}
+              {editable ? (
                 <RightLeftIcon
                   className={brand?.id ? 'mono-color' : 'mono-color-medium'}
                   onClick={() => setVisible(true)}
+                  style={{ marginLeft: 14 }}
                 />
-              </div>
-            ) : undefined
+              ) : null}
+            </div>
           }
           noWrap
           value={collection?.name ?? ''}
