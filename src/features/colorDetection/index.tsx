@@ -35,6 +35,9 @@ import { ShadePalette } from './ShadePalette';
 import { TintPalette } from './TintPalette';
 import styles from './index.less';
 
+const tableTdLeftWidth = '26%';
+const tableTdRightWidth = '74%';
+
 export const ColorDetection = () => {
   const visible = useAppSelector((state) => state.modal.type);
 
@@ -225,7 +228,7 @@ export const ColorDetection = () => {
 
               {colorSwitch ? null : renderColorAnalysis()}
             </div>
-            <div style={isTablet ? undefined : { height: 566, overflow: 'auto' }}>
+            <div style={isTablet ? undefined : { height: 560, overflow: 'auto' }}>
               <div>
                 {colorDetection.map((item, index) => {
                   const conversionKey = Object.keys(item)[0];
@@ -249,11 +252,11 @@ export const ColorDetection = () => {
                               style={{ width: `${density}%` }}
                             >
                               <div
-                                className={`${
+                                className={
                                   chosenColor.name === hex && chosenColor.index === elIdx
                                     ? styles.activeColor
-                                    : ''
-                                } ${styles.activeHover}`}
+                                    : undefined
+                                }
                                 onClick={showColorAnalysis(info[el]['conversion'], hex, elIdx)}
                                 style={{
                                   background: hex,
@@ -304,6 +307,7 @@ export const ColorDetection = () => {
                         <TableContent
                           key={index}
                           customClass={styles.label}
+                          textLeftWidth={tableTdLeftWidth}
                           textLeft={
                             <BodyText
                               level={4}
@@ -312,10 +316,17 @@ export const ColorDetection = () => {
                               {key}
                             </BodyText>
                           }
+                          textRightWidth={tableTdRightWidth}
                           textRight={
-                            <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
-                              {el[key]}
-                            </RobotoBodyText>
+                            key === 'Color Temperature' || key === 'Hue' ? (
+                              <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
+                                {el[key]}
+                              </RobotoBodyText>
+                            ) : (
+                              <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
+                                {formatNumber((el[key] / 100) * 10000)}%
+                              </RobotoBodyText>
+                            )
                           }
                         />
                       );
@@ -349,7 +360,9 @@ export const ColorDetection = () => {
                                         <div
                                           key={subIdx}
                                           className="flex-start"
-                                          style={{ width: `calc(75% / ${subKeys.length})` }}
+                                          style={{
+                                            width: `calc(${tableTdRightWidth} / ${subKeys.length})`,
+                                          }}
                                           title={`${subKey}: ${formatNumber(elvalue[subKey])}`}
                                         >
                                           <RobotoBodyText
@@ -393,6 +406,7 @@ export const ColorDetection = () => {
                         <TableContent
                           key={index}
                           customClass={styles.label}
+                          textLeftWidth={tableTdLeftWidth}
                           textLeft={
                             key === 'hex' ? (
                               <BodyText
@@ -412,6 +426,7 @@ export const ColorDetection = () => {
                               </BodyText>
                             )
                           }
+                          textRightWidth={tableTdRightWidth}
                           textRight={renderColourInfo()}
                         />
                       );

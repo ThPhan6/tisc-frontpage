@@ -3,6 +3,10 @@
     margin-top: 16px;
     padding: 0 16px 16px 16px;
     overflow: unset;
+
+    ::-webkit-scrollbar {
+      display: block;
+    }
   }
 }
 
@@ -67,7 +71,6 @@
   }
 }
 
-.activeColor,
-.activeHover:hover {
-  box-shadow: -4px 2px 4px #888;
+.activeColor {
+  border: 1px solid @mono-color;
 }
