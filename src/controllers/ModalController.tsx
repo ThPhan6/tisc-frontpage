@@ -27,6 +27,7 @@ import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
 import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
 import styles from './index.less';
+import { ColorDetection } from '@/features/colorDetection';
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
 
 const landingpageModals: ModalType[] = [
@@ -109,6 +110,9 @@ export const ModalController = () => {
         return <InformationMarketAvailability />;
       case 'Inquiry Request':
         return <InquiryRequestModal />;
+
+      case 'Color AI':
+        return <ColorDetection />;
 
       //
       case 'none':
