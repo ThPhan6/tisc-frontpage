@@ -53,6 +53,8 @@ export const ModalController = () => {
 
   const isModalOnLandingpage = landingpageModals.includes(modalType);
 
+  const isModalColorAI = modalType === 'Color AI';
+
   const renderModalContent = () => {
     switch (modalType) {
       // landing page
@@ -130,7 +132,9 @@ export const ModalController = () => {
         autoHeight={autoHeightDrawer}
         darkTheme={darkTheme}
         title={title}
-        className={isModalOnLandingpage && isMobile ? styles.bodySpacing : ''}
+        className={`${isModalOnLandingpage && isMobile ? styles.bodySpacing : ''} ${
+          isModalColorAI ? styles.colorAI : ''
+        } `}
       >
         {renderModalContent()}
       </MobileDrawer>
