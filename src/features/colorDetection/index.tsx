@@ -5,7 +5,7 @@ import { Col, Row } from 'antd';
 import { detectImageColor } from './services';
 import { useScreen } from '@/helper/common';
 import { formatNumber } from '@/helper/utils';
-import { isUndefined } from 'lodash';
+import { isNaN, isUndefined } from 'lodash';
 
 import { setPartialProductDetail } from '../product/reducers';
 import {
@@ -135,27 +135,33 @@ export const ColorDetection = () => {
 
         {
           cmyk: {
-            c: colorDetail.cmyk.c ?? '',
-            y: colorDetail.cmyk.y ?? '',
-            m: colorDetail.cmyk.m ?? '',
-            k: colorDetail.cmyk.k ?? '',
+            c: !isNaN(colorDetail.cmyk.c) ? `${formatNumber(colorDetail.cmyk.c, 0)}%` : '',
+            y: !isNaN(colorDetail.cmyk.y) ? `${formatNumber(colorDetail.cmyk.y, 0)}%` : '',
+            m: !isNaN(colorDetail.cmyk.m) ? `${formatNumber(colorDetail.cmyk.m, 0)}%` : '',
+            k: !isNaN(colorDetail.cmyk.k) ? `${formatNumber(colorDetail.cmyk.k, 0)}%` : '',
           },
         },
         {
           hsl: {
             h: colorDetail.hsl.h ?? '',
-            s: colorDetail.hsl.s ?? '',
-            l: colorDetail.hsl.l ?? '',
+            s: !isNaN(colorDetail.hsl.s) ? `${formatNumber(colorDetail.hsl.s, 0)}%` : '',
+            l: !isNaN(colorDetail.hsl.l) ? `${formatNumber(colorDetail.hsl.l, 0)}%` : '',
           },
         },
         {
           hwb: {
             h: colorDetail.hwb.h ?? '',
-            w: colorDetail.hwb.w ?? '',
-            b: colorDetail.hwb.b ?? '',
+            w: !isNaN(colorDetail.hwb.w) ? `${formatNumber(colorDetail.hwb.w, 0)}%` : '',
+            b: !isNaN(colorDetail.hwb.b) ? `${formatNumber(colorDetail.hwb.b, 0)}%` : '',
           },
         },
-        { lab: colorDetail.lab },
+        {
+          lab: {
+            l: !isNaN(colorDetail.lab.l) ? formatNumber(colorDetail.lab.l, 0) : '',
+            a: !isNaN(colorDetail.lab.a) ? formatNumber(colorDetail.lab.a, 0) : '',
+            b: !isNaN(colorDetail.lab.b) ? formatNumber(colorDetail.lab.b, 0) : '',
+          },
+        },
         {
           rgb: {
             r: colorDetail.rgb.r ?? '',
@@ -239,7 +245,7 @@ export const ColorDetection = () => {
                       </Title>
                       <div className="flex-start">
                         {keys.map((el, elIdx) => {
-                          const density = formatNumber(info[el]['density']);
+                          const density = formatNumber(info[el]['density'], 0);
                           const hex = info[el]['conversion']['hex'];
 
                           return (
@@ -263,7 +269,13 @@ export const ColorDetection = () => {
                               <RobotoBodyText
                                 customClass="flex-center"
                                 level={5}
-                                style={{ height: 32 }}
+                                style={{
+                                  height: 32,
+                                  fontWeight:
+                                    chosenColor.name === hex && chosenColor.index === elIdx
+                                      ? 500
+                                      : 300,
+                                }}
                               >
                                 {density}%
                               </RobotoBodyText>
@@ -366,7 +378,7 @@ export const ColorDetection = () => {
                                               style={{
                                                 width: `calc(${tableTdRightWidth} / ${subKeys.length})`,
                                               }}
-                                              title={`${subKey}: ${formatNumber(elvalue[subKey])}`}
+                                              title={`${subKey}: ${elvalue[subKey]}`}
                                             >
                                               <RobotoBodyText
                                                 level={5}
@@ -380,7 +392,7 @@ export const ColorDetection = () => {
                                               </RobotoBodyText>
 
                                               <RobotoBodyText level={5}>
-                                                {formatNumber(elvalue[subKey])}
+                                                {elvalue[subKey]}
                                               </RobotoBodyText>
                                             </div>
                                           );

@@ -402,10 +402,10 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   return result;
 };
 
-export const formatNumber = (number: number | string) => {
+export const formatNumber = (number: number | string, maximumFractionDigits = 2) => {
   return Number(
     Number(number).toLocaleString(undefined, {
-      maximumFractionDigits: 2,
+      maximumFractionDigits: maximumFractionDigits,
     }),
   );
 };
