@@ -4,7 +4,7 @@ import { Col, Row } from 'antd';
 
 import { detectImageColor } from './services';
 import { useScreen } from '@/helper/common';
-import { formatNumber } from '@/helper/utils';
+import { formatNumber, formatPercentNumber } from '@/helper/utils';
 import { isNaN, isUndefined } from 'lodash';
 
 import { setPartialProductDetail } from '../product/reducers';
@@ -135,24 +135,24 @@ export const ColorDetection = () => {
 
         {
           cmyk: {
-            c: !isNaN(colorDetail.cmyk.c) ? `${formatNumber(colorDetail.cmyk.c, 0)}%` : '',
-            y: !isNaN(colorDetail.cmyk.y) ? `${formatNumber(colorDetail.cmyk.y, 0)}%` : '',
-            m: !isNaN(colorDetail.cmyk.m) ? `${formatNumber(colorDetail.cmyk.m, 0)}%` : '',
-            k: !isNaN(colorDetail.cmyk.k) ? `${formatNumber(colorDetail.cmyk.k, 0)}%` : '',
+            c: !isNaN(colorDetail.cmyk.c) ? formatPercentNumber(colorDetail.cmyk.c) : '',
+            y: !isNaN(colorDetail.cmyk.y) ? formatPercentNumber(colorDetail.cmyk.y) : '',
+            m: !isNaN(colorDetail.cmyk.m) ? formatPercentNumber(colorDetail.cmyk.m) : '',
+            k: !isNaN(colorDetail.cmyk.k) ? formatPercentNumber(colorDetail.cmyk.k) : '',
           },
         },
         {
           hsl: {
             h: colorDetail.hsl.h ?? '',
-            s: !isNaN(colorDetail.hsl.s) ? `${formatNumber(colorDetail.hsl.s, 0)}%` : '',
-            l: !isNaN(colorDetail.hsl.l) ? `${formatNumber(colorDetail.hsl.l, 0)}%` : '',
+            s: !isNaN(colorDetail.hsl.s) ? formatPercentNumber(colorDetail.hsl.s) : '',
+            l: !isNaN(colorDetail.hsl.l) ? formatPercentNumber(colorDetail.hsl.l) : '',
           },
         },
         {
           hwb: {
             h: colorDetail.hwb.h ?? '',
-            w: !isNaN(colorDetail.hwb.w) ? `${formatNumber(colorDetail.hwb.w, 0)}%` : '',
-            b: !isNaN(colorDetail.hwb.b) ? `${formatNumber(colorDetail.hwb.b, 0)}%` : '',
+            w: !isNaN(colorDetail.hwb.w) ? formatPercentNumber(colorDetail.hwb.w) : '',
+            b: !isNaN(colorDetail.hwb.b) ? formatPercentNumber(colorDetail.hwb.b) : '',
           },
         },
         {
@@ -164,9 +164,9 @@ export const ColorDetection = () => {
         },
         {
           rgb: {
-            r: colorDetail.rgb.r ?? '',
-            g: colorDetail.rgb.g ?? '',
-            b: colorDetail.rgb.b ?? '',
+            r: !isNaN(colorDetail.rgb.r) ? formatNumber(colorDetail.rgb.r, 0) : '',
+            g: !isNaN(colorDetail.rgb.g) ? formatNumber(colorDetail.rgb.g, 0) : '',
+            b: !isNaN(colorDetail.rgb.b) ? formatNumber(colorDetail.rgb.b, 0) : '',
           },
         },
       ] as any;
@@ -339,7 +339,7 @@ export const ColorDetection = () => {
                                   </RobotoBodyText>
                                 ) : (
                                   <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
-                                    {formatNumber((el[key] / 100) * 10000)}%
+                                    {formatPercentNumber(el[key])}
                                   </RobotoBodyText>
                                 )
                               }

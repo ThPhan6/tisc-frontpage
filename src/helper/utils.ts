@@ -410,6 +410,16 @@ export const formatNumber = (number: number | string, maximumFractionDigits = 2)
   );
 };
 
+export const formatPercentNumber = (
+  number: number | string,
+  maximumFractionDigits: number = 0,
+  includePercent: boolean = true,
+) => {
+  const result = formatNumber((Number(number) / 100) * 10000, maximumFractionDigits);
+
+  return includePercent ? `${result}%` : result;
+};
+
 export const formatImageIfBase64 = (img: string) =>
   img.indexOf('data:image') > -1 ? img.split(',')[1] : img;
 
