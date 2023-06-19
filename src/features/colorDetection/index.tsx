@@ -4,8 +4,8 @@ import { Col, Row } from 'antd';
 
 import { detectImageColor } from './services';
 import { useScreen } from '@/helper/common';
-import { formatNumber } from '@/helper/utils';
-import { isUndefined } from 'lodash';
+import { formatNumber, formatPercentNumber } from '@/helper/utils';
+import { isNaN, isUndefined } from 'lodash';
 
 import { setPartialProductDetail } from '../product/reducers';
 import {
@@ -135,32 +135,38 @@ export const ColorDetection = () => {
 
         {
           cmyk: {
-            c: colorDetail.cmyk.c ?? '',
-            y: colorDetail.cmyk.y ?? '',
-            m: colorDetail.cmyk.m ?? '',
-            k: colorDetail.cmyk.k ?? '',
+            c: !isNaN(colorDetail.cmyk.c) ? formatPercentNumber(colorDetail.cmyk.c) : '',
+            y: !isNaN(colorDetail.cmyk.y) ? formatPercentNumber(colorDetail.cmyk.y) : '',
+            m: !isNaN(colorDetail.cmyk.m) ? formatPercentNumber(colorDetail.cmyk.m) : '',
+            k: !isNaN(colorDetail.cmyk.k) ? formatPercentNumber(colorDetail.cmyk.k) : '',
           },
         },
         {
           hsl: {
             h: colorDetail.hsl.h ?? '',
-            s: colorDetail.hsl.s ?? '',
-            l: colorDetail.hsl.l ?? '',
+            s: !isNaN(colorDetail.hsl.s) ? formatPercentNumber(colorDetail.hsl.s) : '',
+            l: !isNaN(colorDetail.hsl.l) ? formatPercentNumber(colorDetail.hsl.l) : '',
           },
         },
         {
           hwb: {
             h: colorDetail.hwb.h ?? '',
-            w: colorDetail.hwb.w ?? '',
-            b: colorDetail.hwb.b ?? '',
+            w: !isNaN(colorDetail.hwb.w) ? formatPercentNumber(colorDetail.hwb.w) : '',
+            b: !isNaN(colorDetail.hwb.b) ? formatPercentNumber(colorDetail.hwb.b) : '',
           },
         },
-        { lab: colorDetail.lab },
+        {
+          lab: {
+            l: !isNaN(colorDetail.lab.l) ? formatNumber(colorDetail.lab.l, 0) : '',
+            a: !isNaN(colorDetail.lab.a) ? formatNumber(colorDetail.lab.a, 0) : '',
+            b: !isNaN(colorDetail.lab.b) ? formatNumber(colorDetail.lab.b, 0) : '',
+          },
+        },
         {
           rgb: {
-            r: colorDetail.rgb.r ?? '',
-            g: colorDetail.rgb.g ?? '',
-            b: colorDetail.rgb.b ?? '',
+            r: !isNaN(colorDetail.rgb.r) ? formatNumber(colorDetail.rgb.r, 0) : '',
+            g: !isNaN(colorDetail.rgb.g) ? formatNumber(colorDetail.rgb.g, 0) : '',
+            b: !isNaN(colorDetail.rgb.b) ? formatNumber(colorDetail.rgb.b, 0) : '',
           },
         },
       ] as any;
@@ -239,7 +245,7 @@ export const ColorDetection = () => {
                       </Title>
                       <div className="flex-start">
                         {keys.map((el, elIdx) => {
-                          const density = formatNumber(info[el]['density']);
+                          const density = formatNumber(info[el]['density'], 0);
                           const hex = info[el]['conversion']['hex'];
 
                           return (
@@ -263,7 +269,13 @@ export const ColorDetection = () => {
                               <RobotoBodyText
                                 customClass="flex-center"
                                 level={5}
-                                style={{ height: 32 }}
+                                style={{
+                                  height: 32,
+                                  fontWeight:
+                                    chosenColor.name === hex && chosenColor.index === elIdx
+                                      ? 500
+                                      : 300,
+                                }}
                               >
                                 {density}%
                               </RobotoBodyText>
@@ -327,7 +339,7 @@ export const ColorDetection = () => {
                                   </RobotoBodyText>
                                 ) : (
                                   <RobotoBodyText level={5} style={{ textTransform: 'capitalize' }}>
-                                    {formatNumber((el[key] / 100) * 10000)}%
+                                    {formatPercentNumber(el[key])}
                                   </RobotoBodyText>
                                 )
                               }
@@ -366,7 +378,7 @@ export const ColorDetection = () => {
                                               style={{
                                                 width: `calc(${tableTdRightWidth} / ${subKeys.length})`,
                                               }}
-                                              title={`${subKey}: ${formatNumber(elvalue[subKey])}`}
+                                              title={`${subKey}: ${elvalue[subKey]}`}
                                             >
                                               <RobotoBodyText
                                                 level={5}
@@ -380,7 +392,7 @@ export const ColorDetection = () => {
                                               </RobotoBodyText>
 
                                               <RobotoBodyText level={5}>
-                                                {formatNumber(elvalue[subKey])}
+                                                {elvalue[subKey]}
                                               </RobotoBodyText>
                                             </div>
                                           );
