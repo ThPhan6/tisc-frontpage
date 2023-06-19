@@ -23,7 +23,7 @@ import { BodyText, Title } from '@/components/Typography';
 
 import { getOneService, getServicePDF, markAsPaid, sendBill, sendRemind } from '../api';
 import styles from '../index.less';
-import { checkShowBillingAmount, formatToMoneyValue } from '../util';
+import { formatToMoneyValue } from '../util';
 import { PaymentIntent } from '@/features/paymentIntent';
 import moment from 'moment';
 
@@ -71,6 +71,7 @@ interface ServiceDetailProps {
 }
 export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   const [detailData, setDetailData] = useState<ServicesResponse>(DEFAULT_VALUE);
+  const [disabledPay, setDisabledPayment] = useState<boolean>(false);
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -193,13 +194,13 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
 
     return (
       <div className="flex-start">
-        {detailData.status !== InvoiceStatus.Paid &&
-        detailData.status !== InvoiceStatus.Processing ? (
+        {detailData.status !== InvoiceStatus.Paid ? (
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
             buttonClass={styles.rightSpace}
+            disabled={disabledPay ? disabledPay : detailData.status === InvoiceStatus.Processing}
             onClick={() => {
               setVisible(true);
             }}
@@ -516,7 +517,12 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         </FormGroup>
       </EntryFormWrapper>
 
-      <PaymentIntent visible={visible} setVisible={setVisible} onPaymentSuccess={setDetailData} />
+      <PaymentIntent
+        visible={visible}
+        setVisible={setVisible}
+        onPaymentSuccess={setDetailData}
+        onPaymentProcessing={setDisabledPayment}
+      />
     </div>
   );
 };

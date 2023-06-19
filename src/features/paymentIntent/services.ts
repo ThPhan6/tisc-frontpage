@@ -23,3 +23,23 @@ export async function createPaymentIntent(billId: string) {
       return {} as PaymentIntentResponse;
     });
 }
+
+export async function updatePaidStatusTemprorarily(billId: string) {
+  showPageLoading();
+
+  return request<boolean>(`/api/invoice/${billId}/paid-temporarily`, {
+    method: 'PUT',
+  })
+    .then((repsonse) => {
+      hidePageLoading();
+
+      console.log('repsonse', repsonse);
+
+      return true;
+    })
+    .catch((error) => {
+      hidePageLoading();
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PAID_TEMPRORARILY_ERROR);
+      return false;
+    });
+}
