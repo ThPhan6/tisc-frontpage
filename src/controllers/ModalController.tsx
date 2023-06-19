@@ -27,6 +27,7 @@ import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
 import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
 import styles from './index.less';
+import { ColorDetection } from '@/features/colorDetection';
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
 
 const landingpageModals: ModalType[] = [
@@ -51,6 +52,8 @@ export const ModalController = () => {
   const { isMobile } = useScreen();
 
   const isModalOnLandingpage = landingpageModals.includes(modalType);
+
+  const isModalColorAI = modalType === 'Color AI';
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -110,6 +113,9 @@ export const ModalController = () => {
       case 'Inquiry Request':
         return <InquiryRequestModal />;
 
+      case 'Color AI':
+        return <ColorDetection />;
+
       //
       case 'none':
       default:
@@ -126,7 +132,9 @@ export const ModalController = () => {
         autoHeight={autoHeightDrawer}
         darkTheme={darkTheme}
         title={title}
-        className={isModalOnLandingpage && isMobile ? styles.bodySpacing : ''}
+        className={`${isModalOnLandingpage && isMobile ? styles.bodySpacing : ''} ${
+          isModalColorAI ? styles.colorAI : ''
+        } `}
       >
         {renderModalContent()}
       </MobileDrawer>
