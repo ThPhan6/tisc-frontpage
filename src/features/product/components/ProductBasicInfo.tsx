@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { message } from 'antd';
+
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { ReactComponent as ColorDetectionIcon } from '@/assets/icons/color-palette.svg';
 
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { isEmpty, isNull, isUndefined } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { ProductAttributeFormInput } from '../types';
+import { SupportCategories } from '@/features/colorDetection/types';
 import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 import { CollectionRelationType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -54,7 +59,46 @@ export const ProductBasicInfo: React.FC = () => {
   const { name, description, collection } = useAppSelector((state) => state.product.details);
   const [visible, setVisible] = useState(false);
 
+  const categories = useAppSelector((state) => state.product.details.categories);
+  const images = useAppSelector((state) => state.product.details.images);
+  const supportCategory = categories.some(
+    (el) => el.name.includes(SupportCategories.wood) || el.name.includes(SupportCategories.stone),
+  );
+  const activeColorAI = isTiscAdmin && !!images.length && supportCategory;
+
   const productId = isTiscAdmin ? getProductVariant(spec) : productVariant;
+
+  const openColorAI = () => {
+    if (activeColorAI) {
+      store.dispatch(openModal({ type: 'Color AI', title: 'COLOUR AI' }));
+      return;
+    }
+
+    if (isTablet) {
+      return;
+    }
+
+    if (!images.length) {
+      message.info('Please upload at least three images');
+      return;
+    }
+
+    if (!supportCategory) {
+      message.info('Please pick supported category');
+    }
+  };
+
+  const setActiveColorAIIcon = () => {
+    if (isTablet && activeColorAI) {
+      return true;
+    }
+
+    if (activeColorAI) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <>
@@ -81,12 +125,24 @@ export const ProductBasicInfo: React.FC = () => {
           label="Collection"
           placeholder={editable ? 'create or assign from the list' : ''}
           rightIcon={
-            editable ? (
-              <RightLeftIcon
-                className={brand?.id ? 'mono-color' : 'mono-color-medium'}
-                onClick={() => setVisible(true)}
-              />
-            ) : undefined
+            <div className="flex-end">
+              {/* Color detection */}
+              {isTiscAdmin ? (
+                <ColorDetectionIcon
+                  className={setActiveColorAIIcon() ? styles.activeColorIcon : ''}
+                  onClick={openColorAI}
+                />
+              ) : null}
+
+              {/* Collection */}
+              {editable ? (
+                <RightLeftIcon
+                  className={brand?.id ? 'mono-color' : 'mono-color-medium'}
+                  onClick={() => setVisible(true)}
+                  style={{ marginLeft: 14 }}
+                />
+              ) : null}
+            </div>
           }
           noWrap
           value={collection?.name ?? ''}
