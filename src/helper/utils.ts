@@ -402,12 +402,22 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   return result;
 };
 
-export const formatNumber = (number: number | string) => {
+export const formatNumber = (number: number | string, maximumFractionDigits = 2) => {
   return Number(
     Number(number).toLocaleString(undefined, {
-      maximumFractionDigits: 2,
+      maximumFractionDigits: maximumFractionDigits,
     }),
   );
+};
+
+export const formatPercentNumber = (
+  number: number | string,
+  maximumFractionDigits: number = 0,
+  includePercent: boolean = true,
+) => {
+  const result = formatNumber((Number(number) / 100) * 10000, maximumFractionDigits);
+
+  return includePercent ? `${result}%` : result;
 };
 
 export const formatImageIfBase64 = (img: string) =>
