@@ -8,6 +8,7 @@ import { QUERY_KEY } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
 import {
@@ -25,13 +26,18 @@ import { pick, sortBy } from 'lodash';
 import { ProductAttributeFormInput, ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
-import { resetProductDetailState, setBrand } from '@/features/product/reducers';
-import { useAppSelector } from '@/reducers';
+import {
+  resetProductDetailState,
+  setBrand,
+  setPartialProductDetail,
+} from '@/features/product/reducers';
+import store, { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
 import { ResponsiveCol } from '@/components/Layout';
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
+import { RobotoBodyText } from '@/components/Typography';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
 import { ProductAttributeComponent } from './ProductAttributes';
@@ -188,22 +194,53 @@ const ProductDetailContainer: React.FC = () => {
 
   const renderHeader = () => {
     if (isTiscUser) {
-      let categorySelected: string = sortBy(details.categories, 'name')
+      const categoriesSelected = sortBy(details.categories, 'name')
         .slice(0, 3)
-        .map((category) => category.name)
-        .join(', ');
+        .map((category) => category);
 
-      if (details.categories.length > 3) {
-        categorySelected += ', ...';
-      }
+      const renderCateLabel = (): any => {
+        if (!categoriesSelected.length) {
+          return 'select';
+        }
+
+        return (
+          <div className="flex-center">
+            {categoriesSelected.map((cate, index) => (
+              <div key={cate.id || index} className="flex-center">
+                <RobotoBodyText level={6}>{cate.name}</RobotoBodyText>
+                <DeleteIcon
+                  className={styles.deleteIcon}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    store.dispatch(
+                      setPartialProductDetail({
+                        categories: details.categories.filter(
+                          (cateChosen) => cateChosen.id !== cate.id,
+                        ),
+                      }),
+                    );
+                  }}
+                />
+              </div>
+            ))}
+            {details.categories.length > 3 ? (
+              <div title={details.categories.map((cate) => cate.name).join(', ')}>...</div>
+            ) : null}
+          </div>
+        );
+      };
 
       return (
         <ProductDetailHeader
           title={'CATEGORY'}
-          label={categorySelected || 'select'}
+          label={renderCateLabel()}
           onSave={throttleAction(onSave)}
           onCancel={handleCloseProductDetail}
-          customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
+          customClass={`${styles.marginBottomSpace} ${
+            categoriesSelected.length ? styles.monoColor : ''
+          }`}
         />
       );
     }
