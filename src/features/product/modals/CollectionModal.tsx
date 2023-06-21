@@ -82,6 +82,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
         }
 
         const currentData = res.map((item) => ({
+          ...item,
           value: item.id,
           label: item.name,
           disabled: false,
@@ -399,33 +400,35 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                     </div>
                   )}
 
-                  <div
-                    style={{ cursor: item.disabled || item.editLabel ? 'default' : 'pointer' }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                    }}
-                  >
-                    <ActionMenu
-                      disabled={item.disabled || item.editLabel}
-                      className={`${styles.marginSpace} ${
-                        item.disabled ? 'mono-color-medium' : 'mono-color'
-                      } `}
-                      overlayClassName={styles.actionMenuOverLay}
-                      editActionOnMobile={false}
-                      actionItems={[
-                        {
-                          type: 'updated',
-                          label: 'Edit',
-                          onClick: () => handleEdit(item, index),
-                        },
-                        {
-                          type: 'deleted',
-                          onClick: () => handleDelete(String(item.value)),
-                        },
-                      ]}
-                    />
-                  </div>
+                  {item.relation_type !== CollectionRelationType.Color ? (
+                    <div
+                      style={{ cursor: item.disabled || item.editLabel ? 'default' : 'pointer' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    >
+                      <ActionMenu
+                        disabled={item.disabled || item.editLabel}
+                        className={`${styles.marginSpace} ${
+                          item.disabled ? 'mono-color-medium' : 'mono-color'
+                        } `}
+                        overlayClassName={styles.actionMenuOverLay}
+                        editActionOnMobile={false}
+                        actionItems={[
+                          {
+                            type: 'updated',
+                            label: 'Edit',
+                            onClick: () => handleEdit(item, index),
+                          },
+                          {
+                            type: 'deleted',
+                            onClick: () => handleDelete(String(item.value)),
+                          },
+                        ]}
+                      />
+                    </div>
+                  ) : null}
                 </div>
               ),
             };
