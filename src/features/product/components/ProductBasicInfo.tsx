@@ -84,10 +84,12 @@ export const ProductBasicInfo: React.FC = () => {
           if (categoryIds.includes(item.id)) {
             if (
               ''
-                .concat(subCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .concat(mainCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .toLowerCase()
                 .includes(SupportCategories.wood) ||
               ''
-                .concat(subCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .concat(mainCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .toLowerCase()
                 .includes(SupportCategories.stone)
             ) {
               cateSupported = true;
