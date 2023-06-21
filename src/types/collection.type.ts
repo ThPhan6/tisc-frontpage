@@ -1,6 +1,7 @@
 export enum CollectionRelationType {
   Brand,
   CustomLibrary,
+  Color,
 }
 
 export interface Collection {
