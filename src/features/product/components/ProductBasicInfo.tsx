@@ -6,10 +6,11 @@ import { message } from 'antd';
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as ColorDetectionIcon } from '@/assets/icons/color-palette.svg';
 
+import { getAllProductCategory } from '@/features/categories/services';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { concat, isEmpty } from 'lodash';
 
 import { ProductAttributeFormInput } from '../types';
 import { SupportCategories } from '@/features/colorDetection/types';
@@ -60,12 +61,21 @@ export const ProductBasicInfo: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const categoryChosen = useAppSelector((state) => state.product.details.categories);
-  const categoryIds = categoryChosen.map((el) => el.id);
   const categoryData = useAppSelector((state) => state.category.list);
   const [isCateSupported, setIsCateSupported] = useState<boolean>();
 
+  const getCategoryData = async () => {
+    await getAllProductCategory();
+  };
+
+  useEffect(() => {
+    getCategoryData();
+  }, []);
+
   useEffect(() => {
     let cateSupported = false;
+
+    const categoryIds = categoryChosen?.map((el) => el.id);
 
     /// category supported contains its main or sub or itself's wood/stone
     categoryData.forEach((mainCate) => {
@@ -73,12 +83,12 @@ export const ProductBasicInfo: React.FC = () => {
         subCate.subs.forEach((item) => {
           if (categoryIds.includes(item.id)) {
             if (
-              mainCate.name?.includes(SupportCategories.wood) ||
-              mainCate.name?.includes(SupportCategories.stone) ||
-              subCate.name?.includes(SupportCategories.wood) ||
-              subCate.name?.includes(SupportCategories.stone) ||
-              item.name?.includes(SupportCategories.wood) ||
-              item.name?.includes(SupportCategories.stone)
+              ''
+                .concat(subCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .includes(SupportCategories.wood) ||
+              ''
+                .concat(subCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .includes(SupportCategories.stone)
             ) {
               cateSupported = true;
             }

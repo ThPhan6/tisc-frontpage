@@ -96,8 +96,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     });
   };
 
-  console.log('data', data);
-
   useEffect(() => {
     getCollectionList();
 
