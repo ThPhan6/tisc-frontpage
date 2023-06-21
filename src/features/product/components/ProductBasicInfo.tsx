@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { message } from 'antd';
@@ -6,10 +6,11 @@ import { message } from 'antd';
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as ColorDetectionIcon } from '@/assets/icons/color-palette.svg';
 
+import { getAllProductCategory } from '@/features/categories/services';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { concat, isEmpty } from 'lodash';
 
 import { ProductAttributeFormInput } from '../types';
 import { SupportCategories } from '@/features/colorDetection/types';
@@ -59,12 +60,50 @@ export const ProductBasicInfo: React.FC = () => {
   const { name, description, collection } = useAppSelector((state) => state.product.details);
   const [visible, setVisible] = useState(false);
 
-  const categories = useAppSelector((state) => state.product.details.categories);
+  const categoryChosen = useAppSelector((state) => state.product.details.categories);
+  const categoryData = useAppSelector((state) => state.category.list);
+  const [isCateSupported, setIsCateSupported] = useState<boolean>();
+
+  const getCategoryData = async () => {
+    await getAllProductCategory();
+  };
+
+  useEffect(() => {
+    getCategoryData();
+  }, []);
+
+  useEffect(() => {
+    let cateSupported = false;
+
+    const categoryIds = categoryChosen?.map((el) => el.id);
+
+    /// category supported contains its main or sub or itself's wood/stone
+    categoryData.forEach((mainCate) => {
+      mainCate.subs.forEach((subCate) => {
+        subCate.subs.forEach((item) => {
+          if (categoryIds.includes(item.id)) {
+            if (
+              ''
+                .concat(mainCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .toLowerCase()
+                .includes(SupportCategories.wood) ||
+              ''
+                .concat(mainCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .toLowerCase()
+                .includes(SupportCategories.stone)
+            ) {
+              cateSupported = true;
+            }
+          }
+        });
+      });
+    });
+
+    setIsCateSupported(cateSupported);
+  }, [categoryChosen]);
+
   const images = useAppSelector((state) => state.product.details.images);
-  const supportCategory = categories.some(
-    (el) => el.name.includes(SupportCategories.wood) || el.name.includes(SupportCategories.stone),
-  );
-  const activeColorAI = isTiscAdmin && !!images.length && supportCategory;
+  const activeColorAI = isTiscAdmin && !!images.length && isCateSupported;
 
   const productId = isTiscAdmin ? getProductVariant(spec) : productVariant;
 
@@ -79,11 +118,11 @@ export const ProductBasicInfo: React.FC = () => {
     }
 
     if (!images.length) {
-      message.info('Please upload at least three images');
+      message.info('Please upload at least one image');
       return;
     }
 
-    if (!supportCategory) {
+    if (!isCateSupported) {
       message.info('Please pick supported category');
     }
   };
