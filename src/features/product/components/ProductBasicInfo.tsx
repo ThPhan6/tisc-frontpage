@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { message } from 'antd';
@@ -59,12 +59,39 @@ export const ProductBasicInfo: React.FC = () => {
   const { name, description, collection } = useAppSelector((state) => state.product.details);
   const [visible, setVisible] = useState(false);
 
-  const categories = useAppSelector((state) => state.product.details.categories);
+  const categoryChosen = useAppSelector((state) => state.product.details.categories);
+  const categoryIds = categoryChosen.map((el) => el.id);
+  const categoryData = useAppSelector((state) => state.category.list);
+  const [isCateSupported, setIsCateSupported] = useState<boolean>();
+
+  useEffect(() => {
+    let cateSupported = false;
+
+    /// category supported contains its main or sub or itself's wood/stone
+    categoryData.forEach((mainCate) => {
+      mainCate.subs.forEach((subCate) => {
+        subCate.subs.forEach((item) => {
+          if (categoryIds.includes(item.id)) {
+            if (
+              mainCate.name?.includes(SupportCategories.wood) ||
+              mainCate.name?.includes(SupportCategories.stone) ||
+              subCate.name?.includes(SupportCategories.wood) ||
+              subCate.name?.includes(SupportCategories.stone) ||
+              item.name?.includes(SupportCategories.wood) ||
+              item.name?.includes(SupportCategories.stone)
+            ) {
+              cateSupported = true;
+            }
+          }
+        });
+      });
+    });
+
+    setIsCateSupported(cateSupported);
+  }, [categoryChosen]);
+
   const images = useAppSelector((state) => state.product.details.images);
-  const supportCategory = categories.some(
-    (el) => el.name.includes(SupportCategories.wood) || el.name.includes(SupportCategories.stone),
-  );
-  const activeColorAI = isTiscAdmin && !!images.length && supportCategory;
+  const activeColorAI = isTiscAdmin && !!images.length && isCateSupported;
 
   const productId = isTiscAdmin ? getProductVariant(spec) : productVariant;
 
@@ -79,11 +106,11 @@ export const ProductBasicInfo: React.FC = () => {
     }
 
     if (!images.length) {
-      message.info('Please upload at least three images');
+      message.info('Please upload at least one image');
       return;
     }
 
-    if (!supportCategory) {
+    if (!isCateSupported) {
       message.info('Please pick supported category');
     }
   };
