@@ -4,6 +4,7 @@ export enum InvoiceStatus {
   Paid,
   Pending,
   Processing,
+  Refunded,
 }
 export interface ServicesResponse {
   billed_date: string;
