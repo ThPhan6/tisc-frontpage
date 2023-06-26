@@ -1,5 +1,4 @@
 import { SORT_ORDER } from '@/constants/util';
-import { FormattedNumber } from 'umi';
 
 import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
 
@@ -407,8 +406,7 @@ export const formatNumber = (
   number: number | string | undefined = 0,
   maximumFractionDigits = 2,
 ) => {
-  const newNumber = Number(number.toLocaleString(undefined, { maximumFractionDigits }));
-  return isNaN(newNumber) ? number.toLocaleString() : newNumber;
+  return Number(number).toLocaleString(undefined, { maximumFractionDigits });
 };
 
 export const formatPercentNumber = (
