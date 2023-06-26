@@ -13,7 +13,7 @@ import {
   getListAssignTeamByBrandId,
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
+import { formatNumber, getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -140,10 +140,22 @@ const BrandList: React.FC = () => {
     { title: 'Teams', dataIndex: 'teams' },
     { title: 'Distributors', dataIndex: 'distributors' },
     { title: 'Coverages', dataIndex: 'coverages' },
-    { title: 'Categories', dataIndex: 'categories' },
-    { title: 'Collections', dataIndex: 'collections' },
-    { title: 'Cards', dataIndex: 'cards' },
-    { title: 'Products', dataIndex: 'products' },
+    {
+      title: 'Categories',
+      dataIndex: 'categories',
+      render: (value) => <span>{formatNumber(value)}</span>,
+    },
+    {
+      title: 'Collections',
+      dataIndex: 'collections',
+      render: (value) => <span>{formatNumber(value)}</span>,
+    },
+    { title: 'Cards', dataIndex: 'cards', render: (value) => <span>{formatNumber(value)}</span> },
+    {
+      title: 'Products',
+      dataIndex: 'products',
+      render: (value) => <span>{formatNumber(value)}</span>,
+    },
     {
       title: 'Assign Team',
       dataIndex: 'assign_team',

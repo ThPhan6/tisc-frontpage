@@ -4,7 +4,7 @@ import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
 import { useScreen } from '@/helper/common';
-import { checkUndefined } from '@/helper/utils';
+import { checkUndefined, formatNumber } from '@/helper/utils';
 
 import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
 
@@ -17,7 +17,7 @@ interface ItemSummaryProps {
 const ItemSummary: FC<ItemSummaryProps> = ({ sub }) => {
   return (
     <div className={style['item-container']}>
-      <span>{checkUndefined(sub?.quantity)}</span>
+      <span>{formatNumber(checkUndefined(sub?.quantity))}</span>
       <label>{checkUndefined(sub?.label)}</label>
     </div>
   );
@@ -43,7 +43,7 @@ const ElementSummary: FC<ElementSummaryProps> = ({
           handleActiveTab(dataElementSummary.id);
         }}
       >
-        <span>{checkUndefined(dataElementSummary?.quantity)}</span>
+        <span>{formatNumber(checkUndefined(dataElementSummary?.quantity))}</span>
         <div className={style['button-wrapper']}>
           <label> {checkUndefined(dataElementSummary?.label)}</label>
           {toggle ? <ActionLeftIcon /> : <ActionRightIcon />}
@@ -95,7 +95,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
           {typeMenuData?.map((data, index) => {
             return (
               <div className={style[`element-right`]} key={index}>
-                <span>{data.quantity}</span>
+                <span>{formatNumber(data.quantity)}</span>
                 <label>{data.label}</label>
               </div>
             );
