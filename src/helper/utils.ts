@@ -406,7 +406,7 @@ export const formatNumber = (
   number: number | string | undefined = 0,
   maximumFractionDigits = 2,
 ) => {
-  return Number(number).toLocaleString(undefined, { maximumFractionDigits });
+  return number.toLocaleString(undefined, { maximumFractionDigits });
 };
 
 export const formatPercentNumber = (
