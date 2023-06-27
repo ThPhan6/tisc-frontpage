@@ -33,6 +33,7 @@ const ElementInput: FC<{
           containerClass={styles.form_input__element_input}
           onChange={onChange}
           value={value}
+          className="text-capitalize"
         />
         <ActionDeleteIcon
           className={styles.form_input__element_delete_icon}
@@ -96,10 +97,12 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
             className={styles.panel_header__field_title}
             onClick={() => {
               setActiveKey(isEmpty(activeKey) ? ['1'] : []);
-            }}>
+            }}
+          >
             <BodyText
               level={3}
-              customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}>
+              customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}
+            >
               Subcategory
             </BodyText>
             <ArrowIcon
@@ -141,7 +144,8 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
           }}
           header={PanelHeader()}
           key="1"
-          showArrow={false}>
+          showArrow={false}
+        >
           <div className={styles.sub_wrapper}>
             {subcategoryValue.subs.map((category, index: number) => (
               <ElementInput

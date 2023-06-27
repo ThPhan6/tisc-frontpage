@@ -29,6 +29,7 @@ interface CollectionModalProps {
   setChosenValue: (value: DynamicRadioValue) => void;
   brandId: string;
   collectionType: CollectionRelationType;
+  categoryIds: string[];
 }
 
 const setDefaultStatusForItem = (data: DynamicRadioValue[]) => {
@@ -45,6 +46,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   setChosenValue,
   brandId,
   collectionType,
+  categoryIds,
 }) => {
   const [data, setData] = useState<DynamicRadioValue[]>([]);
   const curData = useRef<DynamicRadioValue[]>([]);
@@ -59,7 +61,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
   const getCollectionList = (newData?: DynamicRadioValue, updateCurrentSelect: boolean = true) => {
-    getCollections(brandId, collectionType).then((res) => {
+    getCollections(brandId, collectionType, categoryIds).then((res) => {
       if (res) {
         const curCollectionSelect = newData?.value
           ? newData

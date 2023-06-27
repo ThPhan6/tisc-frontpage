@@ -10,7 +10,7 @@ import { getAllProductCategory } from '@/features/categories/services';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { concat, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { ProductAttributeFormInput } from '../types';
 import { SupportCategories } from '@/features/colorDetection/types';
@@ -248,6 +248,7 @@ export const ProductBasicInfo: React.FC = () => {
         <CollectionModal
           brandId={brand.id}
           collectionType={CollectionRelationType.Brand}
+          categoryIds={categoryChosen?.map((el) => el.id)}
           visible={visible}
           setVisible={setVisible}
           chosenValue={{
