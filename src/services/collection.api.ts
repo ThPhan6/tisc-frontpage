@@ -7,7 +7,7 @@ import type { Collection, CollectionAddPayload, CollectionRelationType } from '@
 export async function getCollections(
   relationId: string,
   relationType: CollectionRelationType,
-  categoryIds: string[],
+  categoryIds?: string[],
 ) {
   return request<{ data: { collections: Collection[] } }>(`/api/collection/get-list`, {
     method: 'GET',
@@ -16,7 +16,7 @@ export async function getCollections(
       pageSize: 99999999,
       relation_id: relationId,
       relation_type: relationType,
-      category_ids: categoryIds,
+      category_ids: categoryIds?.length ? categoryIds.join(',') : [],
     },
   })
     .then((response) => {

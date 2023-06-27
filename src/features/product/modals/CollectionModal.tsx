@@ -29,7 +29,7 @@ interface CollectionModalProps {
   setChosenValue: (value: DynamicRadioValue) => void;
   brandId: string;
   collectionType: CollectionRelationType;
-  categoryIds: string[];
+  categoryIds?: string[];
 }
 
 const setDefaultStatusForItem = (data: DynamicRadioValue[]) => {
