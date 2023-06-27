@@ -249,6 +249,7 @@ export const ProductBasicInfo: React.FC = () => {
           brandId={brand.id}
           collectionType={CollectionRelationType.Brand}
           categoryIds={categoryChosen?.map((el) => el.id)}
+          isCateSupported={activeColorAI}
           visible={visible}
           setVisible={setVisible}
           chosenValue={{
