@@ -109,6 +109,8 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
 
                   onCheckedAttributeOption?.(!!specificationGrp?.haveCheckedOptionAttribute);
                   onCheckedAttributeGroup?.(!!specificationGrp?.haveCheckedAttributeGroup);
+
+                  setCollapsible([]);
                 }
               }}
             >
