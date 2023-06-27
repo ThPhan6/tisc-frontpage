@@ -4,7 +4,11 @@ import { request } from 'umi';
 
 import type { Collection, CollectionAddPayload, CollectionRelationType } from '@/types';
 
-export async function getCollections(relationId: string, relationType: CollectionRelationType) {
+export async function getCollections(
+  relationId: string,
+  relationType: CollectionRelationType,
+  categoryIds: string[],
+) {
   return request<{ data: { collections: Collection[] } }>(`/api/collection/get-list`, {
     method: 'GET',
     params: {
@@ -12,6 +16,7 @@ export async function getCollections(relationId: string, relationType: Collectio
       pageSize: 99999999,
       relation_id: relationId,
       relation_type: relationType,
+      category_ids: categoryIds,
     },
   })
     .then((response) => {
