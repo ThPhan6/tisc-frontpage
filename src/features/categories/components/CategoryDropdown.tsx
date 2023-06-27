@@ -148,9 +148,20 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
                     };
                   })}
                   selected={selected}
-                  onChange={(value) =>
-                    setCheckedCategories((prev) => ({ ...prev, [sub.id]: value }))
-                  }
+                  onChange={(value) => {
+                    const otherSelected = selected?.reduce((finalData, selectedItem) => {
+                      if (!sub.subs.find((option) => option.id === selectedItem.value)) {
+                        finalData.push(selectedItem);
+                      }
+                      return finalData;
+                    }, [] as any);
+
+                    if (otherSelected) {
+                      setCheckedCategories({ ...otherSelected, [sub.id]: value });
+                    }
+
+                    // setCheckedCategories((prev) => ({ ...prev, [sub.id]: value }));
+                  }}
                   isCheckboxList
                   heightItem="36px"
                 />
