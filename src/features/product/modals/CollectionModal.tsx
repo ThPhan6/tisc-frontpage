@@ -7,6 +7,8 @@ import { createCollection, deleteCollection, getCollections, updateCollection } 
 import { trimEnd, trimStart } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
+import { SupportCategories } from '@/features/colorDetection/types';
+import { useAppSelector } from '@/reducers';
 import { CollectionRelationType } from '@/types';
 
 import CustomButton from '@/components/Button';
@@ -30,6 +32,7 @@ interface CollectionModalProps {
   brandId: string;
   collectionType: CollectionRelationType;
   categoryIds?: string[];
+  isCateSupported?: boolean;
 }
 
 const setDefaultStatusForItem = (data: DynamicRadioValue[]) => {
@@ -47,6 +50,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   brandId,
   collectionType,
   categoryIds,
+  isCateSupported,
 }) => {
   const [data, setData] = useState<DynamicRadioValue[]>([]);
   const curData = useRef<DynamicRadioValue[]>([]);
@@ -104,7 +108,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     return () => {
       curData.current = [];
     };
-  }, [brandId]);
+  }, [brandId, isCateSupported]);
 
   /// set current selected value
   useEffect(() => {
