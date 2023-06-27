@@ -291,7 +291,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 attribute: attribute,
               });
 
-              setCollapsible([]);
+              // setCollapsible([]);
 
               const specificationGrp = await onSelectSpecificationOption(
                 groupIndex,
