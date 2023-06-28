@@ -48,7 +48,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
           {hideSelect || isTablet ? null : (
             <CustomButton
               variant="text"
-              buttonClass="select-category-btn"
+              buttonClass="select-category-btn text-capitalize"
               onClick={() => setVisible(true)}
             >
               {label}
