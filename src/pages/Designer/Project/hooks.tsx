@@ -87,8 +87,8 @@ export const renderSpecifiedStatusDropdown =
 
     return (
       <CustomDropDown
-        arrow
         alignRight={false}
+        align={{ offset: [0, 0] }}
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
