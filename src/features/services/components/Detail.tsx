@@ -515,6 +515,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             </tr>
           </table>
         </FormGroup>
+
+        {/* remark */}
+        <TextForm boxShadow label="Remark">
+          {detailData?.remark}
+        </TextForm>
       </EntryFormWrapper>
 
       <PaymentIntent

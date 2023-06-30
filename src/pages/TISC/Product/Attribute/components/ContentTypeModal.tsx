@@ -49,9 +49,10 @@ const ContentTypeDetail: FC<{
   return (
     <CustomCollapse
       header={
-        <span className="text-uppercase">
-          {option.name} ({option.count})
-        </span>
+        <div className="flex-center">
+          <span className="text-uppercase">{option.name}</span>
+          <span style={{ marginLeft: 8 }}>({option.count})</span>
+        </div>
       }
       className="site-collapse-custom-panel"
       arrowAlignRight
@@ -92,7 +93,9 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
         label: (
           <span className="basis-preset-option-group text-capitalize">
             <span>{item.name}</span>
-            <span className="count-number">({item.count})</span>
+            <span className="count-number" style={{ marginLeft: 8 }}>
+              ({item.count})
+            </span>
           </span>
         ),
         value: item.id,
