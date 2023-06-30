@@ -31,7 +31,8 @@ export const ProductVendor: FC = () => {
               Brand Profile
             </BodyText>
           </div>
-        }>
+        }
+      >
         <div className={styles.brandProfileInfo}>
           <div className="info-group">
             <BodyText level={4} customClass="brand-text-info-label">
@@ -105,10 +106,11 @@ export const ProductVendor: FC = () => {
           <div className={styles.brandProfileHeader}>
             <CatelogueIcon />
             <BodyText level={6} fontFamily="Roboto">
-              Catelogue & Download
+              Catalogue & Download
             </BodyText>
           </div>
-        }>
+        }
+      >
         <CatelogueDownload />
       </CustomCollapse>
     </div>
