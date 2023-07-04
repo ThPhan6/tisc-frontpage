@@ -115,14 +115,8 @@ export interface SpecifiedDetail {
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
-  collection?: {
-    id: string;
-    name: string;
-  };
-  categories: {
-    id: string;
-    name: string;
-  }[];
+  collections: GeneralData[];
+  categories: GeneralData[];
   name: string;
   code?: string;
   is_liked?: boolean;
@@ -167,7 +161,7 @@ export interface ProductItemValue {
 
 export interface ProductFormData {
   brand_id: string;
-  collection_id: string;
+  collection_ids: string[];
   category_ids: string[];
   name: string;
   description: string;

@@ -25,7 +25,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
-import { CollectionModal } from '../modals/CollectionModal';
+import { MultiCollectionModal } from '../modals/MultiCollectionModal';
 import styles from './detail.less';
 
 export const getProductVariant = (specGroup: ProductAttributeFormInput[]): string => {
@@ -57,7 +57,9 @@ export const ProductBasicInfo: React.FC = () => {
   /// brand and designer
   const productVariant = useAppSelector(productVariantsSelector);
 
-  const { name, description, collection } = useAppSelector((state) => state.product.details);
+  const { name, description, collections } = useAppSelector((state) => state.product.details);
+  const collectionValue = collections?.length ? collections.map((el) => el.name).join(', ') : '';
+
   const [visible, setVisible] = useState(false);
 
   const categoryChosen = useAppSelector((state) => state.product.details.categories);
@@ -162,6 +164,7 @@ export const ProductBasicInfo: React.FC = () => {
           horizontal
           fontLevel={4}
           label="Collection"
+          inputClass="text-overflow"
           placeholder={editable ? 'create or assign from the list' : ''}
           rightIcon={
             <div className="flex-end">
@@ -184,7 +187,8 @@ export const ProductBasicInfo: React.FC = () => {
             </div>
           }
           noWrap
-          value={collection?.name ?? ''}
+          inputTitle={collectionValue}
+          value={collectionValue}
           readOnly={editable === false}
           containerClass={!editable ? styles.viewInfo : ''}
         />
@@ -245,28 +249,26 @@ export const ProductBasicInfo: React.FC = () => {
         </FormGroup>
       </CustomCollapse>
       {editable && brand?.id ? (
-        <CollectionModal
+        <MultiCollectionModal
           brandId={brand.id}
           collectionType={CollectionRelationType.Brand}
           categoryIds={categoryChosen?.map((el) => el.id)}
           isCateSupported={activeColorAI}
           visible={visible}
           setVisible={setVisible}
-          chosenValue={{
-            value: collection?.id || '',
-            label: collection?.name || '',
-          }}
+          chosenValue={collections?.map((el) => ({
+            value: el?.id || '',
+            label: el?.name || '',
+          }))}
           setChosenValue={(selected) => {
-            if (selected) {
-              dispatch(
-                setPartialProductDetail({
-                  collection: {
-                    name: String(selected.label),
-                    id: String(selected.value),
-                  },
-                }),
-              );
-            }
+            dispatch(
+              setPartialProductDetail({
+                collections: selected.map((el) => ({
+                  name: String(el.label),
+                  id: String(el.value),
+                })),
+              }),
+            );
           }}
         />
       ) : null}

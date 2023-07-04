@@ -134,7 +134,7 @@ const ProductDetailContainer: React.FC = () => {
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
-      collection_id: details.collection?.id || '',
+      collection_ids: details.collections.map((collection) => collection.id),
       name: details.name.trim(),
       description: details.description.trim(),
       general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
@@ -200,13 +200,17 @@ const ProductDetailContainer: React.FC = () => {
 
       const renderCateLabel = (): any => {
         if (!categoriesSelected.length) {
-          return 'select';
+          return (
+            <RobotoBodyText level={4} color="mono-color-medium" style={{ textTransform: 'none' }}>
+              select
+            </RobotoBodyText>
+          );
         }
 
         return (
           <div className="flex-center">
             {categoriesSelected.map((cate, index) => (
-              <div key={cate.id || index} className="flex-center">
+              <div key={cate.id || index} className="flex-center" style={{ marginRight: 8 }}>
                 <RobotoBodyText level={6}>{cate.name}</RobotoBodyText>
                 <DeleteIcon
                   className={styles.deleteIcon}
