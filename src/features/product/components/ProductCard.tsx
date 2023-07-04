@@ -32,13 +32,16 @@ import {
 } from '@/pages/Designer/Products/CustomLibrary/services';
 import { capitalize, truncate } from 'lodash';
 
-import { ProductGetListParameter, ProductItem } from '../types';
+import { setProductList } from '../reducers';
+import { GroupProductList, ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
 
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
+import { CustomInput } from '@/components/Form/CustomInput';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
@@ -362,6 +365,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const loading = useAppSelector(loadingSelector);
   const data = useAppSelector((state) => state.product.list.data);
   const allProducts = useAppSelector((state) => state.product.list.allProducts);
+  const [newData, setNewData] = useState<GroupProductList[]>([]);
+
+  const onChangeDescription =
+    (index: number) => (e: React.ChangeEventHandler<HTMLInputElement>) => {
+      if (!data) {
+        return;
+      }
+
+      const latestData = [...data];
+      latestData[index] = { ...newData[index], description: e.target.value };
+
+      setNewData(latestData);
+    };
 
   if (loading) {
     return null;
@@ -378,17 +394,51 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           groupIndex={index}
           groupName="product-group"
           className={styles.productCardCollapse}
-          customHeaderClass={styles.productCardHeaderCollapse}
+          customHeaderClass={`${styles.productCardHeaderCollapse} ${
+            group.description ? styles.productHeaderCollapse : ''
+          }`}
           key={group.id || index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
           header={
-            <div className="header-text">
-              <BodyText data-text={`${group.name} (${group.count})`} level={5} fontFamily="Roboto">
-                {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
+            <div style={{ width: '100%' }}>
+              <div className="header-text">
+                <BodyText
+                  data-text={`${group.name} (${group.count})`}
+                  level={5}
+                  fontFamily="Roboto"
+                >
+                  {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
 
-                {truncate(capitalize(group.name), { length: 40 })}
-                <span className="product-count">({group.count})</span>
-              </BodyText>
+                  {truncate(capitalize(group.name), { length: 40 })}
+                  <span className="product-count">({group.count})</span>
+                </BodyText>
+              </div>
+              {group.description ? (
+                <div className="border-top-light description">
+                  <div
+                    className="flex-between "
+                    style={{ height: 40, marginRight: 16 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <CustomInput
+                      placeholder="type description"
+                      value={group.description}
+                      onChange={onChangeDescription(index)}
+                    />
+                    <CustomSaveButton
+                      onClick={() => {
+                        store.dispatch(
+                          setProductList({
+                            data: newData,
+                          }),
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : null}
             </div>
           }
         >

@@ -201,6 +201,7 @@ export interface GroupProductList {
   id: string;
   name: string;
   products: ProductItem[];
+  description?: string;
   brand_logo?: string;
 }
 
