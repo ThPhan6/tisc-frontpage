@@ -318,6 +318,8 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
 
+  console.log('selected', selected);
+
   return (
     <Popover
       title="SELECT COLLECTION"

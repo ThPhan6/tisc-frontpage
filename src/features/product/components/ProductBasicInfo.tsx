@@ -53,16 +53,23 @@ export const ProductBasicInfo: React.FC = () => {
   const editable = isTiscAdmin && !isTablet;
 
   const brand = useAppSelector((state) => state.product.brand);
-  const spec = useAppSelector((state) => state.product.details.specification_attribute_groups);
   /// brand and designer
   const productVariant = useAppSelector(productVariantsSelector);
 
-  const { name, description, collections } = useAppSelector((state) => state.product.details);
-  const collectionValue = collections?.length ? collections.map((el) => el.name).join(', ') : '';
+  const {
+    name,
+    description,
+    collection_ids,
+    categories,
+    specification_attribute_groups: spec,
+  } = useAppSelector((state) => state.product.details);
+
+  const collectionValue = collection_ids?.length
+    ? collection_ids.map((el) => el.name).join(', ')
+    : '';
 
   const [visible, setVisible] = useState(false);
 
-  const categoryChosen = useAppSelector((state) => state.product.details.categories);
   const categoryData = useAppSelector((state) => state.category.list);
   const [isCateSupported, setIsCateSupported] = useState<boolean>();
 
@@ -77,7 +84,7 @@ export const ProductBasicInfo: React.FC = () => {
   useEffect(() => {
     let cateSupported = false;
 
-    const categoryIds = categoryChosen?.map((el) => el.id);
+    const categoryIds = categories?.map((el) => el.id);
 
     /// category supported contains its main or sub or itself's wood/stone
     categoryData.forEach((mainCate) => {
@@ -102,7 +109,7 @@ export const ProductBasicInfo: React.FC = () => {
     });
 
     setIsCateSupported(cateSupported);
-  }, [categoryChosen]);
+  }, [categories]);
 
   const images = useAppSelector((state) => state.product.details.images);
   const activeColorAI = isTiscAdmin && !!images.length && isCateSupported;
@@ -140,6 +147,8 @@ export const ProductBasicInfo: React.FC = () => {
 
     return false;
   };
+
+  console.log('collection_ids', collection_ids);
 
   return (
     <>
@@ -252,18 +261,18 @@ export const ProductBasicInfo: React.FC = () => {
         <MultiCollectionModal
           brandId={brand.id}
           collectionType={CollectionRelationType.Brand}
-          categoryIds={categoryChosen?.map((el) => el.id)}
+          categoryIds={categories?.map((el) => el.id)}
           isCateSupported={activeColorAI}
           visible={visible}
           setVisible={setVisible}
-          chosenValue={collections?.map((el) => ({
+          chosenValue={collection_ids?.map((el) => ({
             value: el?.id || '',
             label: el?.name || '',
           }))}
           setChosenValue={(selected) => {
             dispatch(
               setPartialProductDetail({
-                collections: selected.map((el) => ({
+                collection_ids: selected.map((el) => ({
                   name: String(el.label),
                   id: String(el.value),
                 })),

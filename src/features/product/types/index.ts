@@ -115,7 +115,7 @@ export interface SpecifiedDetail {
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
-  collections: GeneralData[];
+  collection_ids: GeneralData[];
   categories: GeneralData[];
   name: string;
   code?: string;
