@@ -59,14 +59,12 @@ export const ProductBasicInfo: React.FC = () => {
   const {
     name,
     description,
-    collection_ids,
+    collections,
     categories,
     specification_attribute_groups: spec,
   } = useAppSelector((state) => state.product.details);
 
-  const collectionValue = collection_ids?.length
-    ? collection_ids.map((el) => el.name).join(', ')
-    : '';
+  const collectionValue = collections?.length ? collections.map((el) => el.name).join(', ') : '';
 
   const [visible, setVisible] = useState(false);
 
@@ -148,8 +146,6 @@ export const ProductBasicInfo: React.FC = () => {
     return false;
   };
 
-  console.log('collection_ids', collection_ids);
-
   return (
     <>
       <CustomCollapse
@@ -182,6 +178,7 @@ export const ProductBasicInfo: React.FC = () => {
                 <ColorDetectionIcon
                   className={setActiveColorAIIcon() ? styles.activeColorIcon : ''}
                   onClick={openColorAI}
+                  style={{ marginLeft: 14 }}
                 />
               ) : null}
 
@@ -265,14 +262,14 @@ export const ProductBasicInfo: React.FC = () => {
           isCateSupported={activeColorAI}
           visible={visible}
           setVisible={setVisible}
-          chosenValue={collection_ids?.map((el) => ({
+          chosenValue={collections?.map((el) => ({
             value: el?.id || '',
             label: el?.name || '',
           }))}
           setChosenValue={(selected) => {
             dispatch(
               setPartialProductDetail({
-                collection_ids: selected.map((el) => ({
+                collections: selected.map((el) => ({
                   name: String(el.label),
                   id: String(el.value),
                 })),

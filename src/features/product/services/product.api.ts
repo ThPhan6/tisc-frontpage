@@ -201,8 +201,6 @@ export const getProductById = async (productId: string) => {
     method: 'GET',
   })
     .then((res) => {
-      console.log('res', res);
-
       store.dispatch(
         setPartialProductDetail({
           ...res.data,

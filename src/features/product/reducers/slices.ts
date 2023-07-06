@@ -12,6 +12,7 @@ import { OrderMethod } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
+import { GeneralData } from '@/types';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
@@ -20,6 +21,7 @@ interface ProductState {
   summary?: ProductSummary;
   details: ProductItem & { referToDesignDocument?: boolean };
   relatedProduct: RelatedCollection[];
+  relatedProductOnView?: GeneralData & { relatedProductData?: RelatedCollection[] };
   list: ProductList;
 }
 
@@ -123,6 +125,12 @@ const productSlice = createSlice({
     setRelatedProduct(state, action: PayloadAction<RelatedCollection[]>) {
       state.relatedProduct = action.payload;
     },
+    onCheckRelatedProduct(
+      state,
+      action?: PayloadAction<GeneralData & { relatedProductData: RelatedCollection[] }>,
+    ) {
+      state.relatedProductOnView = action?.payload ?? { id: '', name: '', relatedProductData: [] };
+    },
     setProductListSearchValue(state, action: PayloadAction<string>) {
       state.list.search = action.payload;
     },
@@ -186,6 +194,7 @@ export const {
   setProductDetailImage,
   setProductList,
   setRelatedProduct,
+  onCheckRelatedProduct,
   setProductListSearchValue,
   setProductListSorter,
   resetProductDetailState,

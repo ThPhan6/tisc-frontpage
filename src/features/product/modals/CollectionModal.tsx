@@ -243,11 +243,13 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           return;
         }
 
-        updateCollection(String(selectedValue.value), newCollectionName).then((isSuccess) => {
-          if (isSuccess) {
-            setData(newData);
-          }
-        });
+        updateCollection(String(selectedValue.value), { name: newCollectionName }).then(
+          (isSuccess) => {
+            if (isSuccess) {
+              setData(newData);
+            }
+          },
+        );
       }
     };
 

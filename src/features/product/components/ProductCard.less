@@ -192,9 +192,14 @@
   :global(.ant-collapse-item .ant-collapse-header-collapsible-only) {
     cursor: pointer;
   }
+
   .productHeaderCollapse {
-    :global(.ant-collapse-arrow) {
-      top: 28% !important;
+    &:global(.ant-collapse-item-active) {
+      :global(.ant-collapse-header) {
+        :global(.ant-collapse-arrow) {
+          top: 28% !important;
+        }
+      }
     }
   }
   .productCardHeaderCollapse {

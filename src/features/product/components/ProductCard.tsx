@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -30,6 +30,7 @@ import {
   duplicateCustomProduct,
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
+import { getCollections, updateCollection } from '@/services';
 import { capitalize, truncate } from 'lodash';
 
 import { setProductList } from '../reducers';
@@ -37,6 +38,7 @@ import { GroupProductList, ProductGetListParameter, ProductItem } from '../types
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
+import { CollectionRelationType } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
@@ -363,21 +365,20 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   hideFavorite = false,
 }) => {
   const loading = useAppSelector(loadingSelector);
-  const data = useAppSelector((state) => state.product.list.data);
-  const allProducts = useAppSelector((state) => state.product.list.allProducts);
-  const [newData, setNewData] = useState<GroupProductList[]>([]);
+  const { data, allProducts } = useAppSelector((state) => state.product.list);
+  const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const onChangeDescription =
-    (index: number) => (e: React.ChangeEventHandler<HTMLInputElement>) => {
-      if (!data) {
-        return;
-      }
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!data) {
+      return;
+    }
 
-      const latestData = [...data];
-      latestData[index] = { ...newData[index], description: e.target.value };
+    const latestData = [...data];
 
-      setNewData(latestData);
-    };
+    latestData[index] = { ...latestData[index], description: e.target.value };
+
+    store.dispatch(setProductList({ data: [...latestData] }));
+  };
 
   if (loading) {
     return null;
@@ -395,9 +396,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           groupName="product-group"
           className={styles.productCardCollapse}
           customHeaderClass={`${styles.productCardHeaderCollapse} ${
-            group.description ? styles.productHeaderCollapse : ''
+            group.description || isTiscAdmin ? styles.productHeaderCollapse : ''
           }`}
-          key={group.id || index}
+          key={index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
           header={
             <div style={{ width: '100%' }}>
@@ -413,7 +414,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   <span className="product-count">({group.count})</span>
                 </BodyText>
               </div>
-              {group.description ? (
+              {group.description || isTiscAdmin ? (
                 <div className="border-top-light description">
                   <div
                     className="flex-between "
@@ -426,16 +427,24 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       placeholder="type description"
                       value={group.description}
                       onChange={onChangeDescription(index)}
-                    />
-                    <CustomSaveButton
-                      onClick={() => {
-                        store.dispatch(
-                          setProductList({
-                            data: newData,
-                          }),
-                        );
+                      style={{
+                        color: isTiscAdmin ? '#2b39d4' : '#000',
+                        cursor: isTiscAdmin ? 'text' : 'default',
+                        border: 'unset',
+                        borderColor: 'unset',
                       }}
+                      disabled={!isTiscAdmin}
                     />
+                    {isTiscAdmin ? (
+                      <CustomSaveButton
+                        onClick={() => {
+                          updateCollection(group.id, {
+                            name: group.name,
+                            description: group.description,
+                          });
+                        }}
+                      />
+                    ) : null}
                   </div>
                 </div>
               ) : null}

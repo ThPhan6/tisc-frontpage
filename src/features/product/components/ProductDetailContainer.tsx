@@ -122,7 +122,7 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    if (!details.collection_ids?.length) {
+    if (!details.collections?.length) {
       message.error('Please select collection');
       return;
     }
@@ -144,7 +144,7 @@ const ProductDetailContainer: React.FC = () => {
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
-      collection_ids: details.collection_ids.map((collection) => collection.id),
+      collection_ids: details.collections.map((collection) => collection.id),
       name: details.name.trim(),
       description: details.description.trim(),
       general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),

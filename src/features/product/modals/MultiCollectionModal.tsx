@@ -260,11 +260,13 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
           return;
         }
 
-        updateCollection(String(selectedValue.value), newCollectionName).then((isSuccess) => {
-          if (isSuccess) {
-            setData(newData);
-          }
-        });
+        updateCollection(String(selectedValue.value), { name: newCollectionName }).then(
+          (isSuccess) => {
+            if (isSuccess) {
+              setData(newData);
+            }
+          },
+        );
       }
     };
 
@@ -317,8 +319,6 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
   };
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
-
-  console.log('selected', selected);
 
   return (
     <Popover
