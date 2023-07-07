@@ -49,6 +49,7 @@ interface InputGroupProps extends CustomInputProps {
   labelColor?: CustomTypography['color'];
   autoResize?: boolean;
   inputTitle?: string;
+  inputClass?: string;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -76,6 +77,7 @@ const InputGroup: FC<InputGroupProps> = ({
   labelColor = 'mono-color',
   autoResize,
   inputTitle,
+  inputClass = '',
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -136,7 +138,7 @@ const InputGroup: FC<InputGroupProps> = ({
             readOnly={rightIcon || readOnly ? true : false}
             className={`input-box ${hasPadding ? 'has-padding' : ''} ${
               colorPrimaryDark ? 'color-primary-dark' : ''
-            }`}
+            } ${inputClass}`}
             style={{
               cursor: onRightIconClick && !disabled ? 'pointer' : 'auto',
             }}

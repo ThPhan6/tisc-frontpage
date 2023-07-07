@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { City } from '../type';
 
@@ -13,21 +13,27 @@ const CityModal: FC<{
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
   setChosenValue: (value: any) => void;
-}> = ({ visible, setVisible, chosenValue, setChosenValue, stateId, countryId }) => {
+}> = forwardRef(({ visible, setVisible, chosenValue, setChosenValue, stateId, countryId }, ref) => {
   const [cities, setCities] = useState<City[]>([]);
 
-  const getCityList = () => {
-    getCitiesByCountryIdAndStateId(countryId, stateId).then((res) => {
-      if (res) {
-        const checked = res.find((item) => item.id === chosenValue.value);
-        if (!checked) {
-          setChosenValue({ value: '', label: '' });
-        } else {
-          setChosenValue({ value: checked.id, label: checked.name });
-        }
-        setCities(res);
+  const getCityList = async () => {
+    if (!countryId || !stateId) {
+      return [];
+    }
+
+    const city = await getCitiesByCountryIdAndStateId(countryId, stateId);
+
+    if (city) {
+      const checked = city.find((item) => item.id === chosenValue.value);
+      if (!checked) {
+        setChosenValue({ value: '', label: '' });
+      } else {
+        setChosenValue({ value: checked.id, label: checked.name });
       }
-    });
+      setCities(city);
+    }
+
+    return city;
   };
 
   useEffect(() => {
@@ -37,6 +43,8 @@ const CityModal: FC<{
       setChosenValue({ value: '', label: '' });
     }
   }, [stateId, countryId]);
+
+  useImperativeHandle(ref, () => cities, [JSON.stringify(cities)]);
 
   return (
     <Popover
@@ -58,5 +66,5 @@ const CityModal: FC<{
       ]}
     />
   );
-};
+});
 export default CityModal;

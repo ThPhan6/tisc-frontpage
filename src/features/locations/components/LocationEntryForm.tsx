@@ -1,5 +1,4 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -74,6 +73,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     label: '',
     value: data.state_id,
   });
+  const cityRef = useRef<any>();
   const [cityData, setCityData] = useState({
     label: '',
     value: data.city_id,
@@ -164,23 +164,72 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   };
 
   const handleSubmit = () => {
+    if (!data.business_name) {
+      message.error('Business name is required');
+      return;
+    }
+
+    if (!data.business_number && !isDesignAdmin) {
+      message.error('Business number is required');
+      return;
+    }
+
+    if (!data.functional_type_ids?.length) {
+      message.error('Functional type is required');
+      return;
+    }
+
+    if (!data.country_id) {
+      message.error('Country is required');
+      return;
+    }
+
+    if (!data.state_id && isTiscUser) {
+      message.error('State is required');
+      return;
+    }
+
+    if (!data.city_id && isTiscUser && cityRef?.current?.length) {
+      message.error('City is required');
+      return;
+    }
+
+    if (!data.address) {
+      message.error('Address is required');
+      return;
+    }
+
+    if (!data.postal_code) {
+      message.error('Postal/Zip Code is required');
+      return;
+    }
+
+    if (!data.general_phone) {
+      message.error('General Phone is required');
+      return;
+    }
+
     /// check email
-    const invalidEmail = getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
-    if (invalidEmail) {
-      message.error(invalidEmail);
+    const invalidEmailMessage = getEmailMessageError(
+      data.general_email,
+      MESSAGE_ERROR.EMAIL_INVALID,
+    );
+
+    if (invalidEmailMessage) {
+      message.error(invalidEmailMessage);
       return;
     }
 
     return onSubmit({
-      business_name: data.business_name?.trim() ?? '',
-      business_number: data.business_number?.trim() ?? '',
+      business_name: data.business_name?.trim(),
+      business_number: data.business_number?.trim(),
       country_id: data.country_id,
       state_id: data.state_id,
       city_id: data.city_id,
-      address: data.address?.trim() ?? '',
-      postal_code: data.postal_code?.trim() ?? '',
-      general_phone: data.general_phone?.trim() ?? '',
-      general_email: data.general_email?.trim() ?? '',
+      address: data.address?.trim(),
+      postal_code: data.postal_code?.trim(),
+      general_phone: data.general_phone?.trim(),
+      general_email: data.general_email?.trim(),
       functional_type_ids: getFunctionalTypes(),
     });
   };
@@ -201,7 +250,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       handleCancel={onCancel}
       handleDelete={handleDeleteLocation}
       entryFormTypeOnMobile={locationId ? 'edit' : 'create'}
-      submitButtonStatus={isSubmitted}>
+      submitButtonStatus={isSubmitted}
+    >
       <InputGroup
         label="Business Name"
         required
@@ -246,7 +296,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Functional Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
+        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}
+      >
         {isDesignAdmin ? (
           <CustomRadio
             options={functionalTypeData as RadioValue[]}
@@ -295,8 +346,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       />
       <InputGroup
         label="State / Province"
-        required
         fontLevel={3}
+        required={isTiscUser}
         value={stateData.label}
         hasPadding
         colorPrimaryDark
@@ -309,8 +360,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       />
       <InputGroup
         label="City / Town"
-        required
         fontLevel={3}
+        required={isTiscUser}
         value={cityData.label}
         hasPadding
         colorPrimaryDark
@@ -405,6 +456,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       />
 
       <CityModal
+        ref={isTiscUser ? cityRef : undefined}
         stateId={data.state_id}
         countryId={data.country_id}
         visible={visible === 'city'}

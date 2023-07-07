@@ -43,10 +43,13 @@ export async function createCollection(data: CollectionAddPayload) {
       return {} as Collection;
     });
 }
-export async function updateCollection(collectionId: string, name: string) {
+export async function updateCollection(
+  collectionId: string,
+  props: { name: string; description?: string },
+) {
   return request(`/api/collection/update/${collectionId}`, {
     method: 'PATCH',
-    data: { name },
+    data: { name: props.name, description: props.description },
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_BRAND_COLLECTION_SUCCESS);
