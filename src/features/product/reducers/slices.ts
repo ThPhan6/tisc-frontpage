@@ -125,7 +125,7 @@ const productSlice = createSlice({
     setRelatedProduct(state, action: PayloadAction<RelatedCollection[]>) {
       state.relatedProduct = action.payload;
     },
-    onCheckRelatedProduct(
+    onShowRelatedProductByCollection(
       state,
       action?: PayloadAction<GeneralData & { relatedProductData: RelatedCollection[] }>,
     ) {
@@ -194,7 +194,7 @@ export const {
   setProductDetailImage,
   setProductList,
   setRelatedProduct,
-  onCheckRelatedProduct,
+  onShowRelatedProductByCollection,
   setProductListSearchValue,
   setProductListSorter,
   resetProductDetailState,

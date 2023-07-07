@@ -1,4 +1,4 @@
-import { FC, memo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
 import { useHistory } from 'umi';
@@ -9,7 +9,11 @@ import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { getMaxLengthText, showImageUrl } from '@/helper/utils';
 
-import { onCheckRelatedProduct } from '../../reducers';
+import {
+  onShowRelatedProductByCollection,
+  setProductSummary,
+  setRelatedProduct,
+} from '../../reducers';
 import { RelatedCollection } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
@@ -31,18 +35,37 @@ const ProductPlaceHolder = () => {
 };
 
 export const ProductCollection: FC = memo(() => {
-  const { relatedProduct, details, relatedProductOnView } = useAppSelector(
-    (state) => state.product,
-  );
+  const { relatedProduct /* origin product related data */, details, relatedProductOnView } =
+    useAppSelector((state) => state.product);
+
+  const [collectionData, setCollectionData] = useState<GeneralData[]>([]);
+
+  /// show product related by collection
   const [relatedProducts, setRelatedProducts] = useState<RelatedCollection[]>([]);
 
   const userRole = useGetUserRoleFromPathname();
 
   const signature = `${useHistory().location.search || ''}${'?new_tab=true'}`;
 
-  if (relatedProduct.length === 0) {
-    return <EmptyOne customClass="product-collection" />;
-  }
+  useEffect(() => {
+    if (details?.collections && relatedProduct?.length) {
+      const collectionIds: string[] = [];
+
+      relatedProduct.forEach((el) => {
+        el.collection_ids.forEach((item) => {
+          collectionIds.push(item);
+        });
+      });
+
+      const newCollectionIds = collectionIds.filter((el, pos, self) => self.indexOf(el) === pos);
+
+      const newCollectionData = details.collections.filter((el) =>
+        newCollectionIds.includes(el.id),
+      );
+
+      setCollectionData(newCollectionData);
+    }
+  }, [relatedProduct]);
 
   const openCollectionRelatedProduct = (collection: GeneralData) => () => {
     const newRelatedProduct = relatedProduct.filter((el) =>
@@ -52,7 +75,7 @@ export const ProductCollection: FC = memo(() => {
     setRelatedProducts(newRelatedProduct);
 
     store.dispatch(
-      onCheckRelatedProduct({
+      onShowRelatedProductByCollection({
         id: collection.id,
         name: collection.name,
         relatedProductData: newRelatedProduct,
@@ -70,7 +93,7 @@ export const ProductCollection: FC = memo(() => {
               style={{ marginRight: 24, cursor: 'pointer', width: 20, height: 20 }}
               onClick={(e) => {
                 e.stopPropagation();
-                store.dispatch(onCheckRelatedProduct({} as any));
+                store.dispatch(onShowRelatedProductByCollection({} as any));
               }}
             >
               <ActionLeftIcon />
@@ -96,8 +119,8 @@ export const ProductCollection: FC = memo(() => {
       );
     }
 
-    if (details.collections?.length >= 2) {
-      return details.collections.map((el, index) => (
+    if (details.collections?.length >= 2 && collectionData.length >= 2) {
+      return collectionData.map((el, index) => (
         <CustomButton
           key={index}
           style={{ margin: '0 8px', background: '#fff', color: '#000', borderRadius: 8 }}
@@ -129,6 +152,10 @@ export const ProductCollection: FC = memo(() => {
 
     return userRole === USER_ROLE.tisc ? <ProductPlaceHolder /> : null;
   };
+
+  if (relatedProduct.length === 0) {
+    return <EmptyOne customClass="product-collection" />;
+  }
 
   return (
     <div className="relative-product-wrapper">

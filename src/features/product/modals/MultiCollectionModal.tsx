@@ -6,7 +6,13 @@ import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
 import { trimEnd, trimStart } from 'lodash';
 
-import { onCheckRelatedProduct } from '../reducers';
+import {
+  onShowRelatedProductByCollection,
+  setPartialProductDetail,
+  setProductDetail,
+  setRelatedProduct,
+} from '../reducers';
+import { RelatedCollection } from '../types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store, { useAppSelector } from '@/reducers';
 import { Collection, CollectionRelationType } from '@/types';
@@ -52,7 +58,7 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
   categoryIds,
   isCateSupported,
 }) => {
-  const relatedProductOnView = useAppSelector((state) => state.product.relatedProductOnView);
+  const { relatedProductOnView, relatedProduct } = useAppSelector((state) => state.product);
   const [data, setData] = useState<DynamicCheckboxValue[]>([]);
   const curData = useRef<DynamicCheckboxValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
@@ -355,7 +361,22 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
 
         if (relatedProductOnView?.id) {
           /// update product related data by collection chosen
-          store.dispatch(onCheckRelatedProduct({} as any));
+          store.dispatch(onShowRelatedProductByCollection({} as any));
+        }
+
+        if (selectedItem.length == 1) {
+          const newRelatedProductData: RelatedCollection[] = [];
+          const newCollectionIds = selectedItem.map((el) => el.value);
+
+          relatedProduct.forEach((el) => {
+            el.collection_ids.forEach((item) => {
+              if (newCollectionIds.includes(item)) {
+                newRelatedProductData.push(el);
+              }
+            });
+          });
+
+          store.dispatch(setRelatedProduct(newRelatedProductData));
         }
 
         handleCloseModal(!visible);

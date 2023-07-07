@@ -177,7 +177,7 @@ export interface ProductFormData {
 }
 export interface RelatedCollection {
   id: string;
-  collection_ids: string;
+  collection_ids: string[];
   name: string;
   images: string[];
   created_at: string;

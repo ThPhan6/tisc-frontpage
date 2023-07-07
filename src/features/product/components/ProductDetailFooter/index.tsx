@@ -5,7 +5,7 @@ import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
 
-// import { onCheckRelatedProduct } from '../../reducers';
+// import { onShowRelatedProductByCollection } from '../../reducers';
 import { ProductInfoTab } from '../ProductAttributes/types';
 import { TabItem } from '@/components/Tabs/types';
 import store, { useAppSelector } from '@/reducers';
@@ -35,7 +35,7 @@ export const ProductDetailFooter: React.FC<{ infoTab: ProductInfoTab }> = memo((
         //   <ActionLeftIcon
         //     onClick={(e) => {
         //       e.stopPropagation();
-        //       store.dispatch(onCheckRelatedProduct({} as any));
+        //       store.dispatch(onShowRelatedProductByCollection({} as any));
         //     }}
         //   />
         // ) : (
