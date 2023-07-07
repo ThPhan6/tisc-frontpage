@@ -115,14 +115,8 @@ export interface SpecifiedDetail {
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
-  collection?: {
-    id: string;
-    name: string;
-  };
-  categories: {
-    id: string;
-    name: string;
-  }[];
+  collections: GeneralData[];
+  categories: GeneralData[];
   name: string;
   code?: string;
   is_liked?: boolean;
@@ -167,7 +161,7 @@ export interface ProductItemValue {
 
 export interface ProductFormData {
   brand_id: string;
-  collection_id: string;
+  collection_ids: string[];
   category_ids: string[];
   name: string;
   description: string;
@@ -183,10 +177,11 @@ export interface ProductFormData {
 }
 export interface RelatedCollection {
   id: string;
-  collection_id: string;
+  collection_ids: string[];
   name: string;
   images: string[];
   created_at: string;
+  isChecking?: boolean;
 }
 
 export interface ProductGetListParameter {
@@ -198,9 +193,10 @@ export interface ProductGetListParameter {
 
 export interface GroupProductList {
   count: number;
-  id: string;
+  id: string; // collection_id
   name: string;
   products: ProductItem[];
+  description?: string;
   brand_logo?: string;
 }
 
