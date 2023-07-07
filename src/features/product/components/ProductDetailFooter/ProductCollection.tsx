@@ -9,16 +9,11 @@ import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { getMaxLengthText, showImageUrl } from '@/helper/utils';
 
-import {
-  onShowRelatedProductByCollection,
-  setProductSummary,
-  setRelatedProduct,
-} from '../../reducers';
+import { onShowRelatedProductByCollection } from '../../reducers';
 import { RelatedCollection } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
-import CustomButton from '@/components/Button';
 import { EmptyOne } from '@/components/Empty';
 
 import { getProductDetailPathname } from '../../utils';
@@ -121,13 +116,13 @@ export const ProductCollection: FC = memo(() => {
 
     if (details.collections?.length >= 2 && collectionData.length >= 2) {
       return collectionData.map((el, index) => (
-        <CustomButton
+        <div
           key={index}
-          style={{ margin: '0 8px', background: '#fff', color: '#000', borderRadius: 8 }}
+          className="placeholder-text-collection"
           onClick={openCollectionRelatedProduct(el)}
         >
-          {el.name}
-        </CustomButton>
+          <span>{el.name}</span>
+        </div>
       ));
     }
 
