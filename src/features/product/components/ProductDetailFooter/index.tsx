@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
 
-import { ReactComponent as ActionLeftIcon } from '@/assets/icons/align-left-icon.svg';
+// import { ReactComponent as ActionLeftIcon } from '@/assets/icons/align-left-icon.svg';
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
 
-import { onCheckRelatedProduct } from '../../reducers';
+// import { onCheckRelatedProduct } from '../../reducers';
 import { ProductInfoTab } from '../ProductAttributes/types';
 import { TabItem } from '@/components/Tabs/types';
 import store, { useAppSelector } from '@/reducers';
@@ -30,17 +30,18 @@ export const ProductDetailFooter: React.FC<{ infoTab: ProductInfoTab }> = memo((
           ? relatedProduct.name
           : 'Collections',
       key: 'collection',
-      icon:
-        relatedProduct?.id && relatedProduct.relatedProductData?.length ? (
-          <ActionLeftIcon
-            onClick={(e) => {
-              e.stopPropagation();
-              store.dispatch(onCheckRelatedProduct({} as any));
-            }}
-          />
-        ) : (
-          <CollectionIcon />
-        ),
+      icon: (
+        // relatedProduct?.id && relatedProduct.relatedProductData?.length ? (
+        //   <ActionLeftIcon
+        //     onClick={(e) => {
+        //       e.stopPropagation();
+        //       store.dispatch(onCheckRelatedProduct({} as any));
+        //     }}
+        //   />
+        // ) : (
+        <CollectionIcon />
+      ),
+      // ),
     },
     { tab: 'Tips', key: 'tip', icon: <TipsIcon /> },
     { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },

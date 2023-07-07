@@ -6,7 +6,9 @@ import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
 import { trimEnd, trimStart } from 'lodash';
 
+import { onCheckRelatedProduct } from '../reducers';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import store, { useAppSelector } from '@/reducers';
 import { Collection, CollectionRelationType } from '@/types';
 
 import CustomButton from '@/components/Button';
@@ -50,6 +52,7 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
   categoryIds,
   isCateSupported,
 }) => {
+  const relatedProductOnView = useAppSelector((state) => state.product.relatedProductOnView);
   const [data, setData] = useState<DynamicCheckboxValue[]>([]);
   const curData = useRef<DynamicCheckboxValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
@@ -349,6 +352,11 @@ export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
             })
             .filter(Boolean) as DynamicCheckboxValue[],
         );
+
+        if (relatedProductOnView?.id) {
+          /// update product related data by collection chosen
+          store.dispatch(onCheckRelatedProduct({} as any));
+        }
 
         handleCloseModal(!visible);
       }}

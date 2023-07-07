@@ -3,6 +3,7 @@ import { FC, memo, useState } from 'react';
 import { USER_ROLE } from '@/constants/userRoles';
 import { useHistory } from 'umi';
 
+import { ReactComponent as ActionLeftIcon } from '@/assets/icons/align-left-icon.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
@@ -62,7 +63,19 @@ export const ProductCollection: FC = memo(() => {
   const renderRelatedProduct = () => {
     if (relatedProductOnView?.id && relatedProducts?.length) {
       return (
-        <div className="flex-start">
+        <div className="flex-start" style={{ marginLeft: 24 }}>
+          <div className="flex-start" style={{ background: '#E6E6E6', height: 72 }}>
+            <div
+              title="Back to collection"
+              style={{ marginRight: 24, cursor: 'pointer', width: 20, height: 20 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                store.dispatch(onCheckRelatedProduct({} as any));
+              }}
+            >
+              <ActionLeftIcon />
+            </div>
+          </div>
           {relatedProducts.map((item, key) => (
             <a
               key={key}
@@ -87,7 +100,7 @@ export const ProductCollection: FC = memo(() => {
       return details.collections.map((el, index) => (
         <CustomButton
           key={index}
-          style={{ margin: '0 8px' }}
+          style={{ margin: '0 8px', background: '#fff', color: '#000', borderRadius: 8 }}
           onClick={openCollectionRelatedProduct(el)}
         >
           {el.name}
