@@ -6,7 +6,15 @@ import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
 import { trimEnd, trimStart } from 'lodash';
 
-import { RadioValue } from '@/components/CustomRadio/types';
+import {
+  onShowRelatedProductByCollection,
+  setPartialProductDetail,
+  setProductDetail,
+  setRelatedProduct,
+} from '../reducers';
+import { RelatedCollection } from '../types';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import store, { useAppSelector } from '@/reducers';
 import { Collection, CollectionRelationType } from '@/types';
 
 import CustomButton from '@/components/Button';
@@ -18,29 +26,29 @@ import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import styles from './index.less';
 
-interface DynamicRadioValue extends RadioValue, Partial<Collection> {
+export interface DynamicCheckboxValue extends CheckboxValue, Partial<Collection> {
   editLabel?: boolean;
 }
 
-interface CollectionModalProps {
+interface MultiCollectionModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  chosenValue: DynamicRadioValue;
-  setChosenValue: (value: DynamicRadioValue) => void;
+  chosenValue: DynamicCheckboxValue[];
+  setChosenValue: (value: DynamicCheckboxValue[]) => void;
   brandId: string;
   collectionType: CollectionRelationType;
   categoryIds?: string[];
   isCateSupported?: boolean;
 }
 
-const setDefaultStatusForItem = (data: DynamicRadioValue[]) => {
+const setDefaultStatusForItem = (data: DynamicCheckboxValue[]) => {
   for (const element of data) {
     element.disabled = false;
     element.editLabel = false;
   }
 };
 
-export const CollectionModal: FC<CollectionModalProps> = ({
+export const MultiCollectionModal: FC<MultiCollectionModalProps> = ({
   visible,
   setVisible,
   chosenValue,
@@ -50,39 +58,48 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   categoryIds,
   isCateSupported,
 }) => {
-  const [data, setData] = useState<DynamicRadioValue[]>([]);
-  const curData = useRef<DynamicRadioValue[]>([]);
+  const { relatedProductOnView, relatedProduct } = useAppSelector((state) => state.product);
+  const [data, setData] = useState<DynamicCheckboxValue[]>([]);
+  const curData = useRef<DynamicCheckboxValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
 
   /// collection item
-  const [selected, setSelected] = useState<DynamicRadioValue>({ value: '', label: '' });
+  const [selected, setSelected] = useState<DynamicCheckboxValue[]>([]);
 
   const [editable, setEditable] = useState<boolean>(false);
 
   /// for handle edit
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
-  const getCollectionList = (newData?: DynamicRadioValue, updateCurrentSelect: boolean = true) => {
+  const getCollectionList = (
+    newData?: DynamicCheckboxValue,
+    updateCurrentSelect: boolean = true,
+  ) => {
     getCollections(brandId, collectionType, categoryIds).then((res) => {
       if (res) {
         const curCollectionSelect = newData?.value
-          ? newData
-          : selected.value
+          ? [newData]
+          : selected?.length
           ? selected
           : chosenValue;
 
         if (updateCurrentSelect) {
-          const chosenOption = res.find(
-            (item) =>
-              item.id === curCollectionSelect.value && item.name === curCollectionSelect.label,
-          );
+          setSelected(
+            res
+              .map((item) => {
+                if (
+                  curCollectionSelect?.some((el) => el.value === item.id && item.name === el.label)
+                ) {
+                  return {
+                    value: item.id,
+                    label: item.name,
+                  };
+                }
 
-          if (chosenOption) {
-            setSelected({
-              value: chosenOption.id,
-              label: chosenOption.name,
-            });
-          }
+                return undefined;
+              })
+              .filter(Boolean) as DynamicCheckboxValue[],
+          );
         }
 
         const currentData = res.map((item) => ({
@@ -111,20 +128,29 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   /// set current selected value
   useEffect(() => {
     if (data.length) {
-      const chosenOption = data.find((item) => item.value === chosenValue.value);
-      if (chosenOption) {
-        setSelected({
-          value: chosenOption.value,
-          label: chosenOption.label,
-        });
-      } else {
-        setSelected({
-          value: '',
-          label: '',
-        });
+      const chosenOption: DynamicCheckboxValue[] = [];
+
+      data.forEach((el) => {
+        if (chosenValue.find((item) => item.value === el.value)) {
+          chosenOption.push(el);
+        }
+      });
+
+      if (chosenOption.length) {
+        setSelected(
+          data
+            .map((el) => {
+              if (chosenValue.some((item) => item.value === el.value)) {
+                return el;
+              }
+
+              return undefined;
+            })
+            .filter(Boolean) as DynamicCheckboxValue[],
+        );
       }
     }
-  }, [chosenValue.value]);
+  }, [chosenValue]);
 
   // set default value when close popup
   useEffect(() => {
@@ -174,7 +200,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   };
 
   const onChangeCollectionNameAssigned =
-    (selectedValue: DynamicRadioValue, index: number) =>
+    (selectedValue: DynamicCheckboxValue, index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -191,7 +217,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     };
 
   const handleEditNameAssigned =
-    (type: 'save' | 'cancel', index: number, selectedValue: DynamicRadioValue) =>
+    (type: 'save' | 'cancel', index: number, selectedValue: DynamicCheckboxValue) =>
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -259,12 +285,9 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
       deleteCollection(collectionId).then((isSuccess) => {
         if (isSuccess) {
-          if (chosenValue.value === collectionId) {
+          if (chosenValue?.some((el) => el.value === collectionId)) {
             // update data selected
-            setChosenValue({
-              value: '',
-              label: '',
-            });
+            setChosenValue(chosenValue.filter((el) => el.value === collectionId));
           }
 
           /// update data
@@ -274,7 +297,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     });
   };
 
-  const handleEdit = (selectedValue: DynamicRadioValue, index: number) => {
+  const handleEdit = (selectedValue: DynamicCheckboxValue, index: number) => {
     // set default value for all items
     setDefaultStatusForItem(data);
 
@@ -291,7 +314,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
       });
 
       const newData = [...data];
-      const chosenCollection: DynamicRadioValue = {
+      const chosenCollection: DynamicCheckboxValue = {
         label: foundedItem.label,
         value: foundedItem.value,
         disabled: false,
@@ -315,21 +338,45 @@ export const CollectionModal: FC<CollectionModalProps> = ({
       secondaryModal
       disabledSubmit={!data.length || disabledSubmit}
       chosenValue={selected}
-      setChosenValue={(selectedItem: RadioValue) => {
-        const chosenItem = data.find((item) => item.value === selectedItem.value);
-        if (chosenItem) {
-          // active submit btn
-          setDisabledSubmit(false);
+      setChosenValue={(selectedItem: CheckboxValue[]) => {
+        // active submit btn
+        setDisabledSubmit(false);
 
-          // popup being closed, then
-          // set default each collection's edit and disabled status
-          setDefaultStatusForItem(data);
+        // popup being closed, then
+        // set default each collection's edit and disabled status
+        setDefaultStatusForItem(data);
 
-          // update data when click to submit
-          setChosenValue({
-            value: chosenItem.value,
-            label: chosenItem.label,
+        // update data when click to submit
+        setChosenValue(
+          data
+            .map((el) => {
+              if (selectedItem.some((item) => item.value === el.value)) {
+                return el;
+              }
+
+              return undefined;
+            })
+            .filter(Boolean) as DynamicCheckboxValue[],
+        );
+
+        if (relatedProductOnView?.id) {
+          /// update product related data by collection chosen
+          store.dispatch(onShowRelatedProductByCollection({} as any));
+        }
+
+        if (selectedItem.length == 1) {
+          const newRelatedProductData: RelatedCollection[] = [];
+          const newCollectionIds = selectedItem.map((el) => el.value);
+
+          relatedProduct.forEach((el) => {
+            el.collection_ids.forEach((item) => {
+              if (newCollectionIds.includes(item)) {
+                newRelatedProductData.push(el);
+              }
+            });
           });
+
+          store.dispatch(setRelatedProduct(newRelatedProductData));
         }
 
         handleCloseModal(!visible);
@@ -352,95 +399,98 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           </div>
         </div>
       }
-      groupRadioList={[
-        {
-          heading: 'Assign bellow collection',
-          options: data?.map((item, index) => {
-            return {
-              disabled: item.disabled || item.editLabel,
-              value: item.value,
-              label: (
-                <div
-                  className={`${styles.labelContent} ${
-                    item.disabled || item.editLabel ? styles.inactiveMenu : ''
-                  } ${item.disabled ? 'cursor-default' : ''} `}
-                >
-                  {!item.editLabel ? (
-                    <RobotoBodyText level={6}>{item.label}</RobotoBodyText>
-                  ) : (
-                    <div className={styles.actionBtn} key={String(item.value) || index}>
-                      <CustomInput
-                        autoFocus={editable}
-                        placeholder="type here"
-                        className={styles.paddingLeftNone}
-                        value={String(item.label)}
-                        onChange={onChangeCollectionNameAssigned(item, index)}
-                      />
-                      <div
-                        className="cursor-default flex-start"
-                        style={{ height: '100%', marginLeft: 8 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                        }}
-                      >
-                        <CustomButton
-                          size="small"
-                          variant="primary"
-                          properties="rounded"
-                          buttonClass={styles.btnSize}
-                          onClick={handleEditNameAssigned('save', index, item)}
-                        >
-                          Save
-                        </CustomButton>
-                        <CustomButton
-                          size="small"
-                          variant="primary"
-                          properties="rounded"
-                          buttonClass={styles.btnSize}
-                          onClick={handleEditNameAssigned('cancel', index, item)}
-                        >
-                          Cancel
-                        </CustomButton>
-                      </div>
-                    </div>
-                  )}
-
-                  {item.relation_type !== CollectionRelationType.Color ? (
+      checkboxList={{
+        isSelectAll: false,
+        heading: (
+          <MainTitle customClass="title" level={3}>
+            Assign bellow collection
+          </MainTitle>
+        ),
+        options: data?.map((item, index) => {
+          return {
+            disabled: item.disabled || item.editLabel,
+            value: item.value,
+            label: (
+              <div
+                className={`${styles.labelContent} ${
+                  item.disabled || item.editLabel ? styles.inactiveMenu : ''
+                } ${item.disabled ? 'cursor-default' : ''} `}
+              >
+                {!item.editLabel ? (
+                  <RobotoBodyText level={6}>{item.label}</RobotoBodyText>
+                ) : (
+                  <div className={styles.actionBtn} key={String(item.value) || index}>
+                    <CustomInput
+                      autoFocus={editable}
+                      placeholder="type here"
+                      className={styles.paddingLeftNone}
+                      value={String(item.label)}
+                      onChange={onChangeCollectionNameAssigned(item, index)}
+                    />
                     <div
-                      style={{ cursor: 'default' }}
+                      className="cursor-default flex-start"
+                      style={{ height: '100%', marginLeft: 8 }}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
                       }}
                     >
-                      <ActionMenu
-                        disabled={item.disabled || item.editLabel}
-                        className={`${styles.marginSpace} ${
-                          item.disabled ? 'mono-color-medium' : 'mono-color'
-                        } `}
-                        overlayClassName={styles.actionMenuOverLay}
-                        editActionOnMobile={false}
-                        actionItems={[
-                          {
-                            type: 'updated',
-                            label: 'Edit',
-                            onClick: () => handleEdit(item, index),
-                          },
-                          {
-                            type: 'deleted',
-                            onClick: () => handleDelete(String(item.value)),
-                          },
-                        ]}
-                      />
+                      <CustomButton
+                        size="small"
+                        variant="primary"
+                        properties="rounded"
+                        buttonClass={styles.btnSize}
+                        onClick={handleEditNameAssigned('save', index, item)}
+                      >
+                        Save
+                      </CustomButton>
+                      <CustomButton
+                        size="small"
+                        variant="primary"
+                        properties="rounded"
+                        buttonClass={styles.btnSize}
+                        onClick={handleEditNameAssigned('cancel', index, item)}
+                      >
+                        Cancel
+                      </CustomButton>
                     </div>
-                  ) : null}
-                </div>
-              ),
-            };
-          }),
-        },
-      ]}
+                  </div>
+                )}
+
+                {item.relation_type !== CollectionRelationType.Color ? (
+                  <div
+                    style={{ cursor: 'default' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                  >
+                    <ActionMenu
+                      disabled={item.disabled || item.editLabel}
+                      className={`${styles.marginSpace} ${
+                        item.disabled ? 'mono-color-medium' : 'mono-color'
+                      } `}
+                      overlayClassName={styles.actionMenuOverLay}
+                      editActionOnMobile={false}
+                      actionItems={[
+                        {
+                          type: 'updated',
+                          label: 'Edit',
+                          onClick: () => handleEdit(item, index),
+                        },
+                        {
+                          type: 'deleted',
+                          onClick: () => handleDelete(String(item.value)),
+                        },
+                      ]}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            ),
+          };
+        }),
+      }}
     />
   );
 };

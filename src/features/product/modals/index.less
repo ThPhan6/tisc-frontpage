@@ -19,6 +19,23 @@
     }
   }
 
+  :global(.title) {
+    display: flex;
+    align-items: center;
+    height: 36px;
+  }
+
+  :global(.item-wrapper-custom) {
+    height: 32px;
+    padding-left: 0;
+
+    :global(.item-option-uncheck),
+    :global(.item-option-checked) {
+      flex: 1;
+      margin-right: 0 !important;
+    }
+  }
+
   .paddingLeftNone {
     padding-left: 0;
   }
