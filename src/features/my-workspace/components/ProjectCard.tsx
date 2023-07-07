@@ -10,7 +10,13 @@ import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-ico
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
+import {
+  formatNumber,
+  getDesignDueDay,
+  getFullName,
+  getValueByCondition,
+  updateUrlParams,
+} from '@/helper/utils';
 
 import { setBrand } from '@/features/product/reducers';
 import { ProjectListProps } from '@/features/project/types';
@@ -77,11 +83,13 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       return (
         <>
           <div className={styles.brandName}>
-            <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
-              {info.name}
-            </BodyText>
+            <div className="flex-between">
+              <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
+                {info.name}
+              </BodyText>
+              <LogoIcon logo={info.logo} /* className={styles.img} */ size={24} />
+            </div>
           </div>
-          <LogoIcon logo={info.logo} className={styles.img} size={24} />
           <BodyText level={6} fontFamily="Roboto">
             {info.country}
           </BodyText>
@@ -113,7 +121,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             </div>
             <div className={styles.middleValue}>
               <BodyText level={6} fontFamily="Roboto">
-                {info.category_count}
+                {formatNumber(info.category_count)}
               </BodyText>
             </div>
           </div>
@@ -123,7 +131,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             </div>
             <div className={styles.middleValue}>
               <BodyText level={6} fontFamily="Roboto">
-                {info.collection_count}
+                {formatNumber(info.collection_count)}
               </BodyText>
             </div>
           </div>
@@ -133,7 +141,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             </div>
             <div className={styles.middleValue}>
               <BodyText level={6} fontFamily="Roboto">
-                {info.card_count}
+                {formatNumber(info.card_count)}
               </BodyText>
             </div>
           </div>

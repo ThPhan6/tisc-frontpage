@@ -46,13 +46,9 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
         <div className={styles.leftAction}>
           <Title level={7}>{title}</Title>
           {hideSelect || isTablet ? null : (
-            <CustomButton
-              variant="text"
-              buttonClass="select-category-btn"
-              onClick={() => setVisible(true)}
-            >
+            <div className="select-category text-capitalize" onClick={() => setVisible(true)}>
               {label}
-            </CustomButton>
+            </div>
           )}
         </div>
         <div className={styles.iconWrapper}>

@@ -44,7 +44,12 @@
       height: auto;
       min-height: 32px;
       white-space: nowrap;
-      table-layout: fixed;
+      // table-layout: fixed;
+
+      tr {
+        display: flex;
+        align-items: center;
+      }
 
       td {
         height: 32px;
@@ -58,13 +63,17 @@
       }
 
       .text {
-        width: 30%;
-        padding: 0 24px 0 16px;
+        min-width: 176px;
+        // width: 30%;
+        padding: 0 16px;
         text-transform: capitalize;
       }
 
       .url {
-        width: 70%;
+        flex-grow: 1;
+        // width: 70%;
+        width: 0;
+        max-width: 100%;
       }
     }
   }

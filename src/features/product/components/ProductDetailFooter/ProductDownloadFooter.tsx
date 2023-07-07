@@ -52,9 +52,11 @@ const ProductDownloadFooter: FC = () => {
       />
     );
   }
+
   if (isEmpty(downloads)) {
     return <EmptyOne />;
   }
+
   return (
     <div className={styles.downloadFooter}>
       <table>

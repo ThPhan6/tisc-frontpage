@@ -346,6 +346,7 @@ export const MESSAGE_NOTIFICATION = {
   /// billed services // payment intent
   CREATE_PAYMENT_INTENT_SUCCESS: 'Create payment intent successfully',
   CREATE_PAYMENT_INTENT_ERROR: 'Failed to create payment intent',
+  UPDATE_PAID_TEMPRORARILY_ERROR: 'Failure to temporarily update paid for payment intent',
 
   //schedule booking
   CREATE_BOOKING_SUCCESS: 'Book a demo successfully',

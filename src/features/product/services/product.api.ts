@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
+// import { TablePaginationConfig } from 'antd/es/table/interface';
 import { request } from 'umi';
 
 import { debounce } from 'lodash';
@@ -24,6 +25,7 @@ import {
   ProductSummary,
   RelatedCollection,
 } from '../types';
+import { PaginationResponse } from '@/components/Table/types';
 import { SelectSpecificationBodyRequest } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import store from '@/reducers';
@@ -103,20 +105,56 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
     });
 };
 
-export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
+export const getProductListForDesigner = async (
+  params: GetListProductForDesignerRequestParams,
+  props?: { isConcat?: boolean },
+) => {
   return request<{
     data?: GroupProductList[];
     brand_summary?: BrandSummary;
     allProducts?: ProductItem[];
+    pagination?: PaginationResponse;
   }>(`/api/product/design/get-list`, {
     method: 'GET',
     params,
   })
-    .then(({ data, brand_summary, allProducts }) => {
-      store.dispatch(setProductList({ data, brandSummary: brand_summary, allProducts }));
+    .then(({ data, brand_summary, allProducts, pagination }) => {
+      const newPagination = {
+        current: pagination?.page || 1,
+        pageSize: pagination ? pagination.page_size : params.pageSize || 20,
+        total: pagination?.total || 0,
+        pageCount: pagination?.page_count || 0,
+      };
+
+      const oldProducts = store.getState().product.list.allProducts;
+
+      if (props?.isConcat) {
+        store.dispatch(
+          setProductList({
+            data,
+            brandSummary: brand_summary,
+            allProducts: oldProducts?.concat(allProducts ?? []),
+            pagination: newPagination,
+          }),
+        );
+      } else {
+        store.dispatch(
+          setProductList({
+            data,
+            brandSummary: brand_summary,
+            allProducts,
+            pagination: newPagination,
+          }),
+        );
+      }
+      return { allProducts, pagination: newPagination };
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
+      return {
+        allProducts: [],
+        pagination: { current: 1, pageSize: 20, total: 0, pageCount: 1 },
+      };
     });
 };
 

@@ -81,6 +81,8 @@ export interface PopoverProps {
   secondaryModal?: boolean;
 
   maskClosable?: boolean;
+
+  width?: string | number;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -111,6 +113,7 @@ const Popover: FC<PopoverProps> = ({
   forceUpdateCurrentValue = true,
   secondaryModal,
   maskClosable,
+  width,
 }) => {
   const { isMobile } = useScreen();
 
@@ -309,7 +312,7 @@ const Popover: FC<PopoverProps> = ({
         maskClosable={maskClosable}
         visible={visible}
         onCancel={onCancel}
-        width={576}
+        width={width ? width : 576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
         className={`${styles.customPopover} ${className ?? ''}`}

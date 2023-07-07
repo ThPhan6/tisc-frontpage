@@ -4,14 +4,6 @@
   margin-bottom: 8px;
 }
 
-.monoColor {
-  :global(.select-category-btn) {
-    padding-left: 16px;
-    color: @mono-color !important;
-    transition: none;
-  }
-}
-
 .container {
   flex-flow: column !important;
   justify-content: space-between;
@@ -409,7 +401,7 @@
   :global(.footer-content) {
     width: 100%;
     &:global(.collection) {
-      padding: 8px;
+      padding: 8px 8px 8px 0;
       overflow: auto hidden;
       box-shadow: @border-bottom-light;
     }
@@ -438,6 +430,7 @@
         align-items: center;
         :global(.relative-product-item) {
           position: relative;
+          display: block;
           width: 72px;
           margin-right: 8px;
           padding-top: 72px;
@@ -615,5 +608,25 @@
   }
   textarea {
     padding: 4px 0;
+  }
+}
+
+.activeColorIcon {
+  path {
+    fill: @mono-color;
+  }
+}
+
+.deleteIcon {
+  margin-left: 4px;
+  transition: all 0.3s;
+  path {
+    fill: @mono-color-dark !important;
+  }
+
+  &:hover {
+    path {
+      fill: @primary-color-dark !important;
+    }
   }
 }

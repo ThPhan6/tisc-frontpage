@@ -281,6 +281,7 @@ export const useProductListFilterAndSorter = (fetchs: {
   const brandSummary = useAppSelector((state) => state.product.list.brandSummary);
   const productBrand = useAppSelector((state) => state.product.brand);
   const productSummary = useAppSelector((state) => state.product.summary);
+  const pagination = useAppSelector((state) => state.product.list.pagination);
 
   const resetAllProductList = () => {
     dispatch(
@@ -418,6 +419,7 @@ export const useProductListFilterAndSorter = (fetchs: {
     brandSummary,
     productBrand,
     productSummary,
+    pagination,
     renderItemTopBar,
     renderFilterDropdown,
     resetProductListSorter,

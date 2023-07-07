@@ -9,7 +9,7 @@ import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
 import { getProductListForDesigner } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
-import { removeUrlParams, setUrlParams } from '@/helper/utils';
+import { formatNumber, removeUrlParams, setUrlParams } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import {
@@ -42,6 +42,11 @@ const BrandProductListPage: React.FC = () => {
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
 
+  /// to prevent load more data while api is calling
+  const [isLoading, setIsLoading] = useState(false);
+  /// check if have more data when its limit
+  const [isLoadMoreData, setIsLoadMoreData] = useState(false);
+
   const {
     filter,
     sort,
@@ -49,6 +54,7 @@ const BrandProductListPage: React.FC = () => {
     search,
     categories,
     brandSummary,
+    pagination,
     dispatch,
     renderFilterDropdown,
     renderItemTopBar,
@@ -67,6 +73,8 @@ const BrandProductListPage: React.FC = () => {
         removeUrlParams('search');
       }
       setSearchCount((prev) => prev + 1);
+      /// scroll to top
+      window.scrollTo({ top: 0 });
     }, 300),
     [setSearchCount],
   );
@@ -87,29 +95,76 @@ const BrandProductListPage: React.FC = () => {
     /// clear all product
     return () => {
       dispatch(resetProductState());
+      window.removeEventListener('onscroll', () => {});
     };
   }, []);
+
+  const getProductList = async (props: { page: number; isConcat: boolean }) => {
+    setIsLoading(true);
+    await getProductListForDesigner(
+      {
+        category_id:
+          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+        name: searchInputRef.current?.input?.value || undefined,
+        sort: sort?.sort,
+        order: sort?.order,
+        page: props.page,
+        pageSize: filter?.value ? 99999 : 20,
+      },
+      { isConcat: props.isConcat },
+    )
+      .then((result) => {
+        setIsLoading(false);
+        const { current, total, pageSize } = result.pagination;
+        const isLoadMore = (current - 1) * pageSize + (result.allProducts?.length || 0) < total;
+        setIsLoadMoreData(isLoadMore);
+        if (isLoadMore) {
+          setTimeout(() => {
+            if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 50) {
+              getProductList({ page: current + 1, isConcat: true });
+            }
+          }, 200);
+        }
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const onCheckAtBottomPage = () => {
+    // you're at the bottom of the page
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 50) {
+      setIsLoading(true);
+      getProductList({ page: pagination.current ? pagination.current + 1 : 1, isConcat: true });
+    }
+  };
+
+  window.onscroll = () => {
+    if (isLoading || !isLoadMoreData) {
+      return;
+    }
+    onCheckAtBottomPage();
+  };
 
   useEffect(() => {
     firstLoad.setValue(false);
 
     dispatch(setProductList({ data: [] }));
 
-    const noFiltering = !filter && !sort && !search;
+    const noFiltering = !filter && !sort && !searchInputRef.current?.input?.value;
 
-    // Prevent first laod call both no-filter api and have-filter api
+    // Prevent first load call both no-filter api and have-filter api
     if ((cate_id || brand_id || sort_order || searchParam) && noFiltering && firstLoad.value) {
       return;
     }
+    setIsLoading(true);
 
-    getProductListForDesigner({
-      category_id:
-        filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-      brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-      name: search || undefined,
-      sort: sort?.sort,
-      order: sort?.order,
-    });
+    getProductList({ page: 1, isConcat: false });
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
@@ -195,9 +250,9 @@ const BrandProductListPage: React.FC = () => {
             </div>
 
             <div className="flex-end">
-              {renderInfoItem('Collections', brandSummary.collection_count)}
-              {renderInfoItem('Cards', brandSummary.card_count)}
-              {renderInfoItem('Products', brandSummary.product_count, true)}
+              {renderInfoItem('Collections', formatNumber(brandSummary.collection_count))}
+              {renderInfoItem('Cards', formatNumber(brandSummary.card_count))}
+              {renderInfoItem('Products', formatNumber(brandSummary.product_count), true)}
             </div>
           </>
         ) : undefined

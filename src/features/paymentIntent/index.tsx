@@ -4,7 +4,8 @@ import { message } from 'antd';
 
 import { getOneService } from '../services/api';
 import { ServicesResponse } from '../services/type';
-import { createPaymentIntent } from './services';
+import { formatToMoneyValue } from '../services/util';
+import { createPaymentIntent, updatePaidStatusTemprorarily } from './services';
 import { useGetParamId } from '@/helper/hook';
 
 import { PAYMENT_INTENT_DEFAULT, PaymentIntentResponse } from './types';
@@ -21,19 +22,21 @@ interface PaymentIntentProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   onPaymentSuccess?: (data: ServicesResponse) => void;
+  onPaymentProcessing?: (isProcessing: boolean) => void;
 }
 
 export const PaymentIntent: FC<PaymentIntentProps> = ({
   visible,
   setVisible,
   onPaymentSuccess,
+  onPaymentProcessing,
 }) => {
   const [paymentIntentData, setPaymentIntentData] =
     useState<PaymentIntentResponse>(PAYMENT_INTENT_DEFAULT);
 
   const billId = useGetParamId();
 
-  const [elementShow, setElementShow] = useState<boolean>(false); // Example, set element show state
+  // const [elementShow, setElementShow] = useState<boolean>(false); // Example, set element show state
   const [errorMessage, setErrorMessage] = useState<string>(''); // Example: set error state
 
   let dropIn: any;
@@ -46,13 +49,16 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
     setPaymentIntentData(paymentData);
 
     loadAirwallex({
-      env: 'demo', // Can choose other production environments, 'staging | 'demo' | 'prod'
+      env: AIRWALLEX_ENVIRONMENT, // Can choose other production environments, 'staging | 'demo' | 'prod'
       origin: window.location.origin, // Setup your event target to receive the browser events message
     }).then(async () => {
       dropIn = createElement(paymentIntegration, {
         intent_id: paymentData.id,
         client_secret: paymentData.client_secret,
         currency: paymentData.currency,
+        applePayRequestOptions: {
+          countryCode: 'SG',
+        },
       });
 
       if (!dropIn) {
@@ -69,14 +75,18 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
 
     createNewPayment();
 
-    const onReady = () => {
-      setElementShow(true);
-      // console.log(`Element is mounted: ${JSON.stringify(event)}`);
-    };
+    // const onReady = () => {
+    //   setElementShow(true);
+    //   // console.log(`Element is mounted: ${JSON.stringify(event)}`);
+    // };
 
     const onSuccess = () => {
       // payment succeeded, then close popup
       setVisible(false);
+
+      updatePaidStatusTemprorarily(billId).then((isProcessing) => {
+        onPaymentProcessing?.(isProcessing);
+      });
 
       /// update billed data
       setTimeout(() => {
@@ -87,7 +97,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         });
       }, 1000);
 
-      message.success('The payment was successful, no further action required.');
+      message.success('The payment is being processed, no further action required.');
     };
 
     const onError = (event: any) => {
@@ -97,12 +107,12 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
       // console.error('There was an error', error);
     };
 
-    window.addEventListener('onReady', onReady);
+    // window.addEventListener('onReady', onReady);
     window.addEventListener('onSuccess', onSuccess);
     window.addEventListener('onError', onError);
 
     return () => {
-      window.removeEventListener('onReady', onReady);
+      // window.removeEventListener('onReady', onReady);
       window.removeEventListener('onSuccess', onSuccess);
       window.removeEventListener('onError', onError);
 
@@ -130,7 +140,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
         </BodyText>
 
         <BodyText fontFamily="Roboto" level={4} style={{ fontWeight: 400 }}>
-          {paymentIntentData.currency} ${paymentIntentData.amount}
+          {paymentIntentData.currency} ${formatToMoneyValue(paymentIntentData.amount)}
         </BodyText>
       </div>
 
@@ -152,7 +162,7 @@ export const PaymentIntent: FC<PaymentIntentProps> = ({
           style={{
             width: '100%',
             margin: '48px auto',
-            display: elementShow ? 'block' : 'none', // Example: only show element when mounted
+            // display: elementShow ? 'block' : 'none', // Example: only show element when mounted
           }}
         />
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -30,15 +30,20 @@ import {
   duplicateCustomProduct,
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
+import { getCollections, updateCollection } from '@/services';
 import { capitalize, truncate } from 'lodash';
 
-import { ProductGetListParameter, ProductItem } from '../types';
+import { setProductList } from '../reducers';
+import { GroupProductList, ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
+import { CollectionRelationType } from '@/types';
 
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
+import { CustomInput } from '@/components/Form/CustomInput';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
@@ -267,7 +272,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className={styles.imageWrapper_image}
           />
           <div className={styles.imagePlaceholder}>
-            <BodyText level={5} fontFamily="Roboto">
+            <BodyText level={5} fontFamily="Roboto" style={{ fontSize: 13 }}>
               {product.description}
             </BodyText>
           </div>
@@ -360,8 +365,20 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   hideFavorite = false,
 }) => {
   const loading = useAppSelector(loadingSelector);
-  const data = useAppSelector((state) => state.product.list.data);
-  const allProducts = useAppSelector((state) => state.product.list.allProducts);
+  const { data, allProducts } = useAppSelector((state) => state.product.list);
+  const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!data) {
+      return;
+    }
+
+    const latestData = [...data];
+
+    latestData[index] = { ...latestData[index], description: e.target.value };
+
+    store.dispatch(setProductList({ data: [...latestData] }));
+  };
 
   if (loading) {
     return null;
@@ -378,17 +395,59 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           groupIndex={index}
           groupName="product-group"
           className={styles.productCardCollapse}
-          customHeaderClass={styles.productCardHeaderCollapse}
-          key={group.id || index}
+          customHeaderClass={`${styles.productCardHeaderCollapse} ${
+            group.description || isTiscAdmin ? styles.productHeaderCollapse : ''
+          }`}
+          key={index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
           header={
-            <div className="header-text">
-              <BodyText data-text={`${group.name} (${group.count})`} level={5} fontFamily="Roboto">
-                {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
+            <div style={{ width: '100%' }}>
+              <div className="header-text">
+                <BodyText
+                  data-text={`${group.name} (${group.count})`}
+                  level={5}
+                  fontFamily="Roboto"
+                >
+                  {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
 
-                {truncate(capitalize(group.name), { length: 40 })}
-                <span className="product-count">({group.count})</span>
-              </BodyText>
+                  {truncate(capitalize(group.name), { length: 40 })}
+                  <span className="product-count">({group.count})</span>
+                </BodyText>
+              </div>
+              {group.description || isTiscAdmin ? (
+                <div className="border-top-light description">
+                  <div
+                    className="flex-between "
+                    style={{ height: 40, marginRight: 16 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <CustomInput
+                      placeholder="type description"
+                      value={group.description}
+                      onChange={onChangeDescription(index)}
+                      style={{
+                        color: isTiscAdmin ? '#2b39d4' : '#000',
+                        cursor: isTiscAdmin ? 'text' : 'default',
+                        border: 'unset',
+                        borderColor: 'unset',
+                      }}
+                      disabled={!isTiscAdmin}
+                    />
+                    {isTiscAdmin ? (
+                      <CustomSaveButton
+                        onClick={() => {
+                          updateCollection(group.id, {
+                            name: group.name,
+                            description: group.description,
+                          });
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
             </div>
           }
         >

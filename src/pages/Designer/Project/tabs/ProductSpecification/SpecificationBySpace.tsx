@@ -93,6 +93,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       dataIndex: 'zone_order',
       sorter: { multiple: 1 },
       isExpandable: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
     },
     {

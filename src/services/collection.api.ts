@@ -4,7 +4,11 @@ import { request } from 'umi';
 
 import type { Collection, CollectionAddPayload, CollectionRelationType } from '@/types';
 
-export async function getCollections(relationId: string, relationType: CollectionRelationType) {
+export async function getCollections(
+  relationId: string,
+  relationType: CollectionRelationType,
+  categoryIds?: string[],
+) {
   return request<{ data: { collections: Collection[] } }>(`/api/collection/get-list`, {
     method: 'GET',
     params: {
@@ -12,6 +16,7 @@ export async function getCollections(relationId: string, relationType: Collectio
       pageSize: 99999999,
       relation_id: relationId,
       relation_type: relationType,
+      category_ids: categoryIds?.length ? categoryIds.join(',') : [],
     },
   })
     .then((response) => {
@@ -38,10 +43,13 @@ export async function createCollection(data: CollectionAddPayload) {
       return {} as Collection;
     });
 }
-export async function updateCollection(collectionId: string, name: string) {
+export async function updateCollection(
+  collectionId: string,
+  props: { name: string; description?: string },
+) {
   return request(`/api/collection/update/${collectionId}`, {
     method: 'PATCH',
-    data: { name },
+    data: { name: props.name, description: props.description },
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_BRAND_COLLECTION_SUCCESS);

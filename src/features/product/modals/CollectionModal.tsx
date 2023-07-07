@@ -7,7 +7,7 @@ import { createCollection, deleteCollection, getCollections, updateCollection } 
 import { trimEnd, trimStart } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
-import { CollectionRelationType } from '@/types';
+import { Collection, CollectionRelationType } from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -18,7 +18,7 @@ import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import styles from './index.less';
 
-interface DynamicRadioValue extends RadioValue {
+interface DynamicRadioValue extends RadioValue, Partial<Collection> {
   editLabel?: boolean;
 }
 
@@ -29,6 +29,8 @@ interface CollectionModalProps {
   setChosenValue: (value: DynamicRadioValue) => void;
   brandId: string;
   collectionType: CollectionRelationType;
+  categoryIds?: string[];
+  isCateSupported?: boolean;
 }
 
 const setDefaultStatusForItem = (data: DynamicRadioValue[]) => {
@@ -45,6 +47,8 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   setChosenValue,
   brandId,
   collectionType,
+  categoryIds,
+  isCateSupported,
 }) => {
   const [data, setData] = useState<DynamicRadioValue[]>([]);
   const curData = useRef<DynamicRadioValue[]>([]);
@@ -59,7 +63,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
   const getCollectionList = (newData?: DynamicRadioValue, updateCurrentSelect: boolean = true) => {
-    getCollections(brandId, collectionType).then((res) => {
+    getCollections(brandId, collectionType, categoryIds).then((res) => {
       if (res) {
         const curCollectionSelect = newData?.value
           ? newData
@@ -82,6 +86,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
         }
 
         const currentData = res.map((item) => ({
+          ...item,
           value: item.id,
           label: item.name,
           disabled: false,
@@ -101,7 +106,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     return () => {
       curData.current = [];
     };
-  }, [brandId]);
+  }, [brandId, isCateSupported]);
 
   /// set current selected value
   useEffect(() => {
@@ -238,11 +243,13 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           return;
         }
 
-        updateCollection(String(selectedValue.value), newCollectionName).then((isSuccess) => {
-          if (isSuccess) {
-            setData(newData);
-          }
-        });
+        updateCollection(String(selectedValue.value), { name: newCollectionName }).then(
+          (isSuccess) => {
+            if (isSuccess) {
+              setData(newData);
+            }
+          },
+        );
       }
     };
 
@@ -399,33 +406,35 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                     </div>
                   )}
 
-                  <div
-                    style={{ cursor: item.disabled || item.editLabel ? 'default' : 'pointer' }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                    }}
-                  >
-                    <ActionMenu
-                      disabled={item.disabled || item.editLabel}
-                      className={`${styles.marginSpace} ${
-                        item.disabled ? 'mono-color-medium' : 'mono-color'
-                      } `}
-                      overlayClassName={styles.actionMenuOverLay}
-                      editActionOnMobile={false}
-                      actionItems={[
-                        {
-                          type: 'updated',
-                          label: 'Edit',
-                          onClick: () => handleEdit(item, index),
-                        },
-                        {
-                          type: 'deleted',
-                          onClick: () => handleDelete(String(item.value)),
-                        },
-                      ]}
-                    />
-                  </div>
+                  {item.relation_type !== CollectionRelationType.Color ? (
+                    <div
+                      style={{ cursor: 'default' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    >
+                      <ActionMenu
+                        disabled={item.disabled || item.editLabel}
+                        className={`${styles.marginSpace} ${
+                          item.disabled ? 'mono-color-medium' : 'mono-color'
+                        } `}
+                        overlayClassName={styles.actionMenuOverLay}
+                        editActionOnMobile={false}
+                        actionItems={[
+                          {
+                            type: 'updated',
+                            label: 'Edit',
+                            onClick: () => handleEdit(item, index),
+                          },
+                          {
+                            type: 'deleted',
+                            onClick: () => handleDelete(String(item.value)),
+                          },
+                        ]}
+                      />
+                    </div>
+                  ) : null}
                 </div>
               ),
             };

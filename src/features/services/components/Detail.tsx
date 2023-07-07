@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 import { history } from 'umi';
 
-import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
-import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as EqualIcon } from '@/assets/icons/equal-icon.svg';
+import { ReactComponent as Multi } from '@/assets/icons/multi-icon-18.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/plus-18-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -23,7 +23,7 @@ import { BodyText, Title } from '@/components/Typography';
 
 import { getOneService, getServicePDF, markAsPaid, sendBill, sendRemind } from '../api';
 import styles from '../index.less';
-import { checkShowBillingAmount, formatToMoneyValue } from '../util';
+import { formatToMoneyValue } from '../util';
 import { PaymentIntent } from '@/features/paymentIntent';
 import moment from 'moment';
 
@@ -71,6 +71,7 @@ interface ServiceDetailProps {
 }
 export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   const [detailData, setDetailData] = useState<ServicesResponse>(DEFAULT_VALUE);
+  const [disabledPay, setDisabledPayment] = useState<boolean>(false);
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -193,13 +194,13 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
 
     return (
       <div className="flex-start">
-        {detailData.status !== InvoiceStatus.Paid &&
-        detailData.status !== InvoiceStatus.Processing ? (
+        {detailData.status !== InvoiceStatus.Paid ? (
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
             buttonClass={styles.rightSpace}
+            disabled={disabledPay ? disabledPay : detailData.status === InvoiceStatus.Processing}
             onClick={() => {
               setVisible(true);
             }}
@@ -366,6 +367,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           </FormGroup>
         )} */}
 
+        {/* billed amount */}
         <FormGroup
           label="Billed Amount"
           layout="vertical"
@@ -373,6 +375,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           labelColor="mono-color-dark"
         >
           <table style={{ width: '100%' }}>
+            {/* unit rate */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -387,12 +390,16 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 ${formatToMoneyValue(Number(detailData?.unit_rate))}
               </td>
             </tr>
+
+            {/* quantuty */}
             <tr className={styles.borderBottom}>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
                   Quantity
                 </BodyText>
-                <CloseIcon className={styles.iconStyles} />
+                <div className={styles.iconStyles}>
+                  <Multi />
+                </div>
               </td>
               <td
                 style={{
@@ -402,6 +409,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 {formatCurrencyNumber(Number(detailData?.quantity))}
               </td>
             </tr>
+
+            {/* gross total */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -414,42 +423,49 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* ${formatToMoneyValue(Number(detailData?.total_gross))} */}$
-                {Number(detailData?.total_gross)}
+                ${formatToMoneyValue(Number(detailData?.total_gross))}
               </td>
             </tr>
+
+            {/* sales tax */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
                   Sales Tax (GST) - {detailData?.tax}%
                 </BodyText>
-                <PlusIcon className={styles.iconStyles} />
+                <div className={styles.iconStyles}>
+                  <CloseIcon />
+                </div>
               </td>
               <td
                 style={{
                   width: quantityWidth,
                 }}
               >
-                {/* {formatToMoneyValue(Number(detailData?.sale_tax_amount))} */}$
-                {Number(detailData?.sale_tax_amount)}
+                {formatToMoneyValue(Number(detailData?.sale_tax_amount))}
               </td>
             </tr>
+
+            {/* overdue payment charges */}
             <tr className={styles.borderBottom}>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
                   Overdue Payment Charges
                 </BodyText>
-                <PlusIcon className={styles.iconStyles} />
+                <div className={styles.iconStyles}>
+                  <CloseIcon />
+                </div>
               </td>
               <td
                 style={{
                   width: quantityWidth,
                 }}
               >
-                {/* ${formatToMoneyValue(Number(detailData?.overdue_amount))} */}$
-                {Number(detailData?.overdue_amount)}
+                ${formatToMoneyValue(Number(detailData?.overdue_amount))}
               </td>
             </tr>
+
+            {/* total */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
@@ -462,20 +478,26 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* ${formatToMoneyValue(Number(detailData?.billing_overdue_amount))} */}$
-                {Number(detailData?.billing_overdue_amount)}
+                ${formatToMoneyValue(Number(detailData?.billing_overdue_amount))}
               </td>
             </tr>
+
+            {/* 3rd Party Payment Gateway Surcharge */}
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
                   3rd Party Payment Gateway Surcharge @ 3.5%
                 </BodyText>
-                <PlusIcon className={styles.iconStyles} />
+                <div>
+                  <div className={styles.iconStyles}>
+                    <CloseIcon />
+                  </div>
+                </div>
               </td>
-              {/* <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td> */}
-              <td>${Number(detailData?.surcharge)}</td>
+              <td>${formatToMoneyValue(Number(detailData?.surcharge))}</td>
             </tr>
+
+            {/* grand total */}
             <tr className={styles.total}>
               <td className={styles.label}>
                 <Title level={8}>GRAND TOTAL</Title>
@@ -488,15 +510,24 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   width: quantityWidth,
                 }}
               >
-                {/* <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title> */}
-                <Title level={8}>${Number(detailData?.grand_total)}</Title>
+                <Title level={8}>${formatToMoneyValue(Number(detailData?.grand_total))}</Title>
               </td>
             </tr>
           </table>
         </FormGroup>
+
+        {/* remark */}
+        <TextForm boxShadow label="Remark">
+          {detailData?.remark}
+        </TextForm>
       </EntryFormWrapper>
 
-      <PaymentIntent visible={visible} setVisible={setVisible} onPaymentSuccess={setDetailData} />
+      <PaymentIntent
+        visible={visible}
+        setVisible={setVisible}
+        onPaymentSuccess={setDetailData}
+        onPaymentProcessing={setDisabledPayment}
+      />
     </div>
   );
 };

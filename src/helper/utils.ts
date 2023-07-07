@@ -1,3 +1,4 @@
+import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
 
 import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
@@ -81,7 +82,9 @@ export const throttleAction = (
   });
 
 export const redirectAfterLogin = (access: any, userType: UserType) => {
-  const routesByUserType = routes.filter((el) => el.access?.includes(ACCESS_BY_TYPE[userType]));
+  const routesByUserType = routes.filter((el: any) =>
+    el.access?.includes(ACCESS_BY_TYPE[userType]),
+  );
 
   const accessableMenu = findFirstAccessibleMenu(0, routesByUserType, access) || '/404';
 
@@ -247,7 +250,7 @@ export const formatCurrencyNumber = (
 export const getEmailMessageError = (email: string, errorMessage: string) => {
   const checkValidEmail = validateEmail(email);
   if (email === '') {
-    return undefined;
+    return MESSAGE_ERROR.EMAIL_REQUIRED;
   }
   return checkValidEmail ? '' : errorMessage;
 };
@@ -400,10 +403,21 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   return result;
 };
 
-export const formatNumber = (number: number) => {
-  return number.toLocaleString(undefined, {
-    maximumFractionDigits: 2,
-  });
+export const formatNumber = (
+  number: number | string | undefined = 0,
+  maximumFractionDigits = 2,
+) => {
+  return number.toLocaleString(undefined, { maximumFractionDigits });
+};
+
+export const formatPercentNumber = (
+  number: number | string,
+  maximumFractionDigits: number = 0,
+  includePercent: boolean = true,
+) => {
+  const result = formatNumber((Number(number) / 100) * 10000, maximumFractionDigits);
+
+  return includePercent ? `${result}%` : result;
 };
 
 export const formatImageIfBase64 = (img: string) =>

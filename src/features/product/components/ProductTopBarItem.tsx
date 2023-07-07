@@ -6,6 +6,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
@@ -95,7 +96,7 @@ export const TopBarContainer: React.FC<TopBarContainerProps> = ({
   LeftSideContent,
   RightSideContent,
   BottomContent,
-  customClass,
+  customClass = '',
 }) => {
   const { isMobile } = useScreen();
   return (
@@ -322,7 +323,11 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       >
         <span {...labelProps} onClick={(e) => e.stopPropagation()}>
           {children}
-          {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}
+          {hideDropdownIcon ? null : dropdownVisible.value ? (
+            <DropupIcon style={{ marginLeft: 8 }} />
+          ) : (
+            <DropdownIcon style={{ marginLeft: 8 }} />
+          )}
         </span>
       </Dropdown>
       {isMobile && (

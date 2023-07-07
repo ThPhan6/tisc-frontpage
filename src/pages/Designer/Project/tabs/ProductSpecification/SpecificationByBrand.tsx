@@ -43,7 +43,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       sorter: { multiple: 1 },
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
-      defaultSortOrder: 'ascend',
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Collection',
