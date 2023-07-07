@@ -1,3 +1,4 @@
+import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
 
 import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
@@ -249,7 +250,7 @@ export const formatCurrencyNumber = (
 export const getEmailMessageError = (email: string, errorMessage: string) => {
   const checkValidEmail = validateEmail(email);
   if (email === '') {
-    return undefined;
+    return MESSAGE_ERROR.EMAIL_REQUIRED;
   }
   return checkValidEmail ? '' : errorMessage;
 };
