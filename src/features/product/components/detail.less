@@ -428,6 +428,36 @@
       :global(.relative-product-list) {
         display: inline-flex;
         align-items: center;
+        width: 100%;
+        height: 100%;
+
+        :global(.placeholder-text-collection) {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          width: 72px;
+          height: 100%;
+          margin-left: 12px;
+          padding: 4px;
+          background-color: #000;
+          cursor: pointer;
+          transition: all 0.4s;
+
+          :global(span) {
+            width: 72px;
+            color: #fff;
+            font-weight: 300;
+            font-size: 10px;
+            font-family: @font-primary;
+            font-style: normal;
+            line-height: 14px;
+            letter-spacing: 0.02em;
+            text-align: center;
+            text-overflow: ellipsis;
+          }
+        }
+
         :global(.relative-product-item) {
           position: relative;
           display: block;
