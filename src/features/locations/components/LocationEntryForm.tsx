@@ -1,5 +1,4 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -74,6 +73,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     label: '',
     value: data.state_id,
   });
+  const cityRef = useRef<any>();
   const [cityData, setCityData] = useState({
     label: '',
     value: data.city_id,
@@ -174,9 +174,6 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       return;
     }
 
-    if (isDesignAdmin) {
-    }
-
     if (!data.functional_type_ids?.length) {
       message.error('Functional type is required');
       return;
@@ -184,6 +181,16 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
 
     if (!data.country_id) {
       message.error('Country is required');
+      return;
+    }
+
+    if (!data.state_id && isTiscUser) {
+      message.error('State is required');
+      return;
+    }
+
+    if (!data.city_id && isTiscUser && cityRef?.current?.length) {
+      message.error('City is required');
       return;
     }
 
@@ -340,6 +347,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       <InputGroup
         label="State / Province"
         fontLevel={3}
+        required={isTiscUser}
         value={stateData.label}
         hasPadding
         colorPrimaryDark
@@ -353,6 +361,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       <InputGroup
         label="City / Town"
         fontLevel={3}
+        required={isTiscUser}
         value={cityData.label}
         hasPadding
         colorPrimaryDark
@@ -447,6 +456,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       />
 
       <CityModal
+        ref={isTiscUser ? cityRef : undefined}
         stateId={data.state_id}
         countryId={data.country_id}
         visible={visible === 'city'}
