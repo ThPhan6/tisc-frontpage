@@ -49,7 +49,7 @@ export const ColorDetection = () => {
   const [basicData, setBasicData] = useState<ColorConversionProps['conversion']['origin'][]>([]);
   const [collectionRecommendation, setCollectionRecommnedation] = useState<
     ColourAIResponse['data']['recommendation_collection']
-  >({ id: '', name: '' });
+  >([{ id: '', name: '' }]);
   ///
 
   const [colorSwitch, setColorSwitch] = useState<boolean>();
@@ -212,10 +212,7 @@ export const ColorDetection = () => {
       onFormSubmit={() => {
         store.dispatch(
           setPartialProductDetail({
-            collection: {
-              id: collectionRecommendation.id,
-              name: collectionRecommendation.name,
-            },
+            collections: collectionRecommendation,
           }),
         );
 
@@ -291,7 +288,7 @@ export const ColorDetection = () => {
             <div className="flex-start">
               <Title level={8}>Recommendation:</Title>
               <RobotoBodyText level={4} style={{ marginLeft: 16, textTransform: 'capitalize' }}>
-                {collectionRecommendation.name}
+                {collectionRecommendation.map((item) => item.name).join(', ')}
               </RobotoBodyText>
             </div>
           </div>
