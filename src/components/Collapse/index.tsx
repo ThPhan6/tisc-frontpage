@@ -64,9 +64,10 @@ export const ActiveOneCustomCollapse: FC<
   CustomCollapseProps & {
     onChange?: (key: string | string[]) => void;
     groupIndex?: number | string;
+    forceOnKeyChange?: boolean;
     groupName: string;
   }
-> = ({ groupIndex, groupName, onChange, ...props }) => {
+> = ({ groupIndex, groupName, onChange, forceOnKeyChange, ...props }) => {
   const [ramdomId] = useState<number>(Math.random());
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
     groupName,
@@ -79,6 +80,10 @@ export const ActiveOneCustomCollapse: FC<
       onChange={(key) => {
         if (onChange) {
           onChange(key);
+
+          if (forceOnKeyChange) {
+            onKeyChange(key);
+          }
         } else {
           onKeyChange(key);
         }
