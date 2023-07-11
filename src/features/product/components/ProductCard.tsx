@@ -45,6 +45,7 @@ import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
@@ -370,18 +371,17 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const [collapseKey, setCollapseKey] = useState<number>();
 
-  const onChangeDescription =
-    (index: number) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (!data) {
-        return;
-      }
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!data) {
+      return;
+    }
 
-      const latestData = [...data];
+    const latestData = [...data];
 
-      latestData[index] = { ...latestData[index], description: e.target.value };
+    latestData[index] = { ...latestData[index], description: e.target.value };
 
-      store.dispatch(setProductList({ data: [...latestData] }));
-    };
+    store.dispatch(setProductList({ data: [...latestData] }));
+  };
 
   if (loading) {
     return null;
@@ -429,29 +429,28 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 <div className="border-top-light description">
                   <div
                     className="flex-between "
-                    style={{ minHeight: 40, margin: '8px 16px' }}
+                    style={{ minHeight: 40 }}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                   >
                     {isTiscAdmin ? (
-                      <CustomInput
+                      <CustomTextArea
+                        customStyles={{ width: '100%', margin: '8px 8px 0 4px' }}
                         placeholder="type description"
                         value={group.description}
                         onChange={onChangeDescription(index)}
-                        style={{
-                          color: isTiscAdmin ? '#2b39d4' : '#000',
-                          cursor: isTiscAdmin ? 'text' : 'default',
-                          border: 'unset',
-                          borderColor: 'unset',
-                        }}
-                        disabled={!isTiscAdmin}
+                        borderBottomColor=""
                       />
                     ) : (
-                      <RobotoBodyText level={6}> {group.description} </RobotoBodyText>
+                      <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
+                        {' '}
+                        {group.description}{' '}
+                      </RobotoBodyText>
                     )}
                     {isTiscAdmin ? (
                       <CustomSaveButton
+                        style={{ marginRight: 16 }}
                         onClick={() => {
                           if (!group.description) {
                             message.error('Please enter description');
