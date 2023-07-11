@@ -44,6 +44,7 @@ import { openModal } from '@/reducers/modal';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
+import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
@@ -371,10 +372,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const [collapseKey, setCollapseKey] = useState<number>();
 
-  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!data) {
       return;
     }
+
+    e.stopPropagation();
 
     const latestData = [...data];
 
@@ -435,17 +438,24 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     }}
                   >
                     {isTiscAdmin ? (
-                      <CustomTextArea
-                        customStyles={{ width: '100%', margin: '8px 8px 0 4px' }}
+                      <CustomInput
                         placeholder="type description"
                         value={group.description}
                         onChange={onChangeDescription(index)}
-                        borderBottomColor=""
+                        style={{
+                          color: isTiscAdmin ? '#2b39d4' : '#000',
+                          cursor: isTiscAdmin ? 'text' : 'default',
+                          border: 'unset',
+                          borderColor: 'unset',
+                        }}
+                        disabled={!isTiscAdmin}
                       />
                     ) : (
-                      <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
-                        {' '}
-                        {group.description}{' '}
+                      <RobotoBodyText
+                        level={5}
+                        style={{ margin: '8px 16px', wordWrap: 'break-word', overflow: 'hidden' }}
+                      >
+                        {group.description}
                       </RobotoBodyText>
                     )}
                     {isTiscAdmin ? (
