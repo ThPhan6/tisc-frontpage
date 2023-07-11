@@ -12,13 +12,16 @@ export const CustomSaveButton: FC<CustomSaveButtonProps> = ({
   onClick,
   customClass = '',
   contentButton,
+  ...props
 }) => {
   return (
     <button
       className={`${styles.sizeButton} ${
         isSuccess ? styles.customButtonSuccess : styles.customButton
       } ${customClass}`}
-      onClick={onClick}>
+      onClick={onClick}
+      {...props}
+    >
       {isSuccess ? (
         <CheckSuccessIcon />
       ) : (
