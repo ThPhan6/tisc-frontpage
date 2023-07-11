@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -30,15 +30,14 @@ import {
   duplicateCustomProduct,
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
-import { getCollections, updateCollection } from '@/services';
+import { updateCollection } from '@/services';
 import { capitalize, truncate } from 'lodash';
 
 import { setProductList } from '../reducers';
-import { GroupProductList, ProductGetListParameter, ProductItem } from '../types';
+import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
-import { CollectionRelationType } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
@@ -368,17 +367,18 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const { data, allProducts } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!data) {
-      return;
-    }
+  const onChangeDescription =
+    (index: number) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (!data) {
+        return;
+      }
 
-    const latestData = [...data];
+      const latestData = [...data];
 
-    latestData[index] = { ...latestData[index], description: e.target.value };
+      latestData[index] = { ...latestData[index], description: e.target.value };
 
-    store.dispatch(setProductList({ data: [...latestData] }));
-  };
+      store.dispatch(setProductList({ data: [...latestData] }));
+    };
 
   if (loading) {
     return null;
