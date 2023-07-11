@@ -63,11 +63,12 @@ export interface CustomInputProps extends InputProps {
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {
-  borderBottomColor?: 'mono' | 'mono-medium' | 'light';
+  borderBottomColor?: 'mono' | 'mono-medium' | 'light' | '';
   boxShadow?: boolean;
   autoResize?: boolean;
   customClass?: string;
   maxWords?: number;
+  customStyles?: CSSProperties;
 }
 
 export interface PhoneInputProps {
