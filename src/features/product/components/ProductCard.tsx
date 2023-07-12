@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -44,8 +44,6 @@ import { openModal } from '@/reducers/modal';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
-import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
