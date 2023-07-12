@@ -197,13 +197,14 @@
     &:global(.ant-collapse-item-active) {
       :global(.ant-collapse-header) {
         :global(.ant-collapse-arrow) {
-          top: 28% !important;
+          display: none !important;
         }
       }
     }
   }
   .productCardHeaderCollapse {
     :global(.ant-collapse-header) {
+      position: unset !important;
       padding: 0 !important;
       box-shadow: @border-bottom-light;
       transition: all 0.3s;
@@ -218,12 +219,19 @@
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
       :global(.header-text) {
+        position: relative;
         p {
           font-weight: 500;
         }
       }
       :global(.description) {
         display: block;
+      }
+    }
+
+    :global(.ant-collapse-expand-icon) {
+      svg {
+        display: none !important;
       }
     }
 

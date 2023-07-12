@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
-import { Tooltip, TooltipProps } from 'antd';
+import { Tooltip, TooltipProps, message } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
+import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
@@ -30,23 +32,23 @@ import {
   duplicateCustomProduct,
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
-import { getCollections, updateCollection } from '@/services';
+import { updateCollection } from '@/services';
 import { capitalize, truncate } from 'lodash';
 
 import { setProductList } from '../reducers';
-import { GroupProductList, ProductGetListParameter, ProductItem } from '../types';
+import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
-import { CollectionRelationType } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
-import { BodyText } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { assignProductModalTitle } from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
@@ -367,8 +369,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const loading = useAppSelector(loadingSelector);
   const { data, allProducts } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission('TISC Admin');
+  const [collapseKey, setCollapseKey] = useState<number>();
 
-  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!data) {
       return;
     }
@@ -398,11 +401,16 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           customHeaderClass={`${styles.productCardHeaderCollapse} ${
             group.description || isTiscAdmin ? styles.productHeaderCollapse : ''
           }`}
+          expandIcon={undefined}
           key={index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
+          forceOnKeyChange
+          onChange={() => {
+            setCollapseKey(collapseKey === index ? undefined : index);
+          }}
           header={
             <div style={{ width: '100%' }}>
-              <div className="header-text">
+              <div className="header-text flex-between">
                 <BodyText
                   data-text={`${group.name} (${group.count})`}
                   level={5}
@@ -413,31 +421,42 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   {truncate(capitalize(group.name), { length: 40 })}
                   <span className="product-count">({group.count})</span>
                 </BodyText>
+                <div style={{ marginRight: 16, height: 20 }}>
+                  {collapseKey === index ? <DropupIcon /> : <DropdownIcon />}
+                </div>
               </div>
               {group.description || isTiscAdmin ? (
                 <div className="border-top-light description">
                   <div
                     className="flex-between "
-                    style={{ height: 40, marginRight: 16 }}
+                    style={{ minHeight: 40 }}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                   >
-                    <CustomInput
-                      placeholder="type description"
-                      value={group.description}
-                      onChange={onChangeDescription(index)}
-                      style={{
-                        color: isTiscAdmin ? '#2b39d4' : '#000',
-                        cursor: isTiscAdmin ? 'text' : 'default',
-                        border: 'unset',
-                        borderColor: 'unset',
-                      }}
-                      disabled={!isTiscAdmin}
-                    />
+                    {isTiscAdmin ? (
+                      <CustomTextArea
+                        customStyles={{ width: '100%', margin: '8px 8px 0 4px' }}
+                        placeholder="type description"
+                        value={group.description}
+                        onChange={onChangeDescription(index)}
+                        borderBottomColor=""
+                      />
+                    ) : (
+                      <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
+                        {' '}
+                        {group.description}{' '}
+                      </RobotoBodyText>
+                    )}
                     {isTiscAdmin ? (
                       <CustomSaveButton
+                        style={{ marginRight: 16 }}
                         onClick={() => {
+                          if (!group.description) {
+                            message.error('Please enter description');
+                            return;
+                          }
+
                           updateCollection(group.id, {
                             name: group.name,
                             description: group.description,
