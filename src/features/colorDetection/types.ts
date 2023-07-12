@@ -97,7 +97,7 @@ export interface ColorConversionProps {
 
 export interface ColourAIResponse {
   data: {
-    recommendation_collection: { id: string; name: string };
+    recommendation_collection: { id: string; name: string }[];
     images: {
       name: string;
       color_specification: ColorConversionProps[];
