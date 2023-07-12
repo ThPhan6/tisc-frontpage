@@ -369,7 +369,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const { data, allProducts } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const [collapseKey, setCollapseKey] = useState<number>();
-  const ref = useRef<any>();
 
   const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!data) {

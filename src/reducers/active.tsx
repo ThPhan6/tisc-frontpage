@@ -81,8 +81,6 @@ export const useCollapseGroupActiveCheck = (
 
   const curActiveKey = activeOneInGroup ? activeKeyInState : collapse;
 
-  // console.log('activeOneInGroup', activeOneInGroup);
-
   const onKeyChange = activeOneInGroup ? setActiveCollapse(groupType, groupIndex) : setCollapse;
 
   useEffect(() => {
