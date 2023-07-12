@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 import type { CollapseProps } from 'antd';
 import { Collapse } from 'antd';

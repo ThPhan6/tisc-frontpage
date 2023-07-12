@@ -158,7 +158,7 @@
 .productCardCollapse {
   @text-bold: 400;
 
-  margin-bottom: 8px;
+  margin-bottom: 8px !important;
   background-color: @mono-color-light !important;
   border: 0 !important;
 
@@ -208,10 +208,6 @@
       padding: 0 !important;
       box-shadow: @border-bottom-light;
       transition: all 0.3s;
-
-      :global(.description) {
-        display: none;
-      }
     }
     &:global(.ant-collapse-item-active) {
       box-shadow: none;
@@ -219,13 +215,10 @@
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
       :global(.header-text) {
-        position: relative;
+        box-shadow: @border-bottom-light;
         p {
           font-weight: 500;
         }
-      }
-      :global(.description) {
-        display: block;
       }
     }
 
@@ -259,7 +252,7 @@
   }
 
   :global(.ant-collapse-content-box) {
-    padding: 8px 0 0 !important;
+    padding: 0 !important;
   }
 }
 

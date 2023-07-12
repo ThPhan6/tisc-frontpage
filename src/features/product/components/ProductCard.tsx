@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -371,8 +371,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const { data, allProducts } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const [collapseKey, setCollapseKey] = useState<number>();
+  const ref = useRef<any>();
 
-  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!data) {
       return;
     }
@@ -428,58 +429,55 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   {collapseKey === index ? <DropupIcon /> : <DropdownIcon />}
                 </div>
               </div>
-              {group.description || isTiscAdmin ? (
-                <div className="border-top-light description">
-                  <div
-                    className="flex-between "
-                    style={{ minHeight: 40 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    {isTiscAdmin ? (
-                      <CustomInput
-                        placeholder="type description"
-                        value={group.description}
-                        onChange={onChangeDescription(index)}
-                        style={{
-                          color: isTiscAdmin ? '#2b39d4' : '#000',
-                          cursor: isTiscAdmin ? 'text' : 'default',
-                          border: 'unset',
-                          borderColor: 'unset',
-                        }}
-                        disabled={!isTiscAdmin}
-                      />
-                    ) : (
-                      <RobotoBodyText
-                        level={5}
-                        style={{ margin: '8px 16px', wordWrap: 'break-word', overflow: 'hidden' }}
-                      >
-                        {group.description}
-                      </RobotoBodyText>
-                    )}
-                    {isTiscAdmin ? (
-                      <CustomSaveButton
-                        style={{ marginRight: 16 }}
-                        onClick={() => {
-                          if (!group.description) {
-                            message.error('Please enter description');
-                            return;
-                          }
-
-                          updateCollection(group.id, {
-                            name: group.name,
-                            description: group.description,
-                          });
-                        }}
-                      />
-                    ) : null}
-                  </div>
-                </div>
-              ) : null}
             </div>
           }
         >
+          <div style={{ marginBottom: 8 }}>
+            {group.description || isTiscAdmin ? (
+              <div style={{ background: '#fff' }}>
+                <div
+                  className="flex-between"
+                  style={{ minHeight: 40, boxShadow: '1px 1px 3px rgb(0 0 0 / 50%)' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {!isTiscAdmin ? (
+                    <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
+                      {group.description}
+                    </RobotoBodyText>
+                  ) : (
+                    <CustomTextArea
+                      customStyles={{ width: '100%', marginRight: 8 }}
+                      styles={{ paddingLeft: 16 }}
+                      placeholder="type description"
+                      value={group.description}
+                      onChange={onChangeDescription(index)}
+                      borderBottomColor=""
+                      autoResize
+                    />
+                  )}
+                  {isTiscAdmin ? (
+                    <CustomSaveButton
+                      style={{ marginRight: 16 }}
+                      onClick={() => {
+                        if (!group.description) {
+                          message.error('Please enter description');
+                          return;
+                        }
+
+                        updateCollection(group.id, {
+                          name: group.name,
+                          description: group.description,
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, itemIndex) => (
               <ProductCard
