@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -446,7 +446,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   ) : (
                     <CustomTextArea
                       customStyles={{ width: '100%', marginRight: 8 }}
-                      styles={{ paddingLeft: 16 }}
+                      styles={{ paddingLeft: 16, overflow: 'hidden', resize: 'none' }}
                       placeholder="type description"
                       value={group.description}
                       onChange={onChangeDescription(index)}
