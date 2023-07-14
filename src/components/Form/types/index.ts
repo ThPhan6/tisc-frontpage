@@ -69,6 +69,7 @@ export interface CustomTextAreaProps extends TextAreaProps {
   customClass?: string;
   maxWords?: number;
   customStyles?: CSSProperties;
+  styles?: CSSProperties;
 }
 
 export interface PhoneInputProps {
