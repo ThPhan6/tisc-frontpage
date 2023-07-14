@@ -12,7 +12,7 @@ const minRows = 5;
 const maxRows = 10;
 const defaultHeight = 32;
 
-export const CustomTextArea: FC<CustomTextAreaProps> = ({
+export const CustomTextArea: FC<Omit<CustomTextAreaProps, 'style'>> = ({
   borderBottomColor = 'mono',
   maxLength,
   boxShadow,
@@ -20,6 +20,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
   customClass = '',
   maxWords,
   customStyles,
+  styles,
   ...props
 }) => {
   const textarea: any = useRef();
@@ -58,7 +59,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
   return (
     <div
       className={`${style['textarea-container']} ${
-        style[`${borderBottomColor}-border-bottom-color`]
+        borderBottomColor ? style[`${borderBottomColor}-border-bottom-color`] : ''
       } ${boxShadow ? style.boxShadow : ''} ${customClass}`}
       style={customStyles}
     >
@@ -66,7 +67,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         {...props}
         ref={textarea}
         maxLength={maxLength}
-        style={{ height: autoResize ? height : undefined }}
+        style={{ height: autoResize ? height : undefined, ...styles }}
         onChange={(e) => {
           if (maxWords) {
             const text = e.target.value;

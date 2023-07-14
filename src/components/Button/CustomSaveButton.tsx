@@ -7,7 +7,7 @@ import { CustomSaveButtonProps } from './types';
 import styles from '../Button/styles/index.less';
 import { BodyText } from '../Typography';
 
-export const CustomSaveButton: FC<CustomSaveButtonProps> = ({
+export const CustomSaveButton: FC<Omit<CustomSaveButtonProps, 'className'>> = ({
   isSuccess,
   onClick,
   customClass = '',
