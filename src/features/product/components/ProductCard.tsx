@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -44,7 +44,6 @@ import { openModal } from '@/reducers/modal';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
@@ -376,6 +375,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
       return;
     }
 
+    e.stopPropagation();
+
     const latestData = [...data];
 
     latestData[index] = { ...latestData[index], description: e.target.value };
@@ -425,51 +426,55 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   {collapseKey === index ? <DropupIcon /> : <DropdownIcon />}
                 </div>
               </div>
-              {group.description || isTiscAdmin ? (
-                <div className="border-top-light description">
-                  <div
-                    className="flex-between "
-                    style={{ minHeight: 40 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    {isTiscAdmin ? (
-                      <CustomTextArea
-                        customStyles={{ width: '100%', margin: '8px 8px 0 4px' }}
-                        placeholder="type description"
-                        value={group.description}
-                        onChange={onChangeDescription(index)}
-                        borderBottomColor=""
-                      />
-                    ) : (
-                      <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
-                        {' '}
-                        {group.description}{' '}
-                      </RobotoBodyText>
-                    )}
-                    {isTiscAdmin ? (
-                      <CustomSaveButton
-                        style={{ marginRight: 16 }}
-                        onClick={() => {
-                          if (!group.description) {
-                            message.error('Please enter description');
-                            return;
-                          }
-
-                          updateCollection(group.id, {
-                            name: group.name,
-                            description: group.description,
-                          });
-                        }}
-                      />
-                    ) : null}
-                  </div>
-                </div>
-              ) : null}
             </div>
           }
         >
+          <div style={{ marginBottom: 8 }}>
+            {group.description || isTiscAdmin ? (
+              <div style={{ background: '#fff' }}>
+                <div
+                  className="flex-between"
+                  style={{ minHeight: 40, boxShadow: '1px 1px 3px rgb(0 0 0 / 50%)' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {!isTiscAdmin ? (
+                    <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
+                      {group.description}
+                    </RobotoBodyText>
+                  ) : (
+                    <CustomTextArea
+                      customStyles={{ width: '100%', marginRight: 8 }}
+                      styles={{ paddingLeft: 16 }}
+                      placeholder="type description"
+                      value={group.description}
+                      onChange={onChangeDescription(index)}
+                      borderBottomColor=""
+                      autoResize
+                    />
+                  )}
+                  {isTiscAdmin ? (
+                    <CustomSaveButton
+                      style={{ marginRight: 16 }}
+                      onClick={() => {
+                        if (!group.description) {
+                          message.error('Please enter description');
+                          return;
+                        }
+
+                        updateCollection(group.id, {
+                          name: group.name,
+                          description: group.description,
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, itemIndex) => (
               <ProductCard
