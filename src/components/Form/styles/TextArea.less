@@ -16,6 +16,9 @@
     &:focus {
       box-shadow: none;
     }
+    &::placeholder {
+      color: @mono-color-medium;
+    }
   }
   :global(.ant-input[disabled]) {
     overflow: hidden;
@@ -26,7 +29,6 @@
     border: none;
     border-bottom-color: transparent;
     cursor: default;
-    resize: none;
 
     &:hover {
       border: unset !important;
