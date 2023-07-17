@@ -12,6 +12,7 @@ import { useAppSelector } from '@/reducers';
 
 import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
 import styles from './ProductDownloadFooter.less';
@@ -49,6 +50,8 @@ const ProductDownloadFooter: FC = () => {
         }}
         titlePlaceholder="type file name here"
         valuePlaceholder="paste file URL link here"
+        titleStyles={{ paddingLeft: 16 }}
+        valueStyles={{ paddingLeft: 32 }}
       />
     );
   }
@@ -69,11 +72,9 @@ const ProductDownloadFooter: FC = () => {
                 </BodyText>
               </td>
               <td className={styles.url}>
-                <a href={content.url} download>
-                  <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
-                    {content.url}
-                  </BodyText>
-                </a>
+                <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
+                  {content.url}
+                </BodyText>
               </td>
               <td className={styles.icon}>
                 <a href={content.url} target="_blank" download rel="noopener noreferrer">
