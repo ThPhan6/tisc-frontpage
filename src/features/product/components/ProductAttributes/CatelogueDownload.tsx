@@ -48,7 +48,7 @@ export const CatelogueDownload = () => {
         titlePlaceholder="type catelogue name here"
         valuePlaceholder="paste file URL link here"
         titleStyles={{ paddingLeft: 0 }}
-        valueStyles={{ paddingLeft: 32 }}
+        valueStyles={{ paddingLeft: 16 }}
       />
     );
   }
