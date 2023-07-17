@@ -67,7 +67,9 @@ const ProductDownloadFooter: FC = () => {
           return (
             <tr key={content.id || index}>
               <td className={styles.title}>
-                <CustomTextArea value={content.title} autoResize disabled />
+                <BodyText level={4} customClass={styles.content_title}>
+                  {content.title}
+                </BodyText>
               </td>
               <td className={styles.url}>
                 <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">

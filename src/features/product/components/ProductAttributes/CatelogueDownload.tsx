@@ -11,6 +11,7 @@ import { useAppSelector } from '@/reducers';
 import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { BodyText } from '@/components/Typography';
 
 import styles from './CatelogueDownload.less';
 
@@ -61,12 +62,9 @@ export const CatelogueDownload = () => {
       {catelogue_downloads.map((content, index) => {
         return (
           <div className={styles.download_content} key={content.id || index}>
-            <CustomTextArea
-              value={content.title}
-              autoResize
-              disabled
-              customStyles={{ width: '100%' }}
-            />
+            <BodyText style={{ padding: '4px 16px' }} level={6} fontFamily="Roboto">
+              {content.title}
+            </BodyText>
             <a href={content.url} download target="_blank" rel="noopener noreferrer">
               <DownloadIconV2 className={styles.download_icon} />
             </a>
