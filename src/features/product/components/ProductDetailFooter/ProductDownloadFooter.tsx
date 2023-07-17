@@ -66,17 +66,17 @@ const ProductDownloadFooter: FC = () => {
         {downloads.map((content, index) => {
           return (
             <tr key={content.id || index}>
-              <td className={styles.title}>
+              <td className={styles.title} style={{ width: '95%' }}>
                 <BodyText level={4} customClass={styles.content_title}>
                   {content.title}
                 </BodyText>
               </td>
-              <td className={styles.url}>
+              {/* <td className={styles.url} style={{ width: '95%' }}>
                 <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
                   {content.url}
                 </BodyText>
-              </td>
-              <td className={styles.icon}>
+              </td> */}
+              <td className={styles.icon} style={{ width: '5%' }}>
                 <a href={content.url} target="_blank" download rel="noopener noreferrer">
                   <DownloadIconV2 className={styles.downloadIcon} />
                 </a>
