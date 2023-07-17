@@ -17,6 +17,23 @@
       box-shadow: none;
     }
   }
+  :global(.ant-input[disabled]) {
+    overflow: hidden;
+    color: #000 !important;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: transparent !important;
+    border: none;
+    border-bottom-color: transparent;
+    cursor: default;
+    resize: none;
+
+    &:hover {
+      border: unset !important;
+      border-color: unset !important;
+      border-right-width: unset !important;
+    }
+  }
   :global(.ant-input-textarea-show-count) {
     &::after {
       color: #000;

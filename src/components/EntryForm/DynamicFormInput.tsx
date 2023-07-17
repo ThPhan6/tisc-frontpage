@@ -1,10 +1,9 @@
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 
-import type { InputProps } from 'antd';
+import { TextAreaProps } from 'antd/lib/input';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 
-import { CustomInput } from '@/components/Form/CustomInput';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
 
@@ -20,24 +19,31 @@ export const DEFAULT_FORM_INPUT: DynamicFormInputData = {
   value: '',
 };
 
-interface DynamicFormInputProps extends InputProps {
+interface DynamicFormInputProps extends TextAreaProps {
   data?: DynamicFormInputData[];
   setData?: (data: DynamicFormInputData[]) => void;
-  fontLevel?: 1 | 2 | 3 | 4 | 5;
   titlePlaceholder?: string;
   valuePlaceholder?: string;
   maxTitleWords?: number;
   maxValueWords?: number;
+  titleClass?: string;
+  valueClass?: string;
+  titleStyles?: CSSProperties;
+  valueStyles?: CSSProperties;
 }
 
 const DynamicFormInput: FC<DynamicFormInputProps> = ({
   data,
   setData,
-  fontLevel,
   titlePlaceholder,
   valuePlaceholder,
+  titleClass = '',
+  valueClass = '',
+  titleStyles,
+  valueStyles,
   maxTitleWords,
   maxValueWords,
+  ...props
 }) => {
   const addMoreData = () => {
     if (setData && data) {
@@ -90,24 +96,29 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
       {data?.map((item, index) => (
         <div className={`${styles.dynamicFormInput} dynamic-wrapper`} key={index}>
           <div className="flex-input-with-icon">
-            <CustomInput
-              fontLevel={fontLevel ?? 5}
-              className="dynamic-title-box"
+            <CustomTextArea
+              customClass={`${styles.customTextArea} ${titleClass}`}
+              styles={titleStyles}
+              maxWords={maxTitleWords}
+              placeholder={titlePlaceholder}
               value={item.title}
               onChange={(e) => onChangeText(e, index, 'title')}
               onClick={(e) => e.stopPropagation()}
-              placeholder={titlePlaceholder}
+              autoResize
+              {...props}
             />
             <DeleteIcon onClick={() => onDelete(index)} className="delete-action-input-group" />
           </div>
           <CustomTextArea
+            customClass={`${styles.customTextArea} ${valueClass}`}
+            styles={valueStyles}
             maxWords={maxValueWords}
             placeholder={valuePlaceholder}
             value={item.value}
             onChange={(e) => onChangeText(e, index, 'value')}
-            customClass={styles.customTextArea}
             onClick={(e) => e.stopPropagation()}
             autoResize
+            {...props}
           />
         </div>
       ))}
