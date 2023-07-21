@@ -141,7 +141,11 @@ const BrandProductListPage: React.FC = () => {
   };
 
   window.onscroll = () => {
-    if (isLoading || !isLoadMoreData) {
+    if (
+      isLoading ||
+      !isLoadMoreData ||
+      window.location.pathname.indexOf('/design-firms/products/brand-products') === -1
+    ) {
       return;
     }
     onCheckAtBottomPage();
@@ -250,9 +254,9 @@ const BrandProductListPage: React.FC = () => {
             </div>
 
             <div className="flex-end">
-              {renderInfoItem('Collections', formatNumber(brandSummary.collection_count))}
-              {renderInfoItem('Cards', formatNumber(brandSummary.card_count))}
-              {renderInfoItem('Products', formatNumber(brandSummary.product_count), true)}
+              {renderInfoItem('Collections', formatNumber(brandSummary.collection_count) as any)}
+              {renderInfoItem('Cards', formatNumber(brandSummary.card_count) as any)}
+              {renderInfoItem('Products', formatNumber(brandSummary.product_count) as any, true)}
             </div>
           </>
         ) : undefined
