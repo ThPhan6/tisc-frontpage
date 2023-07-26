@@ -446,7 +446,13 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   ) : (
                     <CustomTextArea
                       customStyles={{ width: '100%', marginRight: 8 }}
-                      styles={{ paddingLeft: 16, overflow: 'hidden', resize: 'none' }}
+                      styles={{
+                        paddingLeft: 16,
+                        paddingTop: 11,
+                        paddingBottom: 11,
+                        overflow: 'hidden',
+                        resize: 'none',
+                      }}
                       placeholder="type description"
                       value={group.description}
                       onChange={onChangeDescription(index)}
