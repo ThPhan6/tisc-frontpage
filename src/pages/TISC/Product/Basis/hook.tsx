@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
@@ -31,7 +31,8 @@ import {
 } from '@/types';
 
 import { ConversionItem } from './Conversion/components/ConversionItem';
-import { OptionItem } from './Option/components/OptionItem';
+import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
+import { MainOptionItem } from './Option/components/OptionItem';
 import { PresetItem } from './Preset/components/PresetItem';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
@@ -54,7 +55,6 @@ const presetsValueDefault: PresetItemValueProp = {
 };
 const optionValueDefault: BasisOptionSubForm = {
   name: '',
-  is_have_image: false,
   subs: [],
 };
 
@@ -98,10 +98,22 @@ const getSubItemValue = (valueItem: SubPresetValueProp | SubBasisOption) => ({
   unit_2: valueItem.unit_2.trim(),
 });
 
+export type formOptionMode = 'list' | 'card';
+
+export const FormOptionContext = createContext<{
+  mode: formOptionMode;
+  setMode: (mode: formOptionMode) => void;
+}>({
+  mode: 'list',
+  setMode: (mode) => mode,
+});
+
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const idBasis = useGetParamId();
 
   const submitButtonStatus = useBoolean(false);
+
+  const [mode, setMode] = useState<formOptionMode>('list');
 
   const [data, setData] = useState<{ name: string; subs: any[] }>({ name: '', subs: [] });
 
@@ -163,11 +175,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       );
     }
     return (
-      <OptionItem
+      <MainOptionItem
         key={index}
-        subOption={item}
-        handleChangeSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
-        handleDeleteSubOption={() => handleOnClickDelete(index)}
+        mainOption={item}
+        handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
+        handleDeleteMainSubOption={() => handleOnClickDelete(index)}
       />
     );
   };
@@ -242,26 +254,36 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         };
       }
 
-      const itemOptions: SubBasisOption[] = sub.subs.map((optionItem: SubBasisOption) => {
-        let requiredValue = {
-          ...getSubItemValue(optionItem),
-          product_id: optionItem.product_id,
-        };
-        /// if it has ID, include ID
-        if (optionItem.id) {
-          requiredValue = merge(requiredValue, { id: optionItem.id });
-        }
-        /// send image data if using image otherwise remove it
-        if (sub.is_have_image && optionItem.image) {
-          const imageData = optionItem.isBase64 ? optionItem.image.split(',')[1] : optionItem.image;
-          requiredValue = merge(requiredValue, { image: imageData });
-        }
-        return requiredValue;
-      });
+      const mainOptionItems: BasisOptionSubForm[] = sub.subs.map(
+        (mainOptionItem: BasisOptionSubForm) => {
+          const newSubOptionItem = mainOptionItem.subs.map((subItem) => {
+            let requiredValue = {
+              ...getSubItemValue(subItem),
+              product_id: subItem.product_id,
+            };
+            /// if it has ID, include ID
+            if (subItem.id) {
+              requiredValue = merge(requiredValue, { id: subItem.id });
+            }
+            /// send image data if using image otherwise remove it
+            if (sub.is_have_image && subItem.image) {
+              const imageData = subItem.isBase64 ? subItem.image.split(',')[1] : subItem.image;
+              requiredValue = merge(requiredValue, { image: imageData });
+            }
+            return requiredValue;
+          });
+
+          return {
+            ...mainOptionItem,
+            subs: newSubOptionItem,
+          };
+        },
+      );
+
       let newSubOption = {
         name: sub.name.trim(),
-        subs: itemOptions,
-        is_have_image: sub.is_have_image ? true : false,
+        subs: [...mainOptionItems],
+        // is_have_image: sub.is_have_image,
       };
       if (sub.id) {
         newSubOption = merge(newSubOption, { id: sub.id });
@@ -328,19 +350,33 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           handleDelete={getDeleteFuntional}
           submitButtonStatus={submitButtonStatus.value}
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
+          lg={type === 'options' ? 24 : 12}
+          span={24}
         >
-          <FormNameInput
-            placeholder="type group name"
-            title={getEntryFormTitle(type)}
-            onChangeInput={handleChangeGroupName}
-            HandleOnClickAddIcon={handleOnClickAddIcon}
-            inputValue={data.name}
-          />
-          {data.subs.map(renderEntryFormItem)}
+          <FormOptionContext.Provider value={{ mode, setMode }}>
+            {type === 'options' ? (
+              <FormOptionNameInput
+                placeholder="type group name"
+                title={getEntryFormTitle(type)}
+                onChangeInput={handleChangeGroupName}
+                handleOnClickAddIcon={handleOnClickAddIcon}
+                inputValue={data.name}
+              />
+            ) : (
+              <FormNameInput
+                placeholder="type group name"
+                title={getEntryFormTitle(type)}
+                onChangeInput={handleChangeGroupName}
+                handleOnClickAddIcon={handleOnClickAddIcon}
+                inputValue={data.name}
+              />
+            )}
+            {data.subs.map(renderEntryFormItem)}
+          </FormOptionContext.Provider>
         </EntryFormWrapper>
       </div>
     );
-  }, [submitButtonStatus.value, data.subs, data.name]);
+  }, [submitButtonStatus.value, data.subs, data.name, mode, setMode]);
 
   return { renderProductBasicEntryForm };
 };

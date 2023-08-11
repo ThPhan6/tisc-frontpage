@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { Row } from 'antd';
+import { ColProps, Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -17,9 +17,13 @@ import styles from './styles/index.less';
 
 export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
-export const FormContainer: FC = ({ children }) => (
+interface FormContainerProps extends ColProps {
+  children: any;
+}
+
+export const FormContainer: FC<FormContainerProps> = ({ children, ...props }) => (
   <Row>
-    <ResponsiveCol>{children}</ResponsiveCol>
+    <ResponsiveCol {...props}>{children}</ResponsiveCol>
   </Row>
 );
 
@@ -47,6 +51,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   hideHeader,
   hideFooter,
   isRenderFooterContent = true,
+  ...props
 }) => {
   const history = useHistory();
   const isTablet = useScreen().isTablet;
@@ -128,7 +133,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   };
 
   return (
-    <FormContainer>
+    <FormContainer span={props.span} lg={props.lg}>
       <div className={`${styles.entry_form_container} ${customClass}`}>
         {/* header */}
         {hideHeader ? null : (

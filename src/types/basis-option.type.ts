@@ -26,9 +26,15 @@ export interface BasisOptionListResponse {
 export interface BasisOptionSubForm {
   id?: string;
   name: string;
-  is_have_image: boolean;
   is_collapse?: string;
   subs: SubBasisOption[];
+}
+
+export interface MainBasisOptionSubForm {
+  id?: string;
+  name: string;
+  is_collapse?: string;
+  subs: BasisOptionSubForm[];
 }
 
 export interface BasisOptionForm {
