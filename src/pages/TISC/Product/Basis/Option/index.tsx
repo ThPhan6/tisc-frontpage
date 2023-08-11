@@ -16,6 +16,20 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
+const colTitle = {
+  group: 'Group Options',
+  main: 'Main Options',
+  sub: 'Sub Options',
+};
+
+const dataIndexDefault = 'name';
+
+const colsDataIndex = {
+  group: 'option_group',
+  main: 'main_group',
+  sub: 'sub_group',
+};
+
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(2, [6]);
   const tableRef = useRef<any>();
@@ -81,8 +95,8 @@ const BasisOptionList: React.FC = () => {
 
   const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
-      title: 'Option Group',
-      dataIndex: 'name',
+      title: colTitle.group,
+      dataIndex: 'name', // key in data
       sorter: {
         multiple: 1,
       },
@@ -92,10 +106,18 @@ const BasisOptionList: React.FC = () => {
       },
     },
     {
-      title: 'Option Name',
-      dataIndex: 'option_name',
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
       sorter: {
         multiple: 2,
+      },
+      defaultSortOrder: 'descend',
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
+      sorter: {
+        multiple: 3,
       },
       defaultSortOrder: 'ascend',
     },
@@ -127,15 +149,48 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const SubColumns: TableColumnItem<SubBasisOption>[] = [
+  const MainSubColumns: TableColumnItem<SubBasisOption>[] = [
     {
-      title: 'Option Group',
-      dataIndex: 'option_group',
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
       noBoxShadow: true,
     },
     {
-      title: 'Option Name',
-      dataIndex: 'name',
+      title: colTitle.main,
+      dataIndex: dataIndexDefault,
+      isExpandable: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
+    },
+    ...getSameColumns(false),
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      align: 'center',
+      width: '5%',
+    },
+  ];
+
+  const SubColumns: TableColumnItem<SubBasisOption>[] = [
+    {
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
+      isExpandable: true,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: dataIndexDefault,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -152,13 +207,18 @@ const BasisOptionList: React.FC = () => {
 
   const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
-      title: 'Option Group',
-      dataIndex: 'option_group',
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
       noBoxShadow: true,
     },
     {
-      title: 'Option Name',
-      dataIndex: 'option_name',
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
       noBoxShadow: true,
     },
     ...getSameColumns(true),
@@ -181,16 +241,22 @@ const BasisOptionList: React.FC = () => {
         fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{
           name: 'group_order',
-          option_name: 'option_order',
+          main_group: 'main_order',
+          sub_group: 'option_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: SubColumns,
+          columns: MainSubColumns,
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: ChildColumns,
+            columns: SubColumns,
             childrenColumnName: 'subs',
             level: 3,
+            expandable: GetExpandableTableConfig({
+              columns: ChildColumns,
+              childrenColumnName: 'subs',
+              level: 4,
+            }),
           }),
         })}
       />
