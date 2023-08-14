@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { Collapse } from 'antd';
+import { Collapse, CollapseProps } from 'antd';
 
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
@@ -9,10 +9,8 @@ import { useCollapseGroupActiveCheck } from '@/reducers/active';
 import { BasisConventionOption, BasisPresetOption, BasisText } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
+import { collapseProps, expandIconLevel1 } from '@/components/Collapse/Expand';
 import { CustomRadio } from '@/components/CustomRadio';
-import { CollapseLevel1Props } from '@/features/user-group/components/ExpandIcon';
-
-import styles from './util.less';
 
 export const formatBasisText = (items: BasisText[]): RadioValue[] => {
   return items.map((item) => {
@@ -84,13 +82,18 @@ export const ContentTypeDetail: FC<{
   );
 };
 
+export const CollapseLevel1Props: CollapseProps = {
+  ...collapseProps,
+  expandIcon: expandIconLevel1,
+};
+
 export const ContentOptionTypeDetail: FC<{
   options: BasisPresetOption[];
   onChange: (radioValue: RadioValue) => void;
   value: any;
 }> = ({ options, onChange, value }) => {
   return (
-    <Collapse {...CollapseLevel1Props} className={styles.container}>
+    <Collapse {...CollapseLevel1Props}>
       {options.map((item, index) => (
         <Collapse.Panel
           header={

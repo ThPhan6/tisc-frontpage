@@ -268,7 +268,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
           <div
             className={`${styles.contentTypeModalBody} ${
               activeTab === 'text' ? styles.contentTypeText : ''
-            } ${activeTab === 'options' ? styles.contentTypeOption : ''} `}
+            } ${activeTab === 'options' ? styles.contentTypeOption : ''}`}
           >
             <ContentTypeOption
               type={activeTab as ACTIVE_TAB}
