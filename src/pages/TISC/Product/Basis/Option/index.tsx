@@ -37,6 +37,9 @@ const BasisOptionList: React.FC = () => {
   const handleUpdateBasisOption = (id: string) => {
     pushTo(PATH.updateOptions.replace(':id', id));
   };
+  const handleLinkageBasisOption = (id: string) => {
+    pushTo(PATH.linkageOptions.replace(':id', id));
+  };
   const handleDeleteBasisOption = (id: string) => {
     confirmDelete(() => {
       deleteBasisOption(id).then((isSuccess) => {
@@ -141,6 +144,10 @@ const BasisOptionList: React.FC = () => {
               {
                 type: 'deleted',
                 onClick: () => handleDeleteBasisOption(record.id),
+              },
+              {
+                type: 'linkage',
+                onClick: () => handleLinkageBasisOption(record.id),
               },
             ]}
           />

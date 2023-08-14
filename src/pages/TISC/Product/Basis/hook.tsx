@@ -25,6 +25,7 @@ import { merge } from 'lodash';
 import {
   BasisOptionSubForm,
   ConversionSubValueProps,
+  MainBasisOptionSubForm,
   PresetItemValueProp,
   SubBasisOption,
   SubPresetValueProp,
@@ -134,7 +135,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   const handleOnClickAddIcon = () => {
     const newSubs = FORM_CONFIG[type].newSubs;
+
     setData((prevState) => ({ ...prevState, subs: [...data.subs, newSubs] }));
+  };
+  const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
+    setData((prevState) => ({ ...prevState, subs: [...data.subs, mainOptionItem] }));
   };
 
   const handleOnChangeValue = (value: any, index: number) => {
@@ -179,6 +184,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         key={index}
         mainOption={item}
         handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
+        handleCopyMainOption={handleOnClickCopy}
         handleDeleteMainSubOption={() => handleOnClickDelete(index)}
       />
     );

@@ -7,6 +7,7 @@ import { ReactComponent as BillingIcon } from '@/assets/icons/billing-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
+import { ReactComponent as LinkageIcon } from '@/assets/icons/linkage-icon.svg';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
@@ -25,7 +26,8 @@ type ActionType =
   | 'invite'
   | 'user'
   | 'logout'
-  | 'billing';
+  | 'billing'
+  | 'linkage';
 
 interface ActionFormProps extends HeaderDropdownProps {
   actionItems?: (MenuIconProps & { type: ActionType })[];
@@ -77,6 +79,10 @@ const DEFAULT_ACTION_INFO: {
   billing: {
     icon: <BillingIcon />,
     label: 'Billing',
+  },
+  linkage: {
+    icon: <LinkageIcon />,
+    label: 'Linkage',
   },
 };
 

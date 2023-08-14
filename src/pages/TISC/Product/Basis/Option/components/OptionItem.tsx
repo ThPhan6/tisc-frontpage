@@ -161,11 +161,18 @@ interface SubOptionItemProps {
   subOption: BasisOptionSubForm;
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
+  handleCopySubOtionItem: () => void;
   dragIcon: JSX.Element;
 }
 
 const SubOptionItem: FC<SubOptionItemProps> = (props) => {
-  const { subOption, handleChangeSubItem, handleDeleteSubOption, dragIcon } = props;
+  const {
+    subOption,
+    handleChangeSubItem,
+    handleDeleteSubOption,
+    dragIcon,
+    handleCopySubOtionItem,
+  } = props;
 
   const { mode } = useContext(FormOptionContext);
 
@@ -248,7 +255,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           </div>
           <div className={styles.panel_header__input}>
             <PlusIcon className={styles.panel_header__field_add} onClick={addNewSubOptionItem} />
-            <CopyIcon className={styles.panel_header__field_add} onClick={() => {}} />
+            <CopyIcon className={styles.panel_header__field_add} onClick={handleCopySubOtionItem} />
             <ActionDeleteIcon
               className={styles.panel_header__input_delete_icon}
               onClick={handleDeleteSubOption}
@@ -258,8 +265,6 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
       </div>
     );
   };
-
-  console.log('subOption', subOption);
 
   return (
     <div className={styles.collapse_container}>
@@ -318,6 +323,7 @@ interface MainOptionItemProps {
   mainOption: MainBasisOptionSubForm;
   handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
   handleDeleteMainSubOption: () => void;
+  handleCopyMainOption: (mainOption: MainBasisOptionSubForm) => void;
 }
 
 const DEFAULT_MAIN_OPTION_ITEM: BasisOptionSubForm = {
@@ -327,7 +333,8 @@ const DEFAULT_MAIN_OPTION_ITEM: BasisOptionSubForm = {
 };
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
-  const { mainOption, handleChangeMainSubItem, handleDeleteMainSubOption } = props;
+  const { mainOption, handleChangeMainSubItem, handleDeleteMainSubOption, handleCopyMainOption } =
+    props;
 
   const handleActiveKeyToCollapse = () => {
     handleChangeMainSubItem({
@@ -387,6 +394,10 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
     handleChangeMainSubItem({ ...mainOption, subs: [...newSubOptions] });
   };
 
+  const handleCopySubOtionItem = (subItem: BasisOptionSubForm) => {
+    handleChangeMainSubItem({ ...mainOption, subs: [...mainOption.subs, subItem] });
+  };
+
   const MainPanelHeader = () => {
     return (
       <div className={styles.main_panel_header}>
@@ -415,7 +426,16 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
             className={styles.main_panel_header__icon_add}
             onClick={addNewMainOptionItem}
           />
-          <CopyIcon className={styles.main_panel_header__icon_add} onClick={() => {}} />
+          <CopyIcon
+            className={styles.main_panel_header__icon_add}
+            onClick={() =>
+              handleCopyMainOption({
+                ...mainOption,
+                name: `${mainOption.name} copy`,
+                is_collapse: '',
+              })
+            }
+          />
           <ActionDeleteIcon
             className={styles.main_panel_header__icon_delete}
             onClick={handleDeleteMainSubOption}
@@ -453,6 +473,13 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                         handleChangeSubItem={(changedSubs) =>
                           handleChangeSubOptionItem(changedSubs, index)
                         }
+                        handleCopySubOtionItem={() => {
+                          handleCopySubOtionItem({
+                            ...subItemOption,
+                            name: `${subItemOption.name} copy`,
+                            is_collapse: '',
+                          });
+                        }}
                         handleDeleteSubOption={() => handleDeleteSubOption(index)}
                         dragIcon={
                           <div
