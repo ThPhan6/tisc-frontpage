@@ -1,24 +1,20 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
-import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import { isEmpty, isUndefined, lowerCase } from 'lodash';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import type { TabItem } from '@/components/Tabs/types';
-import { useCollapseGroupActiveCheck } from '@/reducers/active';
 import type {
   AttributeContentType,
   AttributeSubForm,
   BasisConvention,
-  BasisConventionOption,
   BasisPresetOption,
   BasisText,
 } from '@/types';
 
 import CustomButton from '@/components/Button';
-import CustomCollapse from '@/components/Collapse';
 import { CustomRadio } from '@/components/CustomRadio';
 import { CustomModal } from '@/components/Modal';
 import { CustomTabs } from '@/components/Tabs';
@@ -26,6 +22,13 @@ import { CustomTabs } from '@/components/Tabs';
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
 import { SelectedItem } from './AttributeEntryForm';
+import {
+  ContentOptionTypeDetail,
+  ContentTypeDetail,
+  formatBasisText,
+  formatConversionGroup,
+  formatPresetGroup,
+} from './util';
 
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
@@ -34,37 +37,8 @@ interface ContentTypeOptionProps {
   type: ACTIVE_TAB;
   selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
   setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
-  index: number;
+  // index: number;
 }
-
-const ContentTypeDetail: FC<{
-  index: number;
-  option: any;
-  options: any[];
-  onChange: (radioValue: RadioValue) => void;
-  value: any;
-}> = ({ option, options, index, onChange, value }) => {
-  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck('content-type', index);
-
-  return (
-    <CustomCollapse
-      header={
-        <div className="flex-center">
-          <span className="text-uppercase">{option.name}</span>
-          <span style={{ marginLeft: 8 }}>({option.count})</span>
-        </div>
-      }
-      className="site-collapse-custom-panel"
-      arrowAlignRight
-      noBorder
-      noPadding
-      activeKey={curActiveKey}
-      onChange={onKeyChange}
-    >
-      <CustomRadio options={options} value={value} onChange={onChange} isRadioList />
-    </CustomCollapse>
-  );
-};
 
 const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
   data,
@@ -72,46 +46,34 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
   selectedOption,
   setSelectedOption,
 }) => {
-  const formatConventionGroup = (items: BasisConventionOption[]): RadioValue[] => {
-    return items.map((item) => {
-      return {
-        label: (
-          <span className="basis-conversion-group text-capitalize">
-            {item.name_1}
-            <SwapIcon />
-            {item.name_2}
-          </span>
-        ),
-        value: item.id,
-      };
-    });
-  };
-  //
-  const formatPresetOptionGroup = (items: BasisPresetOption[]): RadioValue[] => {
-    return items.map((item) => {
-      return {
-        label: (
-          <span className="basis-preset-option-group text-capitalize">
-            <span>{item.name}</span>
-            <span className="count-number" style={{ marginLeft: 8 }}>
-              ({item.count})
-            </span>
-          </span>
-        ),
-        value: item.id,
-      };
-    });
-  };
-  //
-  const formatBasisText = (items: BasisText[]): RadioValue[] => {
-    return items.map((item) => {
-      return {
-        label: <span className="basis-preset-option-group text-capitalize">{item.name}</span>,
-        value: item.id,
-      };
-    });
-  };
-  //
+  /// basis TEXT
+  if (type === 'text') {
+    const onChangeBasisText = (basisId: string) => {
+      const basistexts = [...data] as BasisText[];
+      const selected = basistexts.find((item) => {
+        return item.id === basisId;
+      });
+      if (selected) {
+        setSelectedOption({
+          basis_id: basisId,
+          content_type: type,
+          description: selected.name,
+        });
+      }
+    };
+
+    return (
+      <div /* style={{ paddingRight: 16 }} */>
+        <CustomRadio
+          options={formatBasisText(data)}
+          value={selectedOption.basis_id}
+          onChange={(radioValue) => onChangeBasisText(String(radioValue.value))}
+          isRadioList
+        />
+      </div>
+    );
+  }
+
   const onChangeConversion = (basisId: string) => {
     const conversions = [...data] as BasisConvention[];
     conversions.forEach((conversion) => {
@@ -128,10 +90,11 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
       }
     });
   };
-  const onChangePresetOption = (basisId: string) => {
-    const presetOptions = [...data] as BasisPresetOption[];
-    presetOptions.forEach((presetOption) => {
-      const selected = presetOption.subs?.find((sub) => {
+
+  const onChangePreset = (basisId: string) => {
+    const presetData = [...data] as BasisPresetOption[];
+    presetData.forEach((preset) => {
+      const selected = preset.subs?.find((sub) => {
         return sub.id === basisId;
       });
       if (selected) {
@@ -144,57 +107,78 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     });
   };
 
-  const onChangeBasisText = (basisId: string) => {
-    const basistexts = [...data] as BasisText[];
-    const selected = basistexts.find((item) => {
-      return item.id === basisId;
-    });
-    if (selected) {
-      setSelectedOption({
-        basis_id: basisId,
-        content_type: type,
-        description: selected.name,
+  const onChangeOption = (basisId: string) => {
+    const optionData = [...data] as BasisPresetOption[];
+    optionData.forEach((option) => {
+      option.subs?.forEach((subItem) => {
+        const selected = subItem.subs?.find((sub) => {
+          return sub.id === basisId;
+        });
+        if (selected) {
+          setSelectedOption({
+            basis_id: basisId,
+            content_type: type,
+            description: selected.name,
+          });
+        }
       });
-    }
+    });
   };
 
-  /// basis TEXT
-  if (type === 'text') {
+  const onChange = (radioValue: RadioValue) => {
+    if (type === 'conversions') {
+      onChangeConversion(String(radioValue.value));
+      return;
+    }
+
+    if (type === 'presets') {
+      onChangePreset(String(radioValue.value));
+      return;
+    }
+
+    if (type === 'options') {
+      onChangeOption(String(radioValue.value));
+      return;
+    }
+
+    return;
+  };
+
+  const renderOptions = (option: any) => {
+    if (type === 'presets') {
+      return formatPresetGroup(option);
+    }
+
+    if (type === 'conversions') {
+      return formatConversionGroup(option);
+    }
+
+    return [] as RadioValue[];
+  };
+
+  const newData = [...data].filter((item: any) => !isEmpty(item.subs));
+
+  if (type === 'options') {
     return (
-      <div /* style={{ paddingRight: 16 }} */>
-        <CustomRadio
-          options={formatBasisText(data)}
-          value={selectedOption.basis_id}
-          onChange={(radioValue) => onChangeBasisText(String(radioValue.value))}
-          isRadioList
-        />
-      </div>
+      <ContentOptionTypeDetail
+        onChange={onChange}
+        value={selectedOption.basis_id}
+        options={newData as BasisPresetOption[]}
+      />
     );
   }
+
   /// the others
-  return (
-    [...data]
-      .filter((item: any) => !isEmpty(item.subs))
-      .map((option: any, idx) => (
-        <ContentTypeDetail
-          key={idx}
-          index={idx}
-          onChange={(radioValue) => {
-            if (type === 'conversions') {
-              return onChangeConversion(String(radioValue.value));
-            }
-            return onChangePresetOption(String(radioValue.value));
-          }}
-          options={
-            type === 'conversions'
-              ? formatConventionGroup(option.subs)
-              : formatPresetOptionGroup(option.subs)
-          }
-          value={selectedOption.basis_id}
-          option={option}
-        />
-      )) || null
-  );
+  return newData.map((option: any, idx) => (
+    <ContentTypeDetail
+      key={idx}
+      index={idx}
+      onChange={onChange}
+      options={renderOptions(option.subs)}
+      value={selectedOption.basis_id}
+      option={option}
+    />
+  ));
 };
 
 interface ContentTypeModalProps {
@@ -242,7 +226,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
       selectedTab = selected;
     }
   }
-  const [activeTab, setActiveTab] = useState<string>(selectedTab.key);
+  const [activeTab, setActiveTab] = useState<ACTIVE_TAB>(selectedTab.key as ACTIVE_TAB);
 
   const tab = activeTab === 'text' ? 'texts' : activeTab;
 
@@ -276,13 +260,15 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
             listTab={listTab}
             tabPosition="top"
             tabDisplay="space"
-            onChange={setActiveTab}
+            onChange={(tabActived) => {
+              setActiveTab(tabActived as ACTIVE_TAB);
+            }}
             activeKey={activeTab}
           />
           <div
-            className={`${styles.contentTypeOption} ${
+            className={`${styles.contentTypeModalBody} ${
               activeTab === 'text' ? styles.contentTypeText : ''
-            } `}
+            } ${activeTab === 'options' ? styles.contentTypeOption : ''} `}
           >
             <ContentTypeOption
               type={activeTab as ACTIVE_TAB}
