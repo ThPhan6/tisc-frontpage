@@ -255,10 +255,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           </div>
           <div className={styles.panel_header__input}>
             <PlusIcon className={styles.panel_header__field_add} onClick={addNewSubOptionItem} />
-            <CopyIcon
-              className={styles.panel_header__field_add}
-              onClick={() => handleCopySubOtionItem()}
-            />
+            <CopyIcon className={styles.panel_header__field_add} onClick={handleCopySubOtionItem} />
             <ActionDeleteIcon
               className={styles.panel_header__input_delete_icon}
               onClick={handleDeleteSubOption}
@@ -480,6 +477,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                           handleCopySubOtionItem({
                             ...subItemOption,
                             name: `${subItemOption.name} copy`,
+                            is_collapse: '',
                           });
                         }}
                         handleDeleteSubOption={() => handleDeleteSubOption(index)}

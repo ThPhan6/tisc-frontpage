@@ -7,6 +7,7 @@ const OptionsLinkageForm = () => {
     <div>
       <TableHeader title={`Ngoc`} rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
+        title="DATASET LINKAGE"
         // handleSubmit={onHandleSubmit}
         // handleCancel={history.goBack}
         // handleDelete={getDeleteFuntional}
