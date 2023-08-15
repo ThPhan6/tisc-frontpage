@@ -1,0 +1,28 @@
+.option_form_container {
+  height: 32px;
+  padding-bottom: 1px;
+  box-shadow: 0 0.7px 0 #000;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+
+    &__title {
+      text-transform: uppercase;
+    }
+
+    &__icon {
+      margin-left: 16px;
+      cursor: pointer;
+    }
+  }
+
+  .input {
+    :global(.ant-input) {
+      color: @primary-color-dark;
+      text-transform: uppercase;
+    }
+  }
+}

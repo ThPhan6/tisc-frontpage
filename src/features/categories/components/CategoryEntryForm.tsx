@@ -119,7 +119,7 @@ const CategoryEntryForm = () => {
         entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
       >
         <FormNameInput
-          HandleOnClickAddIcon={() => {
+          handleOnClickAddIcon={() => {
             setCategoryValue({
               ...categoryValue,
               subs: [...categoryValue.subs, subcategoryValueDefault],
