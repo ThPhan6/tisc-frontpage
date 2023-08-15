@@ -247,6 +247,7 @@ const BasisOptionList: React.FC = () => {
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{
+          // colsDataIndex is sort keys
           name: 'group_order',
           main_group: 'main_order',
           sub_group: 'option_order',
