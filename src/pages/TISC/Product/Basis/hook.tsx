@@ -40,6 +40,8 @@ import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+const DEFAULT_MAIN_OPTION_ID = '33a0bbe3-38fd-4cd1-995f-31a801f4018b';
+
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
   name_2: '',
@@ -130,6 +132,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   }, []);
 
   const handleChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(data);
+
     setData((prevState) => ({ ...prevState, name: e.target.value }));
   };
 
@@ -153,6 +157,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   const handleOnChangeValue = (value: any, index: number) => {
     const newSubs = [...data['subs']];
+    if (value?.id === DEFAULT_MAIN_OPTION_ID) {
+      delete value.id;
+    }
     newSubs[index] = value;
     setData((prevState) => ({ ...prevState, subs: newSubs }));
   };
