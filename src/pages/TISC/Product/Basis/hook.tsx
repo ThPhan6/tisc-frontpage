@@ -20,7 +20,7 @@ import {
   updateConversionMiddleware,
   updatePresetMiddleware,
 } from '@/services';
-import { merge } from 'lodash';
+import { cloneDeep, merge, unset } from 'lodash';
 
 import {
   BasisOptionSubForm,
@@ -139,7 +139,16 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     setData((prevState) => ({ ...prevState, subs: [...data.subs, newSubs] }));
   };
   const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
-    setData((prevState) => ({ ...prevState, subs: [...data.subs, mainOptionItem] }));
+    const newItem = cloneDeep(mainOptionItem);
+    delete newItem.id;
+    newItem.subs.forEach((sub) => {
+      delete sub.id;
+      sub.subs.forEach((subItem) => {
+        delete subItem.id;
+      });
+    });
+
+    setData((prevState) => ({ ...prevState, subs: [...data.subs, newItem] }));
   };
 
   const handleOnChangeValue = (value: any, index: number) => {
