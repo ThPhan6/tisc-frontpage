@@ -132,8 +132,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   }, []);
 
   const handleChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(data);
-
     setData((prevState) => ({ ...prevState, name: e.target.value }));
   };
 
