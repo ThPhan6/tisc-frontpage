@@ -20,7 +20,7 @@ import {
   updateConversionMiddleware,
   updatePresetMiddleware,
 } from '@/services';
-import { merge } from 'lodash';
+import { cloneDeep, merge, unset } from 'lodash';
 
 import {
   BasisOptionSubForm,
@@ -39,6 +39,8 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+const DEFAULT_MAIN_OPTION_ID = '33a0bbe3-38fd-4cd1-995f-31a801f4018b';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -139,11 +141,23 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     setData((prevState) => ({ ...prevState, subs: [...data.subs, newSubs] }));
   };
   const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
-    setData((prevState) => ({ ...prevState, subs: [...data.subs, mainOptionItem] }));
+    const newItem = cloneDeep(mainOptionItem);
+    delete newItem.id;
+    newItem.subs.forEach((sub) => {
+      delete sub.id;
+      sub.subs.forEach((subItem) => {
+        delete subItem.id;
+      });
+    });
+
+    setData((prevState) => ({ ...prevState, subs: [...data.subs, newItem] }));
   };
 
   const handleOnChangeValue = (value: any, index: number) => {
     const newSubs = [...data['subs']];
+    if (value?.id === DEFAULT_MAIN_OPTION_ID) {
+      delete value.id;
+    }
     newSubs[index] = value;
     setData((prevState) => ({ ...prevState, subs: newSubs }));
   };

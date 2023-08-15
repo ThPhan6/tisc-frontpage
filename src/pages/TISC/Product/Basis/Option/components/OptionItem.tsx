@@ -16,7 +16,7 @@ import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
 import { FormOptionContext } from '../../hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 
 import { BasisOptionSubForm, MainBasisOptionSubForm, SubBasisOption } from '@/types';
 
@@ -395,7 +395,10 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   };
 
   const handleCopySubOtionItem = (subItem: BasisOptionSubForm) => {
-    handleChangeMainSubItem({ ...mainOption, subs: [...mainOption.subs, subItem] });
+    const newSubItem = cloneDeep(subItem);
+    delete newSubItem.id;
+    newSubItem.subs.forEach((item) => delete item.id);
+    handleChangeMainSubItem({ ...mainOption, subs: [...mainOption.subs, newSubItem] });
   };
 
   const MainPanelHeader = () => {
