@@ -134,7 +134,7 @@ const MaterialProductEntryForm = () => {
           placeholder="type main list name"
           title="Main List"
           onChangeInput={handleChangeGroupName}
-          HandleOnClickAddIcon={handleClickAddItem}
+          handleOnClickAddIcon={handleClickAddItem}
           inputValue={data.name}
         />
         {data.subs.map((sub, index) => (

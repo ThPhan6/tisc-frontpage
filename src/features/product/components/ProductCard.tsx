@@ -367,7 +367,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 }) => {
   const loading = useAppSelector(loadingSelector);
   const { data, allProducts } = useAppSelector((state) => state.product.list);
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const [collapseKey, setCollapseKey] = useState<number>();
 
   const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -446,7 +446,13 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   ) : (
                     <CustomTextArea
                       customStyles={{ width: '100%', marginRight: 8 }}
-                      styles={{ paddingLeft: 16, overflow: 'hidden', resize: 'none' }}
+                      styles={{
+                        paddingLeft: 16,
+                        paddingTop: 11,
+                        paddingBottom: 11,
+                        overflow: 'hidden',
+                        resize: 'none',
+                      }}
                       placeholder="type description"
                       value={group.description}
                       onChange={onChangeDescription(index)}

@@ -232,6 +232,11 @@ const routes = [
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
               },
+              {
+                path: PATH.linkageOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsLinkageForm',
+              },
             ],
           },
         ],

@@ -1,6 +1,8 @@
 import { CSSProperties, ReactNode } from 'react';
 
-export interface EntryFormWrapperProps {
+import { ColProps } from 'antd';
+
+export interface EntryFormWrapperProps extends ColProps {
   handleSubmit?: () => void;
   handleCancel?: () => void;
   handleDelete?: () => void;
@@ -26,7 +28,7 @@ export interface EntryFormWrapperProps {
 }
 
 export interface FormNameInputProps {
-  HandleOnClickAddIcon?: () => void;
+  handleOnClickAddIcon?: () => void;
   title: string;
   placeholder?: string;
   onChangeInput?: (e: React.ChangeEvent<HTMLInputElement>) => void;
