@@ -41,7 +41,8 @@ export const AttributeItem: FC<AttributeItemProps> = ({
         </div>
         <div
           className={`${styles.form_input__element} ${styles.form_input__cursor}`}
-          onClick={handleSelectContentType}>
+          onClick={handleSelectContentType}
+        >
           <div className="group-content-type">
             <BodyText level={4}>Content Type :</BodyText>
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
@@ -56,7 +57,9 @@ export const AttributeItem: FC<AttributeItemProps> = ({
         </div>
         <div className={styles.form_input__element}>
           <div className="group-content-type">
-            <BodyText level={4}>Description :</BodyText>
+            <BodyText level={4} style={{ whiteSpace: 'nowrap' }}>
+              Description :
+            </BodyText>
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
               {lowerCase(item.content_type!).indexOf('conversion') >= 0 ? (
                 <span className="basis-conversion-group">
