@@ -133,7 +133,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   };
 
   return (
-    <FormContainer span={props.span} lg={props.lg}>
+    <FormContainer {...props}>
       <div className={`${styles.entry_form_container} ${customClass}`}>
         {/* header */}
         {hideHeader ? null : (
