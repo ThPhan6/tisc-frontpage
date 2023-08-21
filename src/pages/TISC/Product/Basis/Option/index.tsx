@@ -31,7 +31,7 @@ const colsDataIndex = {
 };
 
 const BasisOptionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(2, [6]);
+  useAutoExpandNestedTableColumn(3, [8]);
   const tableRef = useRef<any>();
 
   const handleUpdateBasisOption = (id: string) => {
