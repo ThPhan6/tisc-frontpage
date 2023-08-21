@@ -25,6 +25,9 @@ export interface EntryFormWrapperProps extends ColProps {
   hideHeader?: boolean;
   hideFooter?: boolean;
   isRenderFooterContent?: boolean;
+  customStyles?: CSSProperties;
+  cancelLabel?: string;
+  submitLabel?: string;
 }
 
 export interface FormNameInputProps {

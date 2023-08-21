@@ -56,7 +56,7 @@ export const PATH = {
   options: '/tisc/products/basis/options',
   createOptions: '/tisc/products/basis/options/create',
   updateOptions: '/tisc/products/basis/options/:id',
-  linkageOptions: '/tisc/products/basis/options/:id/linkage',
+  LinkageDataSet: '/tisc/products/basis/options/:id/linkage',
   // attribute general
   attribute: '/tisc/products/attributes',
   attributeGeneral: '/tisc/products/attributes/general',

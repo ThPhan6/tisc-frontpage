@@ -38,7 +38,7 @@ const BasisOptionList: React.FC = () => {
     pushTo(PATH.updateOptions.replace(':id', id));
   };
   const handleLinkageBasisOption = (id: string) => {
-    pushTo(PATH.linkageOptions.replace(':id', id));
+    pushTo(PATH.LinkageDataSet.replace(':id', id));
   };
   const handleDeleteBasisOption = (id: string) => {
     confirmDelete(() => {
