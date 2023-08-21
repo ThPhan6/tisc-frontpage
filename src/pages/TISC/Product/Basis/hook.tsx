@@ -20,7 +20,7 @@ import {
   updateConversionMiddleware,
   updatePresetMiddleware,
 } from '@/services';
-import { cloneDeep, merge, unset } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
 
 import {
   BasisOptionSubForm,
@@ -57,8 +57,10 @@ const presetsValueDefault: PresetItemValueProp = {
   subs: [],
 };
 const optionValueDefault: BasisOptionSubForm = {
+  id: '',
   name: '',
   subs: [],
+  main_id: '',
 };
 
 type ProductBasisFormType = 'conversions' | 'presets' | 'options';
@@ -143,9 +145,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
     const newItem = cloneDeep(mainOptionItem);
     delete newItem.id;
-    newItem.subs.forEach((sub) => {
+    newItem.subs.forEach((sub: any) => {
       delete sub.id;
-      sub.subs.forEach((subItem) => {
+      sub.subs.forEach((subItem: any) => {
         delete subItem.id;
       });
     });
@@ -166,42 +168,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     const newSubs = [...data['subs']];
     newSubs.splice(index, 1);
     setData((prevState) => ({ ...prevState, subs: newSubs }));
-  };
-
-  const renderEntryFormItem = (item: any, index: number) => {
-    if (type === 'conversions') {
-      return (
-        <ConversionItem
-          key={index}
-          value={item}
-          onChangeValue={(value) => {
-            handleOnChangeValue(value, index);
-          }}
-          handleOnClickDelete={() => handleOnClickDelete(index)}
-        />
-      );
-    }
-    if (type === 'presets') {
-      return (
-        <PresetItem
-          key={index}
-          handleOnClickDelete={() => handleOnClickDelete(index)}
-          onChangeValue={(value) => {
-            handleOnChangeValue(value, index);
-          }}
-          value={item}
-        />
-      );
-    }
-    return (
-      <MainOptionItem
-        key={index}
-        mainOption={item}
-        handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
-        handleCopyMainOption={handleOnClickCopy}
-        handleDeleteMainSubOption={() => handleOnClickDelete(index)}
-      />
-    );
   };
 
   const handleCreate = (dataSubmit: any) => {
@@ -226,6 +192,40 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         }, 2000);
       }
     });
+  };
+
+  const handleDeleteConversion = () => {
+    deleteConversionMiddleware(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.conversions);
+      }
+    });
+  };
+
+  const handleDeleteBasisOption = () => {
+    deleteBasisOption(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.options);
+      }
+    });
+  };
+
+  const handleDeletePreset = () => {
+    deletePresetMiddleware(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.presets);
+      }
+    });
+  };
+
+  const getDeleteFuntional = () => {
+    if (!idBasis) return undefined;
+
+    if (type === 'conversions') {
+      return handleDeleteConversion();
+    }
+
+    return type === 'presets' ? handleDeletePreset() : handleDeleteBasisOption();
   };
 
   const onHandleSubmit = () => {
@@ -326,38 +326,40 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     });
   };
 
-  const handleDeleteConversion = () => {
-    deleteConversionMiddleware(idBasis).then((isSuccess) => {
-      if (isSuccess) {
-        pushTo(PATH.conversions);
-      }
-    });
-  };
-
-  const handleDeleteBasisOption = () => {
-    deleteBasisOption(idBasis).then((isSuccess) => {
-      if (isSuccess) {
-        pushTo(PATH.options);
-      }
-    });
-  };
-
-  const handleDeletePreset = () => {
-    deletePresetMiddleware(idBasis).then((isSuccess) => {
-      if (isSuccess) {
-        pushTo(PATH.presets);
-      }
-    });
-  };
-
-  const getDeleteFuntional = () => {
-    if (!idBasis) return undefined;
-
+  const renderEntryFormItem = (item: any, index: number) => {
     if (type === 'conversions') {
-      return handleDeleteConversion();
+      return (
+        <ConversionItem
+          key={index}
+          value={item}
+          onChangeValue={(value) => {
+            handleOnChangeValue(value, index);
+          }}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
+        />
+      );
     }
-
-    return type === 'presets' ? handleDeletePreset() : handleDeleteBasisOption();
+    if (type === 'presets') {
+      return (
+        <PresetItem
+          key={index}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
+          onChangeValue={(value) => {
+            handleOnChangeValue(value, index);
+          }}
+          value={item}
+        />
+      );
+    }
+    return (
+      <MainOptionItem
+        key={index}
+        mainOption={item}
+        handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
+        handleCopyMainOption={handleOnClickCopy}
+        handleDeleteMainSubOption={() => handleOnClickDelete(index)}
+      />
+    );
   };
 
   const renderProductBasicEntryForm = useCallback(() => {

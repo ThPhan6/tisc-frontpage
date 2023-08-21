@@ -20,6 +20,29 @@ export const confirmDelete = (onOk: () => void, props?: ModalFuncProps, onCancel
   });
 };
 
+export const confirmModal = (props: {
+  title: string;
+  icon?: JSX.Element;
+  content?: string;
+  okText?: string;
+  cancelText?: string;
+  className?: string;
+  centered?: boolean;
+  maskClosable?: boolean;
+  onOk?: () => void;
+  onCancel?: () => void;
+}) => {
+  Modal.confirm({
+    ...props,
+    okText: 'Yes',
+    cancelText: 'No',
+    icon: <WarningIcon className={styles.deleteModalIcon} />,
+    className: styles.customModal,
+    centered: props.centered ?? true,
+    maskClosable: props.maskClosable ?? false,
+  });
+};
+
 export const getResponseMessage = (
   type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update' | 'assign' | 'remove',
   action: string,

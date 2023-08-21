@@ -21,7 +21,7 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   inputValue,
   customClass = '',
 }) => {
-  const { setMode } = useContext(FormOptionContext);
+  const { setMode, mode } = useContext(FormOptionContext);
 
   return (
     <div className={`${styles.option_form_container} ${customClass}`}>
@@ -39,13 +39,13 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
         <div className="flex-end">
           <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
           <ListIcon
-            className={styles.header__icon}
+            className={`${styles.header__icon} ${mode === 'list' ? 'list-icon' : ''}`}
             onClick={() => {
               setMode('list');
             }}
           />
           <CardImageIcon
-            className={styles.header__icon}
+            className={`${styles.header__icon} ${mode === 'card' ? 'card-icon' : ''}`}
             onClick={() => {
               setMode('card');
             }}
