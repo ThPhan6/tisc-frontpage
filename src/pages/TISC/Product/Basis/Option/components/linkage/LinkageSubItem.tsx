@@ -154,7 +154,7 @@ export const LinkageSubItem: FC<Props> = ({ item, mainId }) => {
         }}
       >
         <img src={showImageUrl(item.image)} />
-        <BodyText fontFamily="Roboto" level={6} style={{ fontWeight: 500 }}>
+        <BodyText fontFamily="Roboto" level={6}>
           {item.product_id}
         </BodyText>
       </div>
