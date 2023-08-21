@@ -1,4 +1,5 @@
-export interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface CustomButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
   buttonClass?: string;
   properties?: 'standard' | 'warning' | 'circle' | 'square' | 'rounded';
   variant?: 'primary' | 'dashed' | 'link' | 'text' | 'secondary' | 'primaryDark';
