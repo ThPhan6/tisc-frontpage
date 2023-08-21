@@ -23,6 +23,8 @@
 .contentWrapper {
   @footer-height: 48px;
 
+  display: flex;
+  justify-content: center;
   height: calc(100% - @footer-height);
   padding: 16px 16px 0;
 
@@ -34,7 +36,6 @@
 
 .main {
   display: flex;
-  justify-content: safe center;
 
   :global(.ant-checkbox + span) {
     padding-left: 0;
@@ -132,7 +133,7 @@
   /// select form
   .subItemPaired {
     background: transparent;
-    border: 1px solid #eb008d;
+    box-shadow: inset 0 0 0 0.7px #eb008d;
   }
   .subItemSelected {
     background: #ffb8e2;

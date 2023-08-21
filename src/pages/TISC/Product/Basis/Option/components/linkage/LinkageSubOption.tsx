@@ -68,7 +68,9 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
       }),
     );
 
-    dispatch(updateConnectionList({ options: newSubOpts, remove: isRemove }));
+    if (!preLinkageForm) {
+      dispatch(updateConnectionList({ options: newSubOpts, remove: isRemove }));
+    }
   };
 
   const handleCollapseWhenSelectAll = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {

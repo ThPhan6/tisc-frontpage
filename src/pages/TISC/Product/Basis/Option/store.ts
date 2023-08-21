@@ -1,6 +1,6 @@
 import { sum, uniq, uniqBy, xor } from 'lodash';
 
-import store, { RootState } from '@/reducers';
+import { RootState } from '@/reducers';
 import { BasisOptionForm, BasisOptionSubForm } from '@/types';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
@@ -52,6 +52,8 @@ const linkageSlice = createSlice({
     setLinkageState: (state, action: PayloadAction<Partial<LinkageState>>) => {
       return { ...state, ...action.payload };
     },
+
+    ///
     toggleSubOptionCollapse: (state, action: PayloadAction<string[]>) => {
       state.expandSubOptionIds = xor(state.expandSubOptionIds, action.payload);
     },
@@ -99,6 +101,8 @@ const linkageSlice = createSlice({
         status: pairId === el.pairId ? 'unpair' : 'pair',
       }));
     },
+
+    ///
     resetLinkageState: () => initialState,
   },
 });
@@ -109,10 +113,11 @@ export const {
   updatePickedOptions,
   updateLinkedOptionStatus,
   updateConnectionList,
+  setLinkageState,
 } = linkageSlice.actions;
 
-export const setLinkageState = (payload: Partial<LinkageState>) =>
-  store.dispatch(linkageSlice.actions.setLinkageState(payload));
+// export const setLinkageState = (payload: Partial<LinkageState>) =>
+//   store.dispatch(linkageSlice.actions.setLinkageState(payload));
 
 export const linkageReducer = linkageSlice.reducer;
 

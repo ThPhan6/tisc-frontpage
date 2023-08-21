@@ -14,7 +14,6 @@ import { BodyText } from '@/components/Typography';
 import {
   LinkedOption,
   isAllSelectedMainOptionSelector,
-  toggleSubOptionCollapse,
   updateConnectionList,
   updatePickedOptions,
 } from '../../store';
@@ -60,7 +59,9 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
       }),
     );
 
-    store.dispatch(updateConnectionList({ options: subOpts, remove: isRemove }));
+    if (!preLinkageForm) {
+      store.dispatch(updateConnectionList({ options: subOpts, remove: isRemove }));
+    }
   };
 
   // const handleCollapse = () => {

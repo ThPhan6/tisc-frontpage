@@ -91,7 +91,7 @@ export const LinkageSubItem: FC<Props> = ({ item, mainId }) => {
       const chosenOption = [
         {
           isPair: !!item.paired,
-          pairId: item.id as string,
+          pairId: item.id,
           productId: item.product_id,
           status: productStatus,
         },
