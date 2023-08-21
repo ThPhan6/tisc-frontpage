@@ -51,6 +51,9 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   hideHeader,
   hideFooter,
   isRenderFooterContent = true,
+  customStyles,
+  cancelLabel = 'Cancel',
+  submitLabel = 'Save',
   ...props
 }) => {
   const history = useHistory();
@@ -66,9 +69,9 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     }
 
     const showButtonLeft = () => {
-      if (!isTablet || !entryFormTypeOnMobile) {
-        return null;
-      }
+      // if (!isTablet || !entryFormTypeOnMobile) {
+      //   return null;
+      // }
 
       if (isTablet && entryFormTypeOnMobile === 'edit') {
         return (
@@ -97,7 +100,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
           onClick={handleCancel || history.goBack}
           disabled={disableCancelButton}
         >
-          Cancel
+          {cancelLabel}
         </CustomButton>
       );
     };
@@ -123,7 +126,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               disabled={disableSubmitButton}
             >
               <BodyText level={6} fontFamily="Roboto">
-                Save
+                {submitLabel}
               </BodyText>
             </CustomButton>
           )}
@@ -134,7 +137,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 
   return (
     <FormContainer {...props}>
-      <div className={`${styles.entry_form_container} ${customClass}`}>
+      <div className={`${styles.entry_form_container} ${customClass}`} style={{ ...customStyles }}>
         {/* header */}
         {hideHeader ? null : (
           <div className={styles.header_main}>

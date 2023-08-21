@@ -8,6 +8,7 @@ import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
 import { customResourceReducer } from '@/pages/Designer/CustomResource/reducer';
 
+import { linkageReducer } from './../pages/TISC/Product/Basis/Option/store';
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 import { quotationReducer } from '@/pages/LandingPage/quotionReducer';
@@ -33,6 +34,7 @@ const reducers = combineReducers({
   modal: modalReducer,
   active: activeReducer,
   quotation: quotationReducer,
+  linkage: linkageReducer,
 });
 
 const persistConfig = {
