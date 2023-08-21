@@ -57,6 +57,7 @@ const presetsValueDefault: PresetItemValueProp = {
   subs: [],
 };
 const optionValueDefault: BasisOptionSubForm = {
+  id: '',
   name: '',
   subs: [],
   main_id: '',
@@ -144,9 +145,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
     const newItem = cloneDeep(mainOptionItem);
     delete newItem.id;
-    newItem.subs.forEach((sub) => {
+    newItem.subs.forEach((sub: any) => {
       delete sub.id;
-      sub.subs.forEach((subItem) => {
+      sub.subs.forEach((subItem: any) => {
         delete subItem.id;
       });
     });

@@ -1,5 +1,5 @@
 export interface SubBasisOption {
-  id?: string;
+  id: string;
   image?: string;
   option_code?: string;
   value_1: string;
@@ -30,7 +30,7 @@ export interface BasisOptionListResponse {
 }
 
 export interface BasisOptionSubForm {
-  id?: string;
+  id: string;
   name: string;
   is_collapse?: string | string[];
   subs: SubBasisOption[];
@@ -48,7 +48,7 @@ export interface MainBasisOptionSubForm {
 }
 
 export interface BasisOptionForm {
-  id?: string;
+  id: string;
   name: string;
   select?: boolean; // UI
   disabled?: boolean; // UI

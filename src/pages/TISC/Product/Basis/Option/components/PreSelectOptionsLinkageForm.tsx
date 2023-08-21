@@ -66,8 +66,6 @@ export const PreSelectOptionsLinkageForm: FC = () => {
   };
 
   const handleCancel = () => {
-    store.dispatch(resetLinkageState());
-
     history.push(PATH.options);
   };
 

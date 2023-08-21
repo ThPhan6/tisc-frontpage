@@ -13,6 +13,7 @@ import { BodyText } from '@/components/Typography';
 
 import {
   LinkedOption,
+  getSubOptionActiveSelector,
   isAllSelectedMainOptionSelector,
   updateConnectionList,
   updatePickedOptions,
@@ -32,6 +33,15 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
   const isRoot = rootMainOptionId === mainOption.id;
 
   const disabled = !preLinkageForm && (!rootMainOptionId || isRoot || false);
+
+  const subOpiontsActive = useAppSelector(
+    getSubOptionActiveSelector(mainOption.subs, preLinkageForm),
+  );
+  const mainOptionIds = subOpiontsActive?.map((el) => el.main_id);
+
+  const mainOptionActiveIds = mainOption.subs.map((el) =>
+    mainOptionIds?.includes(el.main_id) ? el.main_id : '',
+  );
 
   const handleSelectAllSubOptions = (e: CheckboxChangeEvent) => {
     const isRemove = !e.target.checked;
@@ -79,7 +89,13 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
         onChange={handleSelectAllSubOptions}
         // onClick={handleCollapse}
       >
-        <BodyText fontFamily="Roboto" level={6} style={{ fontWeight: 500 }}>
+        <BodyText
+          fontFamily="Roboto"
+          level={6}
+          style={{
+            fontWeight: mainOptionActiveIds.includes(mainOption.id as string) ? 500 : 300,
+          }}
+        >
           {mainOption.name}
         </BodyText>
       </Checkbox>

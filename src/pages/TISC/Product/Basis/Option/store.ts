@@ -1,4 +1,4 @@
-import { sum, uniq, uniqBy, xor } from 'lodash';
+import { flatMap, pick, sum, uniq, uniqBy, xor } from 'lodash';
 
 import { RootState } from '@/reducers';
 import { BasisOptionForm, BasisOptionSubForm } from '@/types';
@@ -160,6 +160,20 @@ export const isPairedOptionItemSelector = (id: string) =>
     return connectionList.findIndex((el) => el.pairId === id) > -1;
   });
 
+export const getSubOptionActiveSelector = (
+  subOptions: BasisOptionSubForm[],
+  preLinkageStep: boolean,
+) =>
+  createSelector(linkageSeletor, ({ pickedOptionIds, chosenOptionIds }) => {
+    const subIds = flatMap(subOptions.map((el) => el.subs.map((item) => item.id)));
+
+    const activeSubItem = (preLinkageStep ? pickedOptionIds : chosenOptionIds).some((el) =>
+      subIds.includes(el),
+    );
+
+    return activeSubItem ? subOptions : null;
+  });
+
 export const linkageOptionSelector = createSelector(
   linkageSeletor,
   ({ options, pickedOptionIds }) => {
@@ -177,21 +191,59 @@ export const linkageOptionSelector = createSelector(
   },
 );
 
-export const preSelectLinkageSummarySelector = createSelector(linkageSeletor, ({ options }) => {
-  return [
-    { 'Main Options': options.length },
-    { 'Sub Options': sum(options.map((op) => op.subs.length)) },
-    { Products: sum(options.map((op) => sum(op.subs.map((s) => s.subs.length)))) },
-  ];
-});
+export const preSelectLinkageSummarySelector = createSelector(
+  linkageSeletor,
+  ({ options, pickedOptionIds }) => {
+    const subOptions = flatMap(
+      options.map((main) =>
+        uniq(
+          flatMap(
+            main.subs
+              .map((sub) =>
+                sub.subs.map((item) => (pickedOptionIds.includes(item.id) ? sub : undefined)),
+              )
+              .filter(Boolean),
+          ),
+        ),
+      ),
+    ).filter(Boolean) as BasisOptionSubForm[];
+
+    const subOptionIds = subOptions.map((el) => el.main_id);
+    const mainOptions = options
+      .map((el) => (subOptionIds.includes(el.id) ? el : undefined))
+      .filter(Boolean);
+
+    return [
+      { 'Main Options': mainOptions?.length ?? 0 },
+      {
+        'Sub Options': subOptions?.length ?? 0,
+      },
+      { Products: pickedOptionIds.length ?? 0 },
+    ];
+  },
+);
 
 export const linkageSummarySelector = createSelector(
   linkageSeletor,
   linkageOptionSelector,
-  ({ connectionList }, options) => {
+  ({ connectionList, chosenOptionIds }, options) => {
+    const dataset = flatMap(
+      options.map((main) =>
+        uniq(
+          flatMap(
+            main.subs
+              .map((sub) =>
+                sub.subs.map((item) => (chosenOptionIds.includes(item.id) ? main : undefined)),
+              )
+              .filter(Boolean),
+          ),
+        ),
+      ),
+    ).filter(Boolean);
+
     return [
-      { Dataset: options.length },
-      { Products: sum(options.map((op) => sum(op.subs.map((s) => s.subs.length)))) },
+      { Dataset: dataset.length },
+      { Products: chosenOptionIds.length },
       { 'Connection Pairs': connectionList.length },
     ];
   },

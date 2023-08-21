@@ -17,6 +17,7 @@ import { BodyText } from '@/components/Typography';
 
 import {
   LinkedOption,
+  getSubOptionActiveSelector,
   isAllSelectedSubOptionSelector,
   isLinkageSubOptionExpandSelector,
   toggleSubOptionCollapse,
@@ -42,6 +43,8 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
 
   const rootMainOptionId = useAppSelector((state) => state.linkage.rootMainOptionId);
   const disabled = !preLinkageForm && (!subOption.subs.length || isRoot || !rootMainOptionId);
+
+  const subOpiontActive = useAppSelector(getSubOptionActiveSelector([subOption], preLinkageForm));
 
   const handleCollapse = () => {
     dispatch(toggleSubOptionCollapse([subOption.id] as string[]));
@@ -74,7 +77,7 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
   };
 
   const handleCollapseWhenSelectAll = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    if (allSelected || (!allSelected && expand)) {
+    if (allSelected || (!allSelected && expand) || !preLinkageForm) {
       e.stopPropagation();
     }
   };
@@ -85,13 +88,21 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
       accordion
       collapsible={subOption.subs.length > 0 ? undefined : 'disabled'}
       onChange={handleCollapse}
+      defaultActiveKey={preLinkageForm ? undefined : subOption.id}
     >
       <Collapse.Panel
-        key={subOption.id as string}
+        key={subOption.id}
         header={
           <div className="flex-between flex-grow header-text">
             <div className="flex-start">
-              <BodyText fontFamily="Roboto" level={6} style={{ fontWeight: 500, paddingRight: 4 }}>
+              <BodyText
+                fontFamily="Roboto"
+                level={6}
+                style={{
+                  fontWeight: subOpiontActive?.some((el) => el.id === subOption.id) ? 500 : 300,
+                  paddingRight: 4,
+                }}
+              >
                 {subOption.name}
               </BodyText>
               {expand ? <DropupIcon /> : <DropdownIcon />}

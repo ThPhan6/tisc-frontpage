@@ -243,7 +243,7 @@ const BasisOptionList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
         title="OPTIONS"
-        columns={setDefaultWidthForEachColumn(MainColumns, 7)}
+        columns={setDefaultWidthForEachColumn(MainColumns, 8)}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{
@@ -253,15 +253,15 @@ const BasisOptionList: React.FC = () => {
           sub_group: 'option_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: MainSubColumns,
+          columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: SubColumns,
+            columns: setDefaultWidthForEachColumn(SubColumns, 8),
             childrenColumnName: 'subs',
             level: 3,
             expandable: GetExpandableTableConfig({
-              columns: ChildColumns,
+              columns: setDefaultWidthForEachColumn(ChildColumns, 8),
               childrenColumnName: 'subs',
               level: 4,
             }),
