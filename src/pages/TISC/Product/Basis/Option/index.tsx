@@ -141,10 +141,10 @@ const BasisOptionList: React.FC = () => {
                 type: 'updated',
                 onClick: () => handleUpdateBasisOption(record.id),
               },
-              {
-                type: 'linkage',
-                onClick: () => handleLinkageBasisOption(record.id),
-              },
+              // {
+              //   type: 'linkage',
+              //   onClick: () => handleLinkageBasisOption(record.id),
+              // },
               {
                 type: 'deleted',
                 onClick: () => handleDeleteBasisOption(record.id),
