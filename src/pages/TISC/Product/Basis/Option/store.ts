@@ -89,7 +89,13 @@ const linkageSlice = createSlice({
         state.connectionList = newConnectionList;
         ///
       } else {
-        state.connectionList = uniqBy(state.connectionList.concat(options), 'pairId');
+        const newOptions: LinkedOption[] = options.map((el) => ({
+          ...el,
+          isPair: true,
+          status: 'inactive',
+        }));
+
+        state.connectionList = uniqBy(state.connectionList.concat(newOptions), 'pairId');
       }
     },
     updateLinkedOptionStatus: (state, action: PayloadAction<LinkedOption>) => {

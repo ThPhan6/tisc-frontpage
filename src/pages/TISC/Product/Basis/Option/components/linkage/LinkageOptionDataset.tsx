@@ -46,14 +46,12 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
   const handleSelectAllSubOptions = (e: CheckboxChangeEvent) => {
     const isRemove = !e.target.checked;
 
-    const newSubOptIds = flatMap(
-      mainOption.subs.map((sub) => sub.subs.map((el) => el.id as string)),
-    );
+    const newSubOptIds = flatMap(mainOption.subs.map((sub) => sub.subs.map((el) => el.id)));
 
     const subOpts: LinkedOption[] = flatMap(
       mainOption.subs.map((sub) =>
         sub.subs.map((el) => ({
-          pairId: el.id as string,
+          pairId: el.id,
           isPair: !!el.paired,
           productId: el.product_id,
           status: 'inactive',
@@ -93,7 +91,7 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
           fontFamily="Roboto"
           level={6}
           style={{
-            fontWeight: mainOptionActiveIds.includes(mainOption.id as string) ? 500 : 300,
+            fontWeight: mainOptionActiveIds.includes(mainOption.id) ? 500 : 300,
           }}
         >
           {mainOption.name}
