@@ -20,8 +20,6 @@ export const LinkageConnection = () => {
     store.dispatch(updateLinkedOptionStatus(item));
   };
 
-  console.log('connectionList', connectionList);
-
   return (
     <Col span={6} className={style.borderLeft}>
       <div className="border-bottom-light">
