@@ -8,6 +8,8 @@ export interface SubBasisOption {
   unit_2: string;
   isBase64?: boolean;
   product_id: string;
+  paired: number;
+  // count: number;
 }
 export interface BasisOptionListResponse {
   id: string;

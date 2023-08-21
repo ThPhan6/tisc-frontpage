@@ -15,6 +15,7 @@ import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
 import { FormOptionContext } from '../../hook';
+import { useScreen } from '@/helper/common';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import { cloneDeep, isEmpty } from 'lodash';
 
@@ -25,6 +26,11 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import styles from './OptionItem.less';
+
+const useCheckWidth = (): number => {
+  const { isTablet } = useScreen();
+  return isTablet ? 100 : 300;
+};
 
 export const ImageUpload: FC<{
   onFileChange: (base64: string) => void;
@@ -77,6 +83,8 @@ const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
   unit_2: '',
   unit_1: '',
   product_id: '',
+  // count: 0,
+  paired: 0,
 };
 
 const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
@@ -133,25 +141,42 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
             />
           </Col>
         ))}
-        <div
-          style={{
-            margin: '0 8px',
-            height: '36px',
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <span className="product-id-label">Product ID:</span>
-          <CustomInput
-            placeholder="type here"
-            className="product-id-input"
-            fontLevel={6}
-            name="product_id"
-            onChange={handleChangeInput}
-            value={subItemOption.product_id}
-          />
-        </div>
+        <Col span={12}>
+          <div
+            style={{
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <span className="product-id-label">Product ID:</span>
+            <CustomInput
+              placeholder="type here"
+              className="product-id-input"
+              fontLevel={6}
+              name="product_id"
+              onChange={handleChangeInput}
+              value={subItemOption.product_id}
+            />
+          </div>
+        </Col>
+        <Col span={12} className="flex-start">
+          <div
+            style={{
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <span className="product-id-label">Paired:</span>
+
+            <BodyText fontFamily="Roboto" level={5} style={{ paddingLeft: 12 }}>
+              {subItemOption.paired}
+            </BodyText>
+          </div>
+        </Col>
       </Row>
     </div>
   );
@@ -173,6 +198,8 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     dragIcon,
     handleCopySubOtionItem,
   } = props;
+
+  const defaultWidth = useCheckWidth();
 
   const { mode } = useContext(FormOptionContext);
 
@@ -241,7 +268,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
               onChange={handleChangeSubOptionName}
               value={subOption.name}
               autoWidth
-              defaultWidth={300}
+              defaultWidth={defaultWidth}
               style={{ maxWidth: '100%' }}
             />
             <div className={styles.panel_header__field_title} onClick={handleActiveKeyToCollapse}>
@@ -277,7 +304,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           // }
           className={!isEmpty(subOption.is_collapse) && styles.unactive_collapse_panel}
           header={PanelHeader()}
-          key={subOption.is_collapse!}
+          key={subOption.is_collapse as string}
           showArrow={false}
         >
           <div
@@ -330,11 +357,14 @@ const DEFAULT_MAIN_OPTION_ITEM: BasisOptionSubForm = {
   name: '',
   subs: [],
   is_collapse: '',
+  main_id: '',
 };
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   const { mainOption, handleChangeMainSubItem, handleDeleteMainSubOption, handleCopyMainOption } =
     props;
+
+  const defaultWidth = useCheckWidth();
 
   const handleActiveKeyToCollapse = () => {
     handleChangeMainSubItem({
@@ -412,7 +442,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
             onChange={handleChangeMainOptionName}
             value={mainOption.name}
             autoWidth
-            defaultWidth={300}
+            defaultWidth={defaultWidth}
             style={{ maxWidth: '100%' }}
           />
           <div onClick={handleActiveKeyToCollapse}>
