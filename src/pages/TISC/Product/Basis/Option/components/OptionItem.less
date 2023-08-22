@@ -92,6 +92,23 @@
   }
 }
 
+.disabledIcon {
+  :global(.icons) {
+    svg {
+      cursor: default;
+      path {
+        fill: @mono-color-medium !important;
+
+        &:hover {
+          path {
+            fill: @mono-color-medium !important;
+          }
+        }
+      }
+    }
+  }
+}
+
 .main_option {
   display: flex;
   flex-direction: column;
