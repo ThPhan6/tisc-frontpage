@@ -1,5 +1,5 @@
 import React, { CSSProperties, FC, useContext } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
@@ -15,22 +15,21 @@ import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
 import { FormOptionContext } from '../../hook';
-import { useScreen } from '@/helper/common';
 import { getBase64, showImageUrl } from '@/helper/utils';
-import { cloneDeep, isEmpty } from 'lodash';
+import { cloneDeep, isEmpty, uniqueId } from 'lodash';
 
 import { BasisOptionSubForm, MainBasisOptionSubForm, SubBasisOption } from '@/types';
 
-import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import styles from './OptionItem.less';
 
-const useCheckWidth = (): number => {
-  const { isTablet } = useScreen();
-  return isTablet ? 100 : 300;
-};
+const inputProps = {
+  size: 'small',
+  autoWidth: true,
+  style: { maxWidth: '100%' },
+} as any;
 
 export const ImageUpload: FC<{
   onFileChange: (base64: string) => void;
@@ -77,16 +76,6 @@ interface SubItemOptionProps {
   onChange: (subItemOption: SubBasisOption) => void;
 }
 
-const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
-  value_1: '',
-  value_2: '',
-  unit_2: '',
-  unit_1: '',
-  product_id: '',
-  // count: 0,
-  paired: 0,
-};
-
 const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
@@ -109,7 +98,7 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
         onFileChange={handleChangeFileImage}
         image={subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image)}
         style={{
-          border: subItemOption.isBase64 ? 'unset' : '1px solid #e4e4e4',
+          border: subItemOption.isBase64 ? 'unset' : '2.5px solid #e4e4e4',
           width: 64,
           height: 64,
         }}
@@ -199,24 +188,32 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     handleCopySubOtionItem,
   } = props;
 
-  const defaultWidth = useCheckWidth();
-
   const { mode } = useContext(FormOptionContext);
 
   const handleActiveKeyToCollapse = () => {
     handleChangeSubItem({
       ...subOption,
-      is_collapse: subOption.is_collapse ? '' : '1',
+      collapse: subOption.collapse ? '' : '1',
     });
   };
 
   const addNewSubOptionItem = () => {
     /// default open option item list when add new
     /// add new sub option item
+
+    const newSubOptionItem: Partial<SubBasisOption> = {
+      value_1: '',
+      value_2: '',
+      unit_2: '',
+      unit_1: '',
+      product_id: '',
+      paired: 0,
+    };
+
     handleChangeSubItem({
       ...subOption,
-      is_collapse: '1',
-      subs: [...subOption.subs, DEFAULT_SUB_OPTION_ITEM],
+      collapse: '1',
+      subs: [...subOption.subs, newSubOptionItem as any],
     });
   };
 
@@ -241,7 +238,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
       handleChangeSubItem({
         ...subOption,
         subs: newSubItems,
-        is_collapse: '',
+        collapse: '',
       });
     }
   };
@@ -264,18 +261,17 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
             <CustomInput
               placeholder="sub option name"
               name="name"
-              size="small"
+              containerClass="sub-option-input"
               onChange={handleChangeSubOptionName}
               value={subOption.name}
-              autoWidth
-              defaultWidth={defaultWidth}
-              style={{ maxWidth: '100%' }}
+              defaultWidth={subOption.name ? 30 : 106}
+              {...inputProps}
             />
             <div className={styles.panel_header__field_title} onClick={handleActiveKeyToCollapse}>
               <ArrowIcon
                 className={styles.panel_header__field_title_icon}
                 style={{
-                  transform: `rotate(${isEmpty(subOption.is_collapse) ? '0' : '180'}deg)`,
+                  transform: `rotate(${isEmpty(subOption.collapse) ? '0' : '180'}deg)`,
                 }}
               />
             </div>
@@ -295,16 +291,16 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
   return (
     <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={subOption.is_collapse!}>
+      <Collapse ghost activeKey={subOption.collapse!}>
         <Collapse.Panel
           // className={
-          //   isEmpty(subOption.is_collapse)
+          //   isEmpty(subOption.collapse)
           //     ? styles.active_collapse_panel
           //     : styles.unactive_collapse_panel
           // }
-          className={!isEmpty(subOption.is_collapse) && styles.unactive_collapse_panel}
+          className={!isEmpty(subOption.collapse) && styles.unactive_collapse_panel}
           header={PanelHeader()}
-          key={subOption.is_collapse as string}
+          key={subOption.collapse as string}
           showArrow={false}
         >
           <div
@@ -348,38 +344,45 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
 interface MainOptionItemProps {
   mainOption: MainBasisOptionSubForm;
+  mainOptionIndex: number;
   handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
   handleDeleteMainSubOption: () => void;
   handleCopyMainOption: (mainOption: MainBasisOptionSubForm) => void;
 }
 
-const DEFAULT_MAIN_OPTION_ITEM: BasisOptionSubForm = {
-  name: '',
-  subs: [],
-  is_collapse: '',
-  main_id: '',
-};
-
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
-  const { mainOption, handleChangeMainSubItem, handleDeleteMainSubOption, handleCopyMainOption } =
-    props;
-
-  const defaultWidth = useCheckWidth();
+  const {
+    mainOption,
+    mainOptionIndex,
+    handleChangeMainSubItem,
+    handleDeleteMainSubOption,
+    handleCopyMainOption,
+  } = props;
 
   const handleActiveKeyToCollapse = () => {
     handleChangeMainSubItem({
       ...mainOption,
-      is_collapse: mainOption.is_collapse ? '' : '1',
+      collapse: mainOption.collapse ? '' : '1',
     });
   };
 
   const addNewMainOptionItem = () => {
     /// default open option item list when add new
     /// add new sub option item
+    const newId = uniqueId('new-');
+
+    const newData: Partial<BasisOptionSubForm> = {
+      id: newId,
+      name: '',
+      collapse: '',
+      main_id: mainOption.id,
+      subs: [],
+    };
+
     handleChangeMainSubItem({
       ...mainOption,
-      is_collapse: '1',
-      subs: [...mainOption.subs, DEFAULT_MAIN_OPTION_ITEM],
+      collapse: '1',
+      subs: [...mainOption.subs, newData as any],
     });
   };
 
@@ -404,7 +407,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
       handleChangeMainSubItem({
         ...mainOption,
         subs: newSubItems,
-        is_collapse: '',
+        collapse: '',
       });
     }
   };
@@ -418,16 +421,10 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
     });
   };
 
-  const onDragEnd = (result: any) => {
-    const newSubOptions = getNewDataAfterReordering(result, mainOption.subs);
-
-    handleChangeMainSubItem({ ...mainOption, subs: [...newSubOptions] });
-  };
-
   const handleCopySubOtionItem = (subItem: BasisOptionSubForm) => {
     const newSubItem = cloneDeep(subItem);
-    delete newSubItem.id;
-    newSubItem.subs.forEach((item) => delete item.id);
+    delete (newSubItem as any).id;
+    newSubItem.subs.forEach((item) => delete (item as any).id);
     handleChangeMainSubItem({ ...mainOption, subs: [...mainOption.subs, newSubItem] });
   };
 
@@ -438,18 +435,17 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
           <CustomInput
             placeholder="main option name"
             name="name"
-            size="small"
+            containerClass="main-option-input"
             onChange={handleChangeMainOptionName}
             value={mainOption.name}
-            autoWidth
-            defaultWidth={defaultWidth}
-            style={{ maxWidth: '100%' }}
+            defaultWidth={mainOption.name ? 30 : 114}
+            {...inputProps}
           />
-          <div onClick={handleActiveKeyToCollapse}>
+          <div className="flex-start" onClick={handleActiveKeyToCollapse}>
             <ArrowIcon
               className={styles.main_panel_header__left_icon}
               style={{
-                transform: `rotate(${isEmpty(mainOption.is_collapse) ? '0' : '180'}deg)`,
+                transform: `rotate(${isEmpty(mainOption.collapse) ? '0' : '180'}deg)`,
               }}
             />
           </div>
@@ -465,7 +461,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
               handleCopyMainOption({
                 ...mainOption,
                 name: `${mainOption.name} copy`,
-                is_collapse: '',
+                collapse: '',
               })
             }
           />
@@ -479,60 +475,76 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   };
 
   return (
-    <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={mainOption.is_collapse!}>
-        <Collapse.Panel
-          className={
-            isEmpty(mainOption.is_collapse)
-              ? styles.active_collapse_panel
-              : styles.unactive_collapse_panel
-          }
-          header={MainPanelHeader()}
-          key={mainOption.is_collapse!}
-          showArrow={false}
-        >
-          <div className={styles.main_option}>
-            <DragDropContainer onDragEnd={onDragEnd}>
-              {mainOption.subs.map((subItemOption, index) => (
-                <Draggable
-                  key={subItemOption.id}
-                  index={index}
-                  draggableId={subItemOption.id ?? String(index)}
-                >
-                  {(dragProvided: any) => (
-                    <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
-                      <SubOptionItem
-                        subOption={subItemOption}
-                        handleChangeSubItem={(changedSubs) =>
-                          handleChangeSubOptionItem(changedSubs, index)
-                        }
-                        handleCopySubOtionItem={() => {
-                          handleCopySubOtionItem({
-                            ...subItemOption,
-                            name: `${subItemOption.name} copy`,
-                            is_collapse: '',
-                          });
-                        }}
-                        handleDeleteSubOption={() => handleDeleteSubOption(index)}
-                        dragIcon={
-                          <div
-                            {...dragProvided.dragHandleProps}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                          >
-                            <DragIcon />
-                          </div>
-                        }
-                      />
+    <Draggable key={mainOption.id} draggableId={mainOption.id} index={mainOptionIndex}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.draggableProps}>
+          <Droppable droppableId={mainOption.id}>
+            {(droppableProvided) => (
+              <div
+                ref={droppableProvided.innerRef}
+                {...droppableProvided.droppableProps}
+                className={styles.collapseContainer}
+              >
+                <Collapse ghost activeKey={mainOption.collapse}>
+                  <Collapse.Panel
+                    className={
+                      isEmpty(mainOption.collapse)
+                        ? styles.active_collapse_panel
+                        : styles.unactive_collapse_panel
+                    }
+                    header={MainPanelHeader()}
+                    key={mainOption.collapse as string}
+                    showArrow={false}
+                  >
+                    <div className={styles.main_option}>
+                      {mainOption.subs.map((subItemOption, index) => (
+                        <Draggable
+                          key={subItemOption.id}
+                          draggableId={subItemOption.id}
+                          index={index}
+                        >
+                          {(mainOptionProvided) => (
+                            <div
+                              ref={mainOptionProvided.innerRef}
+                              {...mainOptionProvided.draggableProps}
+                            >
+                              <SubOptionItem
+                                subOption={subItemOption}
+                                handleChangeSubItem={(changedSubs) =>
+                                  handleChangeSubOptionItem(changedSubs, index)
+                                }
+                                handleCopySubOtionItem={() => {
+                                  handleCopySubOtionItem({
+                                    ...subItemOption,
+                                    name: `${subItemOption.name} copy`,
+                                    collapse: '',
+                                  });
+                                }}
+                                handleDeleteSubOption={() => handleDeleteSubOption(index)}
+                                dragIcon={
+                                  <div
+                                    {...mainOptionProvided.dragHandleProps}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                    }}
+                                  >
+                                    <DragIcon />
+                                  </div>
+                                }
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
                     </div>
-                  )}
-                </Draggable>
-              ))}
-            </DragDropContainer>
-          </div>
-        </Collapse.Panel>
-      </Collapse>
-    </div>
+                  </Collapse.Panel>
+                </Collapse>
+                {droppableProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      )}
+    </Draggable>
   );
 };
