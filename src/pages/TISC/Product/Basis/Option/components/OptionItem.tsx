@@ -78,12 +78,12 @@ interface SubItemOptionProps {
 }
 
 const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
+  id: '',
   value_1: '',
   value_2: '',
   unit_2: '',
   unit_1: '',
   product_id: '',
-  // count: 0,
   paired: 0,
 };
 
@@ -206,7 +206,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
   const handleActiveKeyToCollapse = () => {
     handleChangeSubItem({
       ...subOption,
-      is_collapse: subOption.is_collapse ? '' : '1',
+      collapse: subOption.collapse ? '' : '1',
     });
   };
 
@@ -215,7 +215,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     /// add new sub option item
     handleChangeSubItem({
       ...subOption,
-      is_collapse: '1',
+      collapse: '1',
       subs: [...subOption.subs, DEFAULT_SUB_OPTION_ITEM],
     });
   };
@@ -241,7 +241,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
       handleChangeSubItem({
         ...subOption,
         subs: newSubItems,
-        is_collapse: '',
+        collapse: '',
       });
     }
   };
@@ -275,7 +275,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
               <ArrowIcon
                 className={styles.panel_header__field_title_icon}
                 style={{
-                  transform: `rotate(${isEmpty(subOption.is_collapse) ? '0' : '180'}deg)`,
+                  transform: `rotate(${isEmpty(subOption.collapse) ? '0' : '180'}deg)`,
                 }}
               />
             </div>
@@ -295,16 +295,16 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
   return (
     <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={subOption.is_collapse!}>
+      <Collapse ghost activeKey={subOption.collapse!}>
         <Collapse.Panel
           // className={
-          //   isEmpty(subOption.is_collapse)
+          //   isEmpty(subOption.collapse)
           //     ? styles.active_collapse_panel
           //     : styles.unactive_collapse_panel
           // }
-          className={!isEmpty(subOption.is_collapse) && styles.unactive_collapse_panel}
+          className={!isEmpty(subOption.collapse) && styles.unactive_collapse_panel}
           header={PanelHeader()}
-          key={subOption.is_collapse as string}
+          key={subOption.collapse as string}
           showArrow={false}
         >
           <div
@@ -354,10 +354,11 @@ interface MainOptionItemProps {
 }
 
 const DEFAULT_MAIN_OPTION_ITEM: BasisOptionSubForm = {
+  id: '',
   name: '',
-  subs: [],
-  is_collapse: '',
+  collapse: '',
   main_id: '',
+  subs: [],
 };
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
@@ -369,7 +370,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   const handleActiveKeyToCollapse = () => {
     handleChangeMainSubItem({
       ...mainOption,
-      is_collapse: mainOption.is_collapse ? '' : '1',
+      collapse: mainOption.collapse ? '' : '1',
     });
   };
 
@@ -378,7 +379,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
     /// add new sub option item
     handleChangeMainSubItem({
       ...mainOption,
-      is_collapse: '1',
+      collapse: '1',
       subs: [...mainOption.subs, DEFAULT_MAIN_OPTION_ITEM],
     });
   };
@@ -404,7 +405,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
       handleChangeMainSubItem({
         ...mainOption,
         subs: newSubItems,
-        is_collapse: '',
+        collapse: '',
       });
     }
   };
@@ -426,8 +427,8 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
 
   const handleCopySubOtionItem = (subItem: BasisOptionSubForm) => {
     const newSubItem = cloneDeep(subItem);
-    delete newSubItem.id;
-    newSubItem.subs.forEach((item) => delete item.id);
+    delete (newSubItem as any).id;
+    newSubItem.subs.forEach((item) => delete (item as any).id);
     handleChangeMainSubItem({ ...mainOption, subs: [...mainOption.subs, newSubItem] });
   };
 
@@ -449,7 +450,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
             <ArrowIcon
               className={styles.main_panel_header__left_icon}
               style={{
-                transform: `rotate(${isEmpty(mainOption.is_collapse) ? '0' : '180'}deg)`,
+                transform: `rotate(${isEmpty(mainOption.collapse) ? '0' : '180'}deg)`,
               }}
             />
           </div>
@@ -465,7 +466,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
               handleCopyMainOption({
                 ...mainOption,
                 name: `${mainOption.name} copy`,
-                is_collapse: '',
+                collapse: '',
               })
             }
           />
@@ -480,15 +481,15 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
 
   return (
     <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={mainOption.is_collapse!}>
+      <Collapse ghost activeKey={mainOption.collapse}>
         <Collapse.Panel
           className={
-            isEmpty(mainOption.is_collapse)
+            isEmpty(mainOption.collapse)
               ? styles.active_collapse_panel
               : styles.unactive_collapse_panel
           }
           header={MainPanelHeader()}
-          key={mainOption.is_collapse!}
+          key={mainOption.collapse as string}
           showArrow={false}
         >
           <div className={styles.main_option}>
@@ -510,7 +511,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                           handleCopySubOtionItem({
                             ...subItemOption,
                             name: `${subItemOption.name} copy`,
-                            is_collapse: '',
+                            collapse: '',
                           });
                         }}
                         handleDeleteSubOption={() => handleDeleteSubOption(index)}

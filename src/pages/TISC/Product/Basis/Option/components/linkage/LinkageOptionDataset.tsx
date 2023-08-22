@@ -72,12 +72,6 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
     }
   };
 
-  // const handleCollapse = () => {
-  //   const subOptIds = mainOption.subs.map((el) => el.id) as string[];
-
-  //   store.dispatch(toggleSubOptionCollapse(subOptIds));
-  // };
-
   return (
     <div className={style.content}>
       <Checkbox
@@ -85,7 +79,6 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
         checked={allSelected}
         disabled={disabled}
         onChange={handleSelectAllSubOptions}
-        // onClick={handleCollapse}
       >
         <BodyText
           fontFamily="Roboto"
@@ -104,8 +97,7 @@ export const LinkageOptionDataset: FC<Props> = ({ mainOption }) => {
               key={subOptIdx}
               subOption={subOpt}
               isRoot={isRoot}
-              mainId={mainOption.id || ''}
-              // onChangeCollapse={handleCollapse}
+              mainId={mainOption.id}
             />
           );
         })}

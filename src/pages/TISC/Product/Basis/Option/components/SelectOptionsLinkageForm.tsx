@@ -8,37 +8,18 @@ import { upsertLinkageOption } from '@/services';
 
 import store, { useAppSelector } from '@/reducers';
 
-import CustomButton from '@/components/Button';
 import { EntryFormWrapper } from '@/components/EntryForm';
-import { BodyText } from '@/components/Typography';
 
-import { linkageOptionSelector, linkageSummarySelector, setLinkageState } from '../store';
+import { linkageOptionSelector, setLinkageState } from '../store';
 import style from './Linkage.less';
 import { LinkageConnection } from './linkage/LinkageConnection';
 import { LinkageOptionDataset } from './linkage/LinkageOptionDataset';
-
-const titleProps = {
-  fontFamily: 'Roboto',
-  level: 4,
-  style: { marginRight: 8 },
-} as any;
-
-const quantityProps = {
-  fontFamily: 'Roboto',
-  level: 4,
-  style: { fontWeight: 500 },
-} as any;
+import { LinkageSummary } from './linkage/LinkageSummary';
 
 export const SelectOptionsLinkageForm: FC = () => {
   const { isTablet } = useScreen();
 
   const { state: preLinkageState } = useLocation();
-  // const { pickedOptionIds, options } = preLinkageState as {
-  //   pickedOptionIds: string[];
-  //   options: BasisOptionForm[];
-  // };
-
-  const summary = useAppSelector(linkageSummarySelector);
 
   const options = useAppSelector(linkageOptionSelector);
 
@@ -53,18 +34,6 @@ export const SelectOptionsLinkageForm: FC = () => {
       );
     }
   }, [preLinkageState]);
-
-  const handleClearAll = () => {
-    store.dispatch(
-      setLinkageState({
-        chosenOptionIds: [],
-        connectionList: [],
-        rootSubItemId: '',
-        rootMainOptionId: '',
-        rootSubItemProductId: '',
-      }),
-    );
-  };
 
   const handleCancel = () => {
     store.dispatch(
@@ -111,33 +80,7 @@ export const SelectOptionsLinkageForm: FC = () => {
       }}
       customStyles={{ margin: 0 }}
     >
-      <div className={style.borderBottom}>
-        {/* top header */}
-        <div className={style.topHeader}>
-          <BodyText fontFamily="Roboto" level={4}>
-            Group Name :
-          </BodyText>
-          <div className="flex-start">
-            {summary.map((el, index) => {
-              const key = Object.keys(el)[0];
-              const value = Object.values(el)[0];
-
-              return (
-                <div key={index} className="flex-start" style={{ marginLeft: 24 }}>
-                  <BodyText {...titleProps}>{key}</BodyText>
-                  <BodyText {...quantityProps}>{value}</BodyText>
-                </div>
-              );
-            })}
-
-            <CustomButton size="small" buttonClass={style.clearAllBtn} onClick={handleClearAll}>
-              <BodyText fontFamily="Roboto" level={6}>
-                Clear all
-              </BodyText>
-            </CustomButton>
-          </div>
-        </div>
-      </div>
+      <LinkageSummary />
 
       <Row style={{ height: 'calc(100% - 48px)' }}>
         {/* main content */}

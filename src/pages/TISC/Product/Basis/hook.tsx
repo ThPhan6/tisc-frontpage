@@ -144,7 +144,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
   const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
     const newItem = cloneDeep(mainOptionItem);
-    delete newItem.id;
+    delete (newItem as any).id;
     newItem.subs.forEach((sub: any) => {
       delete sub.id;
       sub.subs.forEach((subItem: any) => {

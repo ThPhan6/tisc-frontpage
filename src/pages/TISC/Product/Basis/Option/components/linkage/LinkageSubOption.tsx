@@ -37,7 +37,7 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
   const preLinkageForm = useCheckPreLinkageForm();
   const dispatch = useDispatch();
 
-  const expand = useAppSelector(isLinkageSubOptionExpandSelector(subOption.id as string));
+  const expand = useAppSelector(isLinkageSubOptionExpandSelector(subOption.id));
 
   const allSelected = useAppSelector(isAllSelectedSubOptionSelector(subOption, preLinkageForm));
 
@@ -55,7 +55,7 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
 
     const isRemove = !e.target.checked;
     const newSubOpts: LinkedOption[] = flatMap(subOption.subs).map((el) => ({
-      pairId: el.id as string,
+      pairId: el.id,
       isPair: !!el.paired,
       productId: el.product_id,
       status: el.paired ? 'pair' : 'unpair',
