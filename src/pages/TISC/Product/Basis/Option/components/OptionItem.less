@@ -1,4 +1,4 @@
-.collapse_container {
+.collapseContainer {
   margin-top: 16px;
   .active_collapse_panel {
     box-shadow: inset 0 -0.7px 0 @mono-color-medium;
@@ -36,8 +36,8 @@
   cursor: pointer;
 
   path {
-    transition: fill 1s;
-    fill: @mono-color-medium;
+    transition: fill 0.3s;
+    fill: @mono-color;
   }
 
   &:hover {
@@ -60,11 +60,16 @@
     align-items: center;
     max-width: 80%;
 
+    :global(.main-option-input) {
+      margin: 0 var(--spacing);
+    }
+
     svg {
       cursor: pointer;
     }
 
     :global(.ant-input) {
+      padding: 0;
       color: @primary-color-dark;
       text-transform: capitalize;
     }
@@ -87,6 +92,23 @@
   }
 }
 
+.disabledIcon {
+  :global(.icons) {
+    svg {
+      cursor: default;
+      path {
+        fill: @mono-color-medium !important;
+
+        &:hover {
+          path {
+            fill: @mono-color-medium !important;
+          }
+        }
+      }
+    }
+  }
+}
+
 .main_option {
   display: flex;
   flex-direction: column;
@@ -103,8 +125,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 16px;
-    @padding-right: 8px;
+    padding: 16px 0;
 
     svg {
       display: block;
@@ -117,7 +138,12 @@
       justify-content: space-between;
       max-width: 80%;
 
+      :global(.sub-option-input) {
+        margin: 0 var(--spacing);
+      }
+
       :global(.ant-input) {
+        padding: 0;
         color: @primary-color-dark;
         text-transform: capitalize;
       }
@@ -126,7 +152,7 @@
     &_title,
     &_image {
       p {
-        padding-right: @padding-right;
+        padding-right: 8px;
       }
     }
 
@@ -183,7 +209,17 @@
   }
 
   svg {
-    .svg();
+    cursor: pointer;
+    path {
+      transition: fill 0.3s;
+      fill: @mono-color-medium;
+    }
+
+    &:hover {
+      path {
+        fill: @primary-color-dark;
+      }
+    }
   }
 }
 

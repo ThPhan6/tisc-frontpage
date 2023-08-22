@@ -12,33 +12,18 @@ import { pick } from 'lodash';
 
 import store, { useAppSelector } from '@/reducers';
 
-import CustomButton from '@/components/Button';
 import { EntryFormWrapper } from '@/components/EntryForm';
-import { BodyText } from '@/components/Typography';
 
-import { preSelectLinkageSummarySelector, resetLinkageState, setLinkageState } from '../store';
+import { setLinkageState } from '../store';
 import style from './Linkage.less';
 import { LinkageOptionDataset } from './linkage/LinkageOptionDataset';
-
-const titleProps = {
-  fontFamily: 'Roboto',
-  level: 4,
-  style: { marginRight: 8 },
-} as any;
-
-const quantityProps = {
-  fontFamily: 'Roboto',
-  level: 4,
-  style: { fontWeight: 500 },
-} as any;
+import { LinkageSummary } from './linkage/LinkageSummary';
 
 export const PreSelectOptionsLinkageForm: FC = () => {
   const dispatch = useDispatch();
   const optionId = useGetParamId();
 
   const { isTablet } = useScreen();
-
-  const summary = useAppSelector(preSelectLinkageSummarySelector);
 
   const options = useAppSelector((state) => state.linkage.options);
 
@@ -60,10 +45,6 @@ export const PreSelectOptionsLinkageForm: FC = () => {
       }
     });
   }, [optionId]);
-
-  const handleClearAll = () => {
-    dispatch(setLinkageState({ pickedOptionIds: [] }));
-  };
 
   const handleCancel = () => {
     history.push(PATH.options);
@@ -96,32 +77,8 @@ export const PreSelectOptionsLinkageForm: FC = () => {
       }}
       customStyles={{ margin: 0 }}
     >
-      <div className={style.borderBottom}>
-        <div className={style.topHeader}>
-          <BodyText fontFamily="Roboto" level={4}>
-            Group Name :
-          </BodyText>
-          <div className="flex-start">
-            {summary.map((el, index) => {
-              const key = Object.keys(el)[0];
-              const value = Object.values(el)[0];
+      <LinkageSummary />
 
-              return (
-                <div key={index} className="flex-start" style={{ marginLeft: 24 }}>
-                  <BodyText {...titleProps}>{key}</BodyText>
-                  <BodyText {...quantityProps}>{value}</BodyText>
-                </div>
-              );
-            })}
-
-            <CustomButton size="small" buttonClass={style.clearAllBtn} onClick={handleClearAll}>
-              <BodyText fontFamily="Roboto" level={6}>
-                Clear all
-              </BodyText>
-            </CustomButton>
-          </div>
-        </div>
-      </div>
       <div className={style.contentWrapper}>
         <div className={style.content}>
           <div className={style.main}>
