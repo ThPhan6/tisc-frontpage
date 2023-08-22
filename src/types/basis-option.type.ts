@@ -38,6 +38,7 @@ export interface MainBasisOptionSubForm {
   name: string;
   collapse?: string;
   subs: BasisOptionSubForm[];
+  count: number;
 }
 
 export interface BasisOptionForm {
