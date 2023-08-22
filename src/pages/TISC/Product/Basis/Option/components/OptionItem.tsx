@@ -98,7 +98,7 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
         onFileChange={handleChangeFileImage}
         image={subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image)}
         style={{
-          border: subItemOption.isBase64 ? 'unset' : '2.5px solid #e4e4e4',
+          border: subItemOption.isBase64 ? 'unset' : '0.5px solid #e4e4e4',
           width: 64,
           height: 64,
         }}
@@ -276,9 +276,21 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
               />
             </div>
           </div>
-          <div className={styles.panel_header__input}>
-            <PlusIcon className={styles.panel_header__field_add} onClick={addNewSubOptionItem} />
-            <CopyIcon className={styles.panel_header__field_add} onClick={handleCopySubOtionItem} />
+          <div
+            className={`${styles.panel_header__input} ${
+              mode === 'card' ? styles.disabledIcon : ''
+            }`}
+          >
+            <div className="flex-start icons">
+              <PlusIcon
+                className={styles.panel_header__field_add}
+                onClick={mode === 'list' ? addNewSubOptionItem : undefined}
+              />
+              <CopyIcon
+                className={styles.panel_header__field_add}
+                onClick={mode === 'list' ? handleCopySubOtionItem : undefined}
+              />
+            </div>
             <ActionDeleteIcon
               className={styles.panel_header__input_delete_icon}
               onClick={handleDeleteSubOption}
@@ -358,6 +370,8 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
     handleDeleteMainSubOption,
     handleCopyMainOption,
   } = props;
+
+  const { mode } = useContext(FormOptionContext);
 
   const handleActiveKeyToCollapse = () => {
     handleChangeMainSubItem({
@@ -450,21 +464,29 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
             />
           </div>
         </div>
-        <div className={styles.main_panel_header__icon}>
-          <CirclePlusIcon
-            className={styles.main_panel_header__icon_add}
-            onClick={addNewMainOptionItem}
-          />
-          <CopyIcon
-            className={styles.main_panel_header__icon_add}
-            onClick={() =>
-              handleCopyMainOption({
-                ...mainOption,
-                name: `${mainOption.name} copy`,
-                collapse: '',
-              })
-            }
-          />
+        <div
+          className={`${styles.main_panel_header__icon} ${
+            mode === 'card' ? styles.disabledIcon : ''
+          }`}
+        >
+          <div className="flex-start icons">
+            <CirclePlusIcon
+              className={styles.main_panel_header__icon_add}
+              onClick={mode === 'list' ? addNewMainOptionItem : undefined}
+            />
+            <CopyIcon
+              className={styles.main_panel_header__icon_add}
+              onClick={() => {
+                if (mode === 'list') {
+                  handleCopyMainOption({
+                    ...mainOption,
+                    name: `${mainOption.name} copy`,
+                    collapse: '',
+                  });
+                }
+              }}
+            />
+          </div>
           <ActionDeleteIcon
             className={styles.main_panel_header__icon_delete}
             onClick={handleDeleteMainSubOption}
