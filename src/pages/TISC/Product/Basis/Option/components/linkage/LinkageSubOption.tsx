@@ -105,7 +105,7 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
               >
                 {subOption.name}
               </BodyText>
-              {expand ? <DropupIcon /> : <DropdownIcon />}
+              <div className="flex-start">{expand ? <DropupIcon /> : <DropdownIcon />}</div>
             </div>
             <Checkbox
               checked={allSelected}
