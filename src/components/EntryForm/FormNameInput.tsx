@@ -9,7 +9,7 @@ import { MainTitle } from '../Typography';
 import styles from './styles/FormNameInput.less';
 
 export const FormNameInput: FC<FormNameInputProps> = ({
-  HandleOnClickAddIcon,
+  handleOnClickAddIcon,
   title,
   placeholder,
   onChangeInput,
@@ -22,7 +22,7 @@ export const FormNameInput: FC<FormNameInputProps> = ({
         <MainTitle customClass={styles.header__title} level={3}>
           {title}
         </MainTitle>
-        <AddIcon className={styles.header__icon} onClick={HandleOnClickAddIcon} />
+        <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
       </div>
       <CustomInput
         placeholder={placeholder}

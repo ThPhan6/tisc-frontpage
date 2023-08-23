@@ -122,6 +122,11 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_OPTION_SUCCESS: 'Update option successfully',
   UPDATE_OPTION_ERROR: 'Update option error',
   GET_ONE_OPTION_ERROR: 'Get one option error',
+  GET_LINKAGE_OPTION_ERROR: 'Get linkage option data error',
+  CREATE_LINKAGE_OPTION_ERROR: 'Failed to create new linkage',
+  CREATE_LINKAGE_OPTION_SUCCESS: 'Created linkage successfully ',
+  UPDATE_LINKAGE_OPTION_ERROR: 'Failed to update linkage',
+  UPDATE_LINKAGE_OPTION_SUCCESS: 'Updated linkage successfully ',
 
   //preset
   CREATE_PRESET_SUCCESS: 'Create preset successfully',

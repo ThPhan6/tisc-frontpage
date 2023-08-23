@@ -1,5 +1,5 @@
 export interface SubBasisOption {
-  id?: string;
+  id: string;
   image?: string;
   option_code?: string;
   value_1: string;
@@ -8,6 +8,7 @@ export interface SubBasisOption {
   unit_2: string;
   isBase64?: boolean;
   product_id: string;
+  paired: number;
 }
 export interface BasisOptionListResponse {
   id: string;
@@ -24,15 +25,41 @@ export interface BasisOptionListResponse {
 }
 
 export interface BasisOptionSubForm {
-  id?: string;
+  id: string;
   name: string;
-  is_have_image: boolean;
-  is_collapse?: string;
+  collapse?: string | string[];
   subs: SubBasisOption[];
+  count?: number;
+  main_id: string;
+}
+
+export interface MainBasisOptionSubForm {
+  id: string;
+  name: string;
+  collapse?: string;
+  subs: BasisOptionSubForm[];
+  count: number;
 }
 
 export interface BasisOptionForm {
-  id?: string;
+  id: string;
   name: string;
+  count: number;
   subs: BasisOptionSubForm[];
+}
+
+export interface ConnectionListResponse {
+  from: string;
+  from_product_id: string;
+  to: string;
+  to_product_id: string;
+  is_pair: boolean;
+  created_at?: string;
+  updated_at?: string;
+  created_by?: string;
+}
+
+export interface LinkageUpsertBody {
+  pair: string;
+  is_pair: boolean;
 }
