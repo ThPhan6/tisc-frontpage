@@ -8,7 +8,16 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import type { BasisOptionForm, BasisOptionListResponse } from '@/types';
+import store from '@/reducers';
+import type {
+  BasisOptionForm,
+  BasisOptionListResponse,
+  ConnectionListResponse,
+  LinkageUpdateBody,
+  LinkageUpsertBody,
+} from '@/types';
+
+import { LinkedOption, setLinkageState } from './../pages/TISC/Product/Basis/Option/store';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -122,5 +131,80 @@ export async function deleteBasisOption(id: string) {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_OPTION_ERROR);
       hidePageLoading();
       return false;
+    });
+}
+
+// Linkage option API
+
+export async function getLinkageConnection(option_id: string) {
+  showPageLoading();
+
+  return request<{ data: ConnectionListResponse[] }>(`/api/linkage/option/${option_id}`, {
+    method: 'GET',
+  })
+    .then((res) => {
+      hidePageLoading();
+
+      return res.data.map((el) => ({
+        isPair: el.is_pair,
+        pairId: el.to,
+        productId: el.to_product_id,
+      })) as LinkedOption[];
+    })
+    .catch((error) => {
+      hidePageLoading();
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LINKAGE_OPTION_ERROR);
+      return [] as LinkedOption[];
+    });
+}
+
+export async function upsertLinkageOption() {
+  const { rootSubItemId, connectionList } = store.getState().linkage;
+  if (!rootSubItemId || !connectionList.length) {
+    message.error('Please select options');
+    return;
+  }
+
+  showPageLoading();
+
+  const data: LinkageUpsertBody[] = connectionList.map((el) => ({
+    pair: `${rootSubItemId},${el.pairId}`,
+    is_pair: el.isPair,
+  }));
+
+  request<{ data: ConnectionListResponse[] }>(`/api/linkage/upsert`, {
+    method: 'POST',
+    data: { data },
+  })
+    .then(() => {
+      hidePageLoading();
+      message.success(MESSAGE_NOTIFICATION.CREATE_LINKAGE_OPTION_SUCCESS);
+
+      // return res.data;
+    })
+    .catch((error) => {
+      hidePageLoading();
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.CREATE_LINKAGE_OPTION_ERROR);
+      // return [] as LinkageUpsertBody[];
+    });
+}
+
+export async function updateLinkageOption(data: LinkageUpdateBody) {
+  showPageLoading();
+
+  return request<{ data: LinkageUpdateBody[] }>(`/api/linkage/pair`, {
+    method: 'PUT',
+    data,
+  })
+    .then((res) => {
+      hidePageLoading();
+      message.success(MESSAGE_NOTIFICATION.UPDATE_LINKAGE_OPTION_SUCCESS);
+
+      return res;
+    })
+    .catch((error) => {
+      hidePageLoading();
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_LINKAGE_OPTION_ERROR);
+      return {} as LinkageUpdateBody;
     });
 }

@@ -1,27 +1,3 @@
-.form_container {
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    white-space: nowrap;
-
-    &__title {
-      text-transform: uppercase;
-    }
-
-    &__icon {
-      cursor: pointer;
-    }
-  }
-
-  .input {
-    :global(.ant-input) {
-      color: @primary-color-dark;
-      text-transform: uppercase;
-    }
-  }
-}
-
 .option_form_container {
   height: 32px;
   padding-bottom: 1px;
@@ -40,6 +16,19 @@
     &__icon {
       margin-left: 16px;
       cursor: pointer;
+
+      path {
+        fill: @mono-color;
+      }
+    }
+
+    :global(.card-icon),
+    :global(.list-icon) {
+      path {
+        // fill: @primary-color-dark;
+        stroke: #000;
+        stroke-width: 1px;
+      }
     }
   }
 

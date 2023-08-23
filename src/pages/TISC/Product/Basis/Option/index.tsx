@@ -16,12 +16,29 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
+const colTitle = {
+  group: 'Group Options',
+  main: 'Main Options',
+  sub: 'Sub Options',
+};
+
+const dataIndexDefault = 'name';
+
+const colsDataIndex = {
+  group: 'option_group',
+  main: 'main_group',
+  sub: 'sub_group',
+};
+
 const BasisOptionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(2, [6]);
+  useAutoExpandNestedTableColumn(3, [8]);
   const tableRef = useRef<any>();
 
   const handleUpdateBasisOption = (id: string) => {
     pushTo(PATH.updateOptions.replace(':id', id));
+  };
+  const handleLinkageBasisOption = (id: string) => {
+    pushTo(PATH.LinkageDataSet.replace(':id', id));
   };
   const handleDeleteBasisOption = (id: string) => {
     confirmDelete(() => {
@@ -81,8 +98,8 @@ const BasisOptionList: React.FC = () => {
 
   const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
-      title: 'Option Group',
-      dataIndex: 'name',
+      title: colTitle.group,
+      dataIndex: 'name', // key in data
       sorter: {
         multiple: 1,
       },
@@ -92,10 +109,18 @@ const BasisOptionList: React.FC = () => {
       },
     },
     {
-      title: 'Option Name',
-      dataIndex: 'option_name',
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
       sorter: {
         multiple: 2,
+      },
+      defaultSortOrder: 'descend',
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
+      sorter: {
+        multiple: 3,
       },
       defaultSortOrder: 'ascend',
     },
@@ -117,6 +142,10 @@ const BasisOptionList: React.FC = () => {
                 onClick: () => handleUpdateBasisOption(record.id),
               },
               {
+                type: 'linkage',
+                onClick: () => handleLinkageBasisOption(record.id),
+              },
+              {
                 type: 'deleted',
                 onClick: () => handleDeleteBasisOption(record.id),
               },
@@ -127,15 +156,48 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const SubColumns: TableColumnItem<SubBasisOption>[] = [
+  const MainSubColumns: TableColumnItem<SubBasisOption>[] = [
     {
-      title: 'Option Group',
-      dataIndex: 'option_group',
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
       noBoxShadow: true,
     },
     {
-      title: 'Option Name',
-      dataIndex: 'name',
+      title: colTitle.main,
+      dataIndex: dataIndexDefault,
+      isExpandable: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
+    },
+    ...getSameColumns(false),
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      align: 'center',
+      width: '5%',
+    },
+  ];
+
+  const SubColumns: TableColumnItem<SubBasisOption>[] = [
+    {
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
+      isExpandable: true,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: dataIndexDefault,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -152,13 +214,18 @@ const BasisOptionList: React.FC = () => {
 
   const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
-      title: 'Option Group',
-      dataIndex: 'option_group',
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
       noBoxShadow: true,
     },
     {
-      title: 'Option Name',
-      dataIndex: 'option_name',
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
       noBoxShadow: true,
     },
     ...getSameColumns(true),
@@ -176,21 +243,28 @@ const BasisOptionList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
         title="OPTIONS"
-        columns={setDefaultWidthForEachColumn(MainColumns, 7)}
+        columns={setDefaultWidthForEachColumn(MainColumns, 8)}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{
+          // colsDataIndex is sort keys
           name: 'group_order',
-          option_name: 'option_order',
+          main_group: 'main_order',
+          sub_group: 'option_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: SubColumns,
+          columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: ChildColumns,
+            columns: setDefaultWidthForEachColumn(SubColumns, 8),
             childrenColumnName: 'subs',
             level: 3,
+            expandable: GetExpandableTableConfig({
+              columns: setDefaultWidthForEachColumn(ChildColumns, 8),
+              childrenColumnName: 'subs',
+              level: 4,
+            }),
           }),
         })}
       />

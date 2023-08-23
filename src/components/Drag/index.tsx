@@ -1,6 +1,16 @@
 import { FC } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
+export interface DragEndResultProps {
+  combine: any;
+  destination: { index: number; droppableId: string } | null;
+  draggableId: string;
+  mode: 'FLUID';
+  reason: 'DROP';
+  source: { index: number; droppableId: string } | null;
+  type: 'DEFAULT';
+}
+
 const reorder = (data: any, startIndex: number, endIndex: number) => {
   const result = Array.from(data);
   const [removed] = result.splice(startIndex, 1);
@@ -19,7 +29,7 @@ export const getNewDataAfterReordering = (result: any, data: any) => {
   return newData;
 };
 
-export const DragDropContainer: FC<{ onDragEnd: (result: any) => void }> = ({
+export const DragDropContainer: FC<{ onDragEnd: (result: any, provided?: any) => void }> = ({
   children,
   onDragEnd,
 }) => (

@@ -217,7 +217,7 @@ const AttributeEntryForm = () => {
           placeholder="type group name"
           title="Attribute Group"
           onChangeInput={handleOnChangeGroupName}
-          HandleOnClickAddIcon={addSubAttribute}
+          handleOnClickAddIcon={addSubAttribute}
           inputValue={data.name}
         />
         <div>

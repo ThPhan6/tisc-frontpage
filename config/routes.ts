@@ -232,6 +232,11 @@ const routes = [
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
               },
+              {
+                path: PATH.LinkageDataSet,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/LinkagePage.tsx',
+              },
             ],
           },
         ],
@@ -896,8 +901,8 @@ const routes = [
   },
 ];
 
-const inject404Routes = (curRoutes) => {
-  return curRoutes.map((route) => {
+const inject404Routes = (curRoutes: any) => {
+  return curRoutes.map((route: any) => {
     if (route.routes) {
       route.routes.push({
         component: './404',

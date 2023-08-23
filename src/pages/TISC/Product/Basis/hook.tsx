@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
@@ -20,23 +21,31 @@ import {
   updateConversionMiddleware,
   updatePresetMiddleware,
 } from '@/services';
-import { merge } from 'lodash';
+import { cloneDeep, flatMap, isEmpty, isNull, isUndefined, merge, uniqueId } from 'lodash';
 
 import {
   BasisOptionSubForm,
   ConversionSubValueProps,
+  MainBasisOptionSubForm,
   PresetItemValueProp,
   SubBasisOption,
   SubPresetValueProp,
 } from '@/types';
 
 import { ConversionItem } from './Conversion/components/ConversionItem';
-import { OptionItem } from './Option/components/OptionItem';
+import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
+import { MainOptionItem } from './Option/components/OptionItem';
 import { PresetItem } from './Preset/components/PresetItem';
+import { DragEndResultProps } from '@/components/Drag';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
+import { loadHeadingPlugin } from '@/components/Form/CustomEditorInput/plugins/format-heading/formatheading';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { getNewDataAfterDragging } from './util';
+
+const DEFAULT_MAIN_OPTION_ID = '33a0bbe3-38fd-4cd1-995f-31a801f4018b';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -53,9 +62,10 @@ const presetsValueDefault: PresetItemValueProp = {
   subs: [],
 };
 const optionValueDefault: BasisOptionSubForm = {
+  id: '',
   name: '',
-  is_have_image: false,
   subs: [],
+  main_id: '',
 };
 
 type ProductBasisFormType = 'conversions' | 'presets' | 'options';
@@ -98,10 +108,22 @@ const getSubItemValue = (valueItem: SubPresetValueProp | SubBasisOption) => ({
   unit_2: valueItem.unit_2.trim(),
 });
 
+export type formOptionMode = 'list' | 'card';
+
+export const FormOptionContext = createContext<{
+  mode: formOptionMode;
+  setMode: (mode: formOptionMode) => void;
+}>({
+  mode: 'list',
+  setMode: (mode) => mode,
+});
+
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const idBasis = useGetParamId();
 
   const submitButtonStatus = useBoolean(false);
+
+  const [mode, setMode] = useState<formOptionMode>('list');
 
   const [data, setData] = useState<{ name: string; subs: any[] }>({ name: '', subs: [] });
 
@@ -121,55 +143,75 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleOnClickAddIcon = () => {
-    const newSubs = FORM_CONFIG[type].newSubs;
+    let newSubs = FORM_CONFIG[type].newSubs;
+
+    if (type === 'options') {
+      const newId = uniqueId('new-');
+
+      newSubs = { ...FORM_CONFIG[type].newSubs, id: newId };
+    }
+
     setData((prevState) => ({ ...prevState, subs: [...data.subs, newSubs] }));
+  };
+
+  const handleOnClickCopy = (mainOptionItem: MainBasisOptionSubForm) => {
+    const newItem = cloneDeep(mainOptionItem);
+    delete (newItem as any).id;
+    newItem.subs.forEach((sub: any) => {
+      delete sub.id;
+      sub.subs.forEach((subItem: any) => {
+        delete subItem.id;
+      });
+    });
+
+    setData((prevState) => ({ ...prevState, subs: [...data.subs, newItem] }));
   };
 
   const handleOnChangeValue = (value: any, index: number) => {
     const newSubs = [...data['subs']];
+    if (value?.id === DEFAULT_MAIN_OPTION_ID) {
+      delete value.id;
+    }
     newSubs[index] = value;
     setData((prevState) => ({ ...prevState, subs: newSubs }));
+  };
+
+  const onDragEnd = (result: any, _provided: any) => {
+    const { source, destination, draggableId } = result as DragEndResultProps;
+
+    const sourceIndex = source?.index;
+    const destinationIndex = destination?.index;
+
+    if (
+      isNull(draggableId) ||
+      isUndefined(draggableId) ||
+      isNull(sourceIndex) ||
+      isUndefined(sourceIndex) ||
+      sourceIndex < 0 ||
+      isNull(destinationIndex) ||
+      isUndefined(destinationIndex) ||
+      destinationIndex < 0
+    ) {
+      message.error('Failed to drag!');
+      return;
+    }
+
+    const newData = getNewDataAfterDragging({
+      data: data.subs,
+      result: result,
+    });
+
+    if (!newData) {
+      return;
+    }
+
+    setData((prevState) => ({ ...prevState, subs: newData }));
   };
 
   const handleOnClickDelete = (index: number) => {
     const newSubs = [...data['subs']];
     newSubs.splice(index, 1);
     setData((prevState) => ({ ...prevState, subs: newSubs }));
-  };
-
-  const renderEntryFormItem = (item: any, index: number) => {
-    if (type === 'conversions') {
-      return (
-        <ConversionItem
-          key={index}
-          value={item}
-          onChangeValue={(value) => {
-            handleOnChangeValue(value, index);
-          }}
-          handleOnClickDelete={() => handleOnClickDelete(index)}
-        />
-      );
-    }
-    if (type === 'presets') {
-      return (
-        <PresetItem
-          key={index}
-          handleOnClickDelete={() => handleOnClickDelete(index)}
-          onChangeValue={(value) => {
-            handleOnChangeValue(value, index);
-          }}
-          value={item}
-        />
-      );
-    }
-    return (
-      <OptionItem
-        key={index}
-        subOption={item}
-        handleChangeSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
-        handleDeleteSubOption={() => handleOnClickDelete(index)}
-      />
-    );
   };
 
   const handleCreate = (dataSubmit: any) => {
@@ -194,6 +236,40 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         }, 2000);
       }
     });
+  };
+
+  const handleDeleteConversion = () => {
+    deleteConversionMiddleware(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.conversions);
+      }
+    });
+  };
+
+  const handleDeleteBasisOption = () => {
+    deleteBasisOption(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.options);
+      }
+    });
+  };
+
+  const handleDeletePreset = () => {
+    deletePresetMiddleware(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.presets);
+      }
+    });
+  };
+
+  const getDeleteFuntional = () => {
+    if (!idBasis) return undefined;
+
+    if (type === 'conversions') {
+      return handleDeleteConversion();
+    }
+
+    return type === 'presets' ? handleDeletePreset() : handleDeleteBasisOption();
   };
 
   const onHandleSubmit = () => {
@@ -242,26 +318,36 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         };
       }
 
-      const itemOptions: SubBasisOption[] = sub.subs.map((optionItem: SubBasisOption) => {
-        let requiredValue = {
-          ...getSubItemValue(optionItem),
-          product_id: optionItem.product_id,
-        };
-        /// if it has ID, include ID
-        if (optionItem.id) {
-          requiredValue = merge(requiredValue, { id: optionItem.id });
-        }
-        /// send image data if using image otherwise remove it
-        if (sub.is_have_image && optionItem.image) {
-          const imageData = optionItem.isBase64 ? optionItem.image.split(',')[1] : optionItem.image;
-          requiredValue = merge(requiredValue, { image: imageData });
-        }
-        return requiredValue;
-      });
+      const mainOptionItems: BasisOptionSubForm[] = sub.subs.map(
+        (mainOptionItem: BasisOptionSubForm) => {
+          const newSubOptionItem = mainOptionItem.subs.map((subItem) => {
+            let requiredValue = {
+              ...getSubItemValue(subItem),
+              product_id: subItem.product_id,
+            };
+            /// if it has ID, include ID
+            if (subItem.id) {
+              requiredValue = merge(requiredValue, { id: subItem.id });
+            }
+            /// send image data if using image otherwise remove it
+            if (sub.is_have_image && subItem.image) {
+              const imageData = subItem.isBase64 ? subItem.image.split(',')[1] : subItem.image;
+              requiredValue = merge(requiredValue, { image: imageData });
+            }
+            return requiredValue;
+          });
+
+          return {
+            ...mainOptionItem,
+            subs: newSubOptionItem,
+          };
+        },
+      );
+
       let newSubOption = {
         name: sub.name.trim(),
-        subs: itemOptions,
-        is_have_image: sub.is_have_image ? true : false,
+        subs: [...mainOptionItems],
+        // is_have_image: sub.is_have_image,
       };
       if (sub.id) {
         newSubOption = merge(newSubOption, { id: sub.id });
@@ -271,51 +357,107 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
     const newSubDataInvalid = newSubs.some((newSub) => !newSub);
 
+    console.log('newSubs', newSubs);
+
     if (newSubDataInvalid) {
       message.error(type === 'conversions' ? 'All values are required' : 'Value is required');
       return;
+    }
+
+    let newSubOptionData = newSubs;
+
+    if (type === 'options') {
+      const newMainData = newSubs.map((el) => {
+        if (el.id.indexOf('new') !== -1) {
+          const newEl = cloneDeep(el);
+          delete newEl.id;
+          return newEl;
+        }
+
+        return el;
+      });
+
+      const result = newMainData.map((el) => ({
+        ...el,
+        subs: el.subs.map((sub: any) => {
+          if (sub.id.indexOf('new') !== -1) {
+            const newSub = cloneDeep(sub);
+            delete newSub.id;
+            delete newSub.main_id;
+            delete newSub.collapse;
+            return newSub;
+          }
+
+          return sub;
+        }),
+      }));
+
+      newSubOptionData = result;
+
+      // console.log('newSubOptionData', newSubOptionData);
+
+      // const subItemValid = newSubOptionData.every((newSub) =>
+      //   newSub.subs.every((el: any) => el.subs.every((sub: any) => sub.product_id)),
+      // );
+
+      // if (!subItemValid) {
+      //   message.error('Product ID is required');
+      //   return;
+      // }
     }
 
     const handleSubmit = idBasis ? handleUpdate : handleCreate;
 
     handleSubmit({
       name: data.name.trim(),
-      subs: newSubs,
+      subs: type === 'options' ? newSubOptionData : newSubs,
     });
   };
 
-  const handleDeleteConversion = () => {
-    deleteConversionMiddleware(idBasis).then((isSuccess) => {
-      if (isSuccess) {
-        pushTo(PATH.conversions);
-      }
-    });
-  };
-
-  const handleDeleteBasisOption = () => {
-    deleteBasisOption(idBasis).then((isSuccess) => {
-      if (isSuccess) {
-        pushTo(PATH.options);
-      }
-    });
-  };
-
-  const handleDeletePreset = () => {
-    deletePresetMiddleware(idBasis).then((isSuccess) => {
-      if (isSuccess) {
-        pushTo(PATH.presets);
-      }
-    });
-  };
-
-  const getDeleteFuntional = () => {
-    if (!idBasis) return undefined;
-
+  const renderEntryFormItem = (item: any, index: number) => {
     if (type === 'conversions') {
-      return handleDeleteConversion();
+      return (
+        <ConversionItem
+          key={index}
+          value={item}
+          onChangeValue={(value) => {
+            handleOnChangeValue(value, index);
+          }}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
+        />
+      );
     }
 
-    return type === 'presets' ? handleDeletePreset() : handleDeleteBasisOption();
+    if (type === 'presets') {
+      return (
+        <PresetItem
+          key={index}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
+          onChangeValue={(value) => {
+            handleOnChangeValue(value, index);
+          }}
+          value={item}
+        />
+      );
+    }
+
+    return (
+      <Droppable droppableId={item.id}>
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            <MainOptionItem
+              key={index}
+              mainOptionIndex={index}
+              mainOption={item}
+              handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
+              handleCopyMainOption={handleOnClickCopy}
+              handleDeleteMainSubOption={() => handleOnClickDelete(index)}
+            />
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    );
   };
 
   const renderProductBasicEntryForm = useCallback(() => {
@@ -328,19 +470,37 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           handleDelete={getDeleteFuntional}
           submitButtonStatus={submitButtonStatus.value}
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
+          lg={type === 'options' ? 24 : 12}
+          span={24}
         >
-          <FormNameInput
-            placeholder="type group name"
-            title={getEntryFormTitle(type)}
-            onChangeInput={handleChangeGroupName}
-            HandleOnClickAddIcon={handleOnClickAddIcon}
-            inputValue={data.name}
-          />
-          {data.subs.map(renderEntryFormItem)}
+          <FormOptionContext.Provider value={{ mode, setMode }}>
+            {type === 'options' ? (
+              <FormOptionNameInput
+                placeholder="type group name"
+                title={getEntryFormTitle(type)}
+                onChangeInput={handleChangeGroupName}
+                handleOnClickAddIcon={handleOnClickAddIcon}
+                inputValue={data.name}
+              />
+            ) : (
+              <FormNameInput
+                placeholder="type group name"
+                title={getEntryFormTitle(type)}
+                onChangeInput={handleChangeGroupName}
+                handleOnClickAddIcon={handleOnClickAddIcon}
+                inputValue={data.name}
+              />
+            )}
+
+            {/* render main content entry form */}
+            <DragDropContext onDragEnd={onDragEnd}>
+              {data.subs.map(renderEntryFormItem)}
+            </DragDropContext>
+          </FormOptionContext.Provider>
         </EntryFormWrapper>
       </div>
     );
-  }, [submitButtonStatus.value, data.subs, data.name]);
+  }, [submitButtonStatus.value, data.subs, data.name, mode, setMode]);
 
   return { renderProductBasicEntryForm };
 };

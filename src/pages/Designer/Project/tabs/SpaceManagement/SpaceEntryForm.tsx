@@ -224,7 +224,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
         placeholder="type zone name"
         title="Zone"
         onChangeInput={onChangeZoneName}
-        HandleOnClickAddIcon={addMoreArea}
+        handleOnClickAddIcon={addMoreArea}
         inputValue={data.name || ''}
         customClass={styles.zoneNameInput}
       />

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { Row } from 'antd';
+import { ColProps, Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -17,9 +17,13 @@ import styles from './styles/index.less';
 
 export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
-export const FormContainer: FC = ({ children }) => (
+interface FormContainerProps extends ColProps {
+  children: any;
+}
+
+export const FormContainer: FC<FormContainerProps> = ({ children, ...props }) => (
   <Row>
-    <ResponsiveCol>{children}</ResponsiveCol>
+    <ResponsiveCol {...props}>{children}</ResponsiveCol>
   </Row>
 );
 
@@ -47,6 +51,10 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   hideHeader,
   hideFooter,
   isRenderFooterContent = true,
+  customStyles,
+  cancelLabel = 'Cancel',
+  submitLabel = 'Save',
+  ...props
 }) => {
   const history = useHistory();
   const isTablet = useScreen().isTablet;
@@ -61,9 +69,9 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     }
 
     const showButtonLeft = () => {
-      if (!isTablet || !entryFormTypeOnMobile) {
-        return null;
-      }
+      // if (!isTablet || !entryFormTypeOnMobile) {
+      //   return null;
+      // }
 
       if (isTablet && entryFormTypeOnMobile === 'edit') {
         return (
@@ -92,7 +100,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
           onClick={handleCancel || history.goBack}
           disabled={disableCancelButton}
         >
-          Cancel
+          {cancelLabel}
         </CustomButton>
       );
     };
@@ -118,7 +126,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               disabled={disableSubmitButton}
             >
               <BodyText level={6} fontFamily="Roboto">
-                Save
+                {submitLabel}
               </BodyText>
             </CustomButton>
           )}
@@ -128,8 +136,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   };
 
   return (
-    <FormContainer>
-      <div className={`${styles.entry_form_container} ${customClass}`}>
+    <FormContainer {...props}>
+      <div className={`${styles.entry_form_container} ${customClass}`} style={{ ...customStyles }}>
         {/* header */}
         {hideHeader ? null : (
           <div className={styles.header_main}>
