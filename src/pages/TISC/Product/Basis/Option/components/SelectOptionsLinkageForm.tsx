@@ -82,9 +82,9 @@ export const SelectOptionsLinkageForm: FC = () => {
     >
       <LinkageSummary />
 
-      <Row style={{ height: 'calc(100% - 48px)' }}>
+      <Row style={{ height: 'calc(100% - 48px)', overflow: 'auto' }}>
         {/* main content */}
-        <Col span={18}>
+        <Col span={18} style={{ overflow: 'auto' }}>
           <div className={style.contentWrapper} style={{ height: '100%' }}>
             <div className={style.content}>
               <div className={style.main}>
