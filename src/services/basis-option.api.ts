@@ -13,11 +13,11 @@ import type {
   BasisOptionForm,
   BasisOptionListResponse,
   ConnectionListResponse,
-  LinkageUpdateBody,
   LinkageUpsertBody,
+  MainBasisOptionSubForm,
 } from '@/types';
 
-import { LinkedOption, setLinkageState } from './../pages/TISC/Product/Basis/Option/store';
+import { LinkedOption } from './../pages/TISC/Product/Basis/Option/store';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -101,19 +101,19 @@ export async function getOneBasisOption(id: string) {
 
 export async function updateBasisOption(id: string, data: BasisOptionForm) {
   showPageLoading();
-  return request<boolean>(`/api/basis-option/update/${id}`, {
+  return request<{ data: MainBasisOptionSubForm }>(`/api/basis-option/update/${id}`, {
     method: 'PUT',
     data,
   })
-    .then(() => {
+    .then((res) => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
       hidePageLoading();
-      return true;
+      return res.data;
     })
     .catch((error) => {
-      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_ERROR);
       hidePageLoading();
-      return false;
+      return {} as MainBasisOptionSubForm;
     });
 }
 
@@ -186,25 +186,5 @@ export async function upsertLinkageOption() {
       hidePageLoading();
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.CREATE_LINKAGE_OPTION_ERROR);
       // return [] as LinkageUpsertBody[];
-    });
-}
-
-export async function updateLinkageOption(data: LinkageUpdateBody) {
-  showPageLoading();
-
-  return request<{ data: LinkageUpdateBody[] }>(`/api/linkage/pair`, {
-    method: 'PUT',
-    data,
-  })
-    .then((res) => {
-      hidePageLoading();
-      message.success(MESSAGE_NOTIFICATION.UPDATE_LINKAGE_OPTION_SUCCESS);
-
-      return res;
-    })
-    .catch((error) => {
-      hidePageLoading();
-      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_LINKAGE_OPTION_ERROR);
-      return {} as LinkageUpdateBody;
     });
 }
