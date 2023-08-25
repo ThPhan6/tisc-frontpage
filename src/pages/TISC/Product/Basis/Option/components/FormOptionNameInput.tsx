@@ -4,7 +4,7 @@ import { ReactComponent as CardImageIcon } from '@/assets/icons/card-image-icon-
 import { ReactComponent as ListIcon } from '@/assets/icons/hamburger-menu-icon-18.svg';
 import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
 
-import { FormOptionContext } from '../../hook';
+import { FormOptionGroupHeaderContext } from '../../hook';
 
 import { FormNameInputProps } from '@/components/EntryForm/types';
 
@@ -21,7 +21,7 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   inputValue,
   customClass = '',
 }) => {
-  const { setMode, mode } = useContext(FormOptionContext);
+  const { setMode, mode } = useContext(FormOptionGroupHeaderContext);
 
   return (
     <div className={`${styles.option_form_container} ${customClass}`}>
