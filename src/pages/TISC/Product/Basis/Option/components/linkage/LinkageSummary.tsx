@@ -64,8 +64,6 @@ export const LinkageSummary = () => {
             const key = Object.keys(el)[0];
             const value = Object.values(el)[0];
 
-            console.log('value', value);
-
             return (
               <div key={index} className="flex-start" style={{ marginLeft: 24 }}>
                 <BodyText {...titleProps}>{key}</BodyText>

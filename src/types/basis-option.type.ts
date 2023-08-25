@@ -27,26 +27,19 @@ export interface BasisOptionListResponse {
 export interface BasisOptionSubForm {
   id: string;
   name: string;
-  collapse?: string | string[];
   subs: SubBasisOption[];
-  count?: number;
+  count: number;
   main_id: string;
 }
 
 export interface MainBasisOptionSubForm {
   id: string;
   name: string;
-  collapse?: string;
   subs: BasisOptionSubForm[];
   count: number;
 }
 
-export interface BasisOptionForm {
-  id: string;
-  name: string;
-  count: number;
-  subs: BasisOptionSubForm[];
-}
+export interface BasisOptionForm extends MainBasisOptionSubForm {}
 
 export interface ConnectionListResponse {
   from: string;
