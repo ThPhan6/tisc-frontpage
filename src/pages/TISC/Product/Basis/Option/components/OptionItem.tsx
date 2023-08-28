@@ -135,7 +135,6 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
             <CustomInput
               placeholder="type here"
               className="product-id-input"
-              fontLevel={6}
               name="product_id"
               onChange={handleChangeInput}
               value={subItemOption.product_id}
