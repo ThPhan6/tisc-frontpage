@@ -52,11 +52,11 @@ export const LinkageConnection = () => {
 
                 {chosenOptionIds.includes(item.pairId) ? (
                   <div className="cursor-pointer" onClick={handleChangeConnectionStatus(item)}>
-                    {item.isPair ? <PairIcon title="pair" /> : <UnPairIcon title="unpair" />}
+                    {item.isPair ? <PairIcon title="Paired" /> : <UnPairIcon title="Unpaired" />}
                   </div>
                 ) : (
                   <div>
-                    <InactivePairIcon title="inactive" />
+                    <InactivePairIcon title="Inactive" />
                   </div>
                 )}
               </div>
