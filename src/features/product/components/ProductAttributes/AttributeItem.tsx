@@ -189,7 +189,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
 
     const activeBasisOptions = basisOptionSelected.map((itemSelected) => {
-      const changedBasisOption = basisOptions.find((option) => option?.id === itemSelected.value);
+      const changedBasisOption = basisOptions?.find((option) => option?.id === itemSelected.value);
 
       if (changedBasisOption) {
         return {

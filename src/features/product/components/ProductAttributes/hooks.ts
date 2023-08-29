@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
@@ -113,6 +113,8 @@ export const useProductAttributeForm = (
 
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
 
+  const [autoStepPopup, setAutoStepAutoPopup] = useState<boolean>(false);
+
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
   const attributeGroup =
@@ -198,6 +200,14 @@ export const useProductAttributeForm = (
         ],
       }),
     );
+  };
+
+  const addNewAutoStep = () => {
+    /// create new attribute
+    addNewProductAttribute();
+
+    /// open auto-step popup
+    setAutoStepAutoPopup(true);
   };
 
   const onChangeAttributeName =
@@ -386,5 +396,10 @@ export const useProductAttributeForm = (
     onSelectSpecificationOption,
     referToDesignDocument,
     dimensionWeightData,
+
+    /// auto-steps
+    addNewAutoStep,
+    autoStepPopup,
+    setAutoStepAutoPopup,
   };
 };

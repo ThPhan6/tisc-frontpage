@@ -43,12 +43,17 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   const isEditable = isTiscAdmin && !isTablet;
   const curProductId = productId ?? productIdParam;
 
-  const { addNewProductAttribute, attributeGroup, attributeGroupKey, dimensionWeightData } =
-    useProductAttributeForm(activeKey, curProductId, {
-      isSpecifiedModal,
-      isGetProductSpecification: true, // except specifying modal
-      isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
-    });
+  const {
+    addNewProductAttribute,
+    addNewAutoStep,
+    attributeGroup,
+    attributeGroupKey,
+    dimensionWeightData,
+  } = useProductAttributeForm(activeKey, curProductId, {
+    isSpecifiedModal,
+    isGetProductSpecification: true, // except specifying modal
+    isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
+  });
 
   const onDragEnd = (result: any) => {
     const newAttributesGroups = getNewDataAfterReordering(
@@ -66,12 +71,23 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   return (
     <>
       {isEditable ? (
-        <CustomPlusButton
-          size={18}
-          label="Add Attribute"
-          onClick={addNewProductAttribute}
-          customClass={styles.paddingSpace}
-        />
+        <div className="flex-end">
+          <CustomPlusButton
+            size={18}
+            label="Add Attribute"
+            onClick={addNewProductAttribute}
+            customClass={styles.paddingSpace}
+          />
+
+          {attributeGroupKey === 'specification_attribute_groups' ? (
+            <CustomPlusButton
+              size={18}
+              label="Create Auto-Steps"
+              onClick={addNewAutoStep}
+              customClass={styles.paddingSpace}
+            />
+          ) : null}
+        </div>
       ) : null}
 
       <DimensionWeight

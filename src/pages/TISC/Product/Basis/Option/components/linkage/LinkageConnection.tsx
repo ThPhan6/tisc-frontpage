@@ -11,6 +11,18 @@ import { BodyText } from '@/components/Typography';
 import { LinkedOption, updateLinkedOptionStatus } from '../../store';
 import style from '../Linkage.less';
 
+const pairProps = {
+  title: 'Paired',
+} as any;
+
+const unPairProps = {
+  title: 'Unpaired',
+} as any;
+
+const inactiveProps = {
+  title: 'Inactive',
+} as any;
+
 export const LinkageConnection = () => {
   const connectionList = useAppSelector((state) => state.linkage.connectionList);
   const rootSubItemProductId = useAppSelector((state) => state.linkage.rootSubItemProductId);
@@ -52,11 +64,11 @@ export const LinkageConnection = () => {
 
                 {chosenOptionIds.includes(item.pairId) ? (
                   <div className="cursor-pointer" onClick={handleChangeConnectionStatus(item)}>
-                    {item.isPair ? <PairIcon title="Paired" /> : <UnPairIcon title="Unpaired" />}
+                    {item.isPair ? <PairIcon {...pairProps} /> : <UnPairIcon {...unPairProps} />}
                   </div>
                 ) : (
                   <div>
-                    <InactivePairIcon title="Inactive" />
+                    <InactivePairIcon {...inactiveProps} />
                   </div>
                 )}
               </div>

@@ -65,7 +65,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
-  const isPublicPage = signature ? true : false;
+  const isPublicPage = !!signature;
 
   const [curAttributeSelect, setCurAttributeSelect] = useState<AttributeSelectedProps>(
     ATTRIBUTE_SELECTED_DEFAULT_VALUE,
@@ -169,7 +169,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                     : []
                 }
                 onChange={() => {
-                  onCheckedSpecification(grIndex, isTiscAdmin ? false : true);
+                  onCheckedSpecification(grIndex, !isTiscAdmin);
 
                   if (curAttributeSelect.groupId && curAttributeSelect.attribute?.id) {
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
