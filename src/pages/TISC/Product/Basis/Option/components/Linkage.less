@@ -67,7 +67,7 @@
   .content {
     min-width: 200px;
     margin-right: 8px;
-    padding: 0 4px 4px;
+    padding-bottom: 4px;
     background: #e6e6e6;
 
     &:last-child {
@@ -82,10 +82,15 @@
     justify-content: space-between;
     min-height: 32px;
     margin-bottom: 4px;
-    padding: 0 4px 0 6px;
+    padding: 0 8px 0 10px;
+    background: @mono-color-medium;
+    user-select: none;
   }
 
   .mainOptContent {
+    padding: 0 4px 0;
+    user-select: none;
+
     :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
       display: flex;
       align-items: center;
@@ -140,8 +145,9 @@
 
   /// select form
   .subItemPaired {
-    background: transparent;
-    box-shadow: inset 0 0 0 0.7px #eb008d;
+    background: @mono-color-light;
+    // background: transparent;
+    // box-shadow: inset 0 0 0 0.7px #eb008d;
   }
   .subItemSelected {
     background: #ffb8e2;
