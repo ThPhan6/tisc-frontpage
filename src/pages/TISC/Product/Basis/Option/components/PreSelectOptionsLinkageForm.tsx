@@ -82,11 +82,29 @@ export const PreSelectOptionsLinkageForm: FC = () => {
       <LinkageSummary />
 
       <div className={style.contentWrapper}>
-        <div className={style.content}>
-          <div className={style.main}>
-            {options.map((mainOpt, mainOptIdx) => (
-              <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
-            ))}
+        <div style={{ width: '100%', overflow: 'auto' }}>
+          <div
+            className={style.content}
+            style={{
+              width: '100%',
+              display: 'flex',
+            }}
+          >
+            <div className={style.main}>
+              <div
+                style={{
+                  paddingRight: 16,
+                  paddingBottom: 16,
+                  width: 'fit-content',
+                  height: 'fit-content',
+                  display: 'flex',
+                }}
+              >
+                {options.map((mainOpt, mainOptIdx) => (
+                  <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
