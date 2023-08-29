@@ -37,8 +37,10 @@ export const PreSelectOptionsLinkageForm: FC = () => {
     getOneBasisOption(optionId).then((res) => {
       if (res) {
         const newData = [...res.subs];
+
         dispatch(
           setLinkageState({
+            groupName: res.name ?? '',
             options: newData as any,
           }),
         );

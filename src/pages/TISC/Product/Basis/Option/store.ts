@@ -15,6 +15,9 @@ export type LinkedOption = {
 };
 
 export interface LinkageState {
+  /* group name */
+  groupName: string;
+
   /* pre select form */
   options: BasisOptionForm[]; /// data
   pickedOptionIds: string[]; /// option selected
@@ -31,6 +34,8 @@ export interface LinkageState {
 }
 
 const initialState: LinkageState = {
+  groupName: '',
+
   options: [],
   pickedOptionIds: [],
 
@@ -87,11 +92,12 @@ const linkageSlice = createSlice({
         const newConnectionList = uniqBy(state.originConnectionList.concat(opts), 'pairId');
 
         state.connectionList = newConnectionList;
-        ///
+
+        /// new linkage
       } else {
         const newOptions: LinkedOption[] = options.map((el) => ({
           ...el,
-          isPair: true,
+          isPair: false, /// default is unpair
           status: 'inactive',
         }));
 

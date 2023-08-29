@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
+import { DEFAULT_MAIN_OPTION_ID } from './Option/components/constant';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history } from 'umi';
@@ -45,8 +46,6 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { getNewDataAfterDragging } from './util';
-
-const DEFAULT_MAIN_OPTION_ID = '33a0bbe3-38fd-4cd1-995f-31a801f4018b';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -212,7 +211,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const handleOnChangeValue = (value: any, index: number) => {
     const newSubs = [...data['subs']];
     if (value?.id === DEFAULT_MAIN_OPTION_ID) {
-      delete value.id;
+      newSubs[index].id = `new-${DEFAULT_MAIN_OPTION_ID}`;
     }
     newSubs[index] = value;
     setData((prevState) => ({ ...prevState, subs: newSubs }));
@@ -468,6 +467,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         delete sub.id;
       }
 
+      if (sub?.main_id?.indexOf('new') !== -1) {
+        delete sub.main_id;
+      }
+
       const mainOptionItems: BasisOptionSubForm[] = sub.subs.map(
         (mainOptionItem: BasisOptionSubForm) => {
           if (!mainOptionItem.subs.length) {
@@ -642,6 +645,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         />
       );
     }
+
     return (
       <FormOptionGroupContext.Provider value={{ collapse, setCollapse }}>
         <Droppable droppableId={item.id}>
@@ -703,7 +707,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         </EntryFormWrapper>
       </div>
     );
-  }, [submitButtonStatus.value, data, setData, mode, collapse]);
+  }, [submitButtonStatus.value, data, mode, collapse]);
 
   return { renderProductBasicEntryForm };
 };
