@@ -440,3 +440,6 @@ export const checkBrowser = () => {
 
   return { isSafari: safariAgent, isChrome: chromeAgent };
 };
+
+export const checkNil = (value: string | number) =>
+  value === '' || typeof value === null || typeof value === undefined;
