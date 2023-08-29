@@ -40,7 +40,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
 
         dispatch(
           setLinkageState({
-            groupName: res.name ?? '',
+            groupName: res.name ?? 'N/A',
             options: newData as any,
           }),
         );
@@ -59,7 +59,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
     }
     /// save data to history state
     history.push({
-      state: pick(store.getState().linkage, 'options', 'pickedOptionIds'),
+      state: pick(store.getState().linkage, 'options', 'pickedOptionIds', 'groupName'),
     });
   };
 
