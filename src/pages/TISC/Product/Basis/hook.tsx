@@ -500,7 +500,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
           ///
           const newSubOptionItem = mainOptionItem.subs.map((subItem) => {
-            if (subItem.value_1 === '' || isNull(subItem.value_1) || isUndefined(subItem.value_1)) {
+            if (checkNil(subItem.value_1)) {
               hasSubItemValue = false;
               return;
             }
