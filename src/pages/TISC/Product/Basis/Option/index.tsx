@@ -17,7 +17,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const colTitle = {
-  group: 'Group Options',
+  group: 'Group Name',
   main: 'Main Options',
   sub: 'Sub Options',
 };
