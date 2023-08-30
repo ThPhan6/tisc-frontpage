@@ -11,17 +11,9 @@ import { BodyText } from '@/components/Typography';
 import { LinkedOption, updateLinkedOptionStatus } from '../../store';
 import style from '../Linkage.less';
 
-const pairProps = {
-  title: 'Paired',
-} as any;
-
-const unPairProps = {
-  title: 'Unpaired',
-} as any;
-
-const inactiveProps = {
-  title: 'Inactive',
-} as any;
+const pairProps = { title: 'Paired' } as any;
+const unPairProps = { title: 'Unpaired' } as any;
+const inactiveProps = { title: 'Inactive' } as any;
 
 export const LinkageConnection = () => {
   const connectionList = useAppSelector((state) => state.linkage.connectionList);
@@ -33,14 +25,14 @@ export const LinkageConnection = () => {
   };
 
   return (
-    <Col span={6} className={style.borderLeft}>
+    <Col span={6} className={style.borderLeft} style={{ height: '100%' }}>
       <div className="border-bottom-light">
         <div className="flex-between" style={{ margin: '0 8px 8px', minHeight: 32 }}>
           <BodyText level={4}>Connection List</BodyText>
           <BodyText level={4}>Status</BodyText>
         </div>
       </div>
-      <div>
+      <div style={{ height: 'calc(100% - 48px)', overflow: 'auto' }}>
         {!connectionList.length ? (
           <BodyText
             level={6}
