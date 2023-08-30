@@ -48,7 +48,7 @@ export const LinkageConnection = () => {
               <div
                 key={index}
                 className="flex-between"
-                style={{ padding: '0 8px 8px', minHeight: 20 }}
+                style={{ padding: '0 17px 8px 8px', minHeight: 20 }}
               >
                 <BodyText fontFamily="Roboto" level={6}>
                   {rootSubItemProductId} to {item.productId}
