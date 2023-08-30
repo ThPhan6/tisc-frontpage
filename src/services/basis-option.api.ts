@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { DEFAULT_MAIN_OPTION_ID } from '@/pages/TISC/Product/Basis/Option/components/constant';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -78,15 +79,29 @@ export async function getOneBasisOption(id: string) {
   })
     .then((response) => {
       hidePageLoading();
-      const newSubs = response.data.subs.map((subOption) => {
+
+      const newData = response.data.subs.map((subOption) => {
         const isUsingImage = subOption.subs.find((optionItem) => {
           return optionItem.image !== null;
         });
+
         return {
           ...subOption,
           is_have_image: isUsingImage ? true : false,
         };
       });
+
+      const newSubs = newData.map((el) => {
+        /// change default main option
+        if (el.id === DEFAULT_MAIN_OPTION_ID) {
+          return {
+            ...el,
+            id: `new-${DEFAULT_MAIN_OPTION_ID}`,
+          };
+        }
+        return el;
+      });
+
       return {
         ...response.data,
         subs: newSubs,
