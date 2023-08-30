@@ -271,7 +271,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             30
           }
           fontLevel={4}
-          label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+          label={curAttributeData?.name ?? 'N/A'}
+          labelTitle={curAttributeData?.name}
           conversionData={curAttributeData?.basis}
           deleteIcon
           onDelete={onDelete}
