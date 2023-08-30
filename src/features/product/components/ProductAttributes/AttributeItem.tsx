@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { truncate } from 'lodash';
+import { capitalize, truncate } from 'lodash';
 
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -189,7 +189,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
 
     const activeBasisOptions = basisOptionSelected.map((itemSelected) => {
-      const changedBasisOption = basisOptions.find((option) => option?.id === itemSelected.value);
+      const changedBasisOption = basisOptions?.find((option) => option?.id === itemSelected.value);
 
       if (changedBasisOption) {
         return {
@@ -237,20 +237,20 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
   };
 
+  const getAttributeTextSelected = () => {
+    if (
+      attributeItem.type !== 'Options' ||
+      (attributeItem.type === 'Options' &&
+        attributeItem.basis_options?.length &&
+        attributeItem.text)
+    ) {
+      return attributeItem.text;
+    }
+
+    return '';
+  };
+
   const renderProductAttributeItem = () => {
-    const getAttributeTextSelected = () => {
-      if (
-        attributeItem.type !== 'Options' ||
-        (attributeItem.type === 'Options' &&
-          attributeItem.basis_options?.length &&
-          attributeItem.text)
-      ) {
-        return attributeItem.text;
-      }
-
-      return '';
-    };
-
     if (!curAttributeData?.basis) {
       return null;
     }
@@ -271,7 +271,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             30
           }
           fontLevel={4}
-          label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+          label={curAttributeData?.name ?? 'N/A'}
+          labelTitle={capitalize(curAttributeData?.name)}
           conversionData={curAttributeData?.basis}
           deleteIcon
           onDelete={onDelete}
@@ -295,7 +296,9 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         isTableFormat
         autoResize={curAttributeData.basis.type === 'Text'}
         fontLevel={4}
-        label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+        containerClass={styles.containerClass}
+        label={curAttributeData?.name ?? 'N/A'}
+        labelTitle={capitalize(curAttributeData?.name)}
         placeholder={placeholder}
         rightIcon={
           curAttributeData?.basis?.type === 'Presets' ||

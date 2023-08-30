@@ -29,6 +29,7 @@ export const LinkageSummary = () => {
   // const { pickedOptionIds, options } = preLinkageState as {
   //   pickedOptionIds: string[];
   //   options: BasisOptionForm[];
+  //   groupName: string;
   // };
 
   const groupName = useAppSelector((state) => state.linkage.groupName);
@@ -59,7 +60,7 @@ export const LinkageSummary = () => {
     <div className={style.borderBottom}>
       <div className={style.topHeader}>
         <div className="flex-start">
-          <BodyText fontFamily="Roboto" level={4}>
+          <BodyText fontFamily="Roboto" level={4} style={{ textTransform: 'uppercase' }}>
             Group Name :
           </BodyText>
           <BodyText
@@ -67,7 +68,7 @@ export const LinkageSummary = () => {
             level={4}
             style={{ textTransform: 'uppercase', padding: '0 4px' }}
           >
-            {groupName}
+            {groupName || (linkageOptionState as any)?.groupName}
           </BodyText>
         </div>
         <div className="flex-start">

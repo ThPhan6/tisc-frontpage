@@ -44,6 +44,7 @@ interface ConversionInputProps extends CustomInputProps {
   conversionValue: ConversionValue;
   setConversionValue: (data: ConversionValue) => void;
   isTableFormat?: boolean;
+  labelTitle?: string;
 }
 
 const ConversionInput: FC<ConversionInputProps> = ({
@@ -60,6 +61,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
   isTableFormat,
+  labelTitle,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -72,7 +74,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
 
   const renderLabel = () => (
     <Col span={labelSpan} className="input-label-container">
-      <BodyText level={fontLevel ?? 5} customClass="input-label">
+      <BodyText level={fontLevel ?? 5} customClass="input-label" title={labelTitle}>
         {label}
         {required ? <span className={styles.required}>*</span> : ''}
         {required ? <span>:</span> : ''}
