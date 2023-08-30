@@ -11,6 +11,10 @@ import { BodyText } from '@/components/Typography';
 import { LinkedOption, updateLinkedOptionStatus } from '../../store';
 import style from '../Linkage.less';
 
+const pairProps = { title: 'Paired' } as any;
+const unPairProps = { title: 'Unpaired' } as any;
+const inactiveProps = { title: 'Inactive' } as any;
+
 export const LinkageConnection = () => {
   const connectionList = useAppSelector((state) => state.linkage.connectionList);
   const rootSubItemProductId = useAppSelector((state) => state.linkage.rootSubItemProductId);
@@ -21,37 +25,48 @@ export const LinkageConnection = () => {
   };
 
   return (
-    <Col span={6} className={style.borderLeft}>
+    <Col span={6} className={style.borderLeft} style={{ height: '100%' }}>
       <div className="border-bottom-light">
         <div className="flex-between" style={{ margin: '0 8px 8px', minHeight: 32 }}>
           <BodyText level={4}>Connection List</BodyText>
           <BodyText level={4}>Status</BodyText>
         </div>
       </div>
-      <div>
-        {connectionList.map((item, index) => {
-          return (
-            <div
-              key={index}
-              className="flex-between"
-              style={{ padding: '0 8px 8px', minHeight: 20 }}
-            >
-              <BodyText fontFamily="Roboto" level={6}>
-                {rootSubItemProductId} to {item.productId}
-              </BodyText>
+      <div style={{ height: 'calc(100% - 48px)', overflow: 'auto' }}>
+        {!connectionList.length ? (
+          <BodyText
+            level={6}
+            fontFamily="Roboto"
+            color="mono-color-medium"
+            style={{ padding: '0 8px' }}
+          >
+            select the product from left
+          </BodyText>
+        ) : (
+          connectionList.map((item, index) => {
+            return (
+              <div
+                key={index}
+                className="flex-between"
+                style={{ padding: '0 17px 8px 8px', minHeight: 20 }}
+              >
+                <BodyText fontFamily="Roboto" level={6}>
+                  {rootSubItemProductId} to {item.productId}
+                </BodyText>
 
-              {chosenOptionIds.includes(item.pairId) ? (
-                <div className="cursor-pointer" onClick={handleChangeConnectionStatus(item)}>
-                  {item.isPair ? <PairIcon /> : <UnPairIcon />}
-                </div>
-              ) : (
-                <div>
-                  <InactivePairIcon />
-                </div>
-              )}
-            </div>
-          );
-        })}
+                {chosenOptionIds.includes(item.pairId) ? (
+                  <div className="cursor-pointer" onClick={handleChangeConnectionStatus(item)}>
+                    {item.isPair ? <PairIcon {...pairProps} /> : <UnPairIcon {...unPairProps} />}
+                  </div>
+                ) : (
+                  <div>
+                    <InactivePairIcon {...inactiveProps} />
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </Col>
   );

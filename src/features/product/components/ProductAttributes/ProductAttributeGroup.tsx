@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
+import { camelCase, capitalize, snakeCase } from 'lodash';
 
 import {
   AttributeSelectedProps,
@@ -236,7 +237,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <tr className={styles.attributeSubItem} key={attribute.id}>
           <td className={styles.attributeName}>
             <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-              <BodyText level={4} customClass={styles.content_type}>
+              <BodyText
+                level={4}
+                customClass={styles.content_type}
+                title={capitalize(attribute.name)}
+              >
                 {attribute.name}
               </BodyText>
             </div>
@@ -261,7 +266,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <tr className={styles.attributeSubItem} key={attribute.id}>
         <td className={styles.attributeName}>
           <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText level={4} customClass={styles.content_type}>
+            <BodyText
+              level={4}
+              customClass={styles.content_type}
+              title={capitalize(attribute.name)}
+            >
               {attribute.name}
             </BodyText>
           </div>
@@ -371,7 +380,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   attrGroupItem.selection && !isTiscAdmin && !isPublicPage
                     ? styles.paddingWrapper
                     : styles.colorInput
-                }`}
+                } ${styles.tableContent}`}
               >
                 <table className={styles.table}>
                   <tbody>

@@ -135,7 +135,6 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
             <CustomInput
               placeholder="type here"
               className="product-id-input"
-              fontLevel={6}
               name="product_id"
               onChange={handleChangeInput}
               value={subItemOption.product_id}
@@ -224,12 +223,12 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
         ghost
         activeKey={collapse[subOption.id] ? subOption.id : ''}
         onChange={handleCollapse}
-        collapsible={
-          mode === 'card' &&
-          subOption.subs.some((sub) => sub.image?.indexOf('/default/option_default.webp') !== -1)
-            ? 'disabled'
-            : undefined
-        }
+        // collapsible={
+        //   mode === 'card' &&
+        //   subOption.subs.every((sub) => sub.image?.indexOf('/default/option_default.webp') !== -1)
+        //     ? 'disabled'
+        //     : undefined
+        // }
       >
         <Collapse.Panel
           className={collapse[subOption.id] && styles.active_collapse_panel}
@@ -249,36 +248,46 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
             {!subOption.subs.length ? (
               <EmptyOne />
             ) : (
-              subOption.subs.map((subItemOption, index) =>
-                mode === 'list' ? (
-                  <div key={index} className={styles.optionItemGroup}>
-                    <SubItemOption
-                      subItemOption={subItemOption}
-                      onChange={(changedOptionItem) =>
-                        handleChangeSubOptionItem(changedOptionItem, index)
-                      }
-                    />
-                    <div>
-                      <RemoveIcon
-                        className="delete_sub_icon"
-                        onClick={handleDeleteSubItem(index)}
+              subOption.subs.map(
+                (subItemOption, index) =>
+                  mode === 'list' ? (
+                    <div key={index} className={styles.optionItemGroup}>
+                      <SubItemOption
+                        subItemOption={subItemOption}
+                        onChange={(changedOptionItem) =>
+                          handleChangeSubOptionItem(changedOptionItem, index)
+                        }
                       />
+                      <div>
+                        <RemoveIcon
+                          className="delete_sub_icon"
+                          onClick={handleDeleteSubItem(index)}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ) : subItemOption.image &&
-                  subItemOption.image?.indexOf('/default/option_default.webp') === -1 ? (
-                  <img
-                    src={showImageUrl(subItemOption.image)}
-                    style={{
-                      width: 64,
-                      height: 64,
-                      // marginRight: 16,
-                      // marginBottom: 16,
-                      objectFit: 'cover',
-                      cursor: 'default',
-                    }}
-                  />
-                ) : null,
+                  ) : (
+                    <img
+                      src={showImageUrl(subItemOption.image)}
+                      style={{
+                        width: 64,
+                        height: 64,
+                        objectFit: 'cover',
+                        cursor: 'default',
+                      }}
+                    />
+                  ),
+                // subItemOption.image &&
+                //   subItemOption.image?.indexOf('/default/option_default.webp') === -1 ? (
+                //   <img
+                //     src={showImageUrl(subItemOption.image)}
+                //     style={{
+                //       width: 64,
+                //       height: 64,
+                //       objectFit: 'cover',
+                //       cursor: 'default',
+                //     }}
+                //   />
+                // ) : null,
               )
             )}
           </div>

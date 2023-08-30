@@ -27,7 +27,7 @@ const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap }
   </Row>
 );
 
-interface InputGroupProps extends CustomInputProps {
+interface InputGroupProps extends Omit<CustomInputProps, 'title'> {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
   deleteIcon?: boolean;
@@ -50,6 +50,7 @@ interface InputGroupProps extends CustomInputProps {
   autoResize?: boolean;
   inputTitle?: string;
   inputClass?: string;
+  labelTitle?: string;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -78,6 +79,7 @@ const InputGroup: FC<InputGroupProps> = ({
   autoResize,
   inputTitle,
   inputClass = '',
+  labelTitle,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -91,7 +93,11 @@ const InputGroup: FC<InputGroupProps> = ({
   const renderLabel = () => {
     return (
       <Col span={labelSpan} className="input-label-container">
-        <BodyText level={fontLevel ?? 5} customClass={`${'input-label'} ${labelColor}`}>
+        <BodyText
+          level={fontLevel ?? 5}
+          customClass={`${'input-label'} ${labelColor}`}
+          title={labelTitle}
+        >
           {label}
           {required ? (
             <span
@@ -99,8 +105,7 @@ const InputGroup: FC<InputGroupProps> = ({
                 colorRequired === 'tertiary'
                   ? styles.requiredColorTertiary
                   : styles.requiredColorPrimaryDark
-              }
-          ${styles.required}`}
+              } ${styles.required}`}
             >
               *
             </span>
@@ -116,10 +121,7 @@ const InputGroup: FC<InputGroupProps> = ({
   const renderInput = () => {
     return (
       <Col
-        className={`
-          ${styles.inputGroupContent}
-          ${hasBoxShadow ? styles.boxShadow : ''}
-        `}
+        className={`${styles.inputGroupContent} ${hasBoxShadow ? styles.boxShadow : ''}`}
         span={inputSpan}
       >
         {autoResize ? (

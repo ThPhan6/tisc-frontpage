@@ -1,12 +1,14 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
+import { DEFAULT_MAIN_OPTION_ID } from './Option/components/constant';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history } from 'umi';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
+import { checkNil } from '@/helper/utils';
 import {
   createConversionMiddleware,
   createOptionMiddleWare,
@@ -44,9 +46,8 @@ import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import styles from './index.less';
 import { getNewDataAfterDragging } from './util';
-
-const DEFAULT_MAIN_OPTION_ID = '33a0bbe3-38fd-4cd1-995f-31a801f4018b';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -212,7 +213,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const handleOnChangeValue = (value: any, index: number) => {
     const newSubs = [...data['subs']];
     if (value?.id === DEFAULT_MAIN_OPTION_ID) {
-      delete value.id;
+      newSubs[index].id = `new-${DEFAULT_MAIN_OPTION_ID}`;
     }
     newSubs[index] = value;
     setData((prevState) => ({ ...prevState, subs: newSubs }));
@@ -394,12 +395,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
         /// all values are required
         if (
-          sub.formula_1 === '' ||
-          sub.formula_2 === '' ||
-          sub.unit_1 === '' ||
-          sub.unit_2 === '' ||
-          sub.name_1 === '' ||
-          sub.name_2 === ''
+          checkNil(sub.formula_1) ||
+          checkNil(sub.formula_2) ||
+          checkNil(sub.unit_1) ||
+          checkNil(sub.unit_2) ||
+          checkNil(sub.name_1) ||
+          checkNil(sub.name_2)
         ) {
           hasAllConversionValues = false;
           return;
@@ -419,12 +420,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       if (type === 'presets') {
         /* SubBasisPreset */
 
-        if (!sub.name) {
+        if (checkNil(sub.name)) {
           hasPresetSubGroupName = false;
           return;
         }
 
-        const isPresetValueMissing = sub.subs?.some((item: SubBasisPreset) => item.value_1 === '');
+        const isPresetValueMissing = sub.subs?.some((item: SubBasisPreset) =>
+          checkNil(item.value_1),
+        );
 
         /// all values are required
         if (isPresetValueMissing) {
@@ -454,7 +457,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         }
       });
 
-      if (sub.name === '' || duplicateMainOptionName > 1) {
+      if (checkNil(sub.name) || duplicateMainOptionName > 1) {
         hasMainOptionName = false;
         return;
       }
@@ -482,7 +485,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
             }
           });
 
-          if (mainOptionItem.name === '' || duplicateSubOptionName > 1) {
+          if (checkNil(mainOptionItem.name) || duplicateSubOptionName > 1) {
             hasSubOptionName = false;
             return;
           }
@@ -491,14 +494,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
             delete (mainOptionItem as any).id;
           }
 
+          if (mainOptionItem?.main_id?.indexOf('new') !== -1) {
+            delete (mainOptionItem as any).main_id;
+          }
+
           ///
           const newSubOptionItem = mainOptionItem.subs.map((subItem) => {
-            if (subItem.value_1 === '') {
+            if (checkNil(subItem.value_1)) {
               hasSubItemValue = false;
               return;
             }
 
-            if (subItem.product_id === '') {
+            if (checkNil(subItem.product_id)) {
               hasSubItemProductId = false;
               return;
             }
@@ -517,10 +524,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
               requiredValue = merge(requiredValue, { id: subItem.id });
             }
             /// send image data if using image otherwise remove it
-            if (subItem.image) {
-              const imageData = subItem.isBase64 ? subItem.image.split(',')[1] : subItem.image;
-              requiredValue = merge(requiredValue, { image: imageData });
-            }
+            // if (subItem.image) {
+            const imageData = subItem.isBase64 ? subItem.image?.split(',')[1] : subItem.image;
+            requiredValue = merge(requiredValue, { image: imageData || null });
+            // }
 
             return requiredValue;
           });
@@ -642,6 +649,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         />
       );
     }
+
     return (
       <FormOptionGroupContext.Provider value={{ collapse, setCollapse }}>
         <Droppable droppableId={item.id}>
@@ -675,6 +683,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
           lg={type === 'options' ? 24 : 12}
           span={24}
+          contentClass={type === 'options' ? styles.mainOptionContent : ''}
         >
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
             {type === 'options' ? (
@@ -703,7 +712,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         </EntryFormWrapper>
       </div>
     );
-  }, [submitButtonStatus.value, data, setData, mode, collapse]);
+  }, [submitButtonStatus.value, data, mode, collapse]);
 
   return { renderProductBasicEntryForm };
 };

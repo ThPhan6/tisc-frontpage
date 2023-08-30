@@ -29,7 +29,10 @@ export const LinkageSummary = () => {
   // const { pickedOptionIds, options } = preLinkageState as {
   //   pickedOptionIds: string[];
   //   options: BasisOptionForm[];
+  //   groupName: string;
   // };
+
+  const groupName = useAppSelector((state) => state.linkage.groupName);
 
   const preSelectLinkageSummary = useAppSelector(preSelectLinkageSummarySelector);
 
@@ -56,9 +59,18 @@ export const LinkageSummary = () => {
   return (
     <div className={style.borderBottom}>
       <div className={style.topHeader}>
-        <BodyText fontFamily="Roboto" level={4}>
-          Group Name :
-        </BodyText>
+        <div className="flex-start">
+          <BodyText fontFamily="Roboto" level={4} style={{ textTransform: 'uppercase' }}>
+            Group Name :
+          </BodyText>
+          <BodyText
+            fontFamily="Roboto"
+            level={4}
+            style={{ textTransform: 'uppercase', padding: '0 4px' }}
+          >
+            {groupName || (linkageOptionState as any)?.groupName}
+          </BodyText>
+        </div>
         <div className="flex-start">
           {summary.map((el, index) => {
             const key = Object.keys(el)[0];

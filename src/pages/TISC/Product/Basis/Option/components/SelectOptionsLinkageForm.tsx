@@ -76,21 +76,40 @@ export const SelectOptionsLinkageForm: FC = () => {
       contentStyles={{
         height: isTablet ? 'calc(var(--vh) * 100 - 168px)' : 'calc(var(--vh) * 100 - 192px)',
         padding: 0,
-        overflow: 'auto',
+        overflow: 'unset',
       }}
       customStyles={{ margin: 0 }}
     >
       <LinkageSummary />
 
-      <Row style={{ height: 'calc(100% - 48px)', overflow: 'auto' }}>
+      <Row style={{ height: 'calc(100% - 48px)' }}>
         {/* main content */}
-        <Col span={18} style={{ overflow: 'auto' }}>
-          <div className={style.contentWrapper} style={{ height: '100%' }}>
-            <div className={style.content}>
+        <Col span={18} style={{ height: '100%' }}>
+          <div
+            className={style.contentWrapper}
+            style={{ height: '100%', width: '100%', overflow: 'auto' }}
+          >
+            <div
+              className={style.content}
+              style={{
+                width: '100%',
+                display: 'flex',
+              }}
+            >
               <div className={style.main}>
-                {options.map((mainOpt, mainOptIdx) => (
-                  <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
-                ))}
+                <div
+                  style={{
+                    paddingRight: 16,
+                    paddingBottom: 16,
+                    width: 'fit-content',
+                    height: 'fit-content',
+                    display: 'flex',
+                  }}
+                >
+                  {options.map((mainOpt, mainOptIdx) => (
+                    <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
