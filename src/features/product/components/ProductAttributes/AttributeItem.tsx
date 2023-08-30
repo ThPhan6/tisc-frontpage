@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { truncate } from 'lodash';
+import { capitalize, truncate } from 'lodash';
 
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -272,7 +272,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           }
           fontLevel={4}
           label={curAttributeData?.name ?? 'N/A'}
-          labelTitle={curAttributeData?.name}
+          labelTitle={capitalize(curAttributeData?.name)}
           conversionData={curAttributeData?.basis}
           deleteIcon
           onDelete={onDelete}
@@ -298,7 +298,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         fontLevel={4}
         containerClass={styles.containerClass}
         label={curAttributeData?.name ?? 'N/A'}
-        labelTitle={curAttributeData?.name}
+        labelTitle={capitalize(curAttributeData?.name)}
         placeholder={placeholder}
         rightIcon={
           curAttributeData?.basis?.type === 'Presets' ||
