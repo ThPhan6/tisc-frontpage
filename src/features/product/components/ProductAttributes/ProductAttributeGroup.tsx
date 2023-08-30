@@ -236,7 +236,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <tr className={styles.attributeSubItem} key={attribute.id}>
           <td className={styles.attributeName}>
             <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-              <BodyText level={4} customClass={styles.content_type}>
+              <BodyText level={4} customClass={styles.content_type} title={attribute.name}>
                 {attribute.name}
               </BodyText>
             </div>
@@ -261,7 +261,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <tr className={styles.attributeSubItem} key={attribute.id}>
         <td className={styles.attributeName}>
           <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText level={4} customClass={styles.content_type}>
+            <BodyText level={4} customClass={styles.content_type} title={attribute.name}>
               {attribute.name}
             </BodyText>
           </div>
