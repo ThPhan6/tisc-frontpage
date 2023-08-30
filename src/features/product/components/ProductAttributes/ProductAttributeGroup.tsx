@@ -371,7 +371,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   attrGroupItem.selection && !isTiscAdmin && !isPublicPage
                     ? styles.paddingWrapper
                     : styles.colorInput
-                }`}
+                } ${styles.tableContent}`}
               >
                 <table className={styles.table}>
                   <tbody>
