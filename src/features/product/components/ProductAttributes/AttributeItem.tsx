@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { capitalize, truncate } from 'lodash';
+import { capitalize } from 'lodash';
 
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -402,6 +402,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             ? {
                 heading: curAttributeData?.basis?.name ?? 'N/A',
                 customItemClass: styles.customItemClass,
+                isSelectAll: true,
                 options:
                   basisOptions?.map((sub: any, index: number) => {
                     return {
