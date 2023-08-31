@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 
@@ -27,6 +27,14 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
   const [selectAll, setSelectAll] = useState(false);
   const { data, selected, onChange } = props;
 
+  useEffect(() => {
+    if (selected?.length === data.options?.length) {
+      setSelectAll(true);
+    } else {
+      setSelectAll(false);
+    }
+  }, [selected, data]);
+
   return (
     <div className={styles.checkboxListContainer}>
       <div className={styles.checkboxListItem}>
@@ -53,7 +61,6 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
                   onChange([]);
                 }
               }
-              setSelectAll(checkedAll);
             }}
           >
             <CustomRadio
