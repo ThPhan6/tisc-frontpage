@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
@@ -16,6 +16,7 @@ import { ProductAttributes } from '@/types';
 import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { AutoStep } from './AutoStep';
 import { ProductAttributeGroup } from './ProductAttributeGroup';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
@@ -42,6 +43,8 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isEditable = isTiscAdmin && !isTablet;
   const curProductId = productId ?? productIdParam;
+
+  const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
   const {
     addNewProductAttribute,
@@ -83,7 +86,10 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
             <CustomPlusButton
               size={18}
               label="Create Auto-Steps"
-              onClick={addNewAutoStep}
+              onClick={() => {
+                addNewAutoStep();
+                setAutoStepModal(true);
+              }}
               customClass={styles.paddingSpace}
             />
           ) : null}
@@ -145,6 +151,10 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
           ))}
         </DragDropContainer>
       )}
+
+      {isEditable && attributeGroupKey === 'specification_attribute_groups' ? (
+        <AutoStep visible={autoStepModal} setVisible={setAutoStepModal} step={0} />
+      ) : null}
     </>
   );
 };

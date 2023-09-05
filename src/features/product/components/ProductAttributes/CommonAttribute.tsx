@@ -15,7 +15,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
-import styles from './AttributeItem.less';
+import styles from './ProductAttributeSubItem.less';
 
 interface AttributeOptionProps {
   title: string;

@@ -20,8 +20,8 @@ export interface DropdownRadioItem {
 }
 
 interface DropdownRadioListProps {
-  selected?: RadioValue;
-  chosenItem?: RadioValue;
+  selected?: RadioValue; // current value select
+  chosenItem?: RadioValue; // option selected // show active collapse
   data: DropdownRadioItem[];
   renderTitle?: (data: DropdownRadioItem) => string | number | React.ReactNode;
   onChange?: (value: RadioValue) => void;

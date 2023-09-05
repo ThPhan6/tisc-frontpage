@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react';
 
 import { RadioValue } from '@/components/CustomRadio/types';
-import { CollapseGroup, useCollapseGroupActiveCheck } from '@/reducers/active';
+import { useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -23,7 +23,7 @@ export interface CollapseRadioListProps {
   noDataMessage?: string;
   collapsible?: boolean;
   activeKey?: string | string[];
-  groupType?: CollapseGroup;
+  groupType?: string;
   groupIndex?: number; // distinct index for handling active collapse item
 }
 

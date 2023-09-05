@@ -19,10 +19,10 @@ const TableContent: FC<TableContentProps> = ({
 }) => {
   return (
     <tr className={`${styles.content} ${customClass}`}>
-      <td className={styles.textLeft} style={{ width: textLeftWidth }}>
+      <td className={`${styles.textLeft} text-content-left`} style={{ width: textLeftWidth }}>
         {textLeft}
       </td>
-      <td className={styles.textRight} style={{ width: textRightWidth }}>
+      <td className={`${styles.textRight} text-content-right`} style={{ width: textRightWidth }}>
         {textRight}
       </td>
     </tr>

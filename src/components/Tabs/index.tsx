@@ -6,7 +6,7 @@ import { Tabs } from 'antd';
 import { useScreen } from '@/helper/common';
 
 import { CustomTabsProps } from './types';
-import { CollapseGroup, useCollapseGroupActiveCheck } from '@/reducers/active';
+import { useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '../Collapse';
 import { BodyText } from '../Typography';
@@ -80,7 +80,7 @@ interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   disable?: boolean;
   forceReload?: boolean;
   collapseOnMobile?: boolean;
-  groupType?: CollapseGroup;
+  groupType?: string;
   groupIndex?: number; // distinct index for handling active collapse item
 }
 export const CustomTabPane: FC<TabPaneProps> = memo(

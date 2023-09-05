@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { truncate } from 'lodash';
+import { capitalize } from 'lodash';
 
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -18,8 +18,8 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import Popover from '@/components/Modal/Popover';
 import { Title } from '@/components/Typography';
 
-import { AttributeOptionLabel } from './AttributeComponent';
-import styles from './AttributeItem.less';
+import { AttributeOptionLabel } from './CommonAttribute';
+import styles from './ProductAttributeSubItem.less';
 
 interface Props {
   attributesData: ProductAttributes[];
@@ -237,27 +237,29 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
   };
 
+  const getAttributeTextSelected = () => {
+    if (
+      attributeItem.type !== 'Options' ||
+      (attributeItem.type === 'Options' &&
+        attributeItem.basis_options?.length &&
+        attributeItem.text)
+    ) {
+      return attributeItem.text;
+    }
+
+    return '';
+  };
+
   const renderProductAttributeItem = () => {
-    const getAttributeTextSelected = () => {
-      if (
-        attributeItem.type !== 'Options' ||
-        (attributeItem.type === 'Options' &&
-          attributeItem.basis_options?.length &&
-          attributeItem.text)
-      ) {
-        return attributeItem.text;
-      }
-
-      return '';
-    };
-
     if (!curAttributeData?.basis) {
       return null;
     }
+
     let placeholder = 'type title';
     if (curAttributeData.basis.type !== 'Conversions' && curAttributeData.basis.type !== 'Text') {
       placeholder = curAttributeData.basis.name;
     }
+
     if (curAttributeData?.basis?.type === 'Conversions') {
       return (
         <ConversionInput
@@ -271,7 +273,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             30
           }
           fontLevel={4}
-          label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+          label={curAttributeData?.name ?? 'N/A'}
+          labelTitle={capitalize(curAttributeData?.name)}
           conversionData={curAttributeData?.basis}
           deleteIcon
           onDelete={onDelete}
@@ -295,7 +298,9 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         isTableFormat
         autoResize={curAttributeData.basis.type === 'Text'}
         fontLevel={4}
-        label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+        containerClass={styles.containerClass}
+        label={curAttributeData?.name ?? 'N/A'}
+        labelTitle={capitalize(curAttributeData?.name)}
         placeholder={placeholder}
         rightIcon={
           curAttributeData?.basis?.type === 'Presets' ||
@@ -399,6 +404,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             ? {
                 heading: curAttributeData?.basis?.name ?? 'N/A',
                 customItemClass: styles.customItemClass,
+                isSelectAll: true,
                 options:
                   basisOptions?.map((sub: any, index: number) => {
                     return {

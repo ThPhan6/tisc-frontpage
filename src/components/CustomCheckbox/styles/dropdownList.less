@@ -1,7 +1,7 @@
 .dropdownList {
   background-color: #fff;
   :global(.ant-collapse-item) {
-    border-bottom: 0;
+    border-bottom: 0 !important;
     box-shadow: @border-bottom-light;
     &:global(.ant-collapse-item-disabled) {
       :global(.ant-collapse-header) {
@@ -37,4 +37,59 @@
 }
 .dropdownCount {
   font-weight: 300;
+}
+
+.collapseSelectAll {
+  @space: 48px;
+
+  :global(.ant-collapse-header) {
+    display: flex;
+    align-items: center;
+    min-height: @space;
+    padding: 0 !important;
+  }
+
+  :global(.ant-collapse-header-text) {
+    min-height: @space;
+  }
+
+  :global(.drop-up-icon),
+  :global(.drop-down-icon) {
+    margin-left: 12px;
+  }
+
+  .selectAll {
+    display: flex;
+    align-items: center;
+    height: @space;
+    white-space: nowrap;
+    cursor: default;
+
+    :global(.select-all-radio) {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      margin-right: 0;
+    }
+
+    :global(.select-label) {
+      text-transform: capitalize;
+    }
+
+    :global(.ant-radio) {
+      top: 0;
+    }
+    p :global(span.ant-radio + *) {
+      padding-right: 16px;
+    }
+
+    :global(.ant-radio-inner) {
+      border: 1px solid @mono-color;
+      border-color: @mono-color;
+    }
+
+    :global(.ant-radio-input:focus + .ant-radio-inner) {
+      box-shadow: unset;
+    }
+  }
 }

@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { DimensionWeightItem, ProductDimensionWeight } from './types';
 
-import { ConversionText } from '../product/components/ProductAttributes/AttributeComponent';
+import { ConversionText } from '../product/components/ProductAttributes/CommonAttribute';
 import { BodyText } from '@/components/Typography';
 
 export const AttributeConversionText: FC<{
@@ -23,7 +23,8 @@ export const AttributeConversionText: FC<{
           width: '30%',
           textTransform: 'capitalize',
           paddingBottom: 0,
-        }}>
+        }}
+      >
         <BodyText level={4}>{conversionItem.name}</BodyText>
       </td>
       <td style={{ paddingBottom: 0 }}>

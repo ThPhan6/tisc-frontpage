@@ -683,7 +683,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
           lg={type === 'options' ? 24 : 12}
           span={24}
-          contentClass={styles.mainContent}
+          contentClass={type === 'options' ? styles.mainOptionContent : ''}
         >
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
             {type === 'options' ? (

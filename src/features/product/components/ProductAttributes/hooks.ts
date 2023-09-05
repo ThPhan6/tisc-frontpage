@@ -206,7 +206,7 @@ export const useProductAttributeForm = (
     /// create new attribute
     addNewProductAttribute();
 
-    /// open auto-step popup
+    /// open auto-steps popup
     setAutoStepAutoPopup(true);
   };
 
@@ -276,7 +276,7 @@ export const useProductAttributeForm = (
             basis_options: attr.basis_options?.map((el) => {
               return {
                 ...el,
-                isChecked: el.id === optionId ? true : false,
+                isChecked: el.id === optionId,
               };
             }),
           };
@@ -297,7 +297,7 @@ export const useProductAttributeForm = (
         basis_options: attr.basis_options?.map((el) => {
           return {
             ...el,
-            isChecked: el.id === optionId && isAttributeSelected ? true : false,
+            isChecked: el.id === optionId && isAttributeSelected,
           };
         }),
       };
