@@ -8,7 +8,7 @@ import { history } from 'umi';
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { getOneBasisOption } from '@/services';
-import { orderBy, pick, sortBy } from 'lodash';
+import { pick, sortBy } from 'lodash';
 
 import store, { useAppSelector } from '@/reducers';
 import { BasisOptionForm } from '@/types';
@@ -37,7 +37,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
 
     getOneBasisOption(optionId).then((res) => {
       if (res) {
-        const newData = sortBy(res.subs, 'name').map((el) => ({
+        const newData = sortBy(res.subs as unknown as BasisOptionForm[], 'name').map((el) => ({
           ...el,
           subs: sortBy(el.subs, 'name').map((sub) => ({
             ...sub,
