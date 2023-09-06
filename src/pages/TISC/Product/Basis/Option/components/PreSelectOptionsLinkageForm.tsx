@@ -8,9 +8,10 @@ import { history } from 'umi';
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { getOneBasisOption } from '@/services';
-import { pick } from 'lodash';
+import { orderBy, pick, sortBy } from 'lodash';
 
 import store, { useAppSelector } from '@/reducers';
+import { BasisOptionForm } from '@/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
 
@@ -36,7 +37,13 @@ export const PreSelectOptionsLinkageForm: FC = () => {
 
     getOneBasisOption(optionId).then((res) => {
       if (res) {
-        const newData = [...res.subs];
+        const newData = sortBy(res.subs, 'name').map((el) => ({
+          ...el,
+          subs: sortBy(el.subs, 'name').map((sub) => ({
+            ...sub,
+            subs: sortBy(sub.subs, 'product_id'),
+          })),
+        }));
 
         dispatch(
           setLinkageState({
