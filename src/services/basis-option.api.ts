@@ -3,8 +3,6 @@ import { DEFAULT_MAIN_OPTION_ID } from '@/pages/TISC/Product/Basis/Option/compon
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { sortBy } from 'lodash';
-
 import type {
   DataTableResponse,
   PaginationRequestParams,
