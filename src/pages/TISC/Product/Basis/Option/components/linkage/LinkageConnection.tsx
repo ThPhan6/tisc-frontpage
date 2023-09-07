@@ -51,7 +51,7 @@ export const LinkageConnection = () => {
                 style={{ padding: '0 17px 8px 8px', minHeight: 20 }}
               >
                 <BodyText fontFamily="Roboto" level={6}>
-                  {rootSubItemProductId} to {item.productId}
+                  {rootSubItemProductId} - {item.productId}
                 </BodyText>
 
                 {chosenOptionIds.includes(item.pairId) ? (
