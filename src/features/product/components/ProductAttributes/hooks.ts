@@ -4,14 +4,20 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep, countBy, uniqueId } from 'lodash';
+import { cloneDeep, countBy, isUndefined, uniqueId } from 'lodash';
 
-import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
+import {
+  setCurAttrGroupCollapse,
+  setDefaultSelectionFromSpecifiedData,
+  setPartialProductDetail,
+} from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
+
+import { getNewDataAfterReordering } from '@/components/Drag';
 
 const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
   const selectedAttributes: SelectedSpecAttributte[] = [];
@@ -113,7 +119,9 @@ export const useProductAttributeForm = (
 
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
 
-  const [autoStepPopup, setAutoStepAutoPopup] = useState<boolean>(false);
+  const curAttrGroupCollapseId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+
+  const [autoStepPopup, setAutoStepPopup] = useState<boolean>(false);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
@@ -163,6 +171,19 @@ export const useProductAttributeForm = (
     }
   }, [props?.isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
 
+  const onDragEnd = (result: any) => {
+    const newAttributesGroups = getNewDataAfterReordering(
+      result,
+      attributeGroup,
+    ) as ProductAttributeFormInput[];
+
+    dispatch(
+      setPartialProductDetail({
+        [attributeGroupKey]: newAttributesGroups,
+      }),
+    );
+  };
+
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
     dispatch(
@@ -170,6 +191,7 @@ export const useProductAttributeForm = (
         [attributeGroupKey]: newProductAttribute,
       }),
     );
+    dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: '' }));
   };
 
   const onChangeAttributeItem = (index: number) => (data: ProductAttributeProps[]) => {
@@ -185,29 +207,56 @@ export const useProductAttributeForm = (
     );
   };
 
-  const addNewProductAttribute = () => {
+  const addNewProductAttribute = (attrGroupId?: string) => {
     /// type of id must be string to handle dragging
-    const randomId = uniqueId();
-    dispatch(
-      setPartialProductDetail({
-        [attributeGroupKey]: [
-          ...attributeGroup,
-          {
-            id: randomId,
-            name: '',
-            attributes: [],
-          },
-        ],
-      }),
-    );
+    const randomId = uniqueId('new-');
+
+    if (isUndefined(attrGroupId)) {
+      dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
+    }
+
+    if (attributeGroupKey === 'specification_attribute_groups') {
+      dispatch(
+        setPartialProductDetail({
+          [attributeGroupKey]: [
+            ...attributeGroup,
+            {
+              id: attrGroupId ?? randomId,
+              name: '',
+              attributes: [],
+              steps: [],
+              selection: false,
+            },
+          ],
+        }),
+      );
+    } else {
+      dispatch(
+        setPartialProductDetail({
+          [attributeGroupKey]: [
+            ...attributeGroup,
+            {
+              id: randomId,
+              name: '',
+              attributes: [],
+            },
+          ],
+        }),
+      );
+    }
   };
 
   const addNewAutoStep = () => {
-    /// create new attribute
-    addNewProductAttribute();
+    const randomId = uniqueId('new-');
 
-    /// open auto-steps popup
-    setAutoStepAutoPopup(true);
+    if (!curAttrGroupCollapseId?.['specification_attribute_groups']) {
+      /// create new attribute
+      addNewProductAttribute(randomId);
+      dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
+      setAutoStepPopup(true);
+    } else {
+      setAutoStepPopup(true);
+    }
   };
 
   const onChangeAttributeName =
@@ -396,10 +445,11 @@ export const useProductAttributeForm = (
     onSelectSpecificationOption,
     referToDesignDocument,
     dimensionWeightData,
+    onDragEnd,
 
     /// auto-steps
     addNewAutoStep,
     autoStepPopup,
-    setAutoStepAutoPopup,
+    setAutoStepPopup,
   };
 };

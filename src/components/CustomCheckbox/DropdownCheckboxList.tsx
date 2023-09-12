@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Collapse, Radio } from 'antd';
+import { Collapse, Radio, message } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty, isNull, isUndefined, uniq } from 'lodash';
 
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 
@@ -32,6 +32,7 @@ interface DropdownCheckboxListProps {
   customClass?: string;
   canActiveMultiKey?: boolean;
   isSelectAll?: boolean;
+  forceEnableCollapse?: boolean;
 }
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const {
@@ -45,138 +46,177 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     showCount = true,
     customClass = '',
     canActiveMultiKey,
+    forceEnableCollapse = true,
     isSelectAll,
   } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-  const [activeIcon, setActiveIcon] = useState<number[]>([]);
-  const [selectAll, setSelectAll] = useState<number | undefined>(); // set by index
+
+  const [selectAll, setSelectAll] = useState<string[]>([]);
 
   const [curSelect, setCurSelect] = useState(selected);
 
   useEffect(() => {
     const currentSelect: CheckboxValue[] = [];
-    let selectAllIndex;
+    const selectAllIds: string[] = [];
 
-    data.forEach((item, index) => {
+    data.forEach((item) => {
       const optSelected: CheckboxValue[] = selected
         ?.filter((selectedItem) =>
           item.options.find((option) => option.value === selectedItem.value),
         )
         .filter(Boolean) as CheckboxValue[];
 
-      if (
-        optSelected?.length === item.options.length &&
-        item.options.some((opt) => optSelected.map((el) => el.value).includes(opt.value))
-      ) {
-        selectAllIndex = index;
-      }
-
       if (optSelected?.length) {
         optSelected.forEach((el) => {
           currentSelect.push(el);
         });
       }
-    });
 
-    setCurSelect(currentSelect);
-    setSelectAll(selectAllIndex);
-  }, [selected]);
-
-  useEffect(() => {
-    let activeKeys: number[] = [];
-    data.forEach((item, index) => {
-      const selectedOption = item.options.find((option) => {
-        return chosenItem && chosenItem.find((checked) => option.value === checked.value);
-      });
-
-      if (selectedOption) {
-        if (combinable) {
-          activeKeys.push(index);
-        } else {
-          activeKeys = [index];
-        }
+      if (
+        item?.id &&
+        optSelected?.length === item.options.length &&
+        item.options.some((opt) => optSelected.map((el) => el.value).includes(opt.value))
+      ) {
+        selectAllIds.push(item.id);
+      } else if (item?.id) {
+        selectAllIds.filter((id) => id !== item.id);
       }
     });
 
-    setActiveKey(activeKeys);
+    setCurSelect(currentSelect);
+    setSelectAll(selectAllIds);
+  }, [selected]);
 
-    setActiveIcon(activeKeys);
-  }, [chosenItem]);
+  useEffect(() => {
+    if (forceEnableCollapse) {
+      let activeKeys: string[] = [];
+      data.forEach((item, index) => {
+        const selectedOption = item.options.find((option) => {
+          return chosenItem && chosenItem.find((checked) => option.value === checked.value);
+        });
+
+        if (selectedOption) {
+          if (combinable) {
+            activeKeys.push(String(index));
+          } else {
+            activeKeys = [String(index)];
+          }
+        }
+      });
+
+      setActiveKey(activeKeys);
+    }
+  }, [chosenItem, forceEnableCollapse]);
 
   const handleSelectAll =
     (item: DropdownCheckboxItem, index: number) => (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
 
-      /// set active collapse
-      setActiveKey(index);
+      if (isNull(item.id) || isUndefined(item.id)) {
+        message.error('ID required');
+        return;
+      }
 
-      /// set select all options
-      setSelectAll(selectAll === index ? undefined : index);
+      const isSelectedAll = selectAll?.some((id) => item.id === id);
+
+      const activeKeyClone = cloneDeep(activeKey);
+
+      if (canActiveMultiKey) {
+        setActiveKey(uniq([...(activeKeyClone as string[]), String(index)]));
+      } else {
+        setActiveKey([String(index)]);
+      }
 
       const { options } = item;
 
-      /// set current option select
-      setCurSelect(selectAll === index ? [] : options);
+      if (combinable && selected) {
+        let otherSelected: CheckboxValue[] = [];
 
-      ///
-      onChange?.(selectAll === index ? [] : options);
+        otherSelected = selected.reduce((finalData, selectedItem) => {
+          if (!options.find((option) => option.value === selectedItem.value)) {
+            finalData.push(selectedItem);
+          }
+          return finalData;
+        }, [] as CheckboxValue[]);
+
+        const newData = [...options, ...otherSelected];
+
+        ///
+        setCurSelect(isSelectedAll ? [...otherSelected] : newData);
+        ///
+        onChange?.(isSelectedAll ? [...otherSelected] : newData);
+
+        const selectAllIdClone = cloneDeep(selectAll);
+        const newIds = isSelectedAll
+          ? selectAllIdClone.filter((id) => id !== item.id)
+          : selectAllIdClone.concat(item.id);
+
+        setSelectAll(newIds);
+      } else {
+        setCurSelect(isSelectedAll ? [] : options);
+        ///
+        onChange?.(isSelectedAll ? [] : options);
+        ///
+        setSelectAll(item.id);
+      }
     };
 
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
-    if (renderTitle) {
-      return (
+    return (
+      <div className="flex-start w-full">
         <div className="flex-start w-full">
-          <div className="flex-start w-full">
-            {renderTitle(item)}
-            {showCount ? (
-              <span
-                className={styles.dropdownCount}
-                style={{
-                  marginLeft: item.margin ? item.margin : 8,
-                }}
-              >
-                ({item.options.length})
-              </span>
-            ) : (
-              ''
-            )}
-            {isSelectAll ? (
-              activeIcon.includes(index) ? (
-                <div className="flex-start drop-up-icon">
-                  <DropupIcon />
-                </div>
-              ) : (
-                <div className="flex-start drop-down-icon">
-                  <DropdownIcon />
-                </div>
-              )
-            ) : null}
-          </div>
-          {isSelectAll ? (
-            <div
-              className={styles.selectAll}
-              onClick={(e) => {
-                e.stopPropagation();
+          {renderTitle?.(item) ?? index}
+          {showCount ? (
+            <span
+              className={styles.dropdownCount}
+              style={{
+                marginLeft: item.margin ? item.margin : 8,
               }}
             >
-              <Radio
-                className="select-all-radio"
-                checked={
-                  selectAll === index ||
-                  (selected?.length === item.options?.length && selectAll === index)
-                }
-                onClick={handleSelectAll(item, index)}
-              >
-                <MainTitle level={4} customClass="select-label">
-                  Select all
-                </MainTitle>
-              </Radio>
-            </div>
+              ({item.options.length})
+            </span>
+          ) : (
+            ''
+          )}
+          {isSelectAll ? (
+            (
+              typeof activeKey === 'string' || typeof activeKey === 'number'
+                ? String(activeKey) === String(index)
+                : activeKey.includes(String(index))
+            ) ? (
+              <div className="flex-start drop-up-icon">
+                <DropupIcon />
+              </div>
+            ) : (
+              <div className="flex-start drop-down-icon">
+                <DropdownIcon />
+              </div>
+            )
           ) : null}
         </div>
-      );
-    }
-    return index;
+        {isSelectAll ? (
+          <div
+            className={styles.selectAll}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <Radio
+              className="select-all-radio"
+              checked={
+                selectAll?.includes(item?.id) ||
+                (selected?.length === item.options.length && selectAll?.includes(item?.id))
+              }
+              onClick={handleSelectAll(item, index)}
+            >
+              <MainTitle level={4} customClass="select-label">
+                Select all
+              </MainTitle>
+            </Radio>
+          </div>
+        ) : null}
+      </div>
+    );
   };
 
   return (
@@ -194,9 +234,8 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
         if (!canActiveMultiKey) {
           newKeys = typeof keys === 'string' ? keys : [keys[keys.length - 1]];
         }
-        setActiveKey(newKeys);
 
-        setActiveIcon([Number(keys[keys.length - 1])]);
+        setActiveKey(newKeys);
       }}
       activeKey={activeKey}
     >
@@ -231,4 +270,5 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     </Collapse>
   );
 };
+
 export default DropdownCheckboxList;

@@ -15,7 +15,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
-import styles from './ProductAttributeSubItem.less';
+import styles from './AttributeItem.less';
 
 interface AttributeOptionProps {
   title: string;
@@ -34,7 +34,7 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
     option.value_2
   } ${option.unit_2}`;
   return (
-    <div className={`${styles.defaultOptionImageList} option-attribute-label`}>
+    <div className={styles.defaultOptionImageList}>
       <div
         className={`${styles.boxShadowOptionImage} ${
           isTISC ? styles.widthCheckboxImage : styles.widthOptionImage

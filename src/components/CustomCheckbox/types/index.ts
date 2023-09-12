@@ -18,4 +18,7 @@ export interface CustomCheckboxProps {
   checkboxClass?: string;
   heightItem?: string;
   style?: CSSProperties;
+  disabled?: boolean;
+  unTick?: boolean;
+  filterBySelected?: boolean;
 }

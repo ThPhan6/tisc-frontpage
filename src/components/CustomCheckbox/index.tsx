@@ -19,6 +19,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   selected,
   checkboxClass = '',
   heightItem = '32px',
+  unTick,
+  filterBySelected,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -31,9 +33,17 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   }, [otherInput && clearOtherInput]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
-    const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
+    let newCheckedValues = [...checkedValues];
 
-    const newCheckboxValue = checkedValues.map((value) =>
+    const selectedValues = selected?.map((o) => o.value).filter(Boolean);
+
+    if (filterBySelected && selectedValues?.length) {
+      newCheckedValues = checkedValues.filter((el) => !selectedValues.includes(el as string));
+    }
+
+    const haveOtherInput = newCheckedValues.some((checkbox) => checkbox === 'other');
+
+    const newCheckboxValue = newCheckedValues.map((value) =>
       value === 'other'
         ? { label: inputValue, value: 'other' }
         : options.filter((item) => item.value === value)[0],
@@ -41,6 +51,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     if (inputValue && !haveOtherInput) {
       newCheckboxValue.push({ label: inputValue, value: 'other' });
     }
+
     if (onChange) {
       onChange(newCheckboxValue);
     }
@@ -80,7 +91,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     <div
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
         isCheckboxList && style['item-list-checkbox']
-      } ${style['color-checkbox-checked']} ${checkboxClass}`}
+      } ${style['color-checkbox-checked']} ${unTick ? 'unTick' : ''} ${checkboxClass}`}
       onClick={(e) => e.stopPropagation()}
     >
       <Checkbox.Group
