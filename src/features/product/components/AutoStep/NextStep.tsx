@@ -21,6 +21,7 @@ import {
   setSlideBar,
 } from '../../reducers';
 import {
+  AutoStepLinkedOptionResponse,
   LinkedOptionProps,
   LinkedSubOptionProps,
   OptionReplicateResponse,
@@ -65,9 +66,26 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
 
-  const allLinkedSubs = flatMap(linkedData.map((el) => flatMap(el.subs.map((sub) => sub.subs))));
+  /* current option ticked on left panel on each step */
+  const pickedSubs = flatMap(pickedData.map((el) => el.subs));
+
+  const allPickedSubs = flatMap(
+    pickedSubs.map((el) => ({
+      value: el.id,
+      label: el.product_id,
+    })),
+  );
+
+  const subPreOptionSelected =
+    optionsSelected?.[curOrder]?.options?.map((el) => el.pre_option).filter(Boolean) ?? [];
+
+  const currentSubPickedOptionSelected = allPickedSubs.filter((sub) =>
+    subPreOptionSelected.includes(sub.value),
+  );
+  /* ------------------------------------------------------ */
 
   /* current option selected on right panel on each step */
+  const allLinkedSubs = flatMap(linkedData.map((el) => flatMap(el.subs.map((sub) => sub.subs))));
   const currentOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
 
   const subLinkedOptionSelected: CheckboxValue[] =
@@ -75,9 +93,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       value: el.id,
       label: el.pre_option,
     })) ?? [];
-
-  // console.log('allLinkedSubs', allLinkedSubs);
-  // console.log('subLinkedOptionSelected', subLinkedOptionSelected);
 
   const currentSubLinkedOptionSelected = subLinkedOptionSelected.filter((el) =>
     allLinkedSubs.some((opt) => opt.id === el.value && opt.pre_option === el.label),
@@ -335,21 +350,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     const newOptionsSelected = opts.map((el) => el.value).filter(Boolean) as string[];
     const optionId = newOptionsSelected[newOptionsSelected.length - 1];
 
-    if (slide === 0) {
-      store.dispatch(
-        setOptionsSelected({
-          order: 1,
-          options: subOpt.subs
-            .map((el) =>
-              optionId === el.id
-                ? ({ ...el, sub_id: subOpt.id, sub_name: subOpt.name } as any)
-                : undefined,
-            )
-            .filter(Boolean),
-        }),
-      );
-    }
-
     if (!newOptionsSelected?.length) {
       store.dispatch(setLinkedOptionData({ index: slide, pickedData: pickedData, linkedData: [] }));
 
@@ -404,47 +404,75 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     });
   };
   //
-  const handleSelectLinkedOption = (e: CheckboxChangeEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleSelectLinkedOption =
+    (option: AutoStepLinkedOptionResponse) => (e: CheckboxChangeEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    const curLinkedData = flatMap(
-      linkedOptionData[slide].linkedData.map((el) => flatMap(el.subs.map((item) => item.subs))),
-    );
-
-    const curOptionSelect = curLinkedData.filter(
-      (el) => el.id === e.target.value,
-    ) as OptionReplicateResponse[];
-
-    const prevOptionSeleted = optionsSelected?.[curOrder]?.options ?? [];
-
-    let newOptionsSelected: OptionReplicateResponse[] = prevOptionSeleted;
-
-    /* update select */
-    curOptionSelect.forEach((el: any) => {
-      const optIdx = prevOptionSeleted.findIndex(
-        (sub) => sub.id === el.id && sub.pre_option === el.pre_option,
+      const curLinkedData = flatMap(
+        linkedOptionData[slide].linkedData.map((el) => flatMap(el.subs.map((item) => item.subs))),
       );
 
-      if (optIdx > -1) {
-        const newa = [...newOptionsSelected];
-        newa.splice(optIdx, 1);
-        newOptionsSelected = newa;
-      } else {
-        newOptionsSelected = prevOptionSeleted.concat([el]);
+      const curOptionSelect = curLinkedData.filter(
+        (el) => el.id === e.target.value,
+      ) as OptionReplicateResponse[];
+
+      const prevOptionSeleted = optionsSelected?.[curOrder]?.options ?? [];
+
+      let newOptionsSelected: OptionReplicateResponse[] = prevOptionSeleted;
+
+      /* update select */
+      curOptionSelect.forEach((el: any) => {
+        const optIdx = prevOptionSeleted.findIndex(
+          (sub) => sub.id === el.id && sub.pre_option === el.pre_option,
+        );
+
+        if (optIdx > -1) {
+          const newa = [...newOptionsSelected];
+          newa.splice(optIdx, 1);
+          newOptionsSelected = newa;
+        } else {
+          newOptionsSelected = prevOptionSeleted.concat([el]);
+        }
+      });
+
+      const result = !prevOptionSeleted.length ? curOptionSelect : newOptionsSelected;
+
+      const subs = flatMap(option.subs.map((el) => el.subs));
+
+      const allSecondOptions = subs.map((el) => el.pre_option) ?? [];
+
+      const currentSubTicked = pickedSubs.filter((sub) => allSecondOptions.includes(sub.id));
+
+      if (slide === 0) {
+        if (optionsSelected[1]) {
+          store.dispatch(
+            setOptionsSelected({
+              order: 1,
+              options: uniqBy(
+                [...optionsSelected[1].options, ...currentSubTicked],
+                (o) => o.id,
+              ) as any,
+            }),
+          );
+        } else {
+          store.dispatch(
+            setOptionsSelected({
+              order: 1,
+              options: currentSubTicked as any,
+            }),
+          );
+        }
       }
-    });
 
-    const result = !prevOptionSeleted.length ? curOptionSelect : newOptionsSelected;
+      store.dispatch(
+        setOptionsSelected({
+          order: curOrder,
+          options: result,
+        }),
+      );
 
-    store.dispatch(
-      setOptionsSelected({
-        order: curOrder,
-        options: result,
-      }),
-    );
-
-    /*
+      /*
     /// prev
     //* slide 2
     * picked: [<m>,n,z]
@@ -464,117 +492,119 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     * picked: [b,c]
     * linked: []
     */
-    let nextOrder = curOrder;
-    ++nextOrder;
-    if (optionsSelected[nextOrder]) {
-      const nextOptionsSelected = optionsSelected[nextOrder].options;
+      let nextOrder = curOrder;
+      ++nextOrder;
+      if (optionsSelected[nextOrder]) {
+        const nextOptionsSelected = optionsSelected[nextOrder].options;
 
-      const prevOptionsSelectedIds = result.map((el) => el.id);
+        const prevOptionsSelectedIds = result.map((el) => el.id);
 
-      /* delete linked-option seleted related */
-      const newNextOptionSelected = nextOptionsSelected.filter((el) =>
-        prevOptionsSelectedIds.includes(el.pre_option as string),
-      );
-      // update linked-option seleted
-      store.dispatch(
-        setOptionsSelected({
-          order: nextOrder,
-          options: newNextOptionSelected,
-        }),
-      );
+        /* delete linked-option seleted related */
+        const newNextOptionSelected = nextOptionsSelected.filter((el) =>
+          prevOptionsSelectedIds.includes(el.pre_option as string),
+        );
+        // update linked-option seleted
+        store.dispatch(
+          setOptionsSelected({
+            order: nextOrder,
+            options: newNextOptionSelected,
+          }),
+        );
 
-      /* remove next pickedId hightlighted */
-      const nextPickedId = pickedOptionId[slide + 1];
-      store.dispatch(
-        setPickedOptionId({
-          slide: slide + 1,
-          pickedId: prevOptionsSelectedIds.includes(nextPickedId) ? nextPickedId : '',
-        }),
-      );
+        /* remove next pickedId hightlighted */
+        const nextPickedId = pickedOptionId[slide + 1];
+        store.dispatch(
+          setPickedOptionId({
+            slide: slide + 1,
+            pickedId: prevOptionsSelectedIds.includes(nextPickedId) ? nextPickedId : '',
+          }),
+        );
 
-      /* delete data related */
-      const nextLinkedData = linkedOptionData[slide + 1].linkedData;
-      let dataIdx: number = -1;
+        /* delete data related */
+        const nextLinkedData = linkedOptionData[slide + 1].linkedData;
+        let dataIdx: number = -1;
 
-      /// find index of data need to delete
-      nextLinkedData.forEach((el, index) => {
-        if (dataIdx > -1) {
-          return;
-        }
-
-        el.subs.forEach((item) => {
+        /// find index of data need to delete
+        nextLinkedData.forEach((el, index) => {
           if (dataIdx > -1) {
             return;
           }
 
-          item.subs.forEach((sub) => {
+          el.subs.forEach((item) => {
             if (dataIdx > -1) {
               return;
             }
 
-            if (!prevOptionsSelectedIds.includes(sub.pre_option as string)) {
-              dataIdx = index;
-            }
+            item.subs.forEach((sub) => {
+              if (dataIdx > -1) {
+                return;
+              }
+
+              if (!prevOptionsSelectedIds.includes(sub.pre_option as string)) {
+                dataIdx = index;
+              }
+            });
           });
         });
-      });
 
-      if (dataIdx > -1) {
-        const newNextLinkeData = [...nextLinkedData];
-        newNextLinkeData.splice(dataIdx, 1);
+        if (dataIdx > -1) {
+          const newNextLinkeData = [...nextLinkedData];
+          newNextLinkeData.splice(dataIdx, 1);
 
-        store.dispatch(
-          setLinkedOptionData({
-            index: slide + 1,
-            linkedData: newNextLinkeData,
-            pickedData: pickedData,
-          }),
+          store.dispatch(
+            setLinkedOptionData({
+              index: slide + 1,
+              linkedData: newNextLinkeData,
+              pickedData: pickedData,
+            }),
+          );
+        }
+      }
+
+      /// set all linked-options selected in multiple groups(with diff picked options) for the next slide
+      setAllLinkedData((prevState) => {
+        const newSubs = flatMap(linkedOptionData[slide].linkedData.map((el) => el.subs));
+
+        let allLinkedDataHasOptionSelected: { [key: string]: LinkedOptionProps[] } = {
+          ...prevState,
+        };
+
+        if (!allLinkedDataHasOptionSelected?.[slide]) {
+          allLinkedDataHasOptionSelected[slide] = [];
+        }
+
+        /// get new linked data
+        newSubs.forEach((el) => {
+          const newResult = { ...allLinkedDataHasOptionSelected };
+          newResult[slide] = newResult[slide].concat([el]);
+          allLinkedDataHasOptionSelected = newResult;
+        });
+
+        /// filter option has the same subs
+        const newAllLinkedData = allLinkedDataHasOptionSelected[slide].reduce(
+          (pre: any, cur: any) => {
+            const found = pre.find((item: any) => item.id === cur.id);
+
+            if (!found) {
+              return pre.concat([cur]);
+            }
+
+            return pre
+              .filter((item: any) => item.id !== cur.id)
+              .concat([
+                {
+                  id: cur.id,
+                  name: cur.name,
+                  subs: uniqBy(found.subs.concat(cur.subs), 'id'),
+                },
+              ]);
+          },
+          [],
         );
-      }
-    }
 
-    /// set all linked-options selected in multiple groups(with diff picked options) for the next slide
-    setAllLinkedData((prevState) => {
-      const newSubs = flatMap(linkedOptionData[slide].linkedData.map((el) => el.subs));
-
-      let allLinkedDataHasOptionSelected: { [key: string]: LinkedOptionProps[] } = { ...prevState };
-
-      if (!allLinkedDataHasOptionSelected?.[slide]) {
-        allLinkedDataHasOptionSelected[slide] = [];
-      }
-
-      /// get new linked data
-      newSubs.forEach((el) => {
-        const newResult = { ...allLinkedDataHasOptionSelected };
-        newResult[slide] = newResult[slide].concat([el]);
-        allLinkedDataHasOptionSelected = newResult;
+        return { ...prevState, [slide]: newAllLinkedData };
       });
-
-      /// filter option has the same subs
-      const newAllLinkedData = allLinkedDataHasOptionSelected[slide].reduce(
-        (pre: any, cur: any) => {
-          const found = pre.find((item: any) => item.id === cur.id);
-
-          if (!found) {
-            return pre.concat([cur]);
-          }
-
-          return pre
-            .filter((item: any) => item.id !== cur.id)
-            .concat([
-              {
-                id: cur.id,
-                name: cur.name,
-                subs: uniqBy(found.subs.concat(cur.subs), 'id'),
-              },
-            ]);
-        },
-        [],
-      );
-
-      return { ...prevState, [slide]: newAllLinkedData };
-    });
-  };
+    };
 
   const handleDecreaseReplicate =
     (subOpt: LinkedSubOptionProps) => (e: React.MouseEvent<SVGSVGElement>) => {
@@ -620,6 +650,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   // console.log('allLinkedData ---->>>', allLinkedData);
   // console.log('optionsSelected ----->>>', optionsSelected);
   // console.log('pickedOptionId ----->>>', pickedOptionId);
+
+  // console.log('currentSubPickedOptionSelected ----->>>', currentSubPickedOptionSelected);
 
   console.log('#######################################################');
 
@@ -680,31 +712,19 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         {/* left side */}
         <div className={styles.content} style={{ marginRight: 8 }}>
           {pickedData.map((pickedSub, optIdx) => {
-            const allSubs = flatMap(
-              pickedSub.subs.map((el) => ({
-                value: el.id,
-                label: el.product_id,
-              })),
-            );
-
-            const subPreOptionSelected =
-              optionsSelected?.[curOrder]?.options?.map((el) => el.pre_option).filter(Boolean) ??
-              [];
-
-            const chosenItems = allSubs.filter((sub) => subPreOptionSelected.includes(sub.value));
-
             return (
               <CheckboxDynamic
                 key={optIdx}
                 filterBySelected
-                chosenItems={chosenItems}
+                chosenItems={currentSubPickedOptionSelected}
                 onChange={handleSelectPickedOption(pickedSub)}
                 data={{
                   customItemClass: 'checkbox-item',
                   isSelectAll: true,
                   multipleSelectAll: true,
                   optionRadioValue: pickedSub.id,
-                  disabledSelectAll: chosenItems.length !== pickedSub.subs.length,
+                  disabledSelectAll:
+                    currentSubPickedOptionSelected.length !== pickedSub.subs.length,
                   optionRadioLabel: (
                     <div className="flex-between">
                       <BodyText
@@ -811,7 +831,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     chosenItem={currentSubLinkedOptionSelected}
                     forceEnableCollapse={forceEnableCollapse}
                     // onChange={handleSelectLinkedOption}
-                    onOneChange={handleSelectLinkedOption}
+                    onOneChange={handleSelectLinkedOption(option)}
                     isSelectAll
                     combinable
                     canActiveMultiKey
