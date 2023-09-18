@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Collapse, Radio, message } from 'antd';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
@@ -26,6 +27,7 @@ interface DropdownCheckboxListProps {
   data: DropdownCheckboxItem[];
   renderTitle?: (data: DropdownCheckboxItem) => string | number | React.ReactNode;
   onChange?: (value: CheckboxValue[]) => void;
+  onOneChange?: (e: CheckboxChangeEvent) => void;
   noCollapse?: boolean;
   combinable?: boolean;
   showCount?: boolean;
@@ -39,6 +41,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     data,
     selected,
     onChange,
+    onOneChange,
     renderTitle,
     chosenItem,
     combinable,
@@ -142,9 +145,9 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
         const newData = [...options, ...otherSelected];
 
         ///
-        setCurSelect(isSelectedAll ? [...otherSelected] : newData);
+        setCurSelect(isSelectedAll ? [...options] : newData);
         ///
-        onChange?.(isSelectedAll ? [...otherSelected] : newData);
+        onChange?.(isSelectedAll ? [...options] : newData);
 
         const selectAllIdClone = cloneDeep(selectAll);
         const newIds = isSelectedAll
@@ -250,6 +253,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
             options={item.options}
             selected={curSelect}
             isCheckboxList
+            onOneChange={onOneChange}
             onChange={(changedData) => {
               let otherSelected: CheckboxValue[] = [];
 

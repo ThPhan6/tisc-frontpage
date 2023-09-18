@@ -7,9 +7,11 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep, countBy, isUndefined, uniqueId } from 'lodash';
 
 import {
+  resetAutoStepState,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
+  setStep,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
@@ -119,7 +121,7 @@ export const useProductAttributeForm = (
 
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
 
-  const curAttrGroupCollapseId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+  // const curAttrGroupCollapseId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
 
   const [autoStepPopup, setAutoStepPopup] = useState<boolean>(false);
 
@@ -249,14 +251,15 @@ export const useProductAttributeForm = (
   const addNewAutoStep = () => {
     const randomId = uniqueId('new-');
 
-    if (!curAttrGroupCollapseId?.['specification_attribute_groups']) {
-      /// create new attribute
-      addNewProductAttribute(randomId);
-      dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
-      setAutoStepPopup(true);
-    } else {
-      setAutoStepPopup(true);
-    }
+    // dispatch(resetAutoStepState());
+
+    // if (!curAttrGroupCollapseId?.['specification_attribute_groups']) {
+    /// create new attribute
+    addNewProductAttribute(randomId);
+    dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
+    dispatch(setStep('pre'));
+    setAutoStepPopup(true);
+    // }
   };
 
   const onChangeAttributeName =

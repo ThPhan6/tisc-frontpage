@@ -24,6 +24,11 @@ import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils'
 import { pick, sortBy } from 'lodash';
 
 import { ProductAttributeFormInput, ProductFormData, ProductKeyword } from '../types';
+import {
+  AutoStepOnAttributeGroupResponse,
+  OptionReplicateRequest,
+  OptionReplicateResponse,
+} from '../types/autoStep';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import {
@@ -52,11 +57,12 @@ const filterDataHasIdTypeNumber = (
   data: ProductAttributeFormInput[],
 ): ProductAttributeFormInput[] =>
   data.map((el: any) => {
-    if (el.id && !isNaN(Number(el.id))) {
+    if (el.id.indexOf('new') !== -1) {
       return {
         name: el?.name || '',
         attributes: el?.attributes || [],
-        selection: el?.selection || false,
+        selection: !!el?.selection,
+        steps: el?.steps ?? [],
       };
     }
 
@@ -139,7 +145,54 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    const productSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+    const productGeneralData = filterDataHasIdTypeNumber(details.general_attribute_groups);
+
+    const productGeneralDataTitle = productGeneralData?.some((el) => !el.name);
+
+    if (productGeneralDataTitle && productGeneralData?.length) {
+      message.error('General attribute title is required');
+      return;
+    }
+
+    const productFeatureData = filterDataHasIdTypeNumber(details.feature_attribute_groups);
+
+    const productFeatureDataTitle = productFeatureData?.some((el) => !el.name);
+
+    if (productFeatureDataTitle && productFeatureData?.length) {
+      message.error('Feature attribute title is required');
+      return;
+    }
+
+    const newProductSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+
+    const productSpecDataTitle = newProductSpecData.some((el) => !el.name);
+
+    if (productSpecDataTitle && newProductSpecData?.length) {
+      message.error('Specification attribute title is required');
+      return;
+    }
+
+    const productSpecData: ProductAttributeFormInput[] = newProductSpecData.map((el) => ({
+      ...el,
+      steps: !el?.steps?.length
+        ? []
+        : el.steps.map((step) => {
+            const newStep: AutoStepOnAttributeGroupResponse = { ...step };
+
+            if (newStep?.id?.indexOf('new') !== -1) {
+              delete (newStep as any).id;
+            }
+
+            const options: OptionReplicateRequest[] = newStep.options.map((s) => ({
+              id: s.id,
+              pre_option: s.pre_option,
+              replicate: s?.replicate ?? 1,
+              picked: !!s.picked,
+            }));
+
+            return { name: step.name, order: step.order, options: options };
+          }),
+    }));
 
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
@@ -147,8 +200,8 @@ const ProductDetailContainer: React.FC = () => {
       collection_ids: details.collections.map((collection) => collection.id),
       name: details.name.trim(),
       description: details.description.trim(),
-      general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
-      feature_attribute_groups: filterDataHasIdTypeNumber(details.feature_attribute_groups),
+      general_attribute_groups: productGeneralData,
+      feature_attribute_groups: productFeatureData,
       specification_attribute_groups: productSpecData,
       dimension_and_weight: {
         with_diameter: details.dimension_and_weight.with_diameter,

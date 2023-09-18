@@ -15,12 +15,14 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   inputPlaceholder = 'type here',
   options,
   onChange,
+  onOneChange,
   isCheckboxList,
   selected,
   checkboxClass = '',
   heightItem = '32px',
   unTick,
   filterBySelected,
+  chosenItems,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -103,7 +105,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
           isCheckboxList ? (
             <label
               key={option.value}
-              className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
+              className={`${style['item-wrapper']} ${
+                chosenItems?.map((el) => el.value).includes(option.value)
+                  ? 'item-checkbox-active'
+                  : ''
+              } item-wrapper-custom`}
               style={{ minHeight: heightItem }}
               htmlFor={`${option.value}_${index}_${randomId}`}
             >
@@ -118,12 +124,16 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               >
                 {option.label}
               </div>
-              <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
+              <Checkbox
+                id={`${option.value}_${index}_${randomId}`}
+                {...option}
+                onChange={onOneChange}
+              />
             </label>
           ) : (
             <div
               key={option.value}
-              className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
+              className={`${style['item-checkbox']} item-wrapper-checkbox`}
               style={{ minHeight: heightItem }}
             >
               <Checkbox {...option} style={{ maxWidth: '100%' }}>

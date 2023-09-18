@@ -74,11 +74,11 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected, setSelected }) =
                       fontFamily="Roboto"
                       style={{ paddingLeft: 12, color: '#bfbfbf', fontWeight: 300 }}
                     >
-                      {`items (${item.basis.subs?.length ?? 0})`}
+                      {`${item.basis.name} (${item.basis.subs?.length ?? 0})`}
                     </BodyText>
                   </div>
                 ),
-                value: item.id,
+                value: item.basis.id,
               })),
             }))}
             renderTitle={(el) => el.label}

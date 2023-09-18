@@ -65,9 +65,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
           <CustomPlusButton
             size={18}
             label="Add Attribute"
-            onClick={() => {
-              addNewProductAttribute();
-            }}
+            onClick={addNewProductAttribute}
             customClass={styles.paddingSpace}
           />
 
@@ -144,7 +142,6 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
           attributes={attributes ?? []}
           visible={autoStepPopup}
           setVisible={setAutoStepPopup}
-          step="pre"
         />
       ) : null}
     </>

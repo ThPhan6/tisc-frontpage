@@ -6,17 +6,15 @@ import { ReactComponent as ActionBackIcon } from '@/assets/icons/single-left.svg
 import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.svg';
 
 import { confirmModal } from '@/helper/common';
-import { flatMap } from 'lodash';
 
-import { resetAutoStepState, setLinkedOptionData, setPartialProductDetail } from '../../reducers';
-import { ProductAttributeFormInput } from '../../types';
 import {
-  AutoStepLinkedOptionResponse,
-  AutoStepOnAttributeGroupBody,
-  LinkedOptionProps,
-  LinkedSubOptionProps,
-  OptionReplicate,
-} from '../../types/autoStep';
+  resetAutoStepState,
+  setLinkedOptionData,
+  setPartialProductDetail,
+  setStep,
+} from '../../reducers';
+import { ProductAttributeFormInput } from '../../types';
+import { LinkedOptionProps } from '../../types/autoStep';
 import { RadioValue } from '@/components/CustomRadio/types';
 import store, { useAppSelector } from '@/reducers';
 import { ProductAttributes } from '@/types';
@@ -34,35 +32,31 @@ interface AutoStepProps {
   attributes: ProductAttributes[];
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  step: number | 'pre';
 }
 
 export const AutoStep: FC<AutoStepProps> = ({
   visible,
   setVisible,
-  step,
   attributeGroup,
   attributes,
 }) => {
-  const [curStep, setCurStep] = useState<number | 'pre'>('pre');
-  const [disabledCreateStep, setDisabledCreateStep] = useState<boolean>(true);
+  const [disabledCreateStep, setDisabledCreateStep] = useState<boolean>(false);
 
   const linkedOptionData = useAppSelector((state) => state.autoStep.linkedOptionData);
-  const pickedOptionIds = useAppSelector((state) => state.autoStep.pickedOptionIds);
+
+  const optionsSelected = useAppSelector((state) => state.autoStep.optionsSelected);
+
   const slideBar = useAppSelector((state) => state.autoStep.slideBar);
+
+  const step = useAppSelector((state) => state.autoStep.step);
 
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
 
   const [subOptionSelected, setSubOptionSelected] = useState<RadioValue>({ value: '', label: '' });
 
-  useEffect(() => {
-    setCurStep(step);
-  }, [step]);
-
   const handleClearAll = () => {
     store.dispatch(resetAutoStepState());
     setSubOptionSelected({ value: '', label: '' });
-    setCurStep(step);
   };
 
   useEffect(() => {
@@ -72,19 +66,25 @@ export const AutoStep: FC<AutoStepProps> = ({
   }, []);
 
   useEffect(() => {
-    const newPickedData: LinkedOptionProps[] = [];
+    const pickedData: LinkedOptionProps[] = [];
 
     attributes?.forEach((el) => {
-      if (newPickedData?.length) {
+      if (pickedData?.length) {
         return;
       }
 
       el.subs.forEach((sub) => {
-        if (sub.id === subOptionSelected.value && sub.basis.subs?.length) {
-          newPickedData.push({
-            id: sub.id,
-            name: sub.name,
-            subs: sub.basis.subs.map((item: any) => ({ ...item, replicate: item?.replicate ?? 1 })),
+        if (sub.basis.id === subOptionSelected.value && sub.basis.subs?.length) {
+          pickedData.push({
+            id: sub.basis.id,
+            name: sub.basis.name,
+            subs: sub.basis.subs.map((item: any) => ({
+              ...item,
+              sub_id: sub.id,
+              sub_name: sub.name,
+              pre_option: item.pre_option ?? undefined,
+              replicate: item?.replicate ?? 1,
+            })),
           });
         }
       });
@@ -93,133 +93,50 @@ export const AutoStep: FC<AutoStepProps> = ({
     store.dispatch(
       setLinkedOptionData({
         index: 0,
-        pickedData: newPickedData,
+        pickedData: pickedData,
         linkedData: [],
       }),
     );
   }, [subOptionSelected]);
 
   useEffect(() => {
-    if (slideBar.includes('') || !pickedOptionIds?.length) {
+    const optionSelected = Object.keys(optionsSelected).length > 1;
+
+    if (slideBar.includes('') || !optionSelected) {
       setDisabledCreateStep(true);
-      return;
+    } else {
+      setDisabledCreateStep(false);
     }
-
-    let isDisabledCreateStep = false;
-
-    pickedOptionIds.forEach((_, index) => {
-      if (!isDisabledCreateStep) {
-        const newLinkedIds: string[] = flatMap(
-          Object.values(pickedOptionIds[index]?.linkedIds).filter(Boolean),
-        );
-
-        if (!pickedOptionIds[index]?.pickedIds.length || !newLinkedIds.length) {
-          isDisabledCreateStep = true;
-        }
-      }
-    });
-
-    setDisabledCreateStep(isDisabledCreateStep);
-  }, [slideBar, JSON.stringify(pickedOptionIds)]);
+  }, [slideBar, JSON.stringify(optionsSelected)]);
 
   const handleGoToNextStep = () => {
-    setCurStep(0);
+    store.dispatch(setStep(0));
   };
 
   const handleBackToSelectOption = () => {
     confirmModal({
       title: 'Are you sure go back to select option dataset?',
-      content: 'You might lose all the relevant selection on each step',
+      content: 'You might lose all the relevant selections on each step.',
       onOk: () => {
         store.dispatch(resetAutoStepState());
         setSubOptionSelected({ label: '', value: '' });
 
         /// go back to select option dataset
-        setCurStep('pre');
+        store.dispatch(setStep('pre'));
       },
     });
   };
 
   const handleCreateStep = () => {
-    const data = flatMap(linkedOptionData.map((el) => Object.values(el)));
+    const allSteps = Object.values(optionsSelected);
 
-    const newData: LinkedSubOptionProps[][] = data.map((el, index) => {
-      if (index % 2 === 0) {
-        return flatMap((el as LinkedOptionProps[]).map((item) => item.subs));
-      } else {
-        return flatMap(
-          (el as AutoStepLinkedOptionResponse[]).map((item) =>
-            flatMap(item.subs.map((sub) => sub.subs)),
-          ),
-        );
-      }
-    });
+    const steps = allSteps.map((el, index) => ({ ...el, name: slideBar[index] }));
 
-    const newLinkedOptionData: AutoStepOnAttributeGroupBody[] = newData.map((el, index) => {
-      let order = index;
-      ++order;
-
-      const curSlideBarIdx =
-        order === 1
-          ? 0
-          : order % 2 === 0
-          ? Number((order / 2).toFixed())
-          : Number((order / 2).toFixed()) - 1;
-
-      const description = slideBar[curSlideBarIdx];
-
-      const options: OptionReplicate[] = flatMap(
-        el.map((item) => ({
-          id: item.id,
-          replicate: item?.replicate ?? 1,
-        })),
-      );
-
-      return { name: description, order: order, options: options };
-    });
-
-    /// filter to get option selected
-    const steps = newLinkedOptionData.map((el, index) => {
-      let options: OptionReplicate[] = [];
-
-      const pickedOptionIndex = parseInt(String(index / 2), 10);
-
-      if (el.order % 2 !== 0) {
-        options = el.options.filter((opt) => {
-          return pickedOptionIds[pickedOptionIndex].pickedIds.includes(opt.id);
-        });
-      } else {
-        const newLinkedIds: string[] = flatMap(
-          Object.values(pickedOptionIds[pickedOptionIndex].linkedIds).filter(Boolean),
-        );
-
-        const preOptionIds = flatMap(
-          Object.keys(pickedOptionIds[pickedOptionIndex].linkedIds).filter(Boolean),
-        );
-
-        const newOpt = el.options.filter((opt) => newLinkedIds.includes(opt.id));
-
-        const newOptions: OptionReplicate[] = [];
-
-        preOptionIds.forEach((item) => {
-          newOpt.forEach((opt) => {
-            if (pickedOptionIds[pickedOptionIndex].linkedIds[item]?.includes(opt.id)) {
-              newOptions.push({ ...opt, pre_option: item });
-            }
-          });
-        });
-
-        options = newOptions;
-      }
-
-      return { ...el, options: options };
-    });
-
-    const newAttributeGroup = attributeGroup?.map((el) =>
+    const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
       el.id === activeAttrGroupId?.['specification_attribute_groups']
         ? { ...el, steps: steps }
         : el,
-    );
+    ) as any;
 
     console.log('newAttributeGroup', newAttributeGroup);
 
@@ -249,7 +166,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       width={'80%'}
       closeIcon={<CloseIcon />}
       footer={
-        curStep === 'pre' ? (
+        step === 'pre' ? (
           <CustomButton
             size="small"
             properties="rounded"
@@ -281,14 +198,14 @@ export const AutoStep: FC<AutoStepProps> = ({
         )
       }
     >
-      {curStep === 'pre' ? (
+      {step === 'pre' ? (
         <FirstStep
           data={attributes}
           selected={subOptionSelected}
           setSelected={setSubOptionSelected}
         />
       ) : (
-        <NextStep step={curStep} />
+        <NextStep />
       )}
     </CustomModal>
   );
