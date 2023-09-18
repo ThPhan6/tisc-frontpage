@@ -354,10 +354,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         }));
       }
 
-      // console.log(newLinkedOptionData, '<<<----------|||||- newLinkedOptionData');
-      // console.log(optionsSelected, '<<<--------||||--- optionsSelected');
-      // console.log(pickedOptionId, '<<<--------||||--- pickedOptionId');
-
       store.dispatch(setLinkedOptionData(newLinkedOptionData));
 
       store.dispatch(setOptionsSelected(optionsSelected));
@@ -578,12 +574,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     return null;
   };
-
-  if (attributeGroupKey === 'specification_attribute_groups') {
-    // console.log('attributeGroup', attributeGroup);
-    // console.log('autoSteps', autoSteps);
-    // console.log(' attributes', attributes);
-  }
 
   return (
     <div key={groupIndex} style={{ marginBottom: 8, marginTop: isEditable ? undefined : 8 }}>

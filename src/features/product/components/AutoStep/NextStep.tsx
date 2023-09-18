@@ -169,12 +169,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       /// dont have linked data
       !newLinkedOptionData[newSlide]?.linkedData?.length;
 
-    // console.log(
-    //   !!curAllLinkedIdSelect.length,
-    //   !!newLinkedOptionData[newSlide]?.pickedData?.length,
-    //   !newLinkedOptionData[newSlide]?.linkedData?.length,
-    // );
-
     const optionId = pickedOptionId[newSlide];
 
     if (!isGetLinkedOption || !optionId) {
@@ -254,12 +248,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       !newLinkedOptionData[newSlide]?.linkedData?.length;
 
     let newLinkedData: any = [];
-
-    // console.log(
-    //   !!curAllLinkedIdSelect.length,
-    //   !!newLinkedOptionData?.[newSlide]?.pickedData?.length,
-    //   !newLinkedOptionData[newSlide]?.linkedData?.length,
-    // );
 
     const optionId = pickedOptionId[newSlide];
     /// call rest option when update
@@ -645,15 +633,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         setLinkedOptionData({ index: slide, pickedData: newPickedData, linkedData: linkedData }),
       );
     };
-
-  // console.log('linkedOptionData ---->>>', linkedOptionData);
-  // console.log('allLinkedData ---->>>', allLinkedData);
-  // console.log('optionsSelected ----->>>', optionsSelected);
-  // console.log('pickedOptionId ----->>>', pickedOptionId);
-
-  // console.log('currentSubPickedOptionSelected ----->>>', currentSubPickedOptionSelected);
-
-  console.log('#######################################################');
 
   return (
     <div className={styles.nextStep}>

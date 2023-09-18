@@ -140,8 +140,6 @@ export const AutoStep: FC<AutoStepProps> = ({
         : el,
     ) as any;
 
-    console.log('newAttributeGroup', newAttributeGroup);
-
     store.dispatch(
       setPartialProductDetail({
         specification_attribute_groups: newAttributeGroup,
