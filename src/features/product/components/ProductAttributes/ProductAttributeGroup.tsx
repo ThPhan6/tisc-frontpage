@@ -354,7 +354,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         }));
       }
 
-      console.log(newLinkedOptionData, '<<<----------|||||- newLinkedOptionData');
+      // console.log(newLinkedOptionData, '<<<----------|||||- newLinkedOptionData');
       // console.log(optionsSelected, '<<<--------||||--- optionsSelected');
       // console.log(pickedOptionId, '<<<--------||||--- pickedOptionId');
 

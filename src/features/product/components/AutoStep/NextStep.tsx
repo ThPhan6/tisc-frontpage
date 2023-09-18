@@ -76,8 +76,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       label: el.pre_option,
     })) ?? [];
 
-  console.log('allLinkedSubs', allLinkedSubs);
-  console.log('subLinkedOptionSelected', subLinkedOptionSelected);
+  // console.log('allLinkedSubs', allLinkedSubs);
+  // console.log('subLinkedOptionSelected', subLinkedOptionSelected);
 
   const currentSubLinkedOptionSelected = subLinkedOptionSelected.filter((el) =>
     allLinkedSubs.some((opt) => opt.id === el.value && opt.pre_option === el.label),
@@ -140,9 +140,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     store.dispatch(setSlide(newSlide));
 
-    let prevOrder = curOrder;
-    --prevOrder;
-    const prevOptionSelected = optionsSelected[prevOrder].options;
+    const prevOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
 
     const newLinkedOptionData = [...linkedOptionData];
 
@@ -157,13 +155,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       !newLinkedOptionData[newSlide]?.linkedData?.length;
 
     // console.log(
-    //   optionsSelected[newSlide]?.pickedIds,
-    //   curAllLinkedIdSelect,
-    //   newLinkedOptionData[newSlide].linkedData,
-    //   newLinkedOptionData[newSlide].pickedData,
+    //   !!curAllLinkedIdSelect.length,
+    //   !!newLinkedOptionData[newSlide]?.pickedData?.length,
+    //   !newLinkedOptionData[newSlide]?.linkedData?.length,
     // );
-
-    // console.log('isGetLinkedOption', !isGetLinkedOption);
 
     const optionId = pickedOptionId[newSlide];
 
@@ -182,10 +177,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
       let prevAllLinkedIdSelect: string[] = [];
 
-      console.log('curOrder', curOrder);
-
       orders.forEach((order) => {
-        if (order < curOrder) {
+        if (order < curOrder - 1) {
           const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
 
           prevAllLinkedIdSelect = prevAllLinkedIdSelect.concat(optionSelectedIds);
@@ -261,7 +254,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       let prevAllLinkedIdSelect: string[] = [];
 
       orders.forEach((order) => {
-        if (order < curOrder) {
+        if (order <= curOrder) {
           const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
 
           prevAllLinkedIdSelect = prevAllLinkedIdSelect.concat(optionSelectedIds);
