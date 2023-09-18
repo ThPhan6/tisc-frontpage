@@ -130,7 +130,9 @@ export const AutoStep: FC<AutoStepProps> = ({
   const handleCreateStep = () => {
     const allSteps = Object.values(optionsSelected);
 
-    const steps = allSteps.map((el, index) => ({ ...el, name: slideBar[index] }));
+    const steps = allSteps
+      .map((el, index) => ({ ...el, name: slideBar[index] }))
+      .filter((el) => el.options.length > 0);
 
     const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
       el.id === activeAttrGroupId?.['specification_attribute_groups']
