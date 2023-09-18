@@ -301,6 +301,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
         //
         if (index >= autoSteps.length - 1) {
+          const options = getGroupOptions(autoStep.options);
+          linkedOptionData[index] = { pickedData: options, linkedData: [] };
+
           return;
         }
 
@@ -336,6 +339,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           optionId,
           exceptOptionIds.join(','),
         );
+
         newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((el) => ({
           ...el,
           subs: el.subs.map((item) => ({
@@ -350,9 +354,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         }));
       }
 
-      // console.log(newLinkedOptionData, '<<<----------|||||- newLinkedOptionData');
+      console.log(newLinkedOptionData, '<<<----------|||||- newLinkedOptionData');
       // console.log(optionsSelected, '<<<--------||||--- optionsSelected');
-      // console.log(newPickedOptionIds, '<<<--------||||--- newPickedOptionIds');
+      // console.log(pickedOptionId, '<<<--------||||--- pickedOptionId');
 
       store.dispatch(setLinkedOptionData(newLinkedOptionData));
 
