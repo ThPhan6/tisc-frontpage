@@ -22,7 +22,7 @@ import { AttributeOptionLabel } from './CommonAttribute';
 import styles from './ProductAttributeSubItem.less';
 
 interface Props {
-  attributesData: ProductAttributes[];
+  attributes: ProductAttributes[];
   onDelete?: () => void;
   onItemChange?: (data: ProductAttributeProps[]) => void;
   attributeGroupIndex: number;
@@ -62,7 +62,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   attributeGroup,
   attributeGroupIndex,
   attributeItemIndex,
-  attributesData,
+  attributes,
   activeKey,
   attributeGroupKey,
 }) => {
@@ -111,7 +111,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
     let currentAttribute = {} as any;
     // get current attribute
-    attributesData.forEach((attribute) => {
+    attributes.forEach((attribute) => {
       attribute.subs?.forEach((sub) => {
         if (sub.id === attributeItem.id) {
           /// add option_code field to currentAttribute has type Option,
@@ -151,7 +151,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
     setCurAtttributeData(currentAttribute);
 
-    setBasisOptions(currentAttribute.basis.subs);
+    setBasisOptions(currentAttribute.basis?.subs);
   }, []);
 
   useEffect(() => {

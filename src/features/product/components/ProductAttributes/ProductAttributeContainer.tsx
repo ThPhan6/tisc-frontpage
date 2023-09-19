@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
@@ -8,15 +8,14 @@ import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { setPartialProductDetail } from '../../reducers';
-import { ProductAttributeFormInput } from '../../types';
 import { ProductInfoTab } from './types';
 import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
-import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
+import { DragDropContainer } from '@/components/Drag';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-import { AutoStep } from './AutoStep';
+import { AutoStep } from '../AutoStep/AutoStep';
 import { ProductAttributeGroup } from './ProductAttributeGroup';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
@@ -44,32 +43,20 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   const isEditable = isTiscAdmin && !isTablet;
   const curProductId = productId ?? productIdParam;
 
-  const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
-
   const {
     addNewProductAttribute,
     addNewAutoStep,
     attributeGroup,
     attributeGroupKey,
     dimensionWeightData,
+    autoStepPopup,
+    setAutoStepPopup,
+    onDragEnd,
   } = useProductAttributeForm(activeKey, curProductId, {
     isSpecifiedModal,
     isGetProductSpecification: true, // except specifying modal
     isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
   });
-
-  const onDragEnd = (result: any) => {
-    const newAttributesGroups = getNewDataAfterReordering(
-      result,
-      attributeGroup,
-    ) as ProductAttributeFormInput[];
-
-    store.dispatch(
-      setPartialProductDetail({
-        [attributeGroupKey]: newAttributesGroups,
-      }),
-    );
-  };
 
   return (
     <>
@@ -86,10 +73,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
             <CustomPlusButton
               size={18}
               label="Create Auto-Steps"
-              onClick={() => {
-                addNewAutoStep();
-                setAutoStepModal(true);
-              }}
+              onClick={addNewAutoStep}
               customClass={styles.paddingSpace}
             />
           ) : null}
@@ -153,7 +137,12 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
       )}
 
       {isEditable && attributeGroupKey === 'specification_attribute_groups' ? (
-        <AutoStep visible={autoStepModal} setVisible={setAutoStepModal} step={0} />
+        <AutoStep
+          attributeGroup={attributeGroup}
+          attributes={attributes ?? []}
+          visible={autoStepPopup}
+          setVisible={setAutoStepPopup}
+        />
       ) : null}
     </>
   );

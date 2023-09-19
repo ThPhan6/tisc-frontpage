@@ -20,7 +20,8 @@ export const Title: FC<CustomTypography> = ({
     <p
       {...props}
       className={`${classNameTitle} ${customClass} ${color}`}
-      style={{ color, ...style }}>
+      style={{ color, ...style }}
+    >
       {children}
     </p>
   );
@@ -73,12 +74,12 @@ export const MainTitle: FC<MainTitleProps> = ({
   return (
     <p
       {...props}
-      className={`${classNameMainTitle} ${customClass}`}
+      className={`${classNameMainTitle} ${color} ${customClass}`}
       style={{
         ...style,
-        color: color,
         textAlign: textAlign,
-      }}>
+      }}
+    >
       {children}
     </p>
   );

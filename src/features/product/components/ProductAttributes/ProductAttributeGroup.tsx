@@ -1,25 +1,50 @@
 import { FC, useEffect, useState } from 'react';
 
+import { message } from 'antd';
+
+import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+
+import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckPermission, useQuery } from '@/helper/hook';
-import { camelCase, capitalize, snakeCase } from 'lodash';
+import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
+import { capitalize, isUndefined, sortBy, uniq } from 'lodash';
 
+import {
+  LinkedOptionDataProps,
+  OptionSelectedProps,
+  PickedOptionIdProps,
+  setCurAttrGroupCollapse,
+  setLinkedOptionData,
+  setOptionsSelected,
+  setPartialProductDetail,
+  setPickedOptionId,
+  setSlide,
+  setSlideBar,
+  setStep,
+} from '../../reducers';
 import {
   AttributeSelectedProps,
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
 } from '../../types';
+import {
+  AutoStepOnAttributeGroupResponse,
+  LinkedOptionProps,
+  OptionReplicateResponse,
+} from '../../types/autoStep';
 import { ActiveKeyType } from './types';
-import store from '@/reducers';
-import { closeProductFooterTab, useCollapseGroupActiveCheck } from '@/reducers/active';
+import store, { useAppSelector } from '@/reducers';
+import { closeProductFooterTab } from '@/reducers/active';
+import { SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
+import { AutoStep } from '../AutoStep/AutoStep';
 import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { ProductAttributeSubItem, getConversionText } from './ProductAttributeSubItem';
@@ -56,11 +81,27 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   icon,
 }) => {
   const isTablet = useScreen().isTablet;
-  const [randomId] = useState<number>(Math.random());
-  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
-    activeKey,
-    randomId, // groupIndex + 1, // Spare index 0 for Dimension & Weight group
-  );
+
+  // const [randomId] = useState<number>(Math.random());
+
+  // const {
+  //   curActiveKey,
+  //   onKeyChange,
+  //   curActive: attrGroupCollapseId,
+  // } = useCollapseGroupActiveCheck(
+  //   activeKey,
+  //   randomId, // groupIndex + 1, // Spare index 0 for Dimension & Weight group
+  //   attrGroupItem.id,
+  // );
+
+  const {
+    attributeGroupKey,
+    onChangeAttributeItem,
+    onChangeAttributeName,
+    deleteAttributeItem,
+    onCheckedSpecification,
+    onSelectSpecificationOption,
+  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isEditable = isTiscAdmin && !isTablet;
@@ -78,14 +119,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
-  const {
-    onChangeAttributeItem,
-    onChangeAttributeName,
-    deleteAttributeItem,
-    onCheckedSpecification,
-    attributeGroupKey,
-    onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
+  const productId = useGetParamId();
+  const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
+  const { specification_attribute_groups } = details;
+
+  const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
+
+  const autoSteps: AutoStepOnAttributeGroupResponse[] =
+    sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ?? [];
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -114,6 +155,219 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       });
     }
   }, [attrGroupItem]);
+
+  useEffect(() => {
+    if (
+      curAttrGroupCollapseId?.['specification_attribute_groups'] === '' ||
+      curAttrGroupCollapseId?.['specification_attribute_groups']?.indexOf('new') !== -1 ||
+      attributeGroupKey !== 'specification_attribute_groups'
+    ) {
+      return;
+    }
+
+    const currentAttributeGroupId = curAttrGroupCollapseId['specification_attribute_groups'];
+
+    getAutoStepData(productId, currentAttributeGroupId).then((res) => {
+      const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
+        el.id === currentAttributeGroupId ? { ...el, steps: res } : el,
+      );
+
+      store.dispatch(
+        setPartialProductDetail({
+          specification_attribute_groups: newSpecificationAttributeGroup,
+        }),
+      );
+    });
+  }, [curAttrGroupCollapseId?.['specification_attribute_groups']]);
+
+  const handleOnChangeCollapse = () => {
+    // onKeyChange(key);
+
+    store.dispatch(
+      setCurAttrGroupCollapse({
+        [attributeGroupKey]:
+          curAttrGroupCollapseId?.[attributeGroupKey] === attrGroupItem.id ? '' : attrGroupItem.id,
+      }),
+    );
+
+    store.dispatch(closeProductFooterTab());
+  };
+
+  // set picked data when open auto-step
+  const getGroupOptions = (options: OptionReplicateResponse[]) => {
+    const b: LinkedOptionProps[] = [];
+
+    options.forEach((el) => {
+      const index = b.findIndex((c) => c.id === el.sub_id);
+
+      if (index > -1) {
+        b[index].subs = b[index].subs.concat(el);
+      } else {
+        b.push({
+          id: el.sub_id,
+          name: el.sub_name,
+          subs: [el],
+        });
+      }
+    });
+
+    return b;
+  };
+
+  const handleOpenAutoStepModal =
+    (step: AutoStepOnAttributeGroupResponse, stepIndex: number) => async () => {
+      if (!productId) {
+        message.error('Product ID is required');
+        return;
+      }
+
+      if (!curAttrGroupCollapseId) {
+        message.error('Attribute Group ID is required');
+        return;
+      }
+
+      let curIndex = stepIndex;
+      if (stepIndex === autoSteps.length - 1) {
+        curIndex -= 1;
+      }
+
+      const newSlideBars: string[] = [];
+
+      /// set up data to open modal based on each step
+      const linkedOptionData: LinkedOptionDataProps[] = [];
+      const pickedOptionId: PickedOptionIdProps = {};
+      const optionsSelected: OptionSelectedProps = {};
+
+      const firstStep = autoSteps[0];
+      const optionIds = firstStep.options.map((opt) => opt.id);
+
+      let newOptions: LinkedOptionProps | undefined;
+      ///* mapping from attribute to get step 1 data
+      attributes?.forEach((attr) => {
+        if (newOptions) {
+          return;
+        }
+
+        attr.subs.forEach((el) => {
+          if (newOptions) {
+            return;
+          }
+
+          el.basis.subs.forEach((sub) => {
+            if (newOptions) {
+              return;
+            }
+
+            if (optionIds.includes(sub.id)) {
+              newOptions = {
+                id: el.basis.id,
+                name: el.basis.name,
+                subs: (el.basis.subs as unknown as SubBasisOption[]).map((item) => ({
+                  ...item,
+                  replicate: item.replicate ?? 1,
+                  sub_id: el.basis.id,
+                  sub_name: el.basis.name,
+                  pre_option: undefined,
+                })),
+              };
+            }
+          });
+        });
+      });
+
+      if (!newOptions) {
+        message.error('Cannot get first step');
+        return;
+      }
+
+      ///* set picked data for first step
+      linkedOptionData[0] = { pickedData: [newOptions], linkedData: [] };
+
+      /// list ID of previous option
+      let exceptOptionIds: string[] = [];
+      // Active option ID on left panel to load data to right panel
+      let optionId = '';
+
+      autoSteps.forEach((autoStep, index) => {
+        /// set description
+        newSlideBars.push(autoStep.name);
+
+        // set option picked on right panel
+        optionsSelected[autoStep.order] = {
+          order: autoStep.order,
+          name: autoStep.name,
+          options: autoStep.options,
+        };
+
+        //
+        if (index >= autoSteps.length - 1) {
+          const options = getGroupOptions(autoStep.options);
+          linkedOptionData[index] = { pickedData: options, linkedData: [] };
+
+          return;
+        }
+
+        // add all option ID of previous step to prevent duplicate next step
+        if (index <= curIndex && curIndex !== 0) {
+          exceptOptionIds = exceptOptionIds.concat(autoStep.options.map((option) => option.id));
+        }
+
+        // set other picked data
+        const options = getGroupOptions(autoStep.options);
+        if (index !== 0) {
+          linkedOptionData[index] = { pickedData: options, linkedData: [] };
+        }
+
+        const nextStep = autoSteps[index + 1];
+
+        // save highlight left panel
+        pickedOptionId[index] = nextStep.options[0].pre_option || nextStep.options[0].id;
+
+        // handle get the ID of previous active option on left panel
+        if (index === curIndex) {
+          if (nextStep) {
+            optionId = nextStep.options[0].pre_option || nextStep.options[0].id;
+          }
+        }
+      });
+
+      const newLinkedOptionData = [...linkedOptionData];
+
+      // get right panel data from selected options
+      if ((curIndex === 0 && optionId) || (curIndex !== 0 && optionId && exceptOptionIds.length)) {
+        const linkedDataResponse = await getLinkedOptionByOptionIds(
+          optionId,
+          exceptOptionIds.join(','),
+        );
+
+        newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((el) => ({
+          ...el,
+          subs: el.subs.map((item) => ({
+            ...item,
+            subs: item.subs.map((sub) => ({
+              ...sub,
+              sub_id: item.id,
+              sub_name: item.name,
+              pre_option: optionId,
+            })),
+          })),
+        }));
+      }
+
+      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+
+      store.dispatch(setOptionsSelected(optionsSelected));
+
+      store.dispatch(setPickedOptionId(pickedOptionId));
+
+      store.dispatch(setSlideBar(uniq(newSlideBars)));
+
+      store.dispatch(setSlide(curIndex));
+
+      store.dispatch(setStep(curIndex));
+
+      setAutoStepModal(true);
+    };
 
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
@@ -199,15 +453,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     );
   };
 
-  const renderAttributeRowItem = (
-    attribute: ProductAttributeProps,
-    attrIndex: number,
-    groupName: string,
-    isSpecificationOptionSelection?: boolean,
-  ) => {
+  const renderAttributeRowItem = (attribute: ProductAttributeProps, attrIndex: number) => {
     if (isTiscAdmin && isEditable) {
-      if (!attributes) {
-        return null;
+      if (!attribute && !attrGroupItem.steps?.length) {
+        // return null;
       }
 
       return (
@@ -216,7 +465,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           attributeGroup={attributeGroup}
           attributeGroupIndex={groupIndex}
           attributeItemIndex={attrIndex}
-          attributesData={attributes}
+          attributes={attributes ?? []}
           onItemChange={onChangeAttributeItem(groupIndex)}
           onDelete={deleteAttributeItem(groupIndex, attrIndex)}
           activeKey={activeKey}
@@ -278,7 +527,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
         <td className={styles.attributeDescription}>
           <AttributeOption
-            title={groupName}
+            title={attrGroupItem.name}
             isPublicPage={isPublicPage}
             attributeName={attribute.name}
             options={attribute.basis_options ?? []}
@@ -317,11 +566,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     );
 
     if (
-      !isSpecificationOptionSelection ||
-      (isSpecificationOptionSelection && attribute.id === curAttributeSelect.attribute?.id)
+      !attrGroupItem.selection ||
+      (attrGroupItem.selection && attribute.id === curAttributeSelect.attribute?.id)
     ) {
       return renderAttributeOption();
     }
+
+    return null;
   };
 
   return (
@@ -329,11 +580,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <div className={styles.attributes}>
         <div className={styles.specification}>
           <CustomCollapse
-            activeKey={curActiveKey}
-            onChange={(key) => {
-              onKeyChange(key);
-              store.dispatch(closeProductFooterTab());
-            }}
+            activeKey={curAttrGroupCollapseId?.[attributeGroupKey] === attrGroupItem.id ? '1' : ''}
+            // keyCollapse={curAttrGroupCollapseId}
+            onChange={handleOnChangeCollapse}
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"
@@ -374,31 +623,62 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             )}
 
-            {attrGroupItem.attributes.length ? (
-              <div
-                className={`${isSpecifiedModal ? styles.paddingNone : styles.paddingRounded} ${
-                  attrGroupItem.selection && !isTiscAdmin && !isPublicPage
-                    ? styles.paddingWrapper
-                    : styles.colorInput
-                } ${styles.tableContent}`}
-              >
-                <table className={styles.table}>
-                  <tbody>
-                    {attrGroupItem.attributes.map((attribute, attrIndex) =>
-                      renderAttributeRowItem(
-                        attribute,
-                        attrIndex,
-                        attrGroupItem.name,
-                        attrGroupItem.selection,
-                      ),
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            ) : null}
+            <div
+              className={`${
+                isSpecifiedModal
+                  ? styles.paddingNone
+                  : attrGroupItem?.attributes?.length || attrGroupItem?.steps?.length
+                  ? styles.paddingRounded
+                  : ''
+              } ${
+                attrGroupItem.selection && !isTiscAdmin && !isPublicPage
+                  ? styles.paddingWrapper
+                  : styles.colorInput
+              } ${styles.tableContent}`}
+            >
+              <table className={`${styles.table}`}>
+                <tbody>
+                  {autoSteps?.map((step, stepIndex) => {
+                    let curStep = stepIndex;
+                    ++curStep;
+
+                    return (
+                      <tr
+                        key={stepIndex}
+                        className={`cursor-pointer flex-between`}
+                        onClick={handleOpenAutoStepModal(step, stepIndex)}
+                      >
+                        <td className="flex-start">
+                          <BodyText fontFamily="Roboto" level={5}>
+                            {curStep < 10 ? `0${curStep}` : curStep}
+                          </BodyText>
+                          <BodyText fontFamily="Roboto" level={5}>
+                            {step.name}
+                          </BodyText>
+                        </td>
+                        <td className="flex-start">
+                          <ActionRightLeftIcon />
+                        </td>
+                      </tr>
+                    );
+                  })}
+
+                  {attrGroupItem.attributes?.map((attribute, attrIndex) =>
+                    renderAttributeRowItem(attribute, attrIndex),
+                  )}
+                </tbody>
+              </table>
+            </div>
           </CustomCollapse>
         </div>
       </div>
+
+      <AutoStep
+        attributeGroup={attributeGroup}
+        attributes={attributes ?? []}
+        visible={autoStepModal}
+        setVisible={setAutoStepModal}
+      />
     </div>
   );
 };

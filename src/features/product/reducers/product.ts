@@ -23,6 +23,9 @@ interface ProductState {
   relatedProduct: RelatedCollection[];
   relatedProductOnView?: GeneralData & { relatedProductData?: RelatedCollection[] };
   list: ProductList;
+  curAttrGroupCollapseId?: {
+    [key: string]: string;
+  };
 }
 
 const initialState: ProductState = {
@@ -42,6 +45,7 @@ const initialState: ProductState = {
       attributes: [],
     },
     categories: [],
+    collections: [],
     referToDesignDocument: true,
     brand_location_id: '',
     distributor_location_id: '',
@@ -182,6 +186,9 @@ const productSlice = createSlice({
         state.details.specifiedDetail.finish_schedules = [...action.payload];
       }
     },
+    setCurAttrGroupCollapse: (state, action: PayloadAction<{ [key: string]: string }>) => {
+      state.curAttrGroupCollapseId = { ...state.curAttrGroupCollapseId, ...action.payload };
+    },
   },
 });
 
@@ -203,6 +210,7 @@ export const {
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
   setFinishScheduleData,
+  setCurAttrGroupCollapse,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

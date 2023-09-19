@@ -22,7 +22,7 @@ export interface DropdownRadioItem {
 interface DropdownRadioListProps {
   selected?: RadioValue; // current value select
   chosenItem?: RadioValue; // option selected // show active collapse
-  data: DropdownRadioItem[];
+  data: DropdownRadioItem[] | undefined;
   renderTitle?: (data: DropdownRadioItem) => string | number | React.ReactNode;
   onChange?: (value: RadioValue) => void;
   noCollapse?: boolean;
@@ -37,7 +37,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
   useEffect(() => {
-    data.forEach((item, index) => {
+    data?.forEach((item, index) => {
       const checked = item.options.find((option) => {
         return chosenItem && option.value === chosenItem.value;
       });
@@ -81,7 +81,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
       }}
       activeKey={activeKey}
     >
-      {data.map((item, index) => (
+      {data?.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
