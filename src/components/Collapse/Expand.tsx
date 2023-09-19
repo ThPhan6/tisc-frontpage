@@ -32,3 +32,13 @@ export const collapseProps: CollapseProps = {
   bordered: false,
   expandIconPosition: 'right',
 };
+
+export const CollapseLevel1Props: CollapseProps = {
+  ...collapseProps,
+  expandIcon: expandIconLevel1,
+};
+
+export const CollapseLevel2Props: CollapseProps = {
+  ...collapseProps,
+  expandIcon: expandIconLevel2,
+};

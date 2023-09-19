@@ -73,6 +73,7 @@ export const useCollapseGroupActiveCheck = (
   activeKey?: string | string[],
 ) => {
   const [collapse, setCollapse] = useState<string | string[]>(); // Use for have activeKey case
+  const [curActive, setCurActive] = useState<string | undefined>();
 
   const activeKeyInState = useAppSelector(collapseSelector(groupType, groupIndex));
 
@@ -92,8 +93,16 @@ export const useCollapseGroupActiveCheck = (
   }, [activeOneInGroup]);
 
   useEffect(() => {
+    if (curActiveKey === '1' || curActiveKey?.[0] === '1') {
+      setCurActive(activeKey as string);
+    } else {
+      setCurActive(undefined);
+    }
+  }, [curActiveKey]);
+
+  useEffect(() => {
     setCollapse(activeKey);
   }, [activeKey]);
 
-  return { curActiveKey, onKeyChange };
+  return { curActiveKey, onKeyChange, curActive };
 };

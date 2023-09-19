@@ -14,6 +14,8 @@ import { ConversionSubValueProps, GeneralData } from '@/types';
 
 import { ProductTopBarFilter } from '../components/FilterAndSorter';
 
+import { AutoStepOnAttributeGroupResponse } from './autoStep';
+
 export interface ProductSummary {
   categories: GeneralData[];
   collections: GeneralData[];
@@ -68,6 +70,7 @@ export interface ProductAttributeFormInput {
   isChecked?: boolean;
   selection: boolean;
   attribute_selected_id?: string;
+  steps: AutoStepOnAttributeGroupResponse[];
 }
 
 export enum Availability {
@@ -221,7 +224,7 @@ export interface ProductList {
   sort?: SortParams;
   brandSummary?: BrandSummary;
   allProducts?: ProductItem[];
-  pagination: TablePaginationConfig;
+  pagination: { pageCount: number } & TablePaginationConfig;
 }
 
 export interface GetListProductForDesignerRequestParams {

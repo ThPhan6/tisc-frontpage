@@ -147,13 +147,16 @@
 }
 
 // size
-.size(@height, @min-width, @svg-width, @svg-height, @mr:8px) {
+.size(@height, @min-width, @svg-width, @svg-height, @space:8px) {
   min-width: @min-width;
   height: @height;
   svg {
     width: @svg-width;
     height: @svg-height;
-    margin-right: @mr;
+  }
+
+  svg + * {
+    margin-left: @space;
   }
 }
 
