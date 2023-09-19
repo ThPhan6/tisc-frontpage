@@ -8,7 +8,7 @@ import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { capitalize, isUndefined, sortBy, uniq } from 'lodash';
+import { capitalize, sortBy, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -214,160 +214,158 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     return b;
   };
 
-  const handleOpenAutoStepModal =
-    (step: AutoStepOnAttributeGroupResponse, stepIndex: number) => async () => {
-      if (!productId) {
-        message.error('Product ID is required');
+  const handleOpenAutoStepModal = (stepIndex: number) => async () => {
+    if (!productId) {
+      message.error('Product ID is required');
+      return;
+    }
+
+    if (!curAttrGroupCollapseId) {
+      message.error('Attribute Group ID is required');
+      return;
+    }
+
+    let curIndex = stepIndex;
+    if (stepIndex === autoSteps.length - 1) {
+      curIndex -= 1;
+    }
+
+    const newSlideBars: string[] = [];
+
+    /// set up data to open modal based on each step
+    const linkedOptionData: LinkedOptionDataProps[] = [];
+    const pickedOptionId: PickedOptionIdProps = {};
+    const optionsSelected: OptionSelectedProps = {};
+
+    const firstStep = autoSteps[0];
+    const optionIds = firstStep.options.map((opt) => opt.id);
+
+    let newOptions: LinkedOptionProps | undefined;
+    ///* mapping from attribute to get step 1 data
+    attributes?.forEach((attr) => {
+      if (newOptions) {
         return;
       }
 
-      if (!curAttrGroupCollapseId) {
-        message.error('Attribute Group ID is required');
-        return;
-      }
-
-      let curIndex = stepIndex;
-      if (stepIndex === autoSteps.length - 1) {
-        curIndex -= 1;
-      }
-
-      const newSlideBars: string[] = [];
-
-      /// set up data to open modal based on each step
-      const linkedOptionData: LinkedOptionDataProps[] = [];
-      const pickedOptionId: PickedOptionIdProps = {};
-      const optionsSelected: OptionSelectedProps = {};
-
-      const firstStep = autoSteps[0];
-      const optionIds = firstStep.options.map((opt) => opt.id);
-
-      let newOptions: LinkedOptionProps | undefined;
-      ///* mapping from attribute to get step 1 data
-      attributes?.forEach((attr) => {
+      attr.subs.forEach((el) => {
         if (newOptions) {
           return;
         }
 
-        attr.subs.forEach((el) => {
+        el.basis.subs.forEach((sub) => {
           if (newOptions) {
             return;
           }
 
-          el.basis.subs.forEach((sub) => {
-            if (newOptions) {
-              return;
-            }
-
-            if (optionIds.includes(sub.id)) {
-              newOptions = {
-                id: el.basis.id,
-                name: el.basis.name,
-                subs: (el.basis.subs as unknown as SubBasisOption[]).map((item) => ({
-                  ...item,
-                  replicate: item.replicate ?? 1,
-                  sub_id: el.basis.id,
-                  sub_name: el.basis.name,
-                  pre_option: undefined,
-                })),
-              };
-            }
-          });
+          if (optionIds.includes(sub.id)) {
+            newOptions = {
+              id: el.basis.id,
+              name: el.basis.name,
+              subs: (el.basis.subs as unknown as SubBasisOption[]).map((item) => ({
+                ...item,
+                replicate: item.replicate ?? 1,
+                sub_id: el.basis.id,
+                sub_name: el.basis.name,
+                pre_option: undefined,
+              })),
+            };
+          }
         });
       });
+    });
 
-      if (!newOptions) {
-        message.error('Cannot get first step');
+    if (!newOptions) {
+      message.error('Cannot get first step');
+      return;
+    }
+
+    ///* set picked data for first step
+    linkedOptionData[0] = { pickedData: [newOptions], linkedData: [] };
+
+    /// list ID of previous option
+    let exceptOptionIds: string[] = [];
+    // Active option ID on left panel to load data to right panel
+    let optionId = '';
+
+    autoSteps.forEach((autoStep, index) => {
+      /// set description
+      newSlideBars.push(autoStep.name);
+
+      // set option picked on right panel
+      optionsSelected[autoStep.order] = {
+        order: autoStep.order,
+        options: autoStep.options,
+      };
+
+      //
+      if (index >= autoSteps.length - 1) {
+        const options = getGroupOptions(autoStep.options);
+        linkedOptionData[index] = { pickedData: options, linkedData: [] };
+
         return;
       }
 
-      ///* set picked data for first step
-      linkedOptionData[0] = { pickedData: [newOptions], linkedData: [] };
-
-      /// list ID of previous option
-      let exceptOptionIds: string[] = [];
-      // Active option ID on left panel to load data to right panel
-      let optionId = '';
-
-      autoSteps.forEach((autoStep, index) => {
-        /// set description
-        newSlideBars.push(autoStep.name);
-
-        // set option picked on right panel
-        optionsSelected[autoStep.order] = {
-          order: autoStep.order,
-          name: autoStep.name,
-          options: autoStep.options,
-        };
-
-        //
-        if (index >= autoSteps.length - 1) {
-          const options = getGroupOptions(autoStep.options);
-          linkedOptionData[index] = { pickedData: options, linkedData: [] };
-
-          return;
-        }
-
-        // add all option ID of previous step to prevent duplicate next step
-        if (index <= curIndex && curIndex !== 0) {
-          exceptOptionIds = exceptOptionIds.concat(autoStep.options.map((option) => option.id));
-        }
-
-        // set other picked data
-        const options = getGroupOptions(autoStep.options);
-        if (index !== 0) {
-          linkedOptionData[index] = { pickedData: options, linkedData: [] };
-        }
-
-        const nextStep = autoSteps[index + 1];
-
-        // save highlight left panel
-        pickedOptionId[index] = nextStep.options[0].pre_option || nextStep.options[0].id;
-
-        // handle get the ID of previous active option on left panel
-        if (index === curIndex) {
-          if (nextStep) {
-            optionId = nextStep.options[0].pre_option || nextStep.options[0].id;
-          }
-        }
-      });
-
-      const newLinkedOptionData = [...linkedOptionData];
-
-      // get right panel data from selected options
-      if ((curIndex === 0 && optionId) || (curIndex !== 0 && optionId && exceptOptionIds.length)) {
-        const linkedDataResponse = await getLinkedOptionByOptionIds(
-          optionId,
-          exceptOptionIds.join(','),
-        );
-
-        newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((el) => ({
-          ...el,
-          subs: el.subs.map((item) => ({
-            ...item,
-            subs: item.subs.map((sub) => ({
-              ...sub,
-              sub_id: item.id,
-              sub_name: item.name,
-              pre_option: optionId,
-            })),
-          })),
-        }));
+      // add all option ID of previous step to prevent duplicate next step
+      if (index <= curIndex && curIndex !== 0) {
+        exceptOptionIds = exceptOptionIds.concat(autoStep.options.map((option) => option.id));
       }
 
-      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+      // set other picked data
+      const options = getGroupOptions(autoStep.options);
+      if (index !== 0) {
+        linkedOptionData[index] = { pickedData: options, linkedData: [] };
+      }
 
-      store.dispatch(setOptionsSelected(optionsSelected));
+      const nextStep = autoSteps[index + 1];
 
-      store.dispatch(setPickedOptionId(pickedOptionId));
+      // save highlight left panel
+      pickedOptionId[index] = nextStep.options[0].pre_option || nextStep.options[0].id;
 
-      store.dispatch(setSlideBar(uniq(newSlideBars)));
+      // handle get the ID of previous active option on left panel
+      if (index === curIndex) {
+        if (nextStep) {
+          optionId = nextStep.options[0].pre_option || nextStep.options[0].id;
+        }
+      }
+    });
 
-      store.dispatch(setSlide(curIndex));
+    const newLinkedOptionData = [...linkedOptionData];
 
-      store.dispatch(setStep(curIndex));
+    // get right panel data from selected options
+    if ((curIndex === 0 && optionId) || (curIndex !== 0 && optionId && exceptOptionIds.length)) {
+      const linkedDataResponse = await getLinkedOptionByOptionIds(
+        optionId,
+        exceptOptionIds.join(','),
+      );
 
-      setAutoStepModal(true);
-    };
+      newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((el) => ({
+        ...el,
+        subs: el.subs.map((item) => ({
+          ...item,
+          subs: item.subs.map((sub) => ({
+            ...sub,
+            sub_id: item.id,
+            sub_name: item.name,
+            pre_option: optionId,
+          })),
+        })),
+      }));
+    }
+
+    store.dispatch(setLinkedOptionData(newLinkedOptionData));
+
+    store.dispatch(setOptionsSelected(optionsSelected));
+
+    store.dispatch(setPickedOptionId(pickedOptionId));
+
+    store.dispatch(setSlideBar(uniq(newSlideBars)));
+
+    store.dispatch(setSlide(curIndex));
+
+    store.dispatch(setStep(curIndex));
+
+    setAutoStepModal(true);
+  };
 
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
@@ -623,11 +621,46 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             )}
 
+            <table className={`${styles.table}`}>
+              <tbody>
+                {autoSteps?.map((step, stepIndex) => {
+                  let curStep = stepIndex;
+                  ++curStep;
+
+                  return (
+                    <tr
+                      key={stepIndex}
+                      className={`cursor-pointer flex-between ${styles.autoStepTr}`}
+                      onClick={handleOpenAutoStepModal(stepIndex)}
+                    >
+                      <td className="flex-start auto-step-info">
+                        <BodyText
+                          fontFamily="Roboto"
+                          level={5}
+                          style={{ width: 'fit-content', paddingRight: 12 }}
+                        >
+                          {curStep < 10 ? `0${curStep}` : curStep}
+                        </BodyText>
+                        <BodyText fontFamily="Roboto" level={5}>
+                          {step.name}
+                        </BodyText>
+                      </td>
+                      <td className="flex-start">
+                        <div className="flex-start">
+                          <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
             <div
               className={`${
                 isSpecifiedModal
                   ? styles.paddingNone
-                  : attrGroupItem?.attributes?.length || attrGroupItem?.steps?.length
+                  : attrGroupItem?.attributes?.length
                   ? styles.paddingRounded
                   : ''
               } ${
@@ -638,31 +671,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             >
               <table className={`${styles.table}`}>
                 <tbody>
-                  {autoSteps?.map((step, stepIndex) => {
-                    let curStep = stepIndex;
-                    ++curStep;
-
-                    return (
-                      <tr
-                        key={stepIndex}
-                        className={`cursor-pointer flex-between`}
-                        onClick={handleOpenAutoStepModal(step, stepIndex)}
-                      >
-                        <td className="flex-start">
-                          <BodyText fontFamily="Roboto" level={5}>
-                            {curStep < 10 ? `0${curStep}` : curStep}
-                          </BodyText>
-                          <BodyText fontFamily="Roboto" level={5}>
-                            {step.name}
-                          </BodyText>
-                        </td>
-                        <td className="flex-start">
-                          <ActionRightLeftIcon />
-                        </td>
-                      </tr>
-                    );
-                  })}
-
                   {attrGroupItem.attributes?.map((attribute, attrIndex) =>
                     renderAttributeRowItem(attribute, attrIndex),
                   )}

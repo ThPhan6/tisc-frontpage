@@ -2,15 +2,21 @@ import React, { useEffect, useState } from 'react';
 
 import { Radio } from 'antd';
 
+import { cloneDeep } from 'lodash';
+
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
-import styles from './styles/checkboxList.less';
+import styles from './styles/checkboxDynamic.less';
+
+interface OptionProps extends CheckboxValue {
+  parentId: string;
+}
 
 export interface CheckboxOption {
-  options: CheckboxValue[];
+  options: OptionProps[];
   heading?: string | React.ReactNode;
   optionRadioLabel?: string | React.ReactNode;
   optionRadioValue?: string;
@@ -40,24 +46,59 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
   chosenItems,
 }) => {
   const [curSelect, setCurSelect] = useState<CheckboxValue[] | undefined>([]);
-  const [selectAll, setSelectAll] = useState<boolean>(false);
+  const [selectAll, setSelectAll] = useState<string[]>([]);
 
   useEffect(() => {
-    setCurSelect(chosenItems);
-    setSelectAll(chosenItems?.length === data.options.length);
-  }, [JSON.stringify(chosenItems)]);
+    const currentSelect: CheckboxValue[] = [];
+    const selectAllIds: string[] = [];
+
+    data.options.forEach((item) => {
+      const optSelected: CheckboxValue[] = chosenItems
+        ?.filter((selectedItem) => item.value === selectedItem.value)
+        .filter(Boolean) as CheckboxValue[];
+
+      if (optSelected?.length) {
+        optSelected.forEach((el) => {
+          currentSelect.push(el);
+        });
+      }
+
+      if (
+        data.optionRadioValue &&
+        currentSelect?.length === data.options.length &&
+        data.options.some((opt) => currentSelect.map((el) => el.value).includes(opt.value))
+      ) {
+        selectAllIds.push(data.optionRadioValue);
+      } else if (data.optionRadioValue) {
+        selectAllIds.filter((id) => id !== data.optionRadioValue);
+      }
+    });
+
+    setCurSelect(currentSelect);
+    setSelectAll(selectAllIds);
+  }, [chosenItems]);
 
   const handleClickSelectAll = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    setSelectAll(false);
+    const isSelectedAll = !selectAll?.some((id) => data.optionRadioValue === id);
+
+    const selectAllIdClone = cloneDeep(selectAll);
+
+    const newIds = isSelectedAll
+      ? selectAllIdClone.filter((id) => id !== data.optionRadioValue)
+      : selectAllIdClone.concat(data.optionRadioValue as string);
+
+    setSelectAll(newIds);
     setCurSelect([]);
     onChange?.([]);
   };
 
   const handleSelectOption = (opts: CheckboxValue[]) => {
     let otherSelected: CheckboxValue[] = [];
+
+    const isSelectedAll = !selectAll?.some((id) => data.optionRadioValue === id);
 
     if (data.combinable && selected) {
       otherSelected = selected.reduce((finalData, selectedItem) => {
@@ -66,10 +107,20 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
         }
         return finalData;
       }, [] as CheckboxValue[]);
+
+      const selectAllIdClone = cloneDeep(selectAll);
+
+      const newIds = isSelectedAll
+        ? selectAllIdClone.filter((id) => id !== data.optionRadioValue)
+        : selectAllIdClone.concat(data.optionRadioValue as string);
+
+      setSelectAll(newIds);
     }
 
     onChange?.([...opts, ...otherSelected]);
   };
+
+  console.log(chosenItems, data.options);
 
   return (
     <div className={styles.checkboxListContainer}>
@@ -88,8 +139,12 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
             </BodyText>
 
             <Radio
-              checked={selectAll}
-              disabled={data.disabledSelectAll}
+              checked={
+                selectAll?.includes(data.optionRadioValue as string) ||
+                (selected?.length === data.options.length &&
+                  selectAll?.includes(data.optionRadioValue as string))
+              }
+              disabled={chosenItems?.length !== data.options.length}
               onClick={handleClickSelectAll}
               style={{ display: 'flex', flexDirection: 'row-reverse', marginRight: 0 }}
             >

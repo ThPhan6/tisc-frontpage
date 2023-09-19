@@ -127,7 +127,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               <Checkbox
                 id={`${option.value}_${index}_${randomId}`}
                 {...option}
-                onChange={onOneChange}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onOneChange?.(e.target.value);
+                }}
               />
             </label>
           ) : (

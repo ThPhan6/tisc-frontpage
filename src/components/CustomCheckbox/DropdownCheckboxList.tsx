@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { Collapse, Radio, message } from 'antd';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
@@ -27,7 +26,7 @@ interface DropdownCheckboxListProps {
   data: DropdownCheckboxItem[];
   renderTitle?: (data: DropdownCheckboxItem) => string | number | React.ReactNode;
   onChange?: (value: CheckboxValue[]) => void;
-  onOneChange?: (e: CheckboxChangeEvent) => void;
+  onOneChange?: (e: any | { isSelectedAll: boolean; optionIds: string[] }) => void;
   noCollapse?: boolean;
   combinable?: boolean;
   showCount?: boolean;
@@ -120,7 +119,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
         return;
       }
 
-      const isSelectedAll = selectAll?.some((id) => item.id === id);
+      const isSelectedAll = !selectAll?.some((id) => item.id === id);
 
       const activeKeyClone = cloneDeep(activeKey);
 
@@ -144,21 +143,32 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
 
         const newData = [...options, ...otherSelected];
 
+        const result = isSelectedAll ? [...otherSelected] : newData;
+
         ///
-        setCurSelect(isSelectedAll ? [...options] : newData);
+        setCurSelect(result);
+
         ///
-        onChange?.(isSelectedAll ? [...options] : newData);
+        onChange?.(result);
+
+        ///
+        onOneChange?.({ isSelectedAll, optionIds: options.map((el) => el.value) });
 
         const selectAllIdClone = cloneDeep(selectAll);
+
         const newIds = isSelectedAll
           ? selectAllIdClone.filter((id) => id !== item.id)
           : selectAllIdClone.concat(item.id);
 
         setSelectAll(newIds);
       } else {
-        setCurSelect(isSelectedAll ? [] : options);
+        const result = isSelectedAll ? options : [];
+
+        setCurSelect(result);
+
         ///
-        onChange?.(isSelectedAll ? [] : options);
+        onChange?.(result);
+
         ///
         setSelectAll(item.id);
       }
@@ -169,6 +179,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       <div className="flex-start w-full">
         <div className="flex-start w-full">
           {renderTitle?.(item) ?? index}
+
           {showCount ? (
             <span
               className={styles.dropdownCount}
@@ -181,6 +192,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
           ) : (
             ''
           )}
+
           {isSelectAll ? (
             (
               typeof activeKey === 'string' || typeof activeKey === 'number'
@@ -197,6 +209,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
             )
           ) : null}
         </div>
+
         {isSelectAll ? (
           <div
             className={styles.selectAll}
