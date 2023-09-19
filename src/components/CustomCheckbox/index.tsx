@@ -15,10 +15,14 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   inputPlaceholder = 'type here',
   options,
   onChange,
+  onOneChange,
   isCheckboxList,
   selected,
   checkboxClass = '',
   heightItem = '32px',
+  unTick,
+  filterBySelected,
+  chosenItems,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -31,9 +35,17 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   }, [otherInput && clearOtherInput]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
-    const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
+    let newCheckedValues = [...checkedValues];
 
-    const newCheckboxValue = checkedValues.map((value) =>
+    const selectedValues = selected?.map((o) => o.value).filter(Boolean);
+
+    if (filterBySelected && selectedValues?.length) {
+      newCheckedValues = checkedValues.filter((el) => !selectedValues.includes(el as string));
+    }
+
+    const haveOtherInput = newCheckedValues.some((checkbox) => checkbox === 'other');
+
+    const newCheckboxValue = newCheckedValues.map((value) =>
       value === 'other'
         ? { label: inputValue, value: 'other' }
         : options.filter((item) => item.value === value)[0],
@@ -41,6 +53,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     if (inputValue && !haveOtherInput) {
       newCheckboxValue.push({ label: inputValue, value: 'other' });
     }
+
     if (onChange) {
       onChange(newCheckboxValue);
     }
@@ -80,7 +93,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     <div
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
         isCheckboxList && style['item-list-checkbox']
-      } ${style['color-checkbox-checked']} ${checkboxClass}`}
+      } ${style['color-checkbox-checked']} ${unTick ? 'unTick' : ''} ${checkboxClass}`}
       onClick={(e) => e.stopPropagation()}
     >
       <Checkbox.Group
@@ -92,7 +105,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
           isCheckboxList ? (
             <label
               key={option.value}
-              className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
+              className={`${style['item-wrapper']} ${
+                chosenItems?.map((el) => el.value).includes(option.value)
+                  ? 'item-checkbox-active'
+                  : ''
+              } item-wrapper-custom`}
               style={{ minHeight: heightItem }}
               htmlFor={`${option.value}_${index}_${randomId}`}
             >
@@ -107,12 +124,16 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               >
                 {option.label}
               </div>
-              <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
+              <Checkbox
+                id={`${option.value}_${index}_${randomId}`}
+                {...option}
+                onChange={onOneChange}
+              />
             </label>
           ) : (
             <div
               key={option.value}
-              className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
+              className={`${style['item-checkbox']} item-wrapper-checkbox`}
               style={{ minHeight: heightItem }}
             >
               <Checkbox {...option} style={{ maxWidth: '100%' }}>

@@ -23,9 +23,8 @@ interface CheckboxListProps {
   onChange?: (value: CheckboxValue[]) => void;
 }
 
-const CheckboxList: React.FC<CheckboxListProps> = (props) => {
+const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange }) => {
   const [selectAll, setSelectAll] = useState(false);
-  const { data, selected, onChange } = props;
 
   return (
     <div className={styles.checkboxListContainer}>

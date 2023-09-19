@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+
 export type CheckboxValue = {
   label: string | ReactNode;
   value: string | number;
@@ -13,9 +15,14 @@ export interface CustomCheckboxProps {
   clearOtherInput?: boolean;
   inputPlaceholder?: string;
   onChange?: (value: CheckboxValue[]) => void;
+  onOneChange?: (e: CheckboxChangeEvent) => void;
   isCheckboxList?: boolean;
   selected?: CheckboxValue[];
   checkboxClass?: string;
   heightItem?: string;
   style?: CSSProperties;
+  disabled?: boolean;
+  unTick?: boolean;
+  filterBySelected?: boolean;
+  chosenItems?: CheckboxValue[];
 }

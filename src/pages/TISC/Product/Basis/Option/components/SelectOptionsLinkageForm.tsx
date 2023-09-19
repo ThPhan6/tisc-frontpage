@@ -29,7 +29,7 @@ export const SelectOptionsLinkageForm: FC = () => {
         setLinkageState({
           ...preLinkageState,
           connectionList: [],
-          expandSubOptionIds: [],
+          // expandSubOptionIds: [],
         }),
       );
     }
@@ -41,7 +41,7 @@ export const SelectOptionsLinkageForm: FC = () => {
         chosenOptionIds: [],
         connectionList: [],
         originConnectionList: [],
-        expandSubOptionIds: [],
+        // expandSubOptionIds: [],
         rootSubItemId: '',
         rootMainOptionId: '',
         rootSubItemProductId: '',

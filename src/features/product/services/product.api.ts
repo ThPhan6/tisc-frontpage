@@ -13,7 +13,7 @@ import {
   setProductList,
   setProductSummary,
   setRelatedProduct,
-} from '../reducers/slices';
+} from '../reducers/product';
 import {
   BrandSummary,
   GetListProductForDesignerRequestParams,
@@ -25,6 +25,7 @@ import {
   ProductSummary,
   RelatedCollection,
 } from '../types';
+import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { PaginationResponse } from '@/components/Table/types';
 import { SelectSpecificationBodyRequest } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
@@ -196,17 +197,44 @@ export const likeProductById = async (productId: string) => {
     });
 };
 
+export const getAutoStepData = (productId: string, specificationId: string) => {
+  // showPageLoading();
+  return request<{ data: AutoStepOnAttributeGroupResponse[] }>(`/api/step`, {
+    method: 'GET',
+    params: { product_id: productId, specification_id: specificationId },
+  })
+    .then((res) => {
+      // hidePageLoading();
+      return res.data;
+    })
+    .catch((err) => {
+      // hidePageLoading();
+
+      message.error(err?.data?.message ?? 'Failed to get step');
+      return [] as AutoStepOnAttributeGroupResponse[];
+    });
+};
+
 export const getProductById = async (productId: string) => {
+  // const attributeGroupIds = store.getState().product.details.specification_attribute_groups.map(el => el.id);
+
+  // const autoStepData = attributeGroupId ? await getAutoStepData(productId, attributeGroupId) : [];
+
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
+      // const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
+      //   el.id === attributeGroupId ? { ...el, steps: autoStepData } : el,
+      // );
+
       store.dispatch(
         setPartialProductDetail({
           ...res.data,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';
           }) as ['', '', '', ''],
+          // specification_attribute_groups: newSpecificationAttributeGroup,
         }),
       );
     })
@@ -218,6 +246,13 @@ export const getProductById = async (productId: string) => {
 
 export const updateProductCard = async (productId: string, data: ProductFormData) => {
   showPageLoading();
+
+  const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
+
+  const autoStepData = attributeGroupId
+    ? await getAutoStepData(productId, attributeGroupId['specification_attribute_groups'])
+    : [];
+
   return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
     method: 'PUT',
     data,
@@ -226,7 +261,14 @@ export const updateProductCard = async (productId: string, data: ProductFormData
       hidePageLoading();
       getProductById(productId);
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
-      return res.data;
+
+      const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
+        el.id === attributeGroupId?.['specification_attribute_groups']
+          ? { ...el, steps: autoStepData }
+          : el,
+      );
+
+      return { ...res.data, specification_attribute_groups: newSpecificationAttributeGroup };
     })
     .catch((error) => {
       hidePageLoading();

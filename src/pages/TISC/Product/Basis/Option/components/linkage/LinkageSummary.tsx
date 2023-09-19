@@ -3,7 +3,7 @@ import { useLocation } from 'umi';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
-import { BodyText } from '@/components/Typography';
+import { BodyText, MainTitle } from '@/components/Typography';
 
 import {
   linkageSummarySelector,
@@ -60,9 +60,9 @@ export const LinkageSummary = () => {
     <div className={style.borderBottom}>
       <div className={style.topHeader}>
         <div className="flex-start">
-          <BodyText fontFamily="Roboto" level={4} style={{ textTransform: 'uppercase' }}>
+          <MainTitle level={3} customClass="text-uppercase">
             Group Name :
-          </BodyText>
+          </MainTitle>
           <BodyText
             fontFamily="Roboto"
             level={4}

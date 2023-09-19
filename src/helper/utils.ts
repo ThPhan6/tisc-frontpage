@@ -443,3 +443,16 @@ export const checkBrowser = () => {
 
 export const checkNil = (value: string | number) =>
   value === '' || typeof value === null || typeof value === undefined;
+
+export const uniqueArrayBy = (arr: any[], uniqKeys: string[]) => {
+  const obj = Object.create(null);
+
+  return arr.filter((el) => {
+    const key = uniqKeys.map((k) => el[k]).join('|');
+
+    if (!obj[key]) {
+      obj[key] = true;
+      return true;
+    }
+  });
+};

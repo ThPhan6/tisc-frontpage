@@ -305,6 +305,11 @@ li.ant-menu-submenu {
   cursor: pointer;
 }
 
+.ant-input:focus,
+.ant-input-focused {
+  border-color: transparent;
+}
+
 .ant-table tr > td,
 .ant-table tr > th {
   white-space: nowrap;
@@ -318,6 +323,17 @@ li.ant-menu-submenu {
   background: #f5f5f5;
 }
 
+.unTick {
+  .ant-checkbox.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: transparent;
+    border-color: #000;
+  }
+
+  .ant-checkbox-checked .ant-checkbox-inner::after {
+    opacity: 0;
+  }
+}
+
 .ant-checkbox.ant-checkbox-checked .ant-checkbox-inner {
   background-color: #2b39d4;
   border-color: #2b39d4;
@@ -325,6 +341,10 @@ li.ant-menu-submenu {
 .ant-checkbox .ant-checkbox-inner {
   border-color: #000;
   border-radius: 0;
+}
+
+.ant-collapse {
+  background: transparent;
 }
 
 .border-top {
