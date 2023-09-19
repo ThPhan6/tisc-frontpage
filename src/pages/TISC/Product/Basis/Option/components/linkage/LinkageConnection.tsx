@@ -4,6 +4,8 @@ import { ReactComponent as InactivePairIcon } from '@/assets/icons/inactive-pair
 import { ReactComponent as PairIcon } from '@/assets/icons/pair-icon-16.svg';
 import { ReactComponent as UnPairIcon } from '@/assets/icons/unpair-icon-16.svg';
 
+import { sortBy } from 'lodash';
+
 import store, { useAppSelector } from '@/reducers';
 
 import { BodyText } from '@/components/Typography';
@@ -16,7 +18,9 @@ const unPairProps = { title: 'Unpaired' } as any;
 const inactiveProps = { title: 'Inactive' } as any;
 
 export const LinkageConnection = () => {
-  const connectionList = useAppSelector((state) => state.linkage.connectionList);
+  const connectionList = useAppSelector((state) =>
+    sortBy(state.linkage.connectionList, (o) => o.productId),
+  );
   const rootSubItemProductId = useAppSelector((state) => state.linkage.rootSubItemProductId);
   const chosenOptionIds = useAppSelector((state) => state.linkage.chosenOptionIds);
 
@@ -51,7 +55,7 @@ export const LinkageConnection = () => {
                 style={{ padding: '0 17px 8px 8px', minHeight: 20 }}
               >
                 <BodyText fontFamily="Roboto" level={6}>
-                  {rootSubItemProductId} to {item.productId}
+                  {rootSubItemProductId} - {item.productId}
                 </BodyText>
 
                 {chosenOptionIds.includes(item.pairId) ? (
