@@ -397,9 +397,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }));
     }
 
-    console.log('optionsSelected', optionsSelected);
-    console.log('newLinkedOptionData', newLinkedOptionData);
-
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
 
     store.dispatch(setOptionsSelected(optionsSelected));

@@ -386,8 +386,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
-    console.log(curOrder, curPickedOption);
-
     //
     getLinkedOptionByOptionIds(curPickedOption.id, newExceptOptionId).then((res) => {
       store.dispatch(
