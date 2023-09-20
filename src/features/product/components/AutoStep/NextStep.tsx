@@ -688,7 +688,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         setLinkedOptionData({ index: slide, pickedData: newPickedData, linkedData: linkedData }),
       );
 
-      const newCurOptionSelected = optionsSelected[curOrder - 1].options.map((sub) => ({
+      const newCurOptionSelected = cloneDeep(optionsSelected)[curOrder - 1].options.map((sub) => ({
         ...sub,
         replicate: sub.id === subOpt.id ? --sub.replicate : sub.replicate,
       }));
