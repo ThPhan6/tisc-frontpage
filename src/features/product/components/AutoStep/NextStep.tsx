@@ -407,30 +407,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
             subs: el.subs.map((item) => ({
               ...item,
               subs: item.subs.map((sub) => {
-                const preOptionId = [curPickedOption.id, curPickedOption.pre_option].length
-                  ? [curPickedOption.id, curPickedOption.pre_option].join(',')
-                  : undefined;
-
-                const preNames = [
-                  curPickedOption.pre_option_name ?? '',
-                  trimEnd(
-                    `${curPickedOption.value_1} ${curPickedOption.value_2} ${
-                      curPickedOption.unit_1 || curPickedOption.unit_2
-                        ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
-                        : ''
-                    }`,
-                  ),
-                ].filter(Boolean);
-                const preOptionName: string | undefined = preNames.length
-                  ? preNames.join(', ')
-                  : undefined;
-
                 return {
                   ...sub,
                   sub_id: item.id,
                   sub_name: item.name,
                   pre_option: curPickedOption.id,
-                  pre_option_name: preOptionName,
                 };
               }),
             })),
@@ -858,12 +839,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                               <span className="product-id-label">Product ID:</span>
                               <span className="product-id-value">{option.product_id}</span>
                             </div>
-                            {option.pre_option_name ? (
-                              <div className="pre-option" title={option.pre_option_name}>
-                                <span className="product-id-label">Pre Option:</span>
-                                <span className="product-id-value">{option.pre_option_name}</span>
-                              </div>
-                            ) : null}
                           </div>
                         </AttributeOptionLabel>
                         <div

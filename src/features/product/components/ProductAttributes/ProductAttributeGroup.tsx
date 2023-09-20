@@ -324,7 +324,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       // set other picked data
       const options = getGroupOptions(autoStep.options);
       const prevStep = autoSteps[index === 0 ? 0 : index - 1];
-      const prevStepOption = prevStep.options[0];
 
       if (index !== 0) {
         const newPickedData = options.map((el) => ({
@@ -336,11 +335,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               if (sub.pre_option === el.id) {
                 newSub = {
                   ...sub,
-                  pre_option_name: trimEnd(
-                    `${opt.value_1} ${opt.value_2} ${
-                      opt.unit_1 || opt.unit_2 ? `- ${opt.unit_1} ${opt.unit_2}` : ''
-                    }`,
-                  ),
                 };
               }
             });
@@ -357,11 +351,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       // save highlight left panel
       pickedOption[index] = {
         id: nextStep.options[0].pre_option || nextStep.options[0].id,
-        pre_option: `${prevStepOption.value_1} ${prevStepOption.value_2} ${
-          prevStepOption.unit_1 || prevStepOption.unit_2
-            ? `- ${prevStepOption.unit_1} ${prevStepOption.unit_2}`
-            : ''
-        }`,
+        pre_option: autoStep.options[index === 0 ? 0 : index - 1]?.pre_option,
       };
 
       // handle get the ID of previous active option on left panel
@@ -397,11 +387,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               if (sub.pre_option === el.id) {
                 newSub = {
                   ...sub,
-                  pre_option_name: trimEnd(
-                    `${el.value_1} ${el.value_2} ${
-                      el.unit_1 || el.unit_2 ? `- ${el.unit_1} ${el.unit_2}` : ''
-                    }`,
-                  ),
                 };
               }
             });
@@ -412,6 +397,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }));
     }
 
+    console.log('optionsSelected', optionsSelected);
     console.log('newLinkedOptionData', newLinkedOptionData);
 
     store.dispatch(setLinkedOptionData(newLinkedOptionData));

@@ -15,8 +15,6 @@ export interface OptionReplicateResponse {
   id: string;
   replicate: number;
   pre_option?: string;
-  pre_option_id?: string;
-  pre_option_name?: string;
   picked?: boolean;
   value_1: string;
   value_2?: string;
