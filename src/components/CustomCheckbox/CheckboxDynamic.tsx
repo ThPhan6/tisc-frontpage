@@ -149,7 +149,7 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
                 (selected?.length === data.options.length &&
                   selectAll?.includes(data.optionRadioValue as string))
               }
-              disabled={chosenItems?.length !== data.options.length}
+              disabled={data.disabledSelectAll ?? chosenItems?.length !== data.options.length}
               onClick={handleClickSelectAll}
               style={{ display: 'flex', flexDirection: 'row-reverse', marginRight: 0 }}
             >

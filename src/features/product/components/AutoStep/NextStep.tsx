@@ -386,6 +386,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
+    console.log(curOrder, curPickedOption);
+
     //
     getLinkedOptionByOptionIds(curPickedOption.id, newExceptOptionId).then((res) => {
       store.dispatch(
@@ -404,19 +406,33 @@ export const NextStep: FC<NextStepProps> = ({}) => {
             ...el,
             subs: el.subs.map((item) => ({
               ...item,
-              subs: item.subs.map((sub) => ({
-                ...sub,
-                sub_id: item.id,
-                sub_name: item.name,
-                pre_option: curPickedOption.id,
-                pre_option_name: trimEnd(
-                  `${curPickedOption.value_1} ${curPickedOption.value_2} ${
-                    curPickedOption.unit_1 || curPickedOption.unit_2
-                      ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
-                      : ''
-                  }`,
-                ),
-              })),
+              subs: item.subs.map((sub) => {
+                const preOptionId = [curPickedOption.id, curPickedOption.pre_option].length
+                  ? [curPickedOption.id, curPickedOption.pre_option].join(',')
+                  : undefined;
+
+                const preNames = [
+                  curPickedOption.pre_option_name ?? '',
+                  trimEnd(
+                    `${curPickedOption.value_1} ${curPickedOption.value_2} ${
+                      curPickedOption.unit_1 || curPickedOption.unit_2
+                        ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
+                        : ''
+                    }`,
+                  ),
+                ].filter(Boolean);
+                const preOptionName: string | undefined = preNames.length
+                  ? preNames.join(', ')
+                  : undefined;
+
+                return {
+                  ...sub,
+                  sub_id: item.id,
+                  sub_name: item.name,
+                  pre_option: curPickedOption.id,
+                  pre_option_name: preOptionName,
+                };
+              }),
             })),
           })),
         }),
@@ -616,7 +632,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
         const newAllLinkedData: LinkedOptionProps[] = [];
 
-        /* get all option selected, that means one group may be has options duplicate  selected */
+        /* get all options selected, that means one group may be has duplicate options   selected */
         allLinkedDataHasOptionSelected[slide].forEach((opt) => {
           const subs: any[] = [];
           let id: string = '';
@@ -637,7 +653,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
         const newAllUniqueLinkedData = uniqBy(newAllLinkedData, 'id');
 
-        /// filter group option has the same subs, in case want to gather options has the same group
+        /// filter group option has the same subs, in case want to gather unique options into the same group
         // allLinkedDataHasOptionSelected[slide].reduce(
         //   (pre: any, cur: any) => {
         //     const found = pre.find((item: any) => item.id === cur.id);
@@ -739,8 +755,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       );
     };
 
-  console.log('optionsSelected', optionsSelected);
-
   return (
     <div className={styles.nextStep}>
       {/* top bar */}
@@ -810,6 +824,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                   isSelectAll: true,
                   multipleSelectAll: true,
                   optionRadioValue: pickedSub.id,
+                  disabledSelectAll: true,
                   // disabledSelectAll:
                   //   currentSubPickedOptionSelected.length !== pickedSub.subs.length,
                   optionRadioLabel: (
@@ -838,13 +853,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                         }`}
                       >
                         <AttributeOptionLabel className="w-full" option={option} key={subIdx}>
-                          <div className="d-flex align-item-flex-start flex-column">
-                            <div style={{ marginRight: 16 }}>
+                          <div className="d-flex align-item-flex-start justify-between option-info">
+                            <div className="product-id">
                               <span className="product-id-label">Product ID:</span>
                               <span className="product-id-value">{option.product_id}</span>
                             </div>
                             {option.pre_option_name ? (
-                              <div>
+                              <div className="pre-option" title={option.pre_option_name}>
                                 <span className="product-id-label">Pre Option:</span>
                                 <span className="product-id-value">{option.pre_option_name}</span>
                               </div>

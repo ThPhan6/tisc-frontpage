@@ -206,6 +206,19 @@
         box-shadow: @border-bottom-light;
       }
     }
+
+    :global(.product-id) {
+      max-width: 45%;
+      margin-right: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    :global(.pre-option) {
+      min-width: 50%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   :global(.checkbox-item-active) {
