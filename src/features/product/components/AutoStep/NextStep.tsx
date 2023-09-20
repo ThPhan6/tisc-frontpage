@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { message } from 'antd';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // import { ReactComponent as LineRightStepIcon } from '@/assets/icons/line-right-blue-24.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
@@ -11,12 +12,12 @@ import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-si
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { uniqueArrayBy } from '@/helper/utils';
-import { cloneDeep, flatMap, isNull, isUndefined, uniqBy } from 'lodash';
+import { cloneDeep, flatMap, isNull, isUndefined, trimEnd, uniq, uniqBy } from 'lodash';
 
 import {
   setLinkedOptionData,
   setOptionsSelected,
-  setPickedOptionId,
+  setPickedOption,
   setSlide,
   setSlideBar,
 } from '../../reducers';
@@ -43,10 +44,10 @@ interface NextStepProps {
   // setSlide: (slide: number) => void;
 }
 export const NextStep: FC<NextStepProps> = ({}) => {
+  const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
   const [allLinkedData, setAllLinkedData] = useState<{ [slide: string]: LinkedOptionProps[] }>({});
 
   const slide = useAppSelector((state) => state.autoStep.slide as number);
-
   let curOrder = slide;
   curOrder += 2;
 
@@ -54,17 +55,18 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   const step = useAppSelector((state) => state.autoStep.step);
 
-  const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
-
   const optionsSelected = useAppSelector((state) => state.autoStep.optionsSelected);
 
-  const pickedOptionId = useAppSelector((state) => state.autoStep.pickedOptionId);
-
-  const curPickedId = pickedOptionId[slide];
-
   const linkedOptionData = useAppSelector((state) => state.autoStep.linkedOptionData);
+
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
+
+  const pickedOption = useAppSelector((state) => state.autoStep.pickedOption);
+  // const curPickedOption = pickedOption[slide];
+  // const curPickedSubData = flatMap(pickedData.map((el) => el.subs));
+  const curPicked = pickedOption[slide];
+  // curPickedSubData?.find((el) => el.id === curPickedOption?.id);
 
   /* current option ticked on left panel on each step */
   const pickedSubs = flatMap(pickedData.map((el) => el.subs));
@@ -72,7 +74,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const allPickedSubs = flatMap(
     pickedSubs.map((el) => ({
       value: el.id,
-      label: el.product_id,
+      label: el.pre_option,
     })),
   );
 
@@ -155,11 +157,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     store.dispatch(setSlide(newSlide));
 
-    const prevOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
-
     const newLinkedOptionData = [...linkedOptionData];
 
-    const curAllLinkedIdSelect = prevOptionSelected.map((el) => el.id);
+    const curOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
+    const curAllLinkedIdSelect = curOptionSelected.map((el) => el.id);
 
     const isGetLinkedOption =
       /// have linked id
@@ -169,14 +170,14 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       /// dont have linked data
       !newLinkedOptionData[newSlide]?.linkedData?.length;
 
-    const optionId = pickedOptionId[newSlide];
+    const currentPickedOption = pickedOption[newSlide];
 
-    if (!isGetLinkedOption || !optionId) {
+    if (!isGetLinkedOption || !currentPickedOption) {
       return;
     }
 
-    if (slide === 0) {
-      const res = await getLinkedOptionByOptionIds(optionId);
+    if (newSlide === 0) {
+      const res = await getLinkedOptionByOptionIds(currentPickedOption.id);
 
       newLinkedOptionData[newSlide] = { ...newLinkedOptionData[newSlide], linkedData: res };
 
@@ -190,13 +191,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         if (order < curOrder - 1) {
           const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
 
-          prevAllLinkedIdSelect = prevAllLinkedIdSelect.concat(optionSelectedIds);
+          prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
         }
       });
 
       const newExceptOptionIds = prevAllLinkedIdSelect.join(',');
 
-      const res = await getLinkedOptionByOptionIds(optionId, newExceptOptionIds);
+      const res = await getLinkedOptionByOptionIds(currentPickedOption.id, newExceptOptionIds);
 
       newLinkedOptionData[newSlide] = { ...newLinkedOptionData[newSlide], linkedData: res };
 
@@ -215,9 +216,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
-    const prevOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
+    const curOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
+    const curAllLinkedIdSelect = curOptionSelected.map((el) => el.id);
 
-    if (!prevOptionSelected.length) {
+    if (!curOptionSelected.length) {
       message.error('Please select options');
       return;
     }
@@ -237,8 +239,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     const newLinkedOptionData = [...linkedOptionData];
 
-    const curAllLinkedIdSelect = prevOptionSelected.map((el) => el.id);
-
     const isGetLinkedOption =
       /// have linked id
       !!curAllLinkedIdSelect.length &&
@@ -249,9 +249,9 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     let newLinkedData: any = [];
 
-    const optionId = pickedOptionId[newSlide];
+    const currentPickedOption = pickedOption[newSlide];
     /// call rest option when update
-    if (isGetLinkedOption && optionId) {
+    if (isGetLinkedOption && currentPickedOption) {
       const orders = Object.keys(optionsSelected).map((el) => Number(el));
 
       let prevAllLinkedIdSelect: string[] = [];
@@ -260,7 +260,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         if (order <= curOrder) {
           const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
 
-          prevAllLinkedIdSelect = prevAllLinkedIdSelect.concat(optionSelectedIds);
+          prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
         }
       });
 
@@ -269,22 +269,20 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       newLinkedData =
         newSlide > 0 && !newExceptOptionIds
           ? []
-          : await getLinkedOptionByOptionIds(optionId, newExceptOptionIds);
+          : await getLinkedOptionByOptionIds(currentPickedOption.id, newExceptOptionIds);
     }
 
     /// next picked data is collected by prev linked data and its option selected
     const newPickedData: LinkedOptionProps[] = [];
 
-    const prevOptionSelectedIds = prevOptionSelected.map((el) => el.id);
-
-    /* all prev options in multiple groups(with diff picked options) selected */
+    /* all options selected in multiple groups */
     allLinkedData?.[prevSlide]?.forEach((el) => {
-      const subItemSelected: LinkedSubOptionProps[] = [];
+      const subItemSelected: OptionReplicateResponse[] = [];
       let subOptionId = '';
       let subOptionName = '';
 
       el.subs.forEach((sub) => {
-        if (prevOptionSelectedIds.includes(sub.id)) {
+        if (curAllLinkedIdSelect.includes(sub.id)) {
           subItemSelected.push(sub);
         }
 
@@ -301,23 +299,28 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       newPickedData.push({ id: subOptionId, name: subOptionName, subs: subItemSelected });
     });
 
-    // /* all options selected in multiple groups(with single picked option) */
-    // const prevPickedId = pickedOptionId[prevSlide];
+    // /* all options selected in single group */
+    // const prevPickedId = pickedOption[prevSlide];
+
     // const prevOptionSelectedIds = prevOptionSelected
     //   .map((el) => (el.pre_option === prevPickedId ? el.id : undefined))
     //   .filter(Boolean) as any;
+
     // const prevLinkedSubOptions = flatMap(
     //   linkedOptionData[prevSlide].linkedData.map((el) => el.subs),
     // );
+
     // prevLinkedSubOptions.forEach((el) => {
-    //   const a: OptionReplicateResponse[] = [];
+    //   const subs: OptionReplicateResponse[] = [];
+
     //   el.subs.forEach((sub) => {
     //     if (prevOptionSelectedIds.includes(sub.id)) {
-    //       a.push(sub as any);
+    //       subs.push(sub as any);
     //     }
     //   });
-    //   if (a.length) {
-    //     newPickedData.push({ id: el.id, name: el.name, subs: a });
+
+    //   if (subs.length) {
+    //     newPickedData.push({ id: el.id, name: el.name, subs: subs });
     //   }
     // });
     /* ------------------------------------------------------------------------ */
@@ -334,18 +337,36 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
   };
 
-  const handleSelectPickedOption = (opts: CheckboxValue[]) => {
-    const newOptionsSelected = opts.map((el) => el.value).filter(Boolean) as string[];
-    const optionId = newOptionsSelected[newOptionsSelected.length - 1];
+  const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
+    const curOptionSelected = {
+      id: e.target.value,
+      pre_option: (e.target as any).pre_option,
+    };
 
-    if (!newOptionsSelected?.length) {
+    const isPrevPickedOption =
+      curPicked?.id === curOptionSelected.id &&
+      curPicked?.pre_option === curOptionSelected.pre_option;
+
+    const curPickedSubData = flatMap(pickedData.map((el) => el.subs));
+
+    const curPickedOption = curPickedSubData.find(
+      (el) => el.id === curOptionSelected.id && el.pre_option === curOptionSelected.pre_option,
+    );
+
+    if (isPrevPickedOption) {
       store.dispatch(setLinkedOptionData({ index: slide, pickedData: pickedData, linkedData: [] }));
 
-      if (curPickedId) {
-        store.dispatch(setPickedOptionId({ slide: slide, pickedId: '' }));
+      if (curPickedOption?.id) {
+        store.dispatch(setPickedOption({ slide: slide, id: '', pre_option: '' }));
       }
-    } else {
-      store.dispatch(setPickedOptionId({ slide: slide, pickedId: optionId }));
+    } else if (curPickedOption?.id) {
+      store.dispatch(
+        setPickedOption({
+          slide: slide,
+          id: curPickedOption.id,
+          pre_option: curPickedOption?.pre_option,
+        }),
+      );
     }
 
     const orders = Object.keys(optionsSelected).map((el) => Number(el));
@@ -355,14 +376,18 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     orders.forEach((order) => {
       if (order < curOrder) {
         const optionSelectedIds = Object.values(optionsSelected[order].options.map((el) => el.id));
-        prevAllLinkedIdSelect = prevAllLinkedIdSelect.concat(optionSelectedIds);
+        prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
       }
     });
 
     const newExceptOptionId = slide === 0 ? undefined : prevAllLinkedIdSelect.join(',');
 
+    if (!curPickedOption?.id) {
+      return;
+    }
+
     //
-    getLinkedOptionByOptionIds(optionId, newExceptOptionId).then((res) => {
+    getLinkedOptionByOptionIds(curPickedOption.id, newExceptOptionId).then((res) => {
       store.dispatch(
         setLinkedOptionData({
           index: slide,
@@ -383,7 +408,14 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                 ...sub,
                 sub_id: item.id,
                 sub_name: item.name,
-                pre_option: optionId,
+                pre_option: curPickedOption.id,
+                pre_option_name: trimEnd(
+                  `${curPickedOption.value_1} ${curPickedOption.value_2} ${
+                    curPickedOption.unit_1 || curPickedOption.unit_2
+                      ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
+                      : ''
+                  }`,
+                ),
               })),
             })),
           })),
@@ -394,8 +426,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   //
   const handleSelectLinkedOption =
     (option: AutoStepLinkedOptionResponse) =>
-    (optionSelected: string | { isSelectedAll: boolean; optionIds: string[] }) => {
-      const { isSelectedAll, optionIds } = optionSelected as {
+    (event: CheckboxChangeEvent | { isSelectedAll: boolean; optionIds: string[] }) => {
+      const { isSelectedAll, optionIds } = event as {
         isSelectedAll: boolean;
         optionIds: string[];
       };
@@ -404,10 +436,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         linkedOptionData[slide].linkedData.map((el) => flatMap(el.subs.map((item) => item.subs))),
       );
 
-      const curOptionSelect =
-        typeof optionSelected === 'string'
-          ? (curLinkedData.filter((el) => el.id === optionSelected) as OptionReplicateResponse[])
-          : curLinkedData.filter((el) => optionIds.includes(el.id)).filter(Boolean);
+      const curOptionSelect = (event as any).target?.value
+        ? (curLinkedData.filter(
+            (el) => el.id === (event as any).target.value,
+          ) as OptionReplicateResponse[])
+        : curLinkedData.filter((el) => optionIds.includes(el.id)).filter(Boolean);
 
       const prevOptionSeleted = optionsSelected?.[curOrder]?.options.filter(Boolean) ?? [];
 
@@ -430,7 +463,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }
       });
 
-      const result = !prevOptionSeleted.length
+      const result: OptionReplicateResponse[] = !prevOptionSeleted.length
         ? curOptionSelect.filter(Boolean)
         : newOptionsSelected.filter(Boolean);
 
@@ -479,7 +512,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         * linked: [v,b,n]
 
         //* in case, the next order already has picked-option selected(highlighted) and linked-option related to that picked-option has selected;
-        //* then back to prev step, deselect that current option highlighted of the next step => remove that option, remove it linked-option, and remove current pickedId in the next step
+        //* then back to prev step, deselect that current option highlighted of the next step => need to remove that option, remove it linked-option, and remove current pickedId in the next step and its following
 
         /// current
         //* slide 2
@@ -509,11 +542,15 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         );
 
         /* remove next pickedId hightlighted */
-        const nextPickedId = pickedOptionId[slide + 1];
+        const nextPickedOption = pickedOption[slide + 1];
         store.dispatch(
-          setPickedOptionId({
+          setPickedOption({
             slide: slide + 1,
-            pickedId: prevOptionsSelectedIds.includes(nextPickedId) ? nextPickedId : '',
+            id: prevOptionsSelectedIds.includes(nextPickedOption.id) ? nextPickedOption.id : '',
+            pre_option: prevOptionsSelectedIds.includes(nextPickedOption.id)
+              ? nextPickedOption.pre_option
+              : '',
+            // name: prevOptionsSelectedIds.includes(nextPickedOption.id) ? nextPickedOption.name : '',
           }),
         );
 
@@ -577,29 +614,51 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           allLinkedDataHasOptionSelected = newResult;
         });
 
-        /// filter option has the same subs
-        const newAllLinkedData = allLinkedDataHasOptionSelected[slide].reduce(
-          (pre: any, cur: any) => {
-            const found = pre.find((item: any) => item.id === cur.id);
+        const newAllLinkedData: LinkedOptionProps[] = [];
 
-            if (!found) {
-              return pre.concat([cur]);
+        /* get all option selected, that means one group may be has options duplicate  selected */
+        allLinkedDataHasOptionSelected[slide].forEach((opt) => {
+          const subs: any[] = [];
+          let id: string = '';
+          let name: string = '';
+
+          result.forEach((el) => {
+            if (opt.id === el.sub_id) {
+              id = opt.id;
+              name = opt.name;
+              subs.push(el);
             }
+          });
 
-            return pre
-              .filter((item: any) => item.id !== cur.id)
-              .concat([
-                {
-                  id: cur.id,
-                  name: cur.name,
-                  subs: uniqBy(found.subs.concat(cur.subs), 'id'),
-                },
-              ]);
-          },
-          [],
-        );
+          if (id && name && subs.length) {
+            newAllLinkedData.push({ id, name, subs });
+          }
+        });
 
-        return { ...prevState, [slide]: newAllLinkedData };
+        const newAllUniqueLinkedData = uniqBy(newAllLinkedData, 'id');
+
+        /// filter group option has the same subs, in case want to gather options has the same group
+        // allLinkedDataHasOptionSelected[slide].reduce(
+        //   (pre: any, cur: any) => {
+        //     const found = pre.find((item: any) => item.id === cur.id);
+
+        //     if (!found) {
+        //       return pre.concat([cur]);
+        //     }
+
+        //     return pre.filter((item: any) => item.id !== cur.id);
+        //     .concat([
+        //       {
+        //         id: cur.id,
+        //         name: cur.name,
+        //         subs: uniqBy(found.subs.concat(cur.subs), 'id'),
+        //       },
+        //     ])
+        //   },
+        //   [],
+        // );
+
+        return { ...prevState, [slide]: newAllUniqueLinkedData };
       });
     };
 
@@ -608,7 +667,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       e.stopPropagation();
       e.preventDefault();
 
-      if (subOpt.replicate === 1) {
+      if (
+        subOpt.replicate === 1 ||
+        currentSubPickedOptionSelected?.some(
+          (el) => el.value !== subOpt.id && el.label !== subOpt.pre_option,
+        )
+      ) {
         return;
       }
 
@@ -616,12 +680,24 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         ...el,
         subs: el.subs.map((sub) => ({
           ...sub,
-          replicate: sub.id === subOpt.id ? --sub.replicate : 1,
+          replicate: sub.id === subOpt.id ? --sub.replicate : sub.replicate,
         })),
       }));
 
       store.dispatch(
         setLinkedOptionData({ index: slide, pickedData: newPickedData, linkedData: linkedData }),
+      );
+
+      const newCurOptionSelected = optionsSelected[curOrder - 1].options.map((sub) => ({
+        ...sub,
+        replicate: sub.id === subOpt.id ? --sub.replicate : sub.replicate,
+      }));
+
+      store.dispatch(
+        setOptionsSelected({
+          order: curOrder - 1,
+          options: newCurOptionSelected,
+        }),
       );
     };
 
@@ -629,6 +705,14 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     (subOpt: LinkedSubOptionProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
+
+      if (
+        currentSubPickedOptionSelected?.some(
+          (el) => el.value !== subOpt.id && el.label !== subOpt.pre_option,
+        )
+      ) {
+        return;
+      }
 
       const newPickedData = cloneDeep(pickedData).map((el) => ({
         ...el,
@@ -641,10 +725,25 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       store.dispatch(
         setLinkedOptionData({ index: slide, pickedData: newPickedData, linkedData: linkedData }),
       );
+
+      const newCurOptionSelected = cloneDeep(optionsSelected)[curOrder - 1].options.map((sub) => ({
+        ...sub,
+        replicate: sub.id === subOpt.id ? ++sub.replicate : sub.replicate,
+      }));
+
+      store.dispatch(
+        setOptionsSelected({
+          order: curOrder - 1,
+          options: newCurOptionSelected,
+        }),
+      );
     };
+
+  console.log('optionsSelected', optionsSelected);
 
   return (
     <div className={styles.nextStep}>
+      {/* top bar */}
       <div className={styles.topBar}>
         {/* slide bar */}
         <div className="flex-start">
@@ -703,9 +802,9 @@ export const NextStep: FC<NextStepProps> = ({}) => {
             return (
               <CheckboxDynamic
                 key={optIdx}
-                filterBySelected
+                // filterBySelected
                 chosenItems={currentSubPickedOptionSelected}
-                onChange={handleSelectPickedOption}
+                onOneChange={handleSelectPickedOption}
                 data={{
                   customItemClass: 'checkbox-item',
                   isSelectAll: true,
@@ -725,18 +824,31 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     </div>
                   ),
                   options: pickedSub.subs.map((option, subIdx) => ({
-                    parentId: pickedSub.id,
+                    pre_option: option.pre_option,
                     value: option.id,
                     label: (
                       <div
                         className={`flex-between w-full ${
-                          curPickedId === option.id ? 'checkbox-item-active' : ''
+                          (slide === 0 && pickedOption[slide]?.id === option.id) ||
+                          (slide !== 0 &&
+                            curPicked?.id === option.id &&
+                            curPicked?.pre_option === option.pre_option)
+                            ? 'checkbox-item-active'
+                            : ''
                         }`}
                       >
-                        <AttributeOptionLabel option={option} key={subIdx}>
-                          <div>
-                            <span className="product-id-label">Product ID:</span>
-                            <span className="product-id-value">{option.product_id}</span>
+                        <AttributeOptionLabel className="w-full" option={option} key={subIdx}>
+                          <div className="d-flex align-item-flex-start flex-column">
+                            <div style={{ marginRight: 16 }}>
+                              <span className="product-id-label">Product ID:</span>
+                              <span className="product-id-value">{option.product_id}</span>
+                            </div>
+                            {option.pre_option_name ? (
+                              <div>
+                                <span className="product-id-label">Pre Option:</span>
+                                <span className="product-id-value">{option.pre_option_name}</span>
+                              </div>
+                            ) : null}
                           </div>
                         </AttributeOptionLabel>
                         <div
@@ -750,7 +862,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                             Replicate
                           </BodyText>
                           <div
-                            className="flex-start"
+                            className={`flex-start ${
+                              currentSubPickedOptionSelected?.some(
+                                (el) => el.value === option.id && el.label === option.pre_option,
+                              )
+                                ? ''
+                                : 'replicate-disabled'
+                            }`}
                             style={{ height: 24 }}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -761,7 +879,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                               style={{ cursor: option.replicate === 1 ? 'default' : 'pointer' }}
                               onClick={handleDecreaseReplicate(option)}
                             />
-                            <BodyText fontFamily="Roboto" level={6} style={{ padding: '0 8px' }}>
+                            <BodyText
+                              fontFamily="Roboto"
+                              level={6}
+                              style={{ padding: '0 8px', width: 30 }}
+                            >
                               {option.replicate}
                             </BodyText>
                             <DropupIcon onClick={handleIncreaseReplicate(option)} />

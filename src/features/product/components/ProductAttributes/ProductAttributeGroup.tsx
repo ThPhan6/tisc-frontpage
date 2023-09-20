@@ -8,17 +8,18 @@ import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { capitalize, sortBy, uniq } from 'lodash';
+import { uniqueArrayBy } from '@/helper/utils';
+import { capitalize, flatMap, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
   OptionSelectedProps,
-  PickedOptionIdProps,
+  PickedOptionProps,
   setCurAttrGroupCollapse,
   setLinkedOptionData,
   setOptionsSelected,
   setPartialProductDetail,
-  setPickedOptionId,
+  setPickedOption,
   setSlide,
   setSlideBar,
   setStep,
@@ -120,13 +121,16 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
   const productId = useGetParamId();
+
   const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups } = details;
 
+  const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
-  const autoSteps: AutoStepOnAttributeGroupResponse[] =
-    sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ?? [];
+  const autoSteps = (sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ??
+    []) as AutoStepOnAttributeGroupResponse[];
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -158,27 +162,30 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   useEffect(() => {
     if (
-      curAttrGroupCollapseId?.['specification_attribute_groups'] === '' ||
-      curAttrGroupCollapseId?.['specification_attribute_groups']?.indexOf('new') !== -1 ||
-      attributeGroupKey !== 'specification_attribute_groups'
+      !currentSpecAttributeGroupId ||
+      currentSpecAttributeGroupId !== attrGroupItem.id ||
+      currentSpecAttributeGroupId?.indexOf('new') !== -1 ||
+      attributeGroupKey !== 'specification_attribute_groups' ||
+      attrGroupItem?.steps?.length ||
+      // to prevent call step api with group didn't have steps
+      (attrGroupItem?.steps as any) === false
     ) {
       return;
     }
 
-    const currentAttributeGroupId = curAttrGroupCollapseId['specification_attribute_groups'];
-
-    getAutoStepData(productId, currentAttributeGroupId).then((res) => {
+    getAutoStepData(productId, currentSpecAttributeGroupId).then((res) => {
       const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
-        el.id === currentAttributeGroupId ? { ...el, steps: res } : el,
+        // set step to false of that attribute group didn't have step to prevent call step api
+        el.id === currentSpecAttributeGroupId ? { ...el, steps: res?.length ? res : false } : el,
       );
 
       store.dispatch(
         setPartialProductDetail({
-          specification_attribute_groups: newSpecificationAttributeGroup,
+          specification_attribute_groups: newSpecificationAttributeGroup as any,
         }),
       );
     });
-  }, [curAttrGroupCollapseId?.['specification_attribute_groups']]);
+  }, [currentSpecAttributeGroupId]);
 
   const handleOnChangeCollapse = () => {
     // onKeyChange(key);
@@ -234,7 +241,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     /// set up data to open modal based on each step
     const linkedOptionData: LinkedOptionDataProps[] = [];
-    const pickedOptionId: PickedOptionIdProps = {};
+    const pickedOption: PickedOptionProps = {};
     const optionsSelected: OptionSelectedProps = {};
 
     const firstStep = autoSteps[0];
@@ -261,13 +268,17 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             newOptions = {
               id: el.basis.id,
               name: el.basis.name,
-              subs: (el.basis.subs as unknown as SubBasisOption[]).map((item) => ({
-                ...item,
-                replicate: item.replicate ?? 1,
-                sub_id: el.basis.id,
-                sub_name: el.basis.name,
-                pre_option: undefined,
-              })),
+              subs: (el.basis.subs as unknown as SubBasisOption[]).map((item) => {
+                const opt = autoSteps[0].options.find((o) => o.id === item.id);
+
+                return {
+                  ...item,
+                  replicate: opt?.replicate ?? 1,
+                  sub_id: el.basis.id,
+                  sub_name: el.basis.name,
+                  pre_option: undefined,
+                };
+              }),
             };
           }
         });
@@ -312,14 +323,46 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       // set other picked data
       const options = getGroupOptions(autoStep.options);
+      const prevStep = autoSteps[index === 0 ? 0 : index - 1];
+      const prevStepOption = prevStep.options[0];
+
       if (index !== 0) {
-        linkedOptionData[index] = { pickedData: options, linkedData: [] };
+        const newPickedData = options.map((el) => ({
+          ...el,
+          subs: el.subs.map((sub) => {
+            let newSub: OptionReplicateResponse | undefined = undefined;
+
+            prevStep.options.forEach((opt) => {
+              if (sub.pre_option === el.id) {
+                newSub = {
+                  ...sub,
+                  pre_option_name: trimEnd(
+                    `${opt.value_1} ${opt.value_2} ${
+                      opt.unit_1 || opt.unit_2 ? `- ${opt.unit_1} ${opt.unit_2}` : ''
+                    }`,
+                  ),
+                };
+              }
+            });
+
+            return newSub ?? sub;
+          }),
+        }));
+
+        linkedOptionData[index] = { pickedData: newPickedData, linkedData: [] };
       }
 
       const nextStep = autoSteps[index + 1];
 
       // save highlight left panel
-      pickedOptionId[index] = nextStep.options[0].pre_option || nextStep.options[0].id;
+      pickedOption[index] = {
+        id: nextStep.options[0].pre_option || nextStep.options[0].id,
+        pre_option: `${prevStepOption.value_1} ${prevStepOption.value_2} ${
+          prevStepOption.unit_1 || prevStepOption.unit_2
+            ? `- ${prevStepOption.unit_1} ${prevStepOption.unit_2}`
+            : ''
+        }`,
+      };
 
       // handle get the ID of previous active option on left panel
       if (index === curIndex) {
@@ -338,25 +381,44 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         exceptOptionIds.join(','),
       );
 
-      newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((el) => ({
-        ...el,
-        subs: el.subs.map((item) => ({
+      const allSubOptionSelected: OptionReplicateResponse[] = uniqueArrayBy(
+        flatMap(flatMap(linkedOptionData.map((el) => el.pickedData)).map((el) => el.subs)),
+        ['id', 'pre_option'],
+      );
+
+      newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((opt) => ({
+        ...opt,
+        subs: opt.subs.map((item) => ({
           ...item,
-          subs: item.subs.map((sub) => ({
-            ...sub,
-            sub_id: item.id,
-            sub_name: item.name,
-            pre_option: optionId,
-          })),
+          subs: item.subs.map((sub) => {
+            let newSub: OptionReplicateResponse | undefined = undefined;
+
+            allSubOptionSelected.forEach((el) => {
+              if (sub.pre_option === el.id) {
+                newSub = {
+                  ...sub,
+                  pre_option_name: trimEnd(
+                    `${el.value_1} ${el.value_2} ${
+                      el.unit_1 || el.unit_2 ? `- ${el.unit_1} ${el.unit_2}` : ''
+                    }`,
+                  ),
+                };
+              }
+            });
+
+            return newSub ?? sub;
+          }),
         })),
       }));
     }
+
+    console.log('newLinkedOptionData', newLinkedOptionData);
 
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
 
     store.dispatch(setOptionsSelected(optionsSelected));
 
-    store.dispatch(setPickedOptionId(pickedOptionId));
+    store.dispatch(setPickedOption(pickedOption));
 
     store.dispatch(setSlideBar(uniq(newSlideBars)));
 

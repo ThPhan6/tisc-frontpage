@@ -26,7 +26,11 @@ interface AttributeOptionProps {
   clearOnClose?: boolean;
   isPublicPage: boolean;
 }
-export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) => {
+export const AttributeOptionLabel: FC<{ className?: string; option: any }> = ({
+  option,
+  className = '',
+  children,
+}) => {
   const currentUser = useGetUserRoleFromPathname();
   const isTISC = currentUser === USER_ROLE.tisc;
 
@@ -34,7 +38,7 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
     option.value_2
   } ${option.unit_2}`;
   return (
-    <div className={`${styles.defaultOptionImageList} option-attribute-label`}>
+    <div className={`${styles.defaultOptionImageList} option-attribute-label ${className}`}>
       <div
         className={`${styles.boxShadowOptionImage} ${
           isTISC ? styles.widthCheckboxImage : styles.widthOptionImage

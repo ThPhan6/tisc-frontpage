@@ -13,10 +13,8 @@ export interface LinkedOptionDataProps {
   linkedData: AutoStepLinkedOptionResponse[];
 }
 
-export interface PickedOptionIdProps {
-  // pickedIds: string[];
-  // linkedIds: { [key: string]: string[] };
-  [slide: number]: string;
+export interface PickedOptionProps {
+  [slide: number]: { id: string; pre_option: string };
 }
 
 export interface AllLinkedDataSelectProps {
@@ -30,7 +28,7 @@ export interface OptionSelectedProps {
 interface AutoStepProps {
   optionDatasetName: string;
 
-  pickedOptionId: PickedOptionIdProps;
+  pickedOption: PickedOptionProps;
 
   optionsSelected: OptionSelectedProps;
 
@@ -52,7 +50,7 @@ const initialState: AutoStepProps = {
 
   optionsSelected: [],
 
-  pickedOptionId: {},
+  pickedOption: {},
 
   linkedOptionData: [],
 };
@@ -82,13 +80,12 @@ const autoStepSlice = createSlice({
       action: PayloadAction<
         | {
             order: number;
-            name?: string;
             options: OptionReplicateResponse[];
           }
         | OptionSelectedProps
       >,
     ) {
-      const { order, name, options } = action.payload as any;
+      const { order, options } = action.payload as any;
 
       if (isUndefined(order) || isUndefined(options)) {
         state.optionsSelected = action.payload;
@@ -96,22 +93,22 @@ const autoStepSlice = createSlice({
         return;
       }
 
-      state.optionsSelected = { ...state.optionsSelected, [order]: { order, name, options } };
+      state.optionsSelected = { ...state.optionsSelected, [order]: { order, options } };
     },
 
-    setPickedOptionId(
+    setPickedOption(
       state,
-      action: PayloadAction<{ slide: number; pickedId: string } | PickedOptionIdProps>,
+      action: PayloadAction<{ slide: number; pre_option: string; id: string } | PickedOptionProps>,
     ) {
-      const { slide, pickedId } = action.payload as any;
+      const { slide, pre_option, id } = action.payload as any;
 
-      if (isUndefined(slide) || isUndefined(pickedId)) {
-        state.pickedOptionId = action.payload;
+      if (isUndefined(slide) || isUndefined(id)) {
+        state.pickedOption = action.payload;
 
         return;
       }
 
-      state.pickedOptionId = { ...state.pickedOptionId, [slide]: pickedId };
+      state.pickedOption = { ...state.pickedOption, [slide]: { id, pre_option } };
     },
 
     setLinkedOptionData(
@@ -156,7 +153,7 @@ export const {
   setOptionDatasetName,
   setSlideBar,
   setSlide,
-  setPickedOptionId,
+  setPickedOption,
   setLinkedOptionData,
   resetAutoStepState,
   setOptionsSelected,

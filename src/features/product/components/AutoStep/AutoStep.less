@@ -165,6 +165,17 @@
     svg {
       cursor: pointer;
     }
+
+    :global(.replicate-disabled) {
+      svg {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      svg path {
+        fill: @mono-color-medium;
+      }
+    }
   }
 
   :global(.selected-all-option-radio),

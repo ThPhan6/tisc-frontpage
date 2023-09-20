@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Radio } from 'antd';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 import { cloneDeep } from 'lodash';
 
@@ -12,7 +13,7 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import styles from './styles/checkboxDynamic.less';
 
 interface OptionProps extends CheckboxValue {
-  parentId: string;
+  pre_option?: string;
 }
 
 export interface CheckboxOption {
@@ -33,6 +34,7 @@ interface CheckboxListProps {
   selected?: CheckboxValue[];
   chosenItems?: CheckboxValue[];
   onChange?: (value: CheckboxValue[]) => void;
+  onOneChange?: (e: CheckboxChangeEvent) => void;
   disabled?: boolean;
   filterBySelected?: boolean;
 }
@@ -41,6 +43,7 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
   data,
   selected,
   onChange,
+  onOneChange,
   disabled,
   filterBySelected,
   chosenItems,
@@ -95,7 +98,7 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
     onChange?.([]);
   };
 
-  const handleSelectOption = (opts: CheckboxValue[]) => {
+  const handleSelectOptions = (opts: CheckboxValue[]) => {
     let otherSelected: CheckboxValue[] = [];
 
     const isSelectedAll = !selectAll?.some((id) => data.optionRadioValue === id);
@@ -120,7 +123,9 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
     onChange?.([...opts, ...otherSelected]);
   };
 
-  console.log(chosenItems, data.options);
+  const handleSelectSingleOption = (e: CheckboxChangeEvent) => {
+    onOneChange?.(e);
+  };
 
   return (
     <div className={styles.checkboxListContainer}>
@@ -162,12 +167,13 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
           <CustomCheckbox
             options={data.options}
             selected={selected}
-            onChange={handleSelectOption}
+            onChange={handleSelectOptions}
+            onOneChange={handleSelectSingleOption}
             heightItem="auto"
             checkboxClass={data.customItemClass}
             isCheckboxList
             disabled={disabled}
-            filterBySelected={filterBySelected}
+            // filterBySelected={filterBySelected}
             chosenItems={curSelect}
           />
         </div>

@@ -5,7 +5,7 @@ import { Collapse, Radio, message } from 'antd';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { cloneDeep, isEmpty, isNull, isUndefined, uniq } from 'lodash';
+import { cloneDeep, isEmpty, isNull, isUndefined, random, uniq } from 'lodash';
 
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 
@@ -56,6 +56,8 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const [selectAll, setSelectAll] = useState<string[]>([]);
 
   const [curSelect, setCurSelect] = useState(selected);
+
+  const [randomId] = useState(Math.random());
 
   useEffect(() => {
     const currentSelect: CheckboxValue[] = [];
@@ -258,6 +260,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
+          // key={item?.id || index}
           key={index}
           collapsible={isEmpty(item.options) || noCollapse ? 'disabled' : undefined}
           className="site-collapse-custom-panel"

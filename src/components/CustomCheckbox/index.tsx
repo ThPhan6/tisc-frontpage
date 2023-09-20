@@ -20,7 +20,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   selected,
   checkboxClass = '',
   heightItem = '32px',
-  unTick,
   filterBySelected,
   chosenItems,
   ...props
@@ -93,7 +92,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     <div
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
         isCheckboxList && style['item-list-checkbox']
-      } ${style['color-checkbox-checked']} ${unTick ? 'unTick' : ''} ${checkboxClass}`}
+      } ${style['color-checkbox-checked']} ${checkboxClass}`}
       onClick={(e) => e.stopPropagation()}
     >
       <Checkbox.Group
@@ -104,7 +103,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         {options.map((option, index) =>
           isCheckboxList ? (
             <label
-              key={option.value}
+              key={`${option.value}_${index}_${randomId}`}
               className={`${style['item-wrapper']} ${
                 chosenItems?.map((el) => el.value).includes(option.value)
                   ? 'item-checkbox-active'
@@ -130,7 +129,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 onChange={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  onOneChange?.(e.target.value);
+
+                  onOneChange?.(e);
                 }}
               />
             </label>
