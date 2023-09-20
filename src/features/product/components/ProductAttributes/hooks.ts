@@ -208,7 +208,7 @@ export const useProductAttributeForm = (
     );
   };
 
-  const addNewProductAttribute = (attrGroupId?: string) => {
+  const addNewProductAttribute = () => {
     /// type of id must be string to handle dragging
     const randomId = uniqueId('new-');
 
@@ -220,11 +220,12 @@ export const useProductAttributeForm = (
           [attributeGroupKey]: [
             ...attributeGroup,
             {
-              id: attrGroupId ?? randomId,
+              id: randomId,
               name: '',
               attributes: [],
               steps: [],
               selection: false,
+              modal: 'attribute',
             },
           ],
         }),
@@ -248,15 +249,30 @@ export const useProductAttributeForm = (
   const addNewAutoStep = () => {
     const randomId = uniqueId('new-');
 
-    // dispatch(resetAutoStepState());
-
-    // if (!curAttrGroupCollapseId?.['specification_attribute_groups']) {
     /// create new attribute
-    addNewProductAttribute(randomId);
+    // addNewProductAttribute(randomId);
+
+    dispatch(
+      setPartialProductDetail({
+        [attributeGroupKey]: [
+          ...attributeGroup,
+          {
+            id: randomId,
+            name: '',
+            attributes: [],
+            steps: [],
+            selection: false,
+            modal: 'auto-step',
+          },
+        ],
+      }),
+    );
+
     dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
+
     dispatch(setStep('pre'));
+
     setAutoStepPopup(true);
-    // }
   };
 
   const onChangeAttributeName =

@@ -52,18 +52,20 @@ import Cookies from 'js-cookie';
 const filterDataHasIdTypeNumber = (
   data: ProductAttributeFormInput[],
 ): ProductAttributeFormInput[] =>
-  data.map((el: any) => {
-    if (el.id.indexOf('new') !== -1) {
-      return {
-        name: el?.name || '',
-        attributes: el?.attributes || [],
-        selection: !!el?.selection,
-        steps: el?.steps ?? [],
-      };
-    }
+  data
+    .map(({ modal, ...rest }) => rest) /// delete property <modal> in specification group
+    .map((el: any) => {
+      if (el.id.indexOf('new') !== -1) {
+        return {
+          name: el?.name || '',
+          attributes: el?.attributes || [],
+          selection: !!el?.selection,
+          steps: el?.steps ?? [],
+        };
+      }
 
-    return el;
-  });
+      return el;
+    });
 
 const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();

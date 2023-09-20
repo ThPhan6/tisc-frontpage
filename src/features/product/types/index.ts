@@ -71,6 +71,7 @@ export interface ProductAttributeFormInput {
   selection: boolean;
   attribute_selected_id?: string;
   steps?: AutoStepOnAttributeGroupRequest[];
+  modal: 'attribute' | 'auto-step'; /// on specification tab
 }
 
 export interface ProductAttributeFormInputWhenCreateStep {

@@ -9,7 +9,7 @@ import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 import { uniqueArrayBy } from '@/helper/utils';
-import { capitalize, flatMap, sortBy, trimEnd, uniq } from 'lodash';
+import { capitalize, flatMap, sortBy, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -102,6 +102,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     deleteAttributeItem,
     onCheckedSpecification,
     onSelectSpecificationOption,
+    autoStepPopup,
+    setAutoStepPopup,
   } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
@@ -161,6 +163,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   }, [attrGroupItem]);
 
   useEffect(() => {
+    console.log('currentSpecAttributeGroupId', currentSpecAttributeGroupId);
+
     if (
       !currentSpecAttributeGroupId ||
       currentSpecAttributeGroupId !== attrGroupItem.id ||
@@ -351,7 +355,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       // save highlight left panel
       pickedOption[index] = {
         id: nextStep.options[0].pre_option || nextStep.options[0].id,
-        pre_option: autoStep.options[index === 0 ? 0 : index - 1]?.pre_option,
+        pre_option: autoStep.options[index === 0 ? 0 : index - 1]?.pre_option ?? '',
       };
 
       // handle get the ID of previous active option on left panel

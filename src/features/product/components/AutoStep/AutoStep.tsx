@@ -8,14 +8,14 @@ import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.sv
 import { confirmModal } from '@/helper/common';
 
 import {
-  resetAutoStepState,
+  clearSteps,
   setLinkedOptionData,
   setPartialProductDetail,
   setStep,
+  setSubOptionSelected,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeFormInputWhenCreateStep } from '../../types';
 import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
-import { RadioValue } from '@/components/CustomRadio/types';
 import store, { useAppSelector } from '@/reducers';
 import { ProductAttributes } from '@/types';
 
@@ -50,18 +50,14 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   const step = useAppSelector((state) => state.autoStep.step);
 
+  const subOptionSelected = useAppSelector((state) => state.autoStep.subOptionSelected);
+
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
-
-  const [subOptionSelected, setSubOptionSelected] = useState<RadioValue>({ value: '', label: '' });
-
-  const handleClearAll = () => {
-    store.dispatch(resetAutoStepState());
-    setSubOptionSelected({ value: '', label: '' });
-  };
+  const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
 
   useEffect(() => {
     return () => {
-      handleClearAll();
+      clearSteps();
     };
   }, []);
 
@@ -74,7 +70,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       }
 
       el.subs.forEach((sub) => {
-        if (sub.id === subOptionSelected.value && sub.basis.subs?.length) {
+        if (
+          currentActiveSpecAttributeGroupId &&
+          sub.id === subOptionSelected?.[currentActiveSpecAttributeGroupId] &&
+          sub.basis.subs?.length
+        ) {
           pickedData.push({
             id: sub.basis.id,
             name: sub.basis.name,
@@ -118,8 +118,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       title: 'Are you sure go back to select option dataset?',
       content: 'You might lose all the relevant selections on each step.',
       onOk: () => {
-        store.dispatch(resetAutoStepState());
-        setSubOptionSelected({ label: '', value: '' });
+        clearSteps();
+
+        if (currentActiveSpecAttributeGroupId) {
+          setSubOptionSelected({ [currentActiveSpecAttributeGroupId]: '' });
+        }
 
         /// go back to select option dataset
         store.dispatch(setStep('pre'));
@@ -130,16 +133,12 @@ export const AutoStep: FC<AutoStepProps> = ({
   const handleCreateStep = () => {
     const allSteps = Object.values(optionsSelected);
 
-    console.log('allSteps', allSteps);
-
     const steps: AutoStepOnAttributeGroupResponse[] = allSteps
       .map((el, index) => ({ ...el, name: slideBar[index] }))
       .filter((el) => el.options.length > 0);
 
     const newAttributeGroup: ProductAttributeFormInputWhenCreateStep[] = attributeGroup?.map((el) =>
-      el.id === activeAttrGroupId?.['specification_attribute_groups']
-        ? { ...el, steps: steps }
-        : el,
+      el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps } : el,
     ) as any;
 
     store.dispatch(
@@ -151,6 +150,8 @@ export const AutoStep: FC<AutoStepProps> = ({
     /// close popup
     setVisible(false);
   };
+
+  console.log('subOptionSelected', subOptionSelected);
 
   return (
     <CustomModal
@@ -164,7 +165,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       onCancel={() => setVisible(false)}
       className={styles.modalContainer}
       maskClosable={false}
-      afterClose={handleClearAll}
+      afterClose={clearSteps}
       width={'80%'}
       closeIcon={<CloseIcon />}
       footer={
@@ -173,8 +174,11 @@ export const AutoStep: FC<AutoStepProps> = ({
             size="small"
             properties="rounded"
             disabled={
-              (!linkedOptionData[0]?.pickedData.length && !!subOptionSelected.value) ||
-              !subOptionSelected.value
+              (!linkedOptionData[0]?.pickedData.length &&
+                !!currentActiveSpecAttributeGroupId &&
+                !!subOptionSelected?.[currentActiveSpecAttributeGroupId]) ||
+              (!!currentActiveSpecAttributeGroupId &&
+                !subOptionSelected?.[currentActiveSpecAttributeGroupId])
             }
             icon={<ActionNextIcon />}
             onClick={handleGoToNextStep}
@@ -203,8 +207,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       {step === 'pre' ? (
         <FirstStep
           data={attributes}
-          selected={subOptionSelected}
-          setSelected={setSubOptionSelected}
+          selected={
+            currentActiveSpecAttributeGroupId
+              ? subOptionSelected?.[currentActiveSpecAttributeGroupId]
+              : ''
+          }
         />
       ) : (
         <NextStep />

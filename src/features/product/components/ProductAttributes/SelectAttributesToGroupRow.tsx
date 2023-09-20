@@ -7,7 +7,7 @@ import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
 import { cloneDeep, upperCase } from 'lodash';
 
-import { setPartialProductDetail } from '../../reducers';
+import { setPartialProductDetail, setStep } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -17,6 +17,7 @@ import { ProductAttributes, ProductSubAttributes } from '@/types';
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
 
+import { AutoStep } from '../AutoStep/AutoStep';
 import styles from './SelectAttributesToGroupRow.less';
 import { SpecificationChoice } from './SpecificationChoice';
 
@@ -183,7 +184,16 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       <>
         <div className="attribute-select-group">
           <div className="attribute-select-group-left">
-            <div className="flex-start" onClick={() => setVisible(true)}>
+            <div
+              className="flex-start"
+              onClick={() => {
+                setVisible(true);
+
+                if (groupItem.modal === 'auto-step') {
+                  store.dispatch(setStep('pre'));
+                }
+              }}
+            >
               <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
               <SingleRightIcon className="single-right-icon" />
             </div>
@@ -211,22 +221,31 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           <DeleteIcon className="delete-icon" onClick={onDeleteProductAttribute(groupIndex)} />
         </div>
 
-        <Popover
-          title={upperCase(POPOVER_TITLE[activeKey])}
-          visible={visible}
-          setVisible={setVisible}
-          dropdownCheckboxList={attributes.map((item) => ({
-            name: item.name,
-            options: item.subs.map((sub) => ({
-              label: renderCheckBoxLabel(sub),
-              value: sub.id,
-            })),
-          }))}
-          dropdownCheckboxTitle={(data) => data.name}
-          chosenValue={selected}
-          setChosenValue={onSelectValue}
-          secondaryModal
-        />
+        {groupItem.modal === 'attribute' ? (
+          <Popover
+            title={upperCase(POPOVER_TITLE[activeKey])}
+            visible={visible}
+            setVisible={setVisible}
+            dropdownCheckboxList={attributes.map((item) => ({
+              name: item.name,
+              options: item.subs.map((sub) => ({
+                label: renderCheckBoxLabel(sub),
+                value: sub.id,
+              })),
+            }))}
+            dropdownCheckboxTitle={(data) => data.name}
+            chosenValue={selected}
+            setChosenValue={onSelectValue}
+            secondaryModal
+          />
+        ) : (
+          <AutoStep
+            attributeGroup={attributeGroup}
+            attributes={attributes}
+            visible={visible}
+            setVisible={setVisible}
+          />
+        )}
       </>
     );
   },

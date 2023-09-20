@@ -5,6 +5,7 @@ import {
   LinkedOptionProps,
   OptionReplicateResponse,
 } from '../types/autoStep';
+import store from '@/reducers';
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
@@ -38,6 +39,8 @@ interface AutoStepProps {
   slideBar: string[];
 
   step: 'pre' | number | undefined;
+
+  subOptionSelected: { [groupAttributeId: string]: string };
 }
 
 const initialState: AutoStepProps = {
@@ -53,6 +56,8 @@ const initialState: AutoStepProps = {
   pickedOption: {},
 
   linkedOptionData: [],
+
+  subOptionSelected: {},
 };
 
 const autoStepSlice = createSlice({
@@ -67,12 +72,16 @@ const autoStepSlice = createSlice({
       state.slideBar = action.payload;
     },
 
-    setSlide(state, action: PayloadAction<number>) {
+    setSlide(state, action: PayloadAction<number | undefined>) {
       state.slide = action.payload;
     },
 
     setStep(state, action: PayloadAction<'pre' | number | undefined>) {
       state.step = action.payload;
+    },
+
+    setSubOptionSelected(state, action: PayloadAction<{ [groupAttributeId: string]: string }>) {
+      state.subOptionSelected = { ...state.subOptionSelected, ...action.payload };
     },
 
     setOptionsSelected(
@@ -155,9 +164,19 @@ export const {
   setSlide,
   setPickedOption,
   setLinkedOptionData,
-  resetAutoStepState,
   setOptionsSelected,
   setStep,
+  setSubOptionSelected,
+  resetAutoStepState,
 } = autoStepSlice.actions;
 
 export const autoStepReducer = autoStepSlice.reducer;
+
+export const clearSteps = () => {
+  store.dispatch(setOptionDatasetName(''));
+  store.dispatch(setSlideBar(['', '']));
+  store.dispatch(setSlide(undefined));
+  store.dispatch(setPickedOption({}));
+  store.dispatch(setOptionsSelected([]));
+  store.dispatch(setStep(undefined));
+};
