@@ -89,7 +89,13 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
       expandIcon={() => null}
       collapsible={subOption.subs.length > 0 ? undefined : 'disabled'}
       onChange={handleCollapse}
-      activeKey={expandSubOptionIds.includes(subOption.id) ? subOption.id : undefined}
+      defaultActiveKey={
+        !preLinkageForm
+          ? subOption.id
+          : expandSubOptionIds.includes(subOption.id)
+          ? subOption.id
+          : undefined
+      }
     >
       <Collapse.Panel
         key={subOption.id}

@@ -4,10 +4,9 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep, countBy, isUndefined, uniqueId } from 'lodash';
+import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import {
-  resetAutoStepState,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
@@ -213,9 +212,7 @@ export const useProductAttributeForm = (
     /// type of id must be string to handle dragging
     const randomId = uniqueId('new-');
 
-    if (isUndefined(attrGroupId)) {
-      dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
-    }
+    dispatch(setCurAttrGroupCollapse({ [attributeGroupKey]: randomId }));
 
     if (attributeGroupKey === 'specification_attribute_groups') {
       dispatch(

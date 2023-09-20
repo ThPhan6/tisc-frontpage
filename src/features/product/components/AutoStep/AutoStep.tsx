@@ -13,8 +13,8 @@ import {
   setPartialProductDetail,
   setStep,
 } from '../../reducers';
-import { ProductAttributeFormInput } from '../../types';
-import { LinkedOptionProps } from '../../types/autoStep';
+import { ProductAttributeFormInput, ProductAttributeFormInputWhenCreateStep } from '../../types';
+import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
 import { RadioValue } from '@/components/CustomRadio/types';
 import store, { useAppSelector } from '@/reducers';
 import { ProductAttributes } from '@/types';
@@ -74,7 +74,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       }
 
       el.subs.forEach((sub) => {
-        if (sub.basis.id === subOptionSelected.value && sub.basis.subs?.length) {
+        if (sub.id === subOptionSelected.value && sub.basis.subs?.length) {
           pickedData.push({
             id: sub.basis.id,
             name: sub.basis.name,
@@ -130,11 +130,13 @@ export const AutoStep: FC<AutoStepProps> = ({
   const handleCreateStep = () => {
     const allSteps = Object.values(optionsSelected);
 
-    const steps = allSteps
+    console.log('allSteps', allSteps);
+
+    const steps: AutoStepOnAttributeGroupResponse[] = allSteps
       .map((el, index) => ({ ...el, name: slideBar[index] }))
       .filter((el) => el.options.length > 0);
 
-    const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
+    const newAttributeGroup: ProductAttributeFormInputWhenCreateStep[] = attributeGroup?.map((el) =>
       el.id === activeAttrGroupId?.['specification_attribute_groups']
         ? { ...el, steps: steps }
         : el,
@@ -142,7 +144,7 @@ export const AutoStep: FC<AutoStepProps> = ({
 
     store.dispatch(
       setPartialProductDetail({
-        specification_attribute_groups: newAttributeGroup,
+        specification_attribute_groups: newAttributeGroup as any,
       }),
     );
 

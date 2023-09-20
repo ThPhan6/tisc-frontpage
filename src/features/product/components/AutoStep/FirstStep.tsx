@@ -78,7 +78,7 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected, setSelected }) =
                     </BodyText>
                   </div>
                 ),
-                value: item.basis.id,
+                value: item.id,
               })),
             }))}
             renderTitle={(el) => el.label}

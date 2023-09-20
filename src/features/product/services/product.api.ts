@@ -248,9 +248,10 @@ export const updateProductCard = async (productId: string, data: ProductFormData
   showPageLoading();
 
   const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
+  const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
-  const autoStepData = attributeGroupId
-    ? await getAutoStepData(productId, attributeGroupId['specification_attribute_groups'])
+  const autoStepData = currentSpecAttributeGroupId
+    ? await getAutoStepData(productId, currentSpecAttributeGroupId)
     : [];
 
   return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
@@ -259,13 +260,11 @@ export const updateProductCard = async (productId: string, data: ProductFormData
   })
     .then((res) => {
       hidePageLoading();
-      getProductById(productId);
+      // getProductById(productId);
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
 
       const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
-        el.id === attributeGroupId?.['specification_attribute_groups']
-          ? { ...el, steps: autoStepData }
-          : el,
+        autoStepData?.length ? { ...el, steps: autoStepData } : el,
       );
 
       return { ...res.data, specification_attribute_groups: newSpecificationAttributeGroup };
