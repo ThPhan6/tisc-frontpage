@@ -165,6 +165,17 @@
     svg {
       cursor: pointer;
     }
+
+    :global(.replicate-disabled) {
+      svg {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      svg path {
+        fill: @mono-color-medium;
+      }
+    }
   }
 
   :global(.selected-all-option-radio),
@@ -194,6 +205,19 @@
         min-height: 64px !important;
         box-shadow: @border-bottom-light;
       }
+    }
+
+    :global(.product-id) {
+      max-width: 45%;
+      margin-right: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    :global(.pre-option) {
+      min-width: 50%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 

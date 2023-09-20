@@ -24,11 +24,7 @@ import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils'
 import { pick, sortBy } from 'lodash';
 
 import { ProductAttributeFormInput, ProductFormData, ProductKeyword } from '../types';
-import {
-  AutoStepOnAttributeGroupResponse,
-  OptionReplicateRequest,
-  OptionReplicateResponse,
-} from '../types/autoStep';
+import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import {
@@ -177,13 +173,13 @@ const ProductDetailContainer: React.FC = () => {
       steps: !el?.steps?.length
         ? []
         : el.steps.map((step) => {
-            const newStep: AutoStepOnAttributeGroupResponse = { ...step };
+            const newStep = { ...step } as AutoStepOnAttributeGroupResponse;
 
             if (newStep?.id?.indexOf('new') !== -1) {
               delete (newStep as any).id;
             }
 
-            const options: OptionReplicateRequest[] = newStep.options.map((s) => ({
+            const options = newStep.options.map((s) => ({
               id: s.id,
               pre_option: s.pre_option,
               replicate: s?.replicate ?? 1,

@@ -14,7 +14,7 @@ import { ConversionSubValueProps, GeneralData } from '@/types';
 
 import { ProductTopBarFilter } from '../components/FilterAndSorter';
 
-import { AutoStepOnAttributeGroupResponse } from './autoStep';
+import { AutoStepOnAttributeGroupRequest, AutoStepOnAttributeGroupResponse } from './autoStep';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -70,7 +70,17 @@ export interface ProductAttributeFormInput {
   isChecked?: boolean;
   selection: boolean;
   attribute_selected_id?: string;
-  steps: AutoStepOnAttributeGroupResponse[];
+  steps?: AutoStepOnAttributeGroupRequest[];
+}
+
+export interface ProductAttributeFormInputWhenCreateStep {
+  id: string;
+  name: string;
+  attributes: ProductAttributeProps[];
+  isChecked?: boolean;
+  selection: boolean;
+  attribute_selected_id?: string;
+  steps?: AutoStepOnAttributeGroupResponse[];
 }
 
 export enum Availability {

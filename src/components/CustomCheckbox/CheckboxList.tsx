@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import Radio from 'antd/lib/radio';
 
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { CustomRadio } from '@/components/CustomRadio';
 import { MainTitle, Title } from '@/components/Typography';
 
 import styles from './styles/checkboxList.less';
@@ -24,7 +25,30 @@ interface CheckboxListProps {
 }
 
 const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange }) => {
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectAll, setSelectAll] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (selected?.length === data.options.length) {
+      setSelectAll(true);
+    } else {
+      setSelectAll(false);
+    }
+  }, [selected]);
+
+  const handleSelectAll = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const isSelectedAll = !selectAll;
+
+    setSelectAll(isSelectedAll);
+
+    if (isSelectedAll) {
+      onChange?.(data.options);
+    } else {
+      onChange?.([]);
+    }
+  };
 
   return (
     <div className={styles.checkboxListContainer}>
@@ -37,35 +61,14 @@ const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange })
           data.heading
         )}
         {data.isSelectAll ? (
-          <div
-            className={`${styles.checkedAllRadio} selected-all-option-radio`}
-            onClick={(e) => {
-              e.preventDefault();
-              let checkedAll = !selectAll;
-              if (selected?.length === data.options.length) {
-                checkedAll = false;
-              }
-              if (onChange) {
-                if (checkedAll) {
-                  onChange(data.options);
-                } else {
-                  onChange([]);
-                }
-              }
-              setSelectAll(checkedAll);
-            }}
-          >
-            <CustomRadio
-              noPaddingLeft
-              options={[
-                {
-                  label: <MainTitle level={3}>Select All Options</MainTitle>,
-                  value: 'all',
-                },
-              ]}
-              value={selected?.length === data.options.length ? 'all' : undefined}
-              isRadioList
-            />
+          <div className={`${styles.checkedAllRadio} selected-all-option-radio`}>
+            <Radio
+              checked={selectAll}
+              onClick={handleSelectAll}
+              className="w-full row-reverse flex-between radio-select-all"
+            >
+              <MainTitle level={3}>Select All Options</MainTitle>
+            </Radio>
           </div>
         ) : null}
 
