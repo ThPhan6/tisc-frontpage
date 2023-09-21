@@ -36,7 +36,7 @@ import {
 } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
-import { closeProductFooterTab } from '@/reducers/active';
+import { closeDimensionWeightGroup, closeProductFooterTab } from '@/reducers/active';
 import { SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -101,8 +101,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     deleteAttributeItem,
     onCheckedSpecification,
     onSelectSpecificationOption,
-    autoStepPopup,
-    setAutoStepPopup,
   } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
@@ -201,6 +199,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     );
 
     store.dispatch(closeProductFooterTab());
+    store.dispatch(closeDimensionWeightGroup());
   };
 
   // set picked data when open auto-step
