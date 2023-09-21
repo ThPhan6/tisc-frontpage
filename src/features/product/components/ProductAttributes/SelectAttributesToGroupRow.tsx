@@ -8,7 +8,7 @@ import { useBoolean } from '@/helper/hook';
 import { cloneDeep, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
-import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
+import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
 import { ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store from '@/reducers';
@@ -189,7 +189,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
               onClick={() => {
                 setVisible(true);
 
-                if (groupItem.modal === 'auto-step') {
+                if (groupItem.type === SpecificationType.autoStep) {
                   store.dispatch(setStep('pre'));
                 }
               }}
@@ -221,7 +221,14 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           <DeleteIcon className="delete-icon" onClick={onDeleteProductAttribute(groupIndex)} />
         </div>
 
-        {groupItem.modal === 'attribute' ? (
+        {groupItem.type === SpecificationType.autoStep ? (
+          <AutoStep
+            attributeGroup={attributeGroup}
+            attributes={attributes}
+            visible={visible}
+            setVisible={setVisible}
+          />
+        ) : (
           <Popover
             title={upperCase(POPOVER_TITLE[activeKey])}
             visible={visible}
@@ -237,13 +244,6 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
             chosenValue={selected}
             setChosenValue={onSelectValue}
             secondaryModal
-          />
-        ) : (
-          <AutoStep
-            attributeGroup={attributeGroup}
-            attributes={attributes}
-            visible={visible}
-            setVisible={setVisible}
           />
         )}
       </>

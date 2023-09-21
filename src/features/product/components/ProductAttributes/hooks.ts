@@ -12,7 +12,7 @@ import {
   setPartialProductDetail,
   setStep,
 } from '../../reducers';
-import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
+import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
@@ -225,7 +225,7 @@ export const useProductAttributeForm = (
               attributes: [],
               steps: [],
               selection: false,
-              modal: 'attribute',
+              type: SpecificationType.attribute,
             },
           ],
         }),
@@ -262,7 +262,7 @@ export const useProductAttributeForm = (
             attributes: [],
             steps: [],
             selection: false,
-            modal: 'auto-step',
+            type: SpecificationType.autoStep,
           },
         ],
       }),

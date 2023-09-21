@@ -63,6 +63,10 @@ export interface AttributeSelectedProps {
   };
 }
 
+export enum SpecificationType {
+  attribute,
+  autoStep,
+}
 export interface ProductAttributeFormInput {
   id: string;
   name: string;
@@ -71,7 +75,7 @@ export interface ProductAttributeFormInput {
   selection: boolean;
   attribute_selected_id?: string;
   steps?: AutoStepOnAttributeGroupRequest[];
-  modal: 'attribute' | 'auto-step'; /// on specification tab
+  type?: SpecificationType; /// on specification tab
 }
 
 export interface ProductAttributeFormInputWhenCreateStep {

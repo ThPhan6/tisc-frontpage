@@ -9,6 +9,7 @@ import { confirmModal } from '@/helper/common';
 
 import {
   clearSteps,
+  resetAutoStepState,
   setLinkedOptionData,
   setPartialProductDetail,
   setStep,
@@ -57,7 +58,8 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   useEffect(() => {
     return () => {
-      clearSteps();
+      // clearSteps();
+      store.dispatch(resetAutoStepState());
     };
   }, []);
 
@@ -118,7 +120,8 @@ export const AutoStep: FC<AutoStepProps> = ({
       title: 'Are you sure go back to select option dataset?',
       content: 'You might lose all the relevant selections on each step.',
       onOk: () => {
-        clearSteps();
+        // clearSteps();
+        store.dispatch(resetAutoStepState());
 
         if (currentActiveSpecAttributeGroupId) {
           setSubOptionSelected({ [currentActiveSpecAttributeGroupId]: '' });
