@@ -28,6 +28,7 @@ import {
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
+  SpecificationType,
 } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,
@@ -168,16 +169,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       currentSpecAttributeGroupId?.indexOf('new') !== -1 ||
       attributeGroupKey !== 'specification_attribute_groups' ||
       attrGroupItem?.steps?.length ||
-      // to prevent call step api with group didn't have steps
-      (attrGroupItem?.steps as any) === false
+      attrGroupItem.type !== SpecificationType.autoStep
     ) {
       return;
     }
 
     getAutoStepData(productId, currentSpecAttributeGroupId).then((res) => {
       const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
-        // set step to false of that attribute group didn't have step to prevent call step api
-        el.id === currentSpecAttributeGroupId ? { ...el, steps: res?.length ? res : false } : el,
+        el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
       );
 
       store.dispatch(
