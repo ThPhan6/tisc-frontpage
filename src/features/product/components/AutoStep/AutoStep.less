@@ -149,7 +149,7 @@
 
   :global(.replicate) {
     height: 100%;
-    margin-left: 12px;
+    margin: 0 8px;
     padding: 0 8px;
     color: @mono-color;
     text-align: center;
@@ -180,7 +180,6 @@
 
   :global(.linkage) {
     height: 100%;
-    padding-left: 8px;
     color: @mono-color;
     text-align: center;
     cursor: default;
@@ -226,15 +225,16 @@
     }
 
     :global(.product-id) {
-      max-width: 45%;
       margin-right: 16px;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
 
     :global(.pre-option) {
       min-width: 50%;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
   }

@@ -161,8 +161,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   }, [attrGroupItem]);
 
   useEffect(() => {
-    console.log('currentSpecAttributeGroupId', currentSpecAttributeGroupId);
-
     if (
       !currentSpecAttributeGroupId ||
       currentSpecAttributeGroupId !== attrGroupItem.id ||

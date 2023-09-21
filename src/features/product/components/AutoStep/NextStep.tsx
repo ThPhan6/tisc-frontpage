@@ -272,58 +272,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       store.dispatch(setSlideBar([...slideBar, '']));
     }
 
-    const newLinkedOptionData = [...linkedOptionData];
-
-    const isGetLinkedOption =
-      /// have linked id
-      !!curAllLinkedIdSelect.length &&
-      /// have picked data
-      !!newLinkedOptionData[newSlide]?.pickedData?.length &&
-      /// dont have linked data
-      !newLinkedOptionData[newSlide]?.linkedData?.length;
-
-    let newLinkedData: AutoStepLinkedOptionResponse[] = [];
-
-    const currentPickedOption = pickedOption[newSlide];
-    /// call rest option when update
-    if (isGetLinkedOption && currentPickedOption) {
-      const orders = Object.keys(optionsSelected).map((el) => Number(el));
-
-      let prevAllLinkedIdSelect: string[] = [];
-
-      orders.forEach((order) => {
-        if (order <= curOrder) {
-          const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
-
-          prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
-        }
-      });
-
-      const newExceptOptionIds = prevAllLinkedIdSelect.join(',');
-
-      const newLinkedOptions =
-        newSlide > 0 && !newExceptOptionIds
-          ? []
-          : await getLinkedOptionByOptionIds(currentPickedOption.id, newExceptOptionIds);
-
-      /// set options selected to data
-      newLinkedData = newLinkedOptions.map((el) => ({
-        ...el,
-        subs: el.subs.map((item) => ({
-          ...item,
-          subs: item.subs.map((sub) => {
-            let newSub: OptionReplicateResponse | undefined = undefined;
-
-            optionsSelected[curOrder + 1].options.forEach((opt) => {
-              newSub = { ...sub, pre_option: opt.pre_option };
-            });
-
-            return newSub ?? sub;
-          }),
-        })),
-      }));
-    }
-
     /// next picked data is collected by prev linked data and its option selected
     const newPickedData: LinkedOptionProps[] = [];
 
@@ -377,7 +325,82 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     // });
     /* ------------------------------------------------------------------------ */
 
-    console.log('newLinkedData', newLinkedData);
+    const newLinkedOptionData = [...linkedOptionData];
+
+    /* remove current picked option(highlighted) of next step if change the prev option selected */
+    const prevLinkedOptionSelected = optionsSelected[curOrder].options;
+
+    let isTheSameOptionSelected = true;
+
+    newLinkedOptionData[newSlide]?.pickedData?.forEach((el) => {
+      if (!isTheSameOptionSelected) {
+        return;
+      }
+      el.subs.forEach((sub) => {
+        if (!isTheSameOptionSelected) {
+          return;
+        }
+
+        isTheSameOptionSelected = prevLinkedOptionSelected.every(
+          (opt) => opt.id === sub.id && opt.pre_option === sub.pre_option,
+        );
+      });
+    });
+
+    if (!isTheSameOptionSelected) {
+      store.dispatch(setPickedOption({ slide: newSlide, id: '', pre_option: '' }));
+    }
+    /* ------------------------------------------------------------------------ */
+
+    const isGetLinkedOption =
+      /// have linked id
+      !!curAllLinkedIdSelect.length &&
+      /// have picked data
+      !!newLinkedOptionData[newSlide]?.pickedData?.length &&
+      /// dont have linked data
+      !newLinkedOptionData[newSlide]?.linkedData?.length;
+
+    let newLinkedData: AutoStepLinkedOptionResponse[] = [];
+
+    const currentPickedOption = pickedOption[newSlide];
+    /// call rest option when update
+    if (isGetLinkedOption && currentPickedOption && isTheSameOptionSelected) {
+      const orders = Object.keys(optionsSelected).map((el) => Number(el));
+
+      let prevAllLinkedIdSelect: string[] = [];
+
+      orders.forEach((order) => {
+        if (order <= curOrder) {
+          const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
+
+          prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
+        }
+      });
+
+      const newExceptOptionIds = prevAllLinkedIdSelect.join(',');
+
+      const newLinkedOptions =
+        newSlide > 0 && !newExceptOptionIds
+          ? []
+          : await getLinkedOptionByOptionIds(currentPickedOption.id, newExceptOptionIds);
+
+      /// set options selected to data
+      newLinkedData = newLinkedOptions.map((el) => ({
+        ...el,
+        subs: el.subs.map((item) => ({
+          ...item,
+          subs: item.subs.map((sub) => {
+            let newSub: OptionReplicateResponse | undefined = undefined;
+
+            optionsSelected?.[curOrder + 1]?.options.forEach((opt) => {
+              newSub = { ...sub, pre_option: opt.pre_option };
+            });
+
+            return newSub ?? sub;
+          }),
+        })),
+      }));
+    }
 
     /// update linked option data
     newLinkedOptionData[newSlide] = {
@@ -848,6 +871,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       );
     };
 
+  console.log('optionsSelected', optionsSelected);
+
   return (
     <div className={styles.nextStep}>
       {/* top bar */}
@@ -941,7 +966,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                       >
                         <AttributeOptionLabel className="w-full" option={option} key={subIdx}>
                           <div className="d-flex align-item-flex-start justify-between option-info">
-                            <div className="product-id">
+                            <div
+                              className="product-id"
+                              title={option.product_id}
+                              style={{ minWidth: option.pre_option_name ? '45%' : '100%' }}
+                            >
                               <span className="product-id-label">Product ID:</span>
                               <span className="product-id-value">{option.product_id}</span>
                             </div>
@@ -995,7 +1024,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                           <BodyText customClass="linkage-label" level={4} style={{ height: 24 }}>
                             Linkage
                           </BodyText>
-                          <BodyText fontFamily="Roboto" level={6}>
+                          <BodyText
+                            fontFamily="Roboto"
+                            level={6}
+                            style={{ height: 24 }}
+                            customClass="flex-center"
+                          >
                             {optionsSelected?.[curOrder]?.options?.filter((el) => {
                               const curPreOptionIds = el.pre_option?.split(',');
 
