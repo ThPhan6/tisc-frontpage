@@ -133,6 +133,8 @@ export const AutoStep: FC<AutoStepProps> = ({
   const handleCreateStep = () => {
     const allSteps = Object.values(optionsSelected);
 
+    console.log('allSteps', allSteps);
+
     const steps: AutoStepOnAttributeGroupResponse[] = allSteps
       .map((el, index) => ({ ...el, name: slideBar[index] }))
       .filter((el) => el.options.length > 0);
@@ -150,8 +152,6 @@ export const AutoStep: FC<AutoStepProps> = ({
     /// close popup
     setVisible(false);
   };
-
-  console.log('subOptionSelected', subOptionSelected);
 
   return (
     <CustomModal

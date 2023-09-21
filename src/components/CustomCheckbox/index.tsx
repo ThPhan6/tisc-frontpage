@@ -20,7 +20,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   selected,
   checkboxClass = '',
   heightItem = '32px',
-  filterBySelected,
   chosenItems,
   ...props
 }) => {
@@ -34,13 +33,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   }, [otherInput && clearOtherInput]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
-    let newCheckedValues = [...checkedValues];
-
-    const selectedValues = selected?.map((o) => o.value).filter(Boolean);
-
-    if (filterBySelected && selectedValues?.length) {
-      newCheckedValues = checkedValues.filter((el) => !selectedValues.includes(el as string));
-    }
+    const newCheckedValues = [...checkedValues];
 
     const haveOtherInput = newCheckedValues.some((checkbox) => checkbox === 'other');
 
@@ -88,6 +81,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     return 'item-option-uncheck';
   };
 
+  // console.log('chosenItems', chosenItems);
+  // console.log('options', options);
+
   return (
     <div
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
@@ -105,7 +101,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             <label
               key={`${option.value}_${index}_${randomId}`}
               className={`${style['item-wrapper']} ${
-                chosenItems?.map((el) => el.value).includes(option.value)
+                chosenItems?.some(
+                  (el) => el.value === option.value && el?.label === (option as any)?.pre_option,
+                )
                   ? 'item-checkbox-active'
                   : ''
               } item-wrapper-custom`}

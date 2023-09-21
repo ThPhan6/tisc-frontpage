@@ -15,6 +15,7 @@ export interface OptionReplicateResponse {
   id: string;
   replicate: number;
   pre_option?: string;
+  pre_option_name?: string;
   picked?: boolean;
   value_1: string;
   value_2?: string;
@@ -24,7 +25,6 @@ export interface OptionReplicateResponse {
   product_id: string;
   sub_id: string;
   sub_name: string;
-  // order?: number;
 }
 
 export interface AutoStepOnAttributeGroupResponse {

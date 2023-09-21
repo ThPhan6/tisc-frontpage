@@ -178,6 +178,19 @@
     }
   }
 
+  :global(.linkage) {
+    height: 100%;
+    padding-left: 8px;
+    color: @mono-color;
+    text-align: center;
+    cursor: default;
+
+    p {
+      color: @mono-color !important;
+      font-weight: 300 !important;
+    }
+  }
+
   :global(.selected-all-option-radio),
   .header {
     position: sticky;
@@ -196,9 +209,14 @@
 
   :global(.checkbox-item) {
     :global(.ant-checkbox-group) {
+      :global(.ant-checkbox-wrapper) {
+        display: none;
+      }
+
       :global(.item-option-uncheck),
       :global(.item-option-checked) {
-        margin-right: 8px !important;
+        width: 100% !important;
+        margin-right: 0 !important;
       }
 
       > label {
@@ -222,9 +240,22 @@
   }
 
   :global(.checkbox-item-active) {
+    :global(.linkage-label),
+    :global(.replicate-label) {
+      font-weight: 600 !important ;
+    }
     :global(.heading-option-group) {
-      color: @primary-color-dark;
       font-weight: 500;
+    }
+
+    p,
+    span,
+    :global(.heading-option-group) {
+      color: @primary-color-dark !important;
+    }
+
+    svg path {
+      fill: @primary-color-dark;
     }
   }
 
