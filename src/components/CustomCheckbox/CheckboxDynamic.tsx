@@ -12,12 +12,12 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './styles/checkboxDynamic.less';
 
-interface OptionProps extends CheckboxValue {
+export interface CheckBoxOptionProps extends CheckboxValue {
   pre_option?: string;
 }
 
 export interface CheckboxOption {
-  options: OptionProps[];
+  options: CheckBoxOptionProps[];
   heading?: string | React.ReactNode;
   optionRadioLabel?: string | React.ReactNode;
   optionRadioValue?: string;
@@ -31,12 +31,11 @@ export interface CheckboxOption {
 
 interface CheckboxListProps {
   data: CheckboxOption;
-  selected?: CheckboxValue[];
-  chosenItems?: CheckboxValue[];
+  selected?: CheckBoxOptionProps[];
+  chosenItems?: CheckBoxOptionProps[];
   onChange?: (value: CheckboxValue[]) => void;
   onOneChange?: (e: CheckboxChangeEvent) => void;
   disabled?: boolean;
-  filterBySelected?: boolean;
 }
 
 export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
@@ -45,7 +44,6 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
   onChange,
   onOneChange,
   disabled,
-  filterBySelected,
   chosenItems,
 }) => {
   const [curSelect, setCurSelect] = useState<CheckboxValue[] | undefined>([]);
@@ -57,7 +55,10 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
 
     data.options.forEach((item) => {
       const optSelected: CheckboxValue[] = chosenItems
-        ?.filter((selectedItem) => item.value === selectedItem.value)
+        ?.filter(
+          (selectedItem) =>
+            item.value === selectedItem.value && item?.pre_option === selectedItem?.label,
+        )
         .filter(Boolean) as CheckboxValue[];
 
       if (optSelected?.length) {
@@ -137,12 +138,12 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
         ) : (
           data.heading
         )}
-        {data.isSelectAll ? (
-          <div className={`${styles.checkedAllRadio} selected-all-option-radio`}>
-            <BodyText level={5} fontFamily="Roboto">
-              {data.optionRadioLabel}
-            </BodyText>
+        <div className={`${styles.checkedAllRadio} selected-all-option-radio`}>
+          <BodyText level={5} fontFamily="Roboto">
+            {data.optionRadioLabel}
+          </BodyText>
 
+          {data.isSelectAll ? (
             <Radio
               checked={
                 selectAll?.includes(data.optionRadioValue as string) ||
@@ -160,8 +161,8 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
                 Select all
               </MainTitle>
             </Radio>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
 
         <div className="checkbox-list-options">
           <CustomCheckbox
@@ -173,7 +174,6 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
             checkboxClass={data.customItemClass}
             isCheckboxList
             disabled={disabled}
-            // filterBySelected={filterBySelected}
             chosenItems={curSelect}
           />
         </div>

@@ -7,9 +7,10 @@ import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
-import { setPartialProductDetail } from '../../reducers';
+import { closeActiveSpecAttributeGroup, setPartialProductDetail } from '../../reducers';
 import { ProductInfoTab } from './types';
-import store from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { activeDimensionWeightCollapse } from '@/reducers/active';
 import { ProductAttributes } from '@/types';
 
 import { DragDropContainer } from '@/components/Drag';
@@ -58,6 +59,8 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
   });
 
+  const dimensionWightActiveCollapseKey = useAppSelector((state) => state.active.dimensionWeight);
+
   return (
     <>
       {isEditable ? (
@@ -81,6 +84,11 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
       ) : null}
 
       <DimensionWeight
+        activeCollapse={dimensionWightActiveCollapseKey}
+        onChangeCollapse={(key) => {
+          store.dispatch(activeDimensionWeightCollapse(key));
+          store.dispatch(closeActiveSpecAttributeGroup());
+        }}
         collapseStyles={!isSpecifiedModal}
         customClass={!isEditable ? styles.marginTopSpace : styles.colorInput}
         editable={isEditable}

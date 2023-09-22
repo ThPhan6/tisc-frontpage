@@ -189,6 +189,12 @@ const productSlice = createSlice({
     setCurAttrGroupCollapse: (state, action: PayloadAction<{ [key: string]: string }>) => {
       state.curAttrGroupCollapseId = { ...state.curAttrGroupCollapseId, ...action.payload };
     },
+    closeActiveSpecAttributeGroup: (state) => {
+      state.curAttrGroupCollapseId = {
+        ...state.curAttrGroupCollapseId,
+        ['specification_attribute_groups']: '',
+      };
+    },
   },
 });
 
@@ -211,6 +217,7 @@ export const {
   setPartialProductSpecifiedData,
   setFinishScheduleData,
   setCurAttrGroupCollapse,
+  closeActiveSpecAttributeGroup,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
