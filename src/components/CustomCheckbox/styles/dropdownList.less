@@ -73,7 +73,10 @@
     }
 
     :global(.select-label) {
-      text-transform: capitalize;
+      padding-right: 8px;
+      font-weight: 300;
+      font-size: 14px;
+      text-transform: initial;
     }
 
     :global(.ant-radio) {
@@ -90,6 +93,14 @@
 
     :global(.ant-radio-input:focus + .ant-radio-inner) {
       box-shadow: unset;
+    }
+  }
+
+  :global(.ant-collapse-item-active) {
+    :global(.select-label) {
+      font-weight: 600;
+      font-size: 16px;
+      text-transform: initial;
     }
   }
 }

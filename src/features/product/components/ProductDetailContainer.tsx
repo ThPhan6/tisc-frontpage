@@ -49,17 +49,33 @@ import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
 import Cookies from 'js-cookie';
 
-const filterDataHasIdTypeNumber = (
+const filterNewAttributeGroup = (
   data: ProductAttributeFormInput[],
+  type: ProductInfoTab,
 ): ProductAttributeFormInput[] =>
   data.map((el: any) => {
     if (el.id.indexOf('new') !== -1) {
+      if (type !== 'specification') {
+        return {
+          name: el?.name || '',
+          attributes: el?.attributes || [],
+          selection: !!el?.selection,
+          steps: el?.steps ?? [],
+        };
+      }
+
       return {
         name: el?.name || '',
         attributes: el?.attributes || [],
         selection: !!el?.selection,
         steps: el?.steps ?? [],
+        type: el.type,
       };
+    }
+
+    if (type !== 'specification') {
+      delete el?.type;
+      return el;
     }
 
     return el;
@@ -141,7 +157,7 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    const productGeneralData = filterDataHasIdTypeNumber(details.general_attribute_groups);
+    const productGeneralData = filterNewAttributeGroup(details.general_attribute_groups, 'feature');
 
     const productGeneralDataTitle = productGeneralData?.some((el) => !el.name);
 
@@ -150,7 +166,7 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    const productFeatureData = filterDataHasIdTypeNumber(details.feature_attribute_groups);
+    const productFeatureData = filterNewAttributeGroup(details.feature_attribute_groups, 'feature');
 
     const productFeatureDataTitle = productFeatureData?.some((el) => !el.name);
 
@@ -159,7 +175,12 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    const newProductSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+    console.log('details.specification_attribute_groups', details.specification_attribute_groups);
+
+    const newProductSpecData = filterNewAttributeGroup(
+      details.specification_attribute_groups,
+      'specification',
+    );
 
     const productSpecDataTitle = newProductSpecData.some((el) => !el.name);
 

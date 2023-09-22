@@ -5,7 +5,8 @@ import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-
 import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
 import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
-import { RadioValue } from '@/components/CustomRadio/types';
+import { setSubOptionSelected } from '../../reducers';
+import store, { useAppSelector } from '@/reducers';
 import { ProductAttributes } from '@/types';
 
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
@@ -17,11 +18,13 @@ const topBarData = [1, 2, 3, 4, 5, 6, 7];
 
 interface FirstStepProps {
   data: ProductAttributes[] | undefined;
-  selected: RadioValue;
-  setSelected?: (value: RadioValue) => void;
+  selected: string;
 }
 
-export const FirstStep: FC<FirstStepProps> = ({ data, selected, setSelected }) => {
+export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
+  const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+  const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
+
   return (
     <div className={styles.firstStep}>
       <div className={styles.topBar}>
@@ -82,9 +85,17 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected, setSelected }) =
               })),
             }))}
             renderTitle={(el) => el.label}
-            selected={selected}
-            chosenItem={selected}
-            onChange={setSelected}
+            selected={{ label: '', value: selected }}
+            chosenItem={{ label: '', value: selected }}
+            onChange={(optSelected) => {
+              if (currentActiveSpecAttributeGroupId) {
+                store.dispatch(
+                  setSubOptionSelected({
+                    [currentActiveSpecAttributeGroupId]: optSelected.value as string,
+                  }),
+                );
+              }
+            }}
           />
         </div>
       </div>

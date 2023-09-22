@@ -12,10 +12,10 @@ import {
   setLinkedOptionData,
   setPartialProductDetail,
   setStep,
+  setSubOptionSelected,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeFormInputWhenCreateStep } from '../../types';
 import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
-import { RadioValue } from '@/components/CustomRadio/types';
 import store, { useAppSelector } from '@/reducers';
 import { ProductAttributes } from '@/types';
 
@@ -50,18 +50,18 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   const step = useAppSelector((state) => state.autoStep.step);
 
+  const subOptionSelected = useAppSelector((state) => state.autoStep.subOptionSelected);
+
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+  const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
 
-  const [subOptionSelected, setSubOptionSelected] = useState<RadioValue>({ value: '', label: '' });
-
-  const handleClearAll = () => {
+  const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
-    setSubOptionSelected({ value: '', label: '' });
   };
 
   useEffect(() => {
     return () => {
-      handleClearAll();
+      handleResetAutoStep();
     };
   }, []);
 
@@ -74,7 +74,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       }
 
       el.subs.forEach((sub) => {
-        if (sub.id === subOptionSelected.value && sub.basis.subs?.length) {
+        if (
+          currentActiveSpecAttributeGroupId &&
+          sub.id === subOptionSelected?.[currentActiveSpecAttributeGroupId] &&
+          sub.basis.subs?.length
+        ) {
           pickedData.push({
             id: sub.basis.id,
             name: sub.basis.name,
@@ -118,8 +122,12 @@ export const AutoStep: FC<AutoStepProps> = ({
       title: 'Are you sure go back to select option dataset?',
       content: 'You might lose all the relevant selections on each step.',
       onOk: () => {
+        // clearSteps();
         store.dispatch(resetAutoStepState());
-        setSubOptionSelected({ label: '', value: '' });
+
+        if (currentActiveSpecAttributeGroupId) {
+          setSubOptionSelected({ [currentActiveSpecAttributeGroupId]: '' });
+        }
 
         /// go back to select option dataset
         store.dispatch(setStep('pre'));
@@ -137,9 +145,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       .filter((el) => el.options.length > 0);
 
     const newAttributeGroup: ProductAttributeFormInputWhenCreateStep[] = attributeGroup?.map((el) =>
-      el.id === activeAttrGroupId?.['specification_attribute_groups']
-        ? { ...el, steps: steps }
-        : el,
+      el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps } : el,
     ) as any;
 
     store.dispatch(
@@ -164,7 +170,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       onCancel={() => setVisible(false)}
       className={styles.modalContainer}
       maskClosable={false}
-      afterClose={handleClearAll}
+      afterClose={handleResetAutoStep}
       width={'80%'}
       closeIcon={<CloseIcon />}
       footer={
@@ -173,8 +179,11 @@ export const AutoStep: FC<AutoStepProps> = ({
             size="small"
             properties="rounded"
             disabled={
-              (!linkedOptionData[0]?.pickedData.length && !!subOptionSelected.value) ||
-              !subOptionSelected.value
+              (!linkedOptionData[0]?.pickedData.length &&
+                !!currentActiveSpecAttributeGroupId &&
+                !!subOptionSelected?.[currentActiveSpecAttributeGroupId]) ||
+              (!!currentActiveSpecAttributeGroupId &&
+                !subOptionSelected?.[currentActiveSpecAttributeGroupId])
             }
             icon={<ActionNextIcon />}
             onClick={handleGoToNextStep}
@@ -203,8 +212,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       {step === 'pre' ? (
         <FirstStep
           data={attributes}
-          selected={subOptionSelected}
-          setSelected={setSubOptionSelected}
+          selected={
+            currentActiveSpecAttributeGroupId
+              ? subOptionSelected?.[currentActiveSpecAttributeGroupId]
+              : ''
+          }
         />
       ) : (
         <NextStep />

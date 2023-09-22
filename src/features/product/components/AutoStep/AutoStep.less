@@ -65,21 +65,6 @@
   }
 }
 
-.otherSlide {
-  .stepCircle {
-    color: @primary-color !important;
-    background: @primary-color !important;
-  }
-  :global(.ant-input) {
-    color: @primary-color !important;
-    cursor: default;
-  }
-
-  svg path {
-    fill: @primary-color !important;
-  }
-}
-
 .stepCircle {
   display: flex;
   align-items: center;
@@ -94,18 +79,49 @@
   cursor: default;
 }
 
+/* inactive slide of top bar */
+.otherSlide {
+  .stepCircle {
+    color: @primary-color !important;
+    background: @primary-color !important;
+  }
+
+  :global(.ant-input) {
+    color: @primary-color !important;
+    font-weight: 300 !important;
+    cursor: default;
+  }
+
+  svg path {
+    fill: @primary-color !important;
+    stroke: @primary-color !important;
+    stroke-width: 0;
+  }
+}
+
+/* active slide of top bar */
 .description {
   margin-right: 8px;
 
   :global(.ant-input) {
     padding: 0;
     color: @primary-color-dark;
+    font-weight: 500;
+  }
+}
+
+.inactiveLineRightIcon {
+  path {
+    fill: @primary-color !important;
+    stroke: @primary-color !important;
+    stroke-width: 0 !important;
   }
 }
 
 .activeLineRightIcon {
   path {
-    fill: @primary-color-dark;
+    stroke: @primary-color-dark;
+    stroke-width: 1px;
   }
 }
 
@@ -149,7 +165,7 @@
 
   :global(.replicate) {
     height: 100%;
-    margin-left: 12px;
+    margin: 0 8px;
     padding: 0 8px;
     color: @mono-color;
     text-align: center;
@@ -178,6 +194,18 @@
     }
   }
 
+  :global(.linkage) {
+    height: 100%;
+    color: @mono-color;
+    text-align: center;
+    cursor: default;
+
+    p {
+      color: @mono-color !important;
+      font-weight: 300 !important;
+    }
+  }
+
   :global(.selected-all-option-radio),
   .header {
     position: sticky;
@@ -196,9 +224,14 @@
 
   :global(.checkbox-item) {
     :global(.ant-checkbox-group) {
+      :global(.ant-checkbox-wrapper) {
+        display: none;
+      }
+
       :global(.item-option-uncheck),
       :global(.item-option-checked) {
-        margin-right: 8px !important;
+        width: 100% !important;
+        margin-right: 0 !important;
       }
 
       > label {
@@ -208,23 +241,37 @@
     }
 
     :global(.product-id) {
-      max-width: 45%;
       margin-right: 16px;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
 
     :global(.pre-option) {
       min-width: 50%;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
   }
 
   :global(.checkbox-item-active) {
+    :global(.linkage-label),
+    :global(.replicate-label) {
+      font-weight: 600 !important ;
+    }
     :global(.heading-option-group) {
-      color: @primary-color-dark;
       font-weight: 500;
+    }
+
+    p,
+    span,
+    :global(.heading-option-group) {
+      color: @primary-color-dark !important;
+    }
+
+    svg path {
+      fill: @primary-color-dark;
     }
   }
 

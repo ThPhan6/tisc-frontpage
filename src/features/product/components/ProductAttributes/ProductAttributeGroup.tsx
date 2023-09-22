@@ -8,7 +8,6 @@ import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { uniqueArrayBy } from '@/helper/utils';
 import { capitalize, flatMap, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
@@ -29,6 +28,7 @@ import {
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
+  SpecificationType,
 } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,
@@ -37,7 +37,7 @@ import {
 } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
-import { closeProductFooterTab } from '@/reducers/active';
+import { closeDimensionWeightGroup, closeProductFooterTab } from '@/reducers/active';
 import { SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -167,16 +167,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       currentSpecAttributeGroupId?.indexOf('new') !== -1 ||
       attributeGroupKey !== 'specification_attribute_groups' ||
       attrGroupItem?.steps?.length ||
-      // to prevent call step api with group didn't have steps
-      (attrGroupItem?.steps as any) === false
+      attrGroupItem.type !== SpecificationType.autoStep
     ) {
       return;
     }
 
     getAutoStepData(productId, currentSpecAttributeGroupId).then((res) => {
       const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
-        // set step to false of that attribute group didn't have step to prevent call step api
-        el.id === currentSpecAttributeGroupId ? { ...el, steps: res?.length ? res : false } : el,
+        el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
       );
 
       store.dispatch(
@@ -198,6 +196,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     );
 
     store.dispatch(closeProductFooterTab());
+    store.dispatch(closeDimensionWeightGroup());
   };
 
   // set picked data when open auto-step
@@ -348,16 +347,22 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       const nextStep = autoSteps[index + 1];
 
+      const pickedPreOption = nextStep.options[nextStep.options.length - 1].pre_option?.split(',');
+
+      /// get last option highlighted
+      const pickedId = pickedPreOption?.[0] as string;
+      const preOption = pickedPreOption?.slice(1, pickedPreOption.length).join(',') as string;
+
       // save highlight left panel
       pickedOption[index] = {
-        id: nextStep.options[0].pre_option || nextStep.options[0].id,
-        pre_option: autoStep.options[index === 0 ? 0 : index - 1]?.pre_option,
+        id: pickedId,
+        pre_option: preOption,
       };
 
       // handle get the ID of previous active option on left panel
       if (index === curIndex) {
         if (nextStep) {
-          optionId = nextStep.options[0].pre_option || nextStep.options[0].id;
+          optionId = pickedId;
         }
       }
     });
@@ -371,9 +376,18 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         exceptOptionIds.join(','),
       );
 
-      const allSubOptionSelected: OptionReplicateResponse[] = uniqueArrayBy(
-        flatMap(flatMap(linkedOptionData.map((el) => el.pickedData)).map((el) => el.subs)),
-        ['id', 'pre_option'],
+      const allSubOptionSelected: OptionReplicateResponse[] = flatMap(
+        flatMap(linkedOptionData.map((el) => el.pickedData)).map((el) => el.subs),
+      );
+
+      const curPickedSubData = flatMap(
+        newLinkedOptionData[curIndex].pickedData.map((el) => el.subs),
+      );
+
+      const curOptionSelected = pickedOption[curIndex];
+
+      const curPickedOption = curPickedSubData.find(
+        (el) => el.id === curOptionSelected.id && el.pre_option === curOptionSelected.pre_option,
       );
 
       newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((opt) => ({
@@ -383,15 +397,42 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           subs: item.subs.map((sub) => {
             let newSub: OptionReplicateResponse | undefined = undefined;
 
-            allSubOptionSelected.forEach((el) => {
-              if (sub.pre_option === el.id) {
+            /// update pre option name
+            allSubOptionSelected.forEach((subOption) => {
+              if (sub.pre_option === subOption.id) {
+                const preOptionInfo = [
+                  curPickedOption?.pre_option_name,
+                  trimEnd(
+                    `${curPickedOption?.value_1} ${curPickedOption?.value_2} ${
+                      curPickedOption?.unit_1 || curPickedOption?.unit_2
+                        ? `- ${curPickedOption?.unit_1} ${curPickedOption?.unit_2}`
+                        : ''
+                    }`,
+                  ),
+                ].filter(Boolean);
+
+                const preOptionName = preOptionInfo.length ? preOptionInfo.join(', ') : undefined;
+
                 newSub = {
                   ...sub,
+                  pre_option_name: preOptionName,
                 };
               }
             });
 
-            return newSub ?? sub;
+            let newSubClone = newSub ? { ...(newSub as any) } : undefined;
+
+            const nextStep = curIndex + 1;
+
+            /// update pre option id
+            autoSteps[nextStep].options.forEach((subOption) => {
+              newSubClone = {
+                ...newSub,
+                pre_option: subOption.pre_option,
+              };
+            });
+
+            return newSubClone ?? sub;
           }),
         })),
       }));

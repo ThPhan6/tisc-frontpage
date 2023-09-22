@@ -12,7 +12,6 @@ import { useAppSelector } from '@/reducers';
 
 import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
 import styles from './ProductDownloadFooter.less';
