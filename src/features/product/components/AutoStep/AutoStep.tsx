@@ -8,7 +8,6 @@ import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.sv
 import { confirmModal } from '@/helper/common';
 
 import {
-  clearSteps,
   resetAutoStepState,
   setLinkedOptionData,
   setPartialProductDetail,
@@ -56,10 +55,13 @@ export const AutoStep: FC<AutoStepProps> = ({
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
   const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
 
+  const handleResetAutoStep = () => {
+    store.dispatch(resetAutoStepState());
+  };
+
   useEffect(() => {
     return () => {
-      // clearSteps();
-      store.dispatch(resetAutoStepState());
+      handleResetAutoStep();
     };
   }, []);
 
@@ -168,7 +170,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       onCancel={() => setVisible(false)}
       className={styles.modalContainer}
       maskClosable={false}
-      afterClose={clearSteps}
+      afterClose={handleResetAutoStep}
       width={'80%'}
       closeIcon={<CloseIcon />}
       footer={
