@@ -663,6 +663,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         * picked: [b,c]
         * linked: []
       */
+
       let nextOrder = curOrder;
       ++nextOrder;
       if (optionsSelected[nextOrder]) {

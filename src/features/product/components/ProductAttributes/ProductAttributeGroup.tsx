@@ -322,28 +322,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       // set other picked data
       const options = getGroupOptions(autoStep.options);
-      const prevStep = autoSteps[index === 0 ? 0 : index - 1];
-
-      if (index !== 0) {
-        const newPickedData = options.map((el) => ({
-          ...el,
-          subs: el.subs.map((sub) => {
-            let newSub: OptionReplicateResponse | undefined = undefined;
-
-            prevStep.options.forEach((opt) => {
-              if (sub.pre_option === el.id) {
-                newSub = {
-                  ...sub,
-                };
-              }
-            });
-
-            return newSub ?? sub;
-          }),
-        }));
-
-        linkedOptionData[index] = { pickedData: newPickedData, linkedData: [] };
-      }
+      linkedOptionData[index] = { pickedData: options, linkedData: [] };
 
       const nextStep = autoSteps[index + 1];
 
@@ -376,20 +355,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         exceptOptionIds.join(','),
       );
 
-      const allSubOptionSelected: OptionReplicateResponse[] = flatMap(
-        flatMap(linkedOptionData.map((el) => el.pickedData)).map((el) => el.subs),
-      );
-
-      const curPickedSubData = flatMap(
-        newLinkedOptionData[curIndex].pickedData.map((el) => el.subs),
-      );
-
-      const curOptionSelected = pickedOption[curIndex];
-
-      const curPickedOption = curPickedSubData.find(
-        (el) => el.id === curOptionSelected.id && el.pre_option === curOptionSelected.pre_option,
-      );
-
       newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((opt) => ({
         ...opt,
         subs: opt.subs.map((item) => ({
@@ -397,42 +362,18 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           subs: item.subs.map((sub) => {
             let newSub: OptionReplicateResponse | undefined = undefined;
 
-            /// update pre option name
-            allSubOptionSelected.forEach((subOption) => {
-              if (sub.pre_option === subOption.id) {
-                const preOptionInfo = [
-                  curPickedOption?.pre_option_name,
-                  trimEnd(
-                    `${curPickedOption?.value_1} ${curPickedOption?.value_2} ${
-                      curPickedOption?.unit_1 || curPickedOption?.unit_2
-                        ? `- ${curPickedOption?.unit_1} ${curPickedOption?.unit_2}`
-                        : ''
-                    }`,
-                  ),
-                ].filter(Boolean);
-
-                const preOptionName = preOptionInfo.length ? preOptionInfo.join(', ') : undefined;
-
-                newSub = {
-                  ...sub,
-                  pre_option_name: preOptionName,
-                };
-              }
-            });
-
-            let newSubClone = newSub ? { ...(newSub as any) } : undefined;
-
             const nextStep = curIndex + 1;
 
-            /// update pre option id
+            /// update pre option
             autoSteps[nextStep].options.forEach((subOption) => {
-              newSubClone = {
-                ...newSub,
+              newSub = {
+                ...sub,
                 pre_option: subOption.pre_option,
+                pre_option_name: subOption.pre_option_name,
               };
             });
 
-            return newSubClone ?? sub;
+            return newSub ?? sub;
           }),
         })),
       }));
