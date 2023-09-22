@@ -107,6 +107,10 @@
     padding: 0;
     color: @primary-color-dark;
     font-weight: 500;
+
+    &:placeholder-shown {
+      font-weight: 300;
+    }
   }
 }
 
@@ -232,6 +236,7 @@
       :global(.item-option-checked) {
         width: 100% !important;
         margin-right: 0 !important;
+        font-weight: 300;
       }
 
       > label {
