@@ -320,9 +320,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         exceptOptionIds = exceptOptionIds.concat(autoStep.options.map((option) => option.id));
       }
 
-      // set other picked data
-      const options = getGroupOptions(autoStep.options);
-      linkedOptionData[index] = { pickedData: options, linkedData: [] };
+      if (index !== 0) {
+        // set other picked data
+        const options = getGroupOptions(autoStep.options);
+        linkedOptionData[index] = { pickedData: options, linkedData: [] };
+      }
 
       const nextStep = autoSteps[index + 1];
 
