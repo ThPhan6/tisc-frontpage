@@ -664,8 +664,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         * linked: []
       */
 
-      console.log('result', result);
-
       let nextOrder = curOrder;
       ++nextOrder;
       if (optionsSelected[nextOrder]) {
@@ -949,8 +947,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }),
       );
     };
-
-  console.log('linkedOptionData', linkedOptionData);
 
   return (
     <div className={styles.nextStep}>
