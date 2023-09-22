@@ -947,10 +947,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       );
     };
 
-  // console.log('optionsSelected', optionsSelected);
-  // console.log('linkedOptionData', linkedOptionData);
-  console.log('currentSubPickedOptionSelected', currentSubPickedOptionSelected);
-
   return (
     <div className={styles.nextStep}>
       {/* top bar */}
@@ -976,12 +972,16 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                   value={name}
                   onChange={handleChangeDescription(index)}
                   autoWidth
-                  defaultWidth={74}
+                  defaultWidth={76}
                   placeholder="description"
                   readOnly={otherSlide}
                 />
                 {index !== slideBar.length - 1 ? (
-                  <div className={`${styles.lineRightIcon} ${styles.activeLineRightIcon}`}>
+                  <div
+                    className={`${styles.lineRightIcon} ${styles.activeLineRightIcon} ${
+                      index === curOrder - 1 ? styles.inactiveLineRightIcon : ''
+                    }`}
+                  >
                     <LineRightDescriptionIcon />
                   </div>
                 ) : null}
