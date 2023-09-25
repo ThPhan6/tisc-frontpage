@@ -8,7 +8,7 @@ import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { capitalize, flatMap, sortBy, trimEnd, uniq } from 'lodash';
+import { capitalize, sortBy, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -328,9 +328,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       const nextStep = autoSteps[index + 1];
 
-      const pickedPreOption = nextStep.options[nextStep.options.length - 1].pre_option?.split(',');
-
-      /// get last option highlighted
+      /// get first option highlighted
+      const pickedPreOption = nextStep.options[0].pre_option?.split(',');
       const pickedId = pickedPreOption?.[0] as string;
       const preOption = pickedPreOption?.slice(1, pickedPreOption.length).join(',') as string;
 
@@ -357,25 +356,30 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         exceptOptionIds.join(','),
       );
 
+      const nextStep = curIndex + 1;
+
       newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((opt) => ({
         ...opt,
         subs: opt.subs.map((item) => ({
           ...item,
           subs: item.subs.map((sub) => {
-            let newSub: OptionReplicateResponse | undefined = undefined;
+            // let newSub: OptionReplicateResponse | undefined = undefined;
 
-            const nextStep = curIndex + 1;
+            // /// update pre option
+            // autoSteps[nextStep].options.forEach((subOption) => {
+            //   newSub = {
+            //     ...sub,
+            //     pre_option: subOption.pre_option,
+            //     pre_option_name: subOption.pre_option_name,
+            //   };
+            // });
 
-            /// update pre option
-            autoSteps[nextStep].options.forEach((subOption) => {
-              newSub = {
-                ...sub,
-                pre_option: subOption.pre_option,
-                pre_option_name: subOption.pre_option_name,
-              };
-            });
-
-            return newSub ?? sub;
+            // return newSub ?? sub;
+            return {
+              ...sub,
+              pre_option: autoSteps[nextStep].options[0].pre_option,
+              pre_option_name: autoSteps[nextStep].options[0].pre_option_name,
+            };
           }),
         })),
       }));

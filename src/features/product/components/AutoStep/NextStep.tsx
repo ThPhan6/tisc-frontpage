@@ -424,6 +424,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   };
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
+    handleForceEnableCollapse();
+
     const curOptionSelected = {
       id: e.target.value,
       pre_option: (e.target as any).pre_option,

@@ -303,52 +303,6 @@
   font-weight: 600;
 }
 
-.set-unchecked-color,
-.set-checked-color {
-  :global(.ant-radio-checked) {
-    :global(.ant-radio-inner) {
-      box-shadow: none;
-    }
-  }
-}
-
-.set-unchecked-color {
-  @unactive-color: #000;
-
-  :global(.ant-radio-inner),
-  :global(.ant-radio-wrapper:hover .ant-radio),
-  :global(.ant-radio:hover .ant-radio-inner),
-  :global(.ant-radio-input:focus + .ant-radio-inner),
-  :global(.ant-radio-checked::after),
-  :global(.ant-radio-checked.ant-radio-inner) {
-    border-color: @unactive-color;
-  }
-  :global(.ant-radio-inner::after) {
-    background-color: @unactive-color;
-    opacity: 0;
-    transition: none;
-  }
-}
-
-.set-checked-color {
-  @active-color: @primary-color-dark;
-
-  :global(.ant-radio-inner),
-  :global(.ant-radio-wrapper:hover .ant-radio),
-  :global(.ant-radio:hover .ant-radio-inner),
-  :global(.ant-radio-input:focus + .ant-radio-inner),
-  :global(.ant-radio-checked::after),
-  :global(.ant-radio-checked.ant-radio-inner) {
-    border-color: @active-color;
-  }
-  :global(.ant-radio-inner::after) {
-    background-color: @active-color;
-    transform: scale(0.5);
-    opacity: 1;
-    transition: none;
-  }
-}
-
 @media screen and (max-width: 576px) {
   .sub_wrapper .element_input .form {
     overflow: auto hidden;
