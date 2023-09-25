@@ -247,7 +247,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const optionIds = firstStep.options.map((opt) => opt.id);
 
     let newOptions: LinkedOptionProps | undefined;
-    ///* mapping from attribute to get step 1 data
+    ///* mapping from specfication basis to get step 1 data
     attributes?.forEach((attr) => {
       if (newOptions) {
         return;
@@ -258,7 +258,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           return;
         }
 
-        el.basis.subs.forEach((sub) => {
+        el.basis?.subs?.forEach((sub) => {
           if (newOptions) {
             return;
           }
@@ -317,7 +317,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       // add all option ID of previous step to prevent duplicate next step
       if (index <= curIndex && curIndex !== 0) {
-        exceptOptionIds = exceptOptionIds.concat(autoStep.options.map((option) => option.id));
+        exceptOptionIds = uniq(exceptOptionIds.concat(autoStep.options.map((option) => option.id)));
       }
 
       if (index !== 0) {
