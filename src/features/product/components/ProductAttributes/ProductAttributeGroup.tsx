@@ -30,11 +30,7 @@ import {
   SpecificationAttributeBasisOptionProps,
   SpecificationType,
 } from '../../types';
-import {
-  AutoStepOnAttributeGroupResponse,
-  LinkedOptionProps,
-  OptionReplicateResponse,
-} from '../../types/autoStep';
+import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
 import { closeDimensionWeightGroup, closeProductFooterTab } from '@/reducers/active';
@@ -46,6 +42,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AutoStep } from '../AutoStep/AutoStep';
+import { getPickedOptionGroup } from '../AutoStep/util';
 import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { ProductAttributeSubItem, getConversionText } from './ProductAttributeSubItem';
@@ -199,27 +196,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     store.dispatch(closeDimensionWeightGroup());
   };
 
-  // set picked data when open auto-step
-  const getGroupOptions = (options: OptionReplicateResponse[]) => {
-    const b: LinkedOptionProps[] = [];
-
-    options.forEach((el) => {
-      const index = b.findIndex((c) => c.id === el.sub_id);
-
-      if (index > -1) {
-        b[index].subs = b[index].subs.concat(el);
-      } else {
-        b.push({
-          id: el.sub_id,
-          name: el.sub_name,
-          subs: [el],
-        });
-      }
-    });
-
-    return b;
-  };
-
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!productId) {
       message.error('Product ID is required');
@@ -309,7 +285,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       //
       if (index >= autoSteps.length - 1) {
-        const options = getGroupOptions(autoStep.options);
+        const options = getPickedOptionGroup(autoStep.options);
         linkedOptionData[index] = { pickedData: options, linkedData: [] };
 
         return;
@@ -322,7 +298,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       if (index !== 0) {
         // set other picked data
-        const options = getGroupOptions(autoStep.options);
+        const options = getPickedOptionGroup(autoStep.options);
         linkedOptionData[index] = { pickedData: options, linkedData: [] };
       }
 
