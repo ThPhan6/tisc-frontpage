@@ -309,6 +309,44 @@ li.ant-menu-submenu {
   user-select: none;
 }
 
+.ant-radio-inner {
+  width: 18px;
+  height: 18px;
+  border-color: @mono-color;
+}
+
+.ant-radio-checked .ant-radio-input:focus + .ant-radio-inner,
+.ant-radio-checked .ant-radio:hover .ant-radio-inner,
+.ant-radio-checked .ant-radio-inner {
+  border-color: @primary-color-dark;
+}
+
+.ant-radio-checked::after {
+  animation: none;
+}
+
+.ant-radio:hover::after,
+.ant-radio-wrapper:hover .ant-radio::after {
+  visibility: hidden;
+}
+
+.ant-radio-checked .ant-radio-inner::after {
+  transform: scale(0.7);
+}
+
+.ant-radio.ant-radio-disabled .ant-radio-inner {
+  border-color: @mono-color-medium !important;
+  cursor: default;
+}
+
+.ant-radio-inner::after {
+  background-color: @primary-color-dark;
+}
+
+.ant-radio-input:focus + .ant-radio-inner {
+  box-shadow: unset;
+}
+
 .ant-dropdown-trigger {
   cursor: pointer;
 }
