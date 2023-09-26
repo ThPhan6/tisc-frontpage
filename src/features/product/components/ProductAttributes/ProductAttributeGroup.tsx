@@ -8,7 +8,7 @@ import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { capitalize, flatMap, sortBy, trimEnd, uniq } from 'lodash';
+import { capitalize, sortBy, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -30,11 +30,7 @@ import {
   SpecificationAttributeBasisOptionProps,
   SpecificationType,
 } from '../../types';
-import {
-  AutoStepOnAttributeGroupResponse,
-  LinkedOptionProps,
-  OptionReplicateResponse,
-} from '../../types/autoStep';
+import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
 import { closeDimensionWeightGroup, closeProductFooterTab } from '@/reducers/active';
@@ -46,6 +42,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AutoStep } from '../AutoStep/AutoStep';
+import { getPickedOptionGroup } from '../AutoStep/util';
 import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { ProductAttributeSubItem, getConversionText } from './ProductAttributeSubItem';
@@ -199,27 +196,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     store.dispatch(closeDimensionWeightGroup());
   };
 
-  // set picked data when open auto-step
-  const getGroupOptions = (options: OptionReplicateResponse[]) => {
-    const b: LinkedOptionProps[] = [];
-
-    options.forEach((el) => {
-      const index = b.findIndex((c) => c.id === el.sub_id);
-
-      if (index > -1) {
-        b[index].subs = b[index].subs.concat(el);
-      } else {
-        b.push({
-          id: el.sub_id,
-          name: el.sub_name,
-          subs: [el],
-        });
-      }
-    });
-
-    return b;
-  };
-
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!productId) {
       message.error('Product ID is required');
@@ -309,7 +285,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       //
       if (index >= autoSteps.length - 1) {
-        const options = getGroupOptions(autoStep.options);
+        const options = getPickedOptionGroup(autoStep.options);
         linkedOptionData[index] = { pickedData: options, linkedData: [] };
 
         return;
@@ -322,15 +298,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       if (index !== 0) {
         // set other picked data
-        const options = getGroupOptions(autoStep.options);
+        const options = getPickedOptionGroup(autoStep.options);
         linkedOptionData[index] = { pickedData: options, linkedData: [] };
       }
 
       const nextStep = autoSteps[index + 1];
 
-      const pickedPreOption = nextStep.options[nextStep.options.length - 1].pre_option?.split(',');
-
-      /// get last option highlighted
+      /// get first option highlighted
+      const pickedPreOption = nextStep.options[0].pre_option?.split(',');
       const pickedId = pickedPreOption?.[0] as string;
       const preOption = pickedPreOption?.slice(1, pickedPreOption.length).join(',') as string;
 
@@ -357,25 +332,30 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         exceptOptionIds.join(','),
       );
 
+      const nextStep = curIndex + 1;
+
       newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((opt) => ({
         ...opt,
         subs: opt.subs.map((item) => ({
           ...item,
           subs: item.subs.map((sub) => {
-            let newSub: OptionReplicateResponse | undefined = undefined;
+            // let newSub: OptionReplicateResponse | undefined = undefined;
 
-            const nextStep = curIndex + 1;
+            // /// update pre option
+            // autoSteps[nextStep].options.forEach((subOption) => {
+            //   newSub = {
+            //     ...sub,
+            //     pre_option: subOption.pre_option,
+            //     pre_option_name: subOption.pre_option_name,
+            //   };
+            // });
 
-            /// update pre option
-            autoSteps[nextStep].options.forEach((subOption) => {
-              newSub = {
-                ...sub,
-                pre_option: subOption.pre_option,
-                pre_option_name: subOption.pre_option_name,
-              };
-            });
-
-            return newSub ?? sub;
+            // return newSub ?? sub;
+            return {
+              ...sub,
+              pre_option: autoSteps[nextStep].options[0].pre_option,
+              pre_option_name: autoSteps[nextStep].options[0].pre_option_name,
+            };
           }),
         })),
       }));

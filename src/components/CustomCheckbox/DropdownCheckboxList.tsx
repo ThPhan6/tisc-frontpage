@@ -99,9 +99,9 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
 
         if (selectedOption) {
           if (combinable) {
-            activeKeys.push(String(index));
+            activeKeys.push(String(item?.id ?? index));
           } else {
-            activeKeys = [String(index)];
+            activeKeys = [item?.id ?? String(index)];
           }
         }
       });
@@ -124,9 +124,9 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       const activeKeyClone = cloneDeep(activeKey);
 
       if (canActiveMultiKey) {
-        setActiveKey(uniq([...(activeKeyClone as string[]), String(index)]));
+        setActiveKey(uniq([...(activeKeyClone as string[]), item?.id ?? String(index)]));
       } else {
-        setActiveKey([String(index)]);
+        setActiveKey([item?.id ?? String(index)]);
       }
 
       const { options } = item;
@@ -196,8 +196,8 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
           {isSelectAll ? (
             (
               typeof activeKey === 'string' || typeof activeKey === 'number'
-                ? String(activeKey) === String(index)
-                : activeKey.includes(String(index))
+                ? String(activeKey) === item?.id ?? String(index)
+                : activeKey.includes(item?.id ?? String(index))
             ) ? (
               <div className="flex-start drop-up-icon">
                 <DropupIcon />
@@ -258,8 +258,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
-          // key={item?.id || index}
-          key={index}
+          key={item?.id ?? index}
           collapsible={isEmpty(item.options) || noCollapse ? 'disabled' : undefined}
           className="site-collapse-custom-panel"
         >
