@@ -60,55 +60,7 @@
   overflow: auto;
   background: #fff;
 
-  :global(.checkbox-list-options) {
-    padding: 0 !important;
-  }
-
-  :global(.replicate) {
-    height: 100%;
-    margin: 0 8px;
-    padding: 0 8px;
-    color: @mono-color;
-    text-align: center;
-    border-right: 1px solid @mono-color-medium;
-    border-left: 1px solid @mono-color-medium;
-    cursor: default;
-
-    p {
-      color: @mono-color !important;
-      font-weight: 300 !important;
-    }
-
-    svg {
-      cursor: pointer;
-    }
-
-    :global(.replicate-disabled) {
-      svg {
-        cursor: default;
-        pointer-events: none;
-      }
-
-      svg path {
-        fill: @mono-color-medium;
-      }
-    }
-  }
-
-  :global(.linkage) {
-    height: 100%;
-    color: @mono-color;
-    text-align: center;
-    cursor: default;
-
-    p {
-      color: @mono-color !important;
-      font-weight: 300 !important;
-    }
-  }
-
-  :global(.selected-all-option-radio),
-  .header {
+  :global(.header) {
     position: sticky;
     top: 0;
     z-index: 2;
@@ -121,6 +73,10 @@
     text-transform: uppercase;
     background: #fff;
     box-shadow: @border-bottom !important;
+  }
+
+  :global(.radio-list-options) {
+    padding: 0 !important;
   }
 
   :global(.checkbox-item) {

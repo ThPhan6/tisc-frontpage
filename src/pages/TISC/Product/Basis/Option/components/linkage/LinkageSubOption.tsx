@@ -79,7 +79,7 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
   };
 
   const handleCollapseWhenSelectAll = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    if (allSelected || (!allSelected && expand)) {
+    if (allSelected || (!allSelected && expand) || !preLinkageForm) {
       e.stopPropagation();
     }
   };
@@ -89,13 +89,7 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
       expandIcon={() => null}
       collapsible={subOption.subs.length > 0 ? undefined : 'disabled'}
       onChange={handleCollapse}
-      defaultActiveKey={
-        !preLinkageForm
-          ? subOption.id
-          : expandSubOptionIds.includes(subOption.id)
-          ? subOption.id
-          : undefined
-      }
+      defaultActiveKey={preLinkageForm ? undefined : subOption.id}
     >
       <Collapse.Panel
         key={subOption.id}

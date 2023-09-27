@@ -42,6 +42,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AutoStep } from '../AutoStep/AutoStep';
+import { PreSelectStep } from '../AutoStep/PreSelectStep';
 import { getPickedOptionGroup } from '../AutoStep/util';
 import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
@@ -80,18 +81,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 }) => {
   const isTablet = useScreen().isTablet;
 
-  // const [randomId] = useState<number>(Math.random());
-
-  // const {
-  //   curActiveKey,
-  //   onKeyChange,
-  //   curActive: attrGroupCollapseId,
-  // } = useCollapseGroupActiveCheck(
-  //   activeKey,
-  //   randomId, // groupIndex + 1, // Spare index 0 for Dimension & Weight group
-  //   attrGroupItem.id,
-  // );
-
   const {
     attributeGroupKey,
     onChangeAttributeItem,
@@ -129,6 +118,20 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
+  const dontShowTISCAutoSteps =
+    isPublicPage ||
+    !isEditable ||
+    !currentSpecAttributeGroupId ||
+    currentSpecAttributeGroupId !== attrGroupItem.id;
+
+  const inactiveAutoSteps =
+    !currentSpecAttributeGroupId ||
+    currentSpecAttributeGroupId !== attrGroupItem.id ||
+    currentSpecAttributeGroupId?.indexOf('new') !== -1 /* new group */ ||
+    attributeGroupKey !== 'specification_attribute_groups' ||
+    attrGroupItem?.steps?.length ||
+    attrGroupItem.type !== SpecificationType.autoStep;
+
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
       let attributeSelected: AttributeSelectedProps = ATTRIBUTE_SELECTED_DEFAULT_VALUE;
@@ -158,14 +161,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   }, [attrGroupItem]);
 
   useEffect(() => {
-    if (
-      !currentSpecAttributeGroupId ||
-      currentSpecAttributeGroupId !== attrGroupItem.id ||
-      currentSpecAttributeGroupId?.indexOf('new') !== -1 ||
-      attributeGroupKey !== 'specification_attribute_groups' ||
-      attrGroupItem?.steps?.length ||
-      attrGroupItem.type !== SpecificationType.autoStep
-    ) {
+    if (inactiveAutoSteps) {
       return;
     }
 
@@ -338,25 +334,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         ...opt,
         subs: opt.subs.map((item) => ({
           ...item,
-          subs: item.subs.map((sub) => {
-            // let newSub: OptionReplicateResponse | undefined = undefined;
-
-            // /// update pre option
-            // autoSteps[nextStep].options.forEach((subOption) => {
-            //   newSub = {
-            //     ...sub,
-            //     pre_option: subOption.pre_option,
-            //     pre_option_name: subOption.pre_option_name,
-            //   };
-            // });
-
-            // return newSub ?? sub;
-            return {
-              ...sub,
-              pre_option: autoSteps[nextStep].options[0].pre_option,
-              pre_option_name: autoSteps[nextStep].options[0].pre_option_name,
-            };
-          }),
+          subs: item.subs.map((sub) => ({
+            ...sub,
+            pre_option: autoSteps[nextStep].options[0].pre_option,
+            pre_option_name: autoSteps[nextStep].options[0].pre_option_name,
+          })),
         })),
       }));
     }
@@ -373,6 +355,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     store.dispatch(setStep(curIndex));
 
+    console.log('!111111111111111111');
+
+    setAutoStepModal(true);
+  };
+
+  const handleOpenPreSelectAutoStepModal = () => {
     setAutoStepModal(true);
   };
 
@@ -461,7 +449,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   const renderAttributeRowItem = (attribute: ProductAttributeProps, attrIndex: number) => {
-    if (isTiscAdmin && isEditable) {
+    if (isEditable) {
       if (!attribute && !attrGroupItem.steps?.length) {
         // return null;
       }
@@ -547,7 +535,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 : undefined
             }
             setChosenOptions={async (option) => {
-              if ((isTiscAdmin && isEditable) || !option) {
+              if ((isTiscAdmin && isEditable) || !option || chosenOption?.id === option.value) {
                 return;
               }
 
@@ -588,7 +576,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <div className={styles.specification}>
           <CustomCollapse
             activeKey={curAttrGroupCollapseId?.[attributeGroupKey] === attrGroupItem.id ? '1' : ''}
-            // keyCollapse={curAttrGroupCollapseId}
             onChange={handleOnChangeCollapse}
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
@@ -630,17 +617,18 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             )}
 
-            <table className={`${styles.table}`}>
+            <table className={styles.table}>
               <tbody>
                 {autoSteps?.map((step, stepIndex) => {
-                  let curStep = stepIndex;
-                  ++curStep;
-
                   return (
                     <tr
                       key={stepIndex}
                       className={`cursor-pointer flex-between ${styles.autoStepTr}`}
-                      onClick={handleOpenAutoStepModal(stepIndex)}
+                      onClick={
+                        dontShowTISCAutoSteps
+                          ? handleOpenPreSelectAutoStepModal
+                          : handleOpenAutoStepModal(stepIndex)
+                      }
                     >
                       <td className="flex-start auto-step-info">
                         <BodyText
@@ -648,7 +636,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           level={5}
                           style={{ width: 'fit-content', paddingRight: 12 }}
                         >
-                          {curStep < 10 ? `0${curStep}` : curStep}
+                          {step.order < 10 ? `0${step.order}` : step.order}
                         </BodyText>
                         <BodyText fontFamily="Roboto" level={5}>
                           {step.name}
@@ -690,12 +678,20 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         </div>
       </div>
 
-      <AutoStep
-        attributeGroup={attributeGroup}
-        attributes={attributes ?? []}
-        visible={autoStepModal}
-        setVisible={setAutoStepModal}
-      />
+      {dontShowTISCAutoSteps ? (
+        <PreSelectStep
+          attrGroupItem={attrGroupItem}
+          visible={autoStepModal}
+          setVisible={setAutoStepModal}
+        />
+      ) : (
+        <AutoStep
+          attributeGroup={attributeGroup}
+          attributes={attributes ?? []}
+          visible={autoStepModal}
+          setVisible={setAutoStepModal}
+        />
+      )}
     </div>
   );
 };

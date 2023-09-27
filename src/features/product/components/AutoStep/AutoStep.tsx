@@ -174,6 +174,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       footer={
         step === 'pre' ? (
           <CustomButton
+            buttonClass="action-button"
             size="small"
             properties="rounded"
             disabled={
@@ -189,6 +190,7 @@ export const AutoStep: FC<AutoStepProps> = ({
         ) : (
           <div className="flex-end">
             <CustomButton
+              buttonClass="action-button"
               size="small"
               properties="rounded"
               icon={<ActionBackIcon />}

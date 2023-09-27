@@ -6,9 +6,6 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 // import { ReactComponent as LineRightStepIcon } from '@/assets/icons/line-right-blue-24.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-right-grey-24.svg';
-import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
-import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { uniqueArrayBy } from '@/helper/utils';
@@ -33,11 +30,11 @@ import store, { useAppSelector } from '@/reducers';
 import { CheckBoxOptionProps, CheckboxDynamic } from '@/components/CustomCheckbox/CheckboxDynamic';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { EmptyOne } from '@/components/Empty';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './AutoStep.less';
+import { SlideBar } from './SlideBar';
 import { getPickedOptionGroup } from './util';
 
 interface NextStepProps {
@@ -46,11 +43,9 @@ interface NextStepProps {
 }
 export const NextStep: FC<NextStepProps> = ({}) => {
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
-  const [allLinkedData, setAllLinkedData] = useState<{ [slide: string]: LinkedOptionProps[] }>({});
 
   const slide = useAppSelector((state) => state.autoStep.slide as number);
-  let curOrder = slide;
-  curOrder += 2;
+  const curOrder = slide + 2;
 
   const slideBar = useAppSelector((state) => state.autoStep.slideBar);
 
@@ -162,32 +157,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     store.dispatch(setSlide(step));
 
-    const newAllLinkedData: { [slide: string]: LinkedOptionProps[] } = {};
-
-    linkedOptionData.forEach((el, index) => {
-      if (index === 0) {
-        return;
-      }
-
-      if (!newAllLinkedData[index - 1]) {
-        newAllLinkedData[index - 1] = [];
-      }
-
-      newAllLinkedData[index - 1] = el.pickedData;
-    });
-
-    setAllLinkedData(newAllLinkedData);
-
     handleForceEnableCollapse();
   }, [step]);
-
-  const handleChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTopBarData = [...slideBar];
-
-    newTopBarData[index] = e.target.value;
-
-    store.dispatch(setSlideBar(newTopBarData));
-  };
 
   const handleBackToPrevSlide = async () => {
     handleForceEnableCollapse();
@@ -269,7 +240,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     }
   };
 
-  /* each slide has 2 steps */
   const handleGoToNextSlide = async () => {
     handleForceEnableCollapse();
 
@@ -305,7 +275,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     /// prev linked data and all its options selected
     const prevPickedGroupOption = getPickedOptionGroup(optionsSelected[curOrder].options);
-    setAllLinkedData((prevState) => ({ ...prevState, [prevSlide]: prevPickedGroupOption }));
 
     /* all options selected in multiple groups */
     prevPickedGroupOption.forEach((el) => {
@@ -804,62 +773,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     };
 
   return (
-    <div className={styles.nextStep}>
-      {/* top bar */}
-      <div className={styles.topBar}>
-        {/* slide bar */}
-        <div className="flex-start">
-          {slideBar.map((name, index) => {
-            let newStep = index;
-            const otherSlide = index >= slide + 2 || index <= slide - 1;
-            return (
-              <div key={index} className={`flex-start ${otherSlide ? styles.otherSlide : ''}`}>
-                <div
-                  className={styles.stepCircle}
-                  style={{ background: '#2B39D4', border: 'unset' }}
-                >
-                  <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
-                    {++newStep}
-                  </BodyText>
-                </div>
-                <CustomInput
-                  fontLevel={5}
-                  containerClass={styles.description}
-                  value={name}
-                  onChange={handleChangeDescription(index)}
-                  autoWidth
-                  defaultWidth={76}
-                  placeholder="description"
-                  readOnly={otherSlide}
-                />
-                {index !== slideBar.length - 1 ? (
-                  <div
-                    className={`${styles.lineRightIcon} ${styles.activeLineRightIcon} ${
-                      index === curOrder - 1 ? styles.inactiveLineRightIcon : ''
-                    }`}
-                  >
-                    <LineRightDescriptionIcon />
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* slide action */}
-        <div className="flex-start slide-icons">
-          <ActionSlideLeftIcon
-            className={`${styles.slideLeftIcon} ${slide !== 0 ? styles.activeSlideLeftIcon : ''}`}
-            onClick={handleBackToPrevSlide}
-          />
-          <ActionSlideRightIcon
-            className={`${styles.slideRightIcon} ${
-              slide !== slideBar.length ? styles.activeSlideRightIcon : ''
-            }`}
-            onClick={handleGoToNextSlide}
-          />
-        </div>
-      </div>
+    <div>
+      <SlideBar
+        handleBackToPrevSlide={handleBackToPrevSlide}
+        handleGoToNextSlide={handleGoToNextSlide}
+      />
 
       <div className={styles.mainContent}>
         {/* left side */}

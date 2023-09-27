@@ -1,7 +1,25 @@
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { AutoStepLinkedOptionResponse } from '../types/autoStep';
+import { AutoStepLinkedOptionResponse, AutoStepOnAttributeGroupResponse } from '../types/autoStep';
+
+export const getAutoStepData = (productId: string, specificationId: string) => {
+  // showPageLoading();
+  return request<{ data: AutoStepOnAttributeGroupResponse[] }>(`/api/step`, {
+    method: 'GET',
+    params: { product_id: productId, specification_id: specificationId },
+  })
+    .then((res) => {
+      // hidePageLoading();
+      return res.data;
+    })
+    .catch((err) => {
+      // hidePageLoading();
+
+      message.error(err?.data?.message ?? 'Failed to get step');
+      return [] as AutoStepOnAttributeGroupResponse[];
+    });
+};
 
 export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: string) => {
   // showPageLoading();
