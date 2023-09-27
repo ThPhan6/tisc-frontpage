@@ -813,8 +813,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       );
     };
 
-  console.log('linkedOptionData ====>>>>', linkedOptionData);
-
   return (
     <div className={styles.nextStep}>
       {/* top bar */}
