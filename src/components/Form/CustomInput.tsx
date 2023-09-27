@@ -16,6 +16,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       focusColor,
       borderBottomColor,
       containerClass,
+      containerStyles,
       type,
       status,
       fontLevel,
@@ -87,7 +88,10 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       props.prefix || props.suffix ? classNameInputAffix : classNameInputDefault;
 
     return (
-      <div className={`${classNameInput ?? ''} ${containerClass}`} style={{ width: '100%' }}>
+      <div
+        className={`${classNameInput ?? ''} ${containerClass}`}
+        style={{ width: '100%', ...containerStyles }}
+      >
         {type === 'password' ? (
           <div style={{ width: '100%' }} className={requiredClassname}>
             <Input.Password type={type} {...props} />
