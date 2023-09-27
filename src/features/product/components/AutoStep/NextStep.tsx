@@ -3,15 +3,29 @@ import { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
-// import { ReactComponent as LineRightStepIcon } from '@/assets/icons/line-right-blue-24.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-right-grey-24.svg';
+import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
+import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { uniqueArrayBy } from '@/helper/utils';
-import { cloneDeep, flatMap, isNull, isUndefined, map, trimEnd, uniq, uniqBy } from 'lodash';
+import {
+  cloneDeep,
+  flatMap,
+  forEach,
+  isNull,
+  isUndefined,
+  map,
+  trimEnd,
+  uniq,
+  uniqBy,
+} from 'lodash';
 
 import {
+  OptionSelectedProps,
   setLinkedOptionData,
   setOptionsSelected,
   setPickedOption,
@@ -34,7 +48,6 @@ import { BodyText } from '@/components/Typography';
 
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './AutoStep.less';
-import { SlideBar } from './SlideBar';
 import { getPickedOptionGroup } from './util';
 
 interface NextStepProps {
@@ -83,6 +96,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   const uniqSubPreOptionSelected = uniq(flatMap(subPreOptionSelected.map((el) => el?.split(','))));
 
+  /* current option selected on left panel on each step */
   const currentSubPickedOptionSelected = allPickedSubs.filter((sub) => {
     if (slide === 0) {
       return uniqSubPreOptionSelected.includes(sub.value);
@@ -104,25 +118,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     return a === sub.value && b === sub.label;
   });
-
-  // const currentSubPickedOptionSelected = allPickedSubs.filter((sub) => {
-  //   if (slide === 0) {
-  //     return curSubOptionId === sub.value;
-  //   }
-
-  //   return curSubOptionId === sub.value && curSubPreOption === sub.label;
-  // });
-
-  // const currentSubPickedOptionSelected = allPickedSubs.filter((sub) => {
-  //   if (slide === 0) {
-  //     return uniqSubPreOptionSelected.includes(sub.value);
-  //   }
-
-  //   const allSubPreOption = sub.label?.split(',') as string[];
-
-  //   return uniqSubPreOptionSelected?.some((el) => allSubPreOption.includes(el as string));
-  // });
-
   /* ------------------------------------------------------ */
 
   /* current option selected on right panel on each step */
@@ -139,7 +134,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const currentSubLinkedOptionSelected = subLinkedOptionSelected.filter((el) =>
     allLinkedSubs.some((opt) => opt.id === el.value && opt.pre_option === el.label),
   );
-
   /* ------------------------------------------------------ */
 
   const handleForceEnableCollapse = () => {
@@ -160,7 +154,15 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     handleForceEnableCollapse();
   }, [step]);
 
-  const handleBackToPrevSlide = async () => {
+  const handleChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTopBarData = [...slideBar];
+
+    newTopBarData[index] = e.target.value;
+
+    store.dispatch(setSlideBar(newTopBarData));
+  };
+
+  const handleBackToPrevSlide = async (props?: { isRemove?: boolean }) => {
     handleForceEnableCollapse();
 
     const curSlide = cloneDeep(slide);
@@ -190,6 +192,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     const currentPickedOption = pickedOption[newSlide];
 
     if (!isGetLinkedOption || !currentPickedOption.id) {
+      if (props?.isRemove) {
+        return newLinkedOptionData;
+      }
+
       return;
     }
 
@@ -236,8 +242,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         linkedData: newLinkedOptions,
       };
 
-      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+      if (!props?.isRemove) {
+        store.dispatch(setLinkedOptionData(newLinkedOptionData));
+      }
     }
+
+    return newLinkedOptionData;
   };
 
   const handleGoToNextSlide = async () => {
@@ -300,32 +310,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
       newPickedData.push({ id: subOptionId, name: subOptionName, subs: subItemSelected });
     });
-
-    // /* all options selected in single group */
-    // const prevPickedId = pickedOption[prevSlide];
-
-    // const prevOptionSelectedIds = prevOptionSelected
-    //   .map((el) => (el.pre_option === prevPickedId ? el.id : undefined))
-    //   .filter(Boolean) as any;
-
-    // const prevLinkedSubOptions = flatMap(
-    //   linkedOptionData[prevSlide].linkedData.map((el) => el.subs),
-    // );
-
-    // prevLinkedSubOptions.forEach((el) => {
-    //   const subs: OptionReplicateResponse[] = [];
-
-    //   el.subs.forEach((sub) => {
-    //     if (prevOptionSelectedIds.includes(sub.id)) {
-    //       subs.push(sub as any);
-    //     }
-    //   });
-
-    //   if (subs.length) {
-    //     newPickedData.push({ id: el.id, name: el.name, subs: subs });
-    //   }
-    // });
-    /* ------------------------------------------------------------------------ */
 
     const currentPickedOption = pickedOption[newSlide];
 
@@ -390,6 +374,61 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     };
 
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
+  };
+
+  const handleRemoveStep = (index: number) => async () => {
+    const lastStep = index + 1;
+    const lastSlide = index - 1;
+
+    if (index === 0) {
+      message.info('You cannot delete this step');
+      return;
+    }
+
+    /* delete slideBar */
+    const newSlideBar = cloneDeep(slideBar);
+    newSlideBar.splice(index, 1);
+    store.dispatch(setSlideBar(newSlideBar));
+    /* ---------------- */
+
+    /// this remove action is like back to prev slide action
+    /// set new slide is already handle in this func
+    const data = await handleBackToPrevSlide({ isRemove: true });
+
+    /* delete data view */
+    const newLinkedOptionData = data?.filter((_, idx) => idx < lastSlide) ?? [];
+    store.dispatch(setLinkedOptionData(newLinkedOptionData));
+    /* ------------------- */
+
+    /* delete options selected view */
+    let newOptionsSelected: OptionSelectedProps = {};
+
+    forEach(optionsSelected, (optionSelected, curStep) => {
+      if (Number(curStep) < lastStep) {
+        newOptionsSelected = {
+          ...newOptionsSelected,
+          [Number(curStep)]: optionSelected,
+        };
+      }
+    });
+
+    store.dispatch(setOptionsSelected(newOptionsSelected));
+    /* ----------------------- */
+
+    /* delete option hightighted view */
+    let newPickedOption = {};
+
+    forEach(pickedOption, (option, curSlide) => {
+      if (Number(curSlide) < lastSlide) {
+        newPickedOption = {
+          ...newPickedOption,
+          [Number(curSlide)]: option,
+        };
+      }
+    });
+
+    store.dispatch(setPickedOption(newPickedOption));
+    /* ---------------------------- */
   };
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
@@ -773,11 +812,75 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     };
 
   return (
-    <div>
-      <SlideBar
-        handleBackToPrevSlide={handleBackToPrevSlide}
-        handleGoToNextSlide={handleGoToNextSlide}
-      />
+    <div className={styles.nextStep}>
+      {/* top bar */}
+      <div className={styles.topBar}>
+        {/* slide bar */}
+        <div className="flex-start">
+          {slideBar.map((name, index) => {
+            const curStep = index + 1;
+            const otherSlide = index >= slide + 2 || index <= slide - 1;
+
+            return (
+              <div key={index} className={`flex-start ${otherSlide ? styles.otherSlide : ''}`}>
+                <div
+                  className={styles.stepCircle}
+                  style={{ background: '#2B39D4', border: 'unset' }}
+                >
+                  <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
+                    {curStep}
+                  </BodyText>
+
+                  {/* only delete last step */}
+                  {curOrder > 2 && curStep === slideBar.length && slide === slideBar.length - 2 ? (
+                    <div className={styles.removeStep} onClick={handleRemoveStep(index)}>
+                      <RemoveIcon />
+                    </div>
+                  ) : null}
+                </div>
+
+                <BodyText customClass={styles.description} level={5} fontFamily="Roboto">
+                  {name || 'description'}
+
+                  <input
+                    value={name}
+                    onChange={handleChangeDescription(index)}
+                    className={styles.descriptionInput}
+                    placeholder="description"
+                    hidden={otherSlide}
+                  />
+                </BodyText>
+
+                {index !== slideBar.length - 1 ? (
+                  <div
+                    className={`${styles.lineRightIcon} ${styles.activeLineRightIcon} ${
+                      index === curOrder - 1 ? styles.inactiveLineRightIcon : ''
+                    }`}
+                  >
+                    <LineRightDescriptionIcon />
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* slide action */}
+        <div className="flex-start slide-icons">
+          <ActionSlideLeftIcon
+            className={`${styles.slideLeftIcon} ${slide !== 0 ? styles.activeSlideLeftIcon : ''}`}
+            onClick={() => {
+              handleBackToPrevSlide({ isRemove: false });
+            }}
+          />
+          <ActionSlideRightIcon
+            className={`${styles.slideRightIcon} ${
+              slide !== slideBar.length ? styles.activeSlideRightIcon : ''
+            }`}
+            onClick={handleGoToNextSlide}
+          />
+        </div>
+      </div>
 
       <div className={styles.mainContent}>
         {/* left side */}

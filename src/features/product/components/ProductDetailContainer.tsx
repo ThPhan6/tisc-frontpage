@@ -175,8 +175,6 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    console.log('details.specification_attribute_groups', details.specification_attribute_groups);
-
     const newProductSpecData = filterNewAttributeGroup(
       details.specification_attribute_groups,
       'specification',

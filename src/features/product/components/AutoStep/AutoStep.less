@@ -27,7 +27,7 @@
     justify-content: flex-end;
     min-height: 48px;
 
-    :global(.action-button) {
+    :global(.action-left-icon) {
       svg {
         margin-right: 0;
       }
@@ -192,6 +192,17 @@
       > label {
         min-height: 64px !important;
         box-shadow: @border-bottom-light;
+      }
+    }
+
+    :global(.item-option-checked) {
+      :global(.heading-option-group) {
+        font-weight: 500;
+      }
+
+      :global(.product-id-label),
+      :global(.product-id-value) {
+        color: @primary-color-dark;
       }
     }
   }

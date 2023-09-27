@@ -190,7 +190,7 @@ export const AutoStep: FC<AutoStepProps> = ({
         ) : (
           <div className="flex-end">
             <CustomButton
-              buttonClass="action-button"
+              buttonClass="action-left-icon"
               size="small"
               properties="rounded"
               icon={<ActionBackIcon />}

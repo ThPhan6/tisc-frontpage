@@ -23,7 +23,7 @@ export interface AllLinkedDataSelectProps {
 }
 
 export interface OptionSelectedProps {
-  [order: number]: { order: number; name?: string; options: OptionReplicateResponse[] };
+  [order: number]: { order: number; options: OptionReplicateResponse[] };
 }
 
 interface AutoStepProps {
