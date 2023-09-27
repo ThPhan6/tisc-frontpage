@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
-// import { ReactComponent as LineRightStepIcon } from '@/assets/icons/line-right-blue-24.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-right-grey-24.svg';
@@ -12,9 +12,21 @@ import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-si
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { uniqueArrayBy } from '@/helper/utils';
-import { cloneDeep, flatMap, isNull, isUndefined, map, trimEnd, uniq, uniqBy } from 'lodash';
+import {
+  cloneDeep,
+  flatMap,
+  forEach,
+  isNull,
+  isUndefined,
+  map,
+  remove,
+  trimEnd,
+  uniq,
+  uniqBy,
+} from 'lodash';
 
 import {
+  OptionSelectedProps,
   setLinkedOptionData,
   setOptionsSelected,
   setPickedOption,
@@ -33,7 +45,6 @@ import store, { useAppSelector } from '@/reducers';
 import { CheckBoxOptionProps, CheckboxDynamic } from '@/components/CustomCheckbox/CheckboxDynamic';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { EmptyOne } from '@/components/Empty';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
@@ -46,7 +57,6 @@ interface NextStepProps {
 }
 export const NextStep: FC<NextStepProps> = ({}) => {
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
-  const [allLinkedData, setAllLinkedData] = useState<{ [slide: string]: LinkedOptionProps[] }>({});
 
   const slide = useAppSelector((state) => state.autoStep.slide as number);
   let curOrder = slide;
@@ -88,6 +98,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   const uniqSubPreOptionSelected = uniq(flatMap(subPreOptionSelected.map((el) => el?.split(','))));
 
+  /* current option selected on left panel on each step */
   const currentSubPickedOptionSelected = allPickedSubs.filter((sub) => {
     if (slide === 0) {
       return uniqSubPreOptionSelected.includes(sub.value);
@@ -109,25 +120,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     return a === sub.value && b === sub.label;
   });
-
-  // const currentSubPickedOptionSelected = allPickedSubs.filter((sub) => {
-  //   if (slide === 0) {
-  //     return curSubOptionId === sub.value;
-  //   }
-
-  //   return curSubOptionId === sub.value && curSubPreOption === sub.label;
-  // });
-
-  // const currentSubPickedOptionSelected = allPickedSubs.filter((sub) => {
-  //   if (slide === 0) {
-  //     return uniqSubPreOptionSelected.includes(sub.value);
-  //   }
-
-  //   const allSubPreOption = sub.label?.split(',') as string[];
-
-  //   return uniqSubPreOptionSelected?.some((el) => allSubPreOption.includes(el as string));
-  // });
-
   /* ------------------------------------------------------ */
 
   /* current option selected on right panel on each step */
@@ -144,7 +136,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const currentSubLinkedOptionSelected = subLinkedOptionSelected.filter((el) =>
     allLinkedSubs.some((opt) => opt.id === el.value && opt.pre_option === el.label),
   );
-
   /* ------------------------------------------------------ */
 
   const handleForceEnableCollapse = () => {
@@ -162,22 +153,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     store.dispatch(setSlide(step));
 
-    const newAllLinkedData: { [slide: string]: LinkedOptionProps[] } = {};
-
-    linkedOptionData.forEach((el, index) => {
-      if (index === 0) {
-        return;
-      }
-
-      if (!newAllLinkedData[index - 1]) {
-        newAllLinkedData[index - 1] = [];
-      }
-
-      newAllLinkedData[index - 1] = el.pickedData;
-    });
-
-    setAllLinkedData(newAllLinkedData);
-
     handleForceEnableCollapse();
   }, [step]);
 
@@ -189,7 +164,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     store.dispatch(setSlideBar(newTopBarData));
   };
 
-  const handleBackToPrevSlide = async () => {
+  const handleBackToPrevSlide = async (props?: { isRemove?: boolean }) => {
     handleForceEnableCollapse();
 
     const curSlide = cloneDeep(slide);
@@ -219,6 +194,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     const currentPickedOption = pickedOption[newSlide];
 
     if (!isGetLinkedOption || !currentPickedOption.id) {
+      if (props?.isRemove) {
+        return newLinkedOptionData;
+      }
+
       return;
     }
 
@@ -265,11 +244,14 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         linkedData: newLinkedOptions,
       };
 
-      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+      if (!props?.isRemove) {
+        store.dispatch(setLinkedOptionData(newLinkedOptionData));
+      }
     }
+
+    return newLinkedOptionData;
   };
 
-  /* each slide has 2 steps */
   const handleGoToNextSlide = async () => {
     handleForceEnableCollapse();
 
@@ -305,7 +287,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     /// prev linked data and all its options selected
     const prevPickedGroupOption = getPickedOptionGroup(optionsSelected[curOrder].options);
-    setAllLinkedData((prevState) => ({ ...prevState, [prevSlide]: prevPickedGroupOption }));
 
     /* all options selected in multiple groups */
     prevPickedGroupOption.forEach((el) => {
@@ -331,32 +312,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
       newPickedData.push({ id: subOptionId, name: subOptionName, subs: subItemSelected });
     });
-
-    // /* all options selected in single group */
-    // const prevPickedId = pickedOption[prevSlide];
-
-    // const prevOptionSelectedIds = prevOptionSelected
-    //   .map((el) => (el.pre_option === prevPickedId ? el.id : undefined))
-    //   .filter(Boolean) as any;
-
-    // const prevLinkedSubOptions = flatMap(
-    //   linkedOptionData[prevSlide].linkedData.map((el) => el.subs),
-    // );
-
-    // prevLinkedSubOptions.forEach((el) => {
-    //   const subs: OptionReplicateResponse[] = [];
-
-    //   el.subs.forEach((sub) => {
-    //     if (prevOptionSelectedIds.includes(sub.id)) {
-    //       subs.push(sub as any);
-    //     }
-    //   });
-
-    //   if (subs.length) {
-    //     newPickedData.push({ id: el.id, name: el.name, subs: subs });
-    //   }
-    // });
-    /* ------------------------------------------------------------------------ */
 
     const currentPickedOption = pickedOption[newSlide];
 
@@ -421,6 +376,61 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     };
 
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
+  };
+
+  const handleRemoveStep = (index: number) => async () => {
+    const lastStep = index + 1;
+    const lastSlide = index - 1;
+
+    if (index === 0) {
+      message.info('You cannot delete this step');
+      return;
+    }
+
+    /// this remove action is like back to prev slide action
+    /// set new slide is already handle in this func
+    const data = await handleBackToPrevSlide({ isRemove: true });
+
+    /* delete slideBar */
+    const newSlideBar = cloneDeep(slideBar);
+    newSlideBar.splice(index, 1);
+    store.dispatch(setSlideBar(newSlideBar));
+    /* ---------------- */
+
+    /* delete data view */
+    const newLinkedOptionData = data?.filter((_, idx) => idx < lastSlide) ?? [];
+    store.dispatch(setLinkedOptionData(newLinkedOptionData));
+    /* ------------------- */
+
+    /* delete options selected view */
+    let newOptionsSelected: OptionSelectedProps = {};
+
+    forEach(optionsSelected, (optionSelected, curStep) => {
+      if (Number(curStep) < lastStep) {
+        newOptionsSelected = {
+          ...newOptionsSelected,
+          [Number(curStep)]: optionSelected,
+        };
+      }
+    });
+
+    store.dispatch(setOptionsSelected(newOptionsSelected));
+    /* ----------------------- */
+
+    /* delete option hightighted view */
+    let newPickedOption = {};
+
+    forEach(pickedOption, (option, curSlide) => {
+      if (Number(curSlide) < lastSlide) {
+        newPickedOption = {
+          ...newPickedOption,
+          [Number(curSlide)]: option,
+        };
+      }
+    });
+
+    store.dispatch(setPickedOption(newPickedOption));
+    /* ---------------------------- */
   };
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
@@ -803,6 +813,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       );
     };
 
+  console.log('linkedOptionData ====>>>>', linkedOptionData);
+
   return (
     <div className={styles.nextStep}>
       {/* top bar */}
@@ -810,8 +822,9 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         {/* slide bar */}
         <div className="flex-start">
           {slideBar.map((name, index) => {
-            let newStep = index;
+            const curStep = index + 1;
             const otherSlide = index >= slide + 2 || index <= slide - 1;
+
             return (
               <div key={index} className={`flex-start ${otherSlide ? styles.otherSlide : ''}`}>
                 <div
@@ -819,19 +832,29 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                   style={{ background: '#2B39D4', border: 'unset' }}
                 >
                   <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
-                    {++newStep}
+                    {curStep}
                   </BodyText>
+
+                  {/* only delete last step */}
+                  {curOrder > 2 && curStep === slideBar.length && slide === slideBar.length - 2 ? (
+                    <div className={styles.removeStep} onClick={handleRemoveStep(index)}>
+                      <RemoveIcon />
+                    </div>
+                  ) : null}
                 </div>
-                <CustomInput
-                  fontLevel={5}
-                  containerClass={styles.description}
-                  value={name}
-                  onChange={handleChangeDescription(index)}
-                  autoWidth
-                  defaultWidth={76}
-                  placeholder="description"
-                  readOnly={otherSlide}
-                />
+
+                <BodyText customClass={styles.description} level={5} fontFamily="Roboto">
+                  {name || 'description'}
+
+                  <input
+                    value={name}
+                    onChange={handleChangeDescription(index)}
+                    className={styles.descriptionInput}
+                    placeholder="description"
+                    hidden={otherSlide}
+                  />
+                </BodyText>
+
                 {index !== slideBar.length - 1 ? (
                   <div
                     className={`${styles.lineRightIcon} ${styles.activeLineRightIcon} ${
@@ -850,7 +873,9 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         <div className="flex-start slide-icons">
           <ActionSlideLeftIcon
             className={`${styles.slideLeftIcon} ${slide !== 0 ? styles.activeSlideLeftIcon : ''}`}
-            onClick={handleBackToPrevSlide}
+            onClick={() => {
+              handleBackToPrevSlide({ isRemove: false });
+            }}
           />
           <ActionSlideRightIcon
             className={`${styles.slideRightIcon} ${

@@ -66,6 +66,7 @@
 }
 
 .stepCircle {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,6 +80,18 @@
   cursor: default;
 }
 
+.removeStep {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  display: flex;
+  cursor: pointer;
+
+  svg path {
+    fill: @primary-color-dark;
+  }
+}
+
 /* inactive slide of top bar */
 .otherSlide {
   .stepCircle {
@@ -86,7 +99,8 @@
     background: @primary-color !important;
   }
 
-  :global(.ant-input) {
+  .description,
+  .descriptionInput {
     color: @primary-color !important;
     font-weight: 300 !important;
     cursor: default;
@@ -101,12 +115,23 @@
 
 /* active slide of top bar */
 .description {
+  position: relative;
   margin-right: 8px;
 
-  :global(.ant-input) {
+  .descriptionInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     padding: 0;
     color: @primary-color-dark;
     font-weight: 500;
+    border: 0;
+
+    &:focus {
+      outline: none;
+    }
 
     &:placeholder-shown {
       font-weight: 300;
@@ -295,6 +320,17 @@
       > label {
         min-height: 64px !important;
         box-shadow: @border-bottom-light;
+      }
+    }
+
+    :global(.item-option-checked) {
+      :global(.heading-option-group) {
+        font-weight: 500;
+      }
+
+      :global(.product-id-label),
+      :global(.product-id-value) {
+        color: @primary-color-dark;
       }
     }
   }
