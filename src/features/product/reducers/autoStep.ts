@@ -3,7 +3,9 @@ import { isUndefined } from 'lodash';
 import {
   AutoStepLinkedOptionResponse,
   AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
   LinkedOptionProps,
+  OptionQuantityProps,
   OptionReplicateResponse,
 } from '../types/autoStep';
 import store from '@/reducers';
@@ -16,7 +18,7 @@ export interface LinkedOptionDataProps {
 }
 
 export interface PickedOptionProps {
-  [slide: number]: { id: string; pre_option: string; replicate?: number };
+  [slide: number]: { id: string; pre_option: string; replicate?: number; yours?: number };
 }
 
 export interface AllLinkedDataSelectProps {
@@ -28,7 +30,7 @@ export interface OptionSelectedProps {
 }
 
 export interface OptionPreSelectedProps {
-  [order: number]: AutoStepOnAttributeGroupResponse;
+  [order: number]: AutoStepPreSelectOnAttributeGroupResponse;
 }
 
 interface AutoStepProps {
@@ -109,10 +111,11 @@ const autoStepSlice = createSlice({
     setPickedOption(
       state,
       action: PayloadAction<
-        { slide: number; pre_option: string; id: string; replicate?: number } | PickedOptionProps
+        | { slide: number; pre_option: string; id: string; replicate: number; yours: number }
+        | PickedOptionProps
       >,
     ) {
-      const { slide, pre_option, id, replicate = 1 } = action.payload as any;
+      const { slide, pre_option, id, replicate = 1, yours = 0 } = action.payload as any;
 
       if (isUndefined(slide) || isUndefined(id)) {
         state.pickedOption = action.payload;
@@ -120,7 +123,7 @@ const autoStepSlice = createSlice({
         return;
       }
 
-      state.pickedOption = { ...state.pickedOption, [slide]: { id, pre_option, replicate } };
+      state.pickedOption = { ...state.pickedOption, [slide]: { id, pre_option, replicate, yours } };
     },
 
     setLinkedOptionData(
@@ -161,7 +164,7 @@ const autoStepSlice = createSlice({
       action: PayloadAction<
         | {
             order: number;
-            options: OptionReplicateResponse[];
+            options: OptionQuantityProps[];
           }
         | OptionPreSelectedProps
       >,

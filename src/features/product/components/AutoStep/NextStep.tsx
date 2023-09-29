@@ -635,15 +635,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           );
         }
       }
-
-      const prevOptionsSelectedIds = result.map((el) => {
-        if (el.pre_option) {
-          return `${el.id},${el.pre_option}`;
-        }
-
-        return el.id;
-      });
-
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
         const newLinkedOptionData = [...linkedOptionData];
@@ -672,7 +663,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         // remove option highlighted of next step
         store.dispatch(setPickedOption(newPickedOption));
 
-        let newPrevOptionsSelectedIds = [...prevOptionsSelectedIds];
+        let newPrevOptionsSelectedIds = result.map((el) => {
+          if (el.pre_option) {
+            return `${el.id},${el.pre_option}`;
+          }
+
+          return el.id;
+        });
 
         // remove data selected options
         map(optionsSelected, (optionData: any, optIndex: number) => {
@@ -710,12 +707,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       e.stopPropagation();
       e.preventDefault();
 
-      if (
-        subOpt.replicate === 1 ||
-        currentSubPickedOptionSelected?.some(
-          (el) => el.value !== subOpt.id && el.label !== subOpt.pre_option,
-        )
-      ) {
+      if (subOpt.replicate === 1) {
         return;
       }
 
@@ -754,14 +746,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     (subOpt: LinkedSubOptionProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
-
-      if (
-        currentSubPickedOptionSelected?.some(
-          (el) => el.value !== subOpt.id && el.label !== subOpt.pre_option,
-        )
-      ) {
-        return;
-      }
 
       const newPickedData = cloneDeep(pickedData).map((el) => ({
         ...el,

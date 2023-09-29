@@ -70,7 +70,6 @@ export interface OptionQuantityProps {
   id: string;
   quantity: number;
   replicate: number;
-  yours: number;
   pre_option?: string;
   pre_option_name?: string;
   picked?: boolean;
@@ -84,9 +83,33 @@ export interface OptionQuantityProps {
   sub_name: string;
 }
 
+export interface AutoStepPreSelectOptionProps {
+  id: string;
+  name: string;
+  subs: OptionQuantityProps[];
+}
+
+export interface AutoStepPreSelectLinkedOptionResponse {
+  id: string;
+  name: string;
+  subs: AutoStepPreSelectOptionProps[];
+}
+
 export interface OptionQuantityResponse {
   id: string;
   quantity: number;
+}
+
+export interface AutoStepPreSelectOnAttributeGroupResponse {
+  id?: string;
+  specification_id?: string;
+  product_id?: string;
+  name: string;
+  order: number;
+  options: OptionQuantityProps[];
+  created_by?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface AutoStepPreSelectOptionResponse {
