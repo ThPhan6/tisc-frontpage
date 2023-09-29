@@ -44,25 +44,6 @@
   }
 }
 
-.slideLeftIcon,
-.slideRightIcon {
-  path {
-    fill: @mono-color-medium;
-  }
-}
-
-.slideLeftIcon {
-  margin: 0 12px 0 16px;
-}
-
-.activeSlideRightIcon,
-.activeSlideLeftIcon {
-  cursor: pointer;
-  path {
-    fill: @mono-color;
-  }
-}
-
 /* inactive slide of top bar */
 .otherSlide {
   .stepCircle {
@@ -113,6 +94,7 @@
   }
 }
 
+/* LINE icon */
 .inactiveLineRightIcon {
   path {
     fill: @primary-color;
@@ -132,3 +114,34 @@
   display: flex;
   margin: 0 4px;
 }
+
+/* --------- */
+
+/* SLIDE icon */
+.slideLeftIcon,
+.slideRightIcon {
+  path {
+    fill: @mono-color-medium;
+  }
+}
+
+.slideLeftIcon {
+  margin: 0 12px 0 16px;
+}
+
+.activeSlideRightIcon,
+.activeSlideLeftIcon {
+  cursor: pointer;
+  path {
+    fill: @mono-color;
+  }
+}
+
+.inactiveSlideRightIcon {
+  path {
+    cursor: default;
+    fill: @mono-color-medium;
+  }
+}
+
+/* ------------ */

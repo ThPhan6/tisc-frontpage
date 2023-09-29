@@ -18,9 +18,13 @@ export interface SlideBarProps {
   handleBackToPrevSlide: (props?: { isRemove?: boolean }) => void;
   handleGoToNextSlide: () => void;
   handleRemoveStep?: (index: number) => void;
+  className?: string;
+  disabledNextSlide?: boolean;
 }
 
 export const SlideBar: FC<SlideBarProps> = ({
+  className = '',
+  disabledNextSlide,
   handleBackToPrevSlide,
   handleGoToNextSlide,
   handleRemoveStep,
@@ -40,8 +44,10 @@ export const SlideBar: FC<SlideBarProps> = ({
     store.dispatch(setSlideBar(newTopBarData));
   };
 
+  console.log('slide', slide);
+
   return (
-    <div className={styles.topBar}>
+    <div className={`${styles.topBar} ${className}`}>
       {/* slide bar */}
       <div className="flex-start">
         {slideBars.map((name, index) => {
@@ -115,16 +121,20 @@ export const SlideBar: FC<SlideBarProps> = ({
       {/* slide action */}
       <div className="flex-start slide-icons">
         <ActionSlideLeftIcon
-          className={`${styles.slideLeftIcon} ${slide !== 0 ? styles.activeSlideLeftIcon : ''}`}
+          className={`${styles.slideLeftIcon} ${
+            slide !== 0 ? styles.activeSlideLeftIcon : ''
+          } slide-left-icon`}
           onClick={() => {
-            handleBackToPrevSlide({ isRemove: false });
+            if (slide !== 0) {
+              handleBackToPrevSlide({ isRemove: false });
+            }
           }}
         />
         <ActionSlideRightIcon
           className={`${styles.slideRightIcon} ${
-            slide !== slideBars.length ? styles.activeSlideRightIcon : ''
-          }`}
-          onClick={handleGoToNextSlide}
+            disabledNextSlide ? styles.inactiveSlideRightIcon : styles.activeSlideRightIcon
+          } slide-right-icon`}
+          onClick={disabledNextSlide ? undefined : handleGoToNextSlide}
         />
       </div>
     </div>

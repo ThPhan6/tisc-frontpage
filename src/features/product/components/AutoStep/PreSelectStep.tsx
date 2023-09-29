@@ -53,7 +53,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const attributeGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
   const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
-  const [nextLeftPanelData, setNextLeftPanelData] = useState<LinkedOptionProps[]>([]);
+  const [newLeftPanelData, setNewLeftPanelData] = useState<LinkedOptionProps[]>([]);
 
   /// this state saved all data on each step
   const [steps, setSteps] = useState<{ [order: string]: AutoStepOnAttributeGroupResponse }>({});
@@ -76,25 +76,35 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const leftPanelData =
     slide === 0 && preSelectStep[1]
       ? getPickedOptionGroup(preSelectStep[1]?.options) ?? []
-      : nextLeftPanelData;
+      : newLeftPanelData;
 
   const rightPanelData: LinkedOptionProps[] = getPickedOptionGroup(currentPreSelectOptionData);
 
   /* set sub option ticked on the left panel  */
+  const subOptionLeft = flatMap(leftPanelData.map((el) => el.subs));
+
+  const currentSubPickedOptionSelected: CheckboxValue[] = subOptionLeft
+    .filter((opt) =>
+      currentOptionSelected.some((sub) => {
+        const preOption = sub.pre_option?.split(',');
+        const optionId = preOption?.[0] as string;
+        const preOptionId = preOption?.slice(1, preOption.length).join(',');
+
+        return preOptionId
+          ? opt.pre_option === preOptionId && opt.id === optionId
+          : sub.pre_option === opt.id;
+      }),
+    )
+    .map((el) => ({ label: el.pre_option, value: el.id }));
+  /* ---------------------------------------- */
+
+  /* set sub option ticked on the right panel  */
   const currentSubLinkedOptionSelected: CheckboxValue[] = currentOptionSelected
     .filter((el) =>
       currentPreSelectOptionData.some(
         (opt) => opt.id === el.id && opt.pre_option === el.pre_option,
       ),
     )
-    .map((el) => ({ label: el.pre_option, value: el.id }));
-  /* ---------------------------------------- */
-
-  /* set sub option ticked on the left panel  */
-  const subOptionLeft = flatMap(leftPanelData.map((el) => el.subs));
-
-  const currentSubPickedOptionSelected: CheckboxValue[] = subOptionLeft
-    .filter((el) => currentOptionSelected.some((opt) => opt.pre_option === el.id))
     .map((el) => ({ label: el.pre_option, value: el.id }));
   /* ---------------------------------------- */
 
@@ -159,19 +169,40 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     }, 200);
   };
 
-  const handleBackToPrevSlide = () => {};
+  const handleBackToPrevSlide = () => {
+    const prevSlide = slide;
+    const newSlide = prevSlide - 1;
+    const newOrder = newSlide + 1;
 
-  const handleGoToNextSlide = () => {
     handleForceEnableCollapse();
 
+    /* add new slide */
+    store.dispatch(setSlide(newSlide));
+    /* ------------- */
+
+    if (newSlide !== 0) {
+      /* set prev data view on the left panel */
+      const newNextLeftPanelData = getPickedOptionGroup(optionsSelected[newOrder].options);
+      setNewLeftPanelData(newNextLeftPanelData);
+      /* ------------------------------------ */
+    }
+  };
+
+  const handleGoToNextSlide = () => {
     const prevSlide = slide;
+    const newSlide = prevSlide + 1;
+
+    if (newSlide === slideBars.length - 1) {
+      return;
+    }
+
+    handleForceEnableCollapse();
 
     if (!currentOptionSelected.length) {
       message.error('Please select options');
       return;
     }
 
-    const newSlide = prevSlide + 1;
     const newOrder = newSlide + 1;
 
     /* add new slide */
@@ -180,7 +211,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
 
     /* set next data view on the left panel */
     const newNextLeftPanelData = getPickedOptionGroup(optionsSelected[newOrder].options);
-    setNextLeftPanelData(newNextLeftPanelData);
+    setNewLeftPanelData(newNextLeftPanelData);
     /* ------------------------------------ */
   };
 
@@ -202,7 +233,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     }
 
     const curPickedSubData =
-      slide === 0 ? preSelectStep[1].options : preSelectStep[curOrder].options;
+      slide === 0 ? preSelectStep[1].options : flatMap(leftPanelData.map((el) => el.subs));
 
     const curPickedOption = curPickedSubData.find(
       (el) => el.id === curOptionSelected.id && el.pre_option === curOptionSelected.pre_option,
@@ -220,9 +251,15 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     }
 
     /// set data view on the right panel
-    const newRightPanelData = steps[curOrder].options.filter(
-      (sub) => sub.pre_option === curOptionSelected.id,
-    );
+    const newRightPanelData = steps[curOrder].options.filter((sub) => {
+      const preOption = sub.pre_option?.split(',');
+      const optionId = preOption?.[0] as string;
+      const preOptionId = preOption?.slice(1, preOption.length).join(',');
+
+      return preOptionId
+        ? optionId === curOptionSelected.id && preOptionId === curOptionSelected.pre_option
+        : sub.pre_option === curOptionSelected.id;
+    });
 
     store.dispatch(setPreSelectStep({ order: curOrder, options: newRightPanelData }));
   };
@@ -237,13 +274,25 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       ? [...optionsSelected[curOrder].options]
       : [];
 
-    const subOptionFound = preSelectStep[curOrder].options.find(
-      (sub) => sub.id === curSubSelected.id && sub.pre_option === curPicked.id,
-    );
+    const curSubRightPanelData = flatMap(rightPanelData.map((el) => el.subs));
 
-    const subOptionIdx = curOptionSelected.findIndex(
-      (sub) => sub.id === subOptionFound?.id && sub.pre_option === curPicked.id,
-    );
+    const subOptionFound = curSubRightPanelData.find((sub) => {
+      const preOption = sub.pre_option?.split(',');
+      const preOptionId = preOption?.slice(1, preOption.length).join(',');
+
+      return preOptionId
+        ? sub.id === curSubSelected.id && preOptionId === curPicked.pre_option
+        : sub.id === curSubSelected.id && sub.pre_option === curPicked.id;
+    });
+
+    const subOptionIdx = curOptionSelected.findIndex((sub) => {
+      const preOption = sub.pre_option?.split(',');
+      const preOptionId = preOption?.slice(1, preOption.length).join(',');
+
+      return preOptionId
+        ? sub.id === subOptionFound?.id && subOptionFound.pre_option === sub.pre_option
+        : sub.id === subOptionFound?.id && sub.pre_option === curPicked.id;
+    });
 
     if (subOptionIdx > -1) {
       delete curOptionSelected[subOptionIdx];
@@ -251,7 +300,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       curOptionSelected = curOptionSelected.concat(subOptionFound);
     }
 
-    let resultOptionSelected = curOptionSelected;
+    let resultOptionSelected = curOptionSelected.filter(Boolean);
     if (slide === 0) {
       resultOptionSelected = curOptionSelected.filter((el) => el.pre_option === curPicked.id);
     }
@@ -264,8 +313,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const handleIncreaseQuantity = (option: LinkedSubOptionProps) => () => {};
 
   const handleCreatePreSelectStep = () => {};
-
-  console.log('rightPanelData', rightPanelData);
 
   return (
     <CustomModal
@@ -291,6 +338,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       <SlideBar
         handleBackToPrevSlide={handleBackToPrevSlide}
         handleGoToNextSlide={handleGoToNextSlide}
+        disabledNextSlide={curOrder === slideBars.length}
       />
 
       <div className={styles.mainContent}>

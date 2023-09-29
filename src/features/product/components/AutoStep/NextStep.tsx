@@ -152,16 +152,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   }, [step]);
 
   const handleBackToPrevSlide = async (props?: { isRemove?: boolean }) => {
-    handleForceEnableCollapse();
-
     const curSlide = cloneDeep(slide);
+    const newSlide = curSlide - 1;
 
-    if (curSlide === 0) {
-      return;
-    }
-
-    let newSlide = curSlide;
-    --newSlide;
+    handleForceEnableCollapse();
 
     store.dispatch(setSlide(newSlide));
 
