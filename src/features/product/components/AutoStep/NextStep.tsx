@@ -19,7 +19,6 @@ import {
   isNull,
   isUndefined,
   map,
-  remove,
   trimEnd,
   uniq,
   uniqBy,
@@ -729,12 +728,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       e.stopPropagation();
       e.preventDefault();
 
-      if (
-        subOpt.replicate === 1 ||
-        currentSubPickedOptionSelected?.some(
-          (el) => el.value !== subOpt.id && el.label !== subOpt.pre_option,
-        )
-      ) {
+      if (subOpt.replicate === 1) {
         return;
       }
 
@@ -773,14 +767,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     (subOpt: LinkedSubOptionProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
-
-      if (
-        currentSubPickedOptionSelected?.some(
-          (el) => el.value !== subOpt.id && el.label !== subOpt.pre_option,
-        )
-      ) {
-        return;
-      }
 
       const newPickedData = cloneDeep(pickedData).map((el) => ({
         ...el,
@@ -842,7 +828,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                 </div>
 
                 <BodyText customClass={styles.description} level={5} fontFamily="Roboto">
-                  {name || 'description'}
+                  {name || (
+                    <BodyText fontFamily="Roboto" level={5} color="mono-color-dark">
+                      description
+                    </BodyText>
+                  )}
 
                   <input
                     value={name}
