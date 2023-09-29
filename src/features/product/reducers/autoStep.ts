@@ -2,6 +2,7 @@ import { isUndefined } from 'lodash';
 
 import {
   AutoStepLinkedOptionResponse,
+  AutoStepOnAttributeGroupResponse,
   LinkedOptionProps,
   OptionReplicateResponse,
 } from '../types/autoStep';
@@ -15,7 +16,7 @@ export interface LinkedOptionDataProps {
 }
 
 export interface PickedOptionProps {
-  [slide: number]: { id: string; pre_option: string };
+  [slide: number]: { id: string; pre_option: string; replicate?: number };
 }
 
 export interface AllLinkedDataSelectProps {
@@ -26,57 +27,57 @@ export interface OptionSelectedProps {
   [order: number]: { order: number; options: OptionReplicateResponse[] };
 }
 
-interface AutoStepProps {
-  optionDatasetName: string;
+export interface OptionPreSelectedProps {
+  [order: number]: AutoStepOnAttributeGroupResponse;
+}
 
+interface AutoStepProps {
   pickedOption: PickedOptionProps;
 
   optionsSelected: OptionSelectedProps;
 
-  linkedOptionData: LinkedOptionDataProps[];
+  linkedOptionData: LinkedOptionDataProps[]; /// data view when select on TISC
 
-  slide: number | undefined;
-  slideBar: string[];
+  preSelectStep: OptionPreSelectedProps; /// data view when pre-select on Brand/Designer
 
-  step: 'pre' | number | undefined;
+  slide: number; /// (1) -> (2)
+  slideBars: string[]; /// (1)<description> -> (2)<description>
+
+  step: 'pre' | number; /// save for open view
 
   subOptionSelected: { [groupAttributeId: string]: string };
 }
 
 const initialState: AutoStepProps = {
-  optionDatasetName: '',
+  slide: 0,
+  slideBars: ['', ''],
 
-  slide: undefined,
-  slideBar: ['', ''],
+  step: 'pre', /// default is select option dataset in FirstStep component
 
-  step: undefined,
+  optionsSelected: [], /// this is payload of all sub options selected
 
-  optionsSelected: [],
+  preSelectStep: {}, /// all data view on left and right panel of Brand/Designer
 
-  pickedOption: {},
+  pickedOption: {}, /// all hightlighted on the left panel
 
-  linkedOptionData: [],
+  linkedOptionData: [], /// all data view on left and right panel of TISC
 
-  subOptionSelected: {},
+  subOptionSelected: {}, /// option dataset selected
 };
 
 const autoStepSlice = createSlice({
   name: 'autoStep',
   initialState,
   reducers: {
-    setOptionDatasetName(state, action: PayloadAction<string>) {
-      state.optionDatasetName = action.payload;
-    },
-
     setSlideBar(state, action: PayloadAction<string[]>) {
-      state.slideBar = action.payload;
+      state.slideBars = action.payload;
     },
 
-    setSlide(state, action: PayloadAction<number | undefined>) {
+    setSlide(state, action: PayloadAction<number>) {
       state.slide = action.payload;
     },
 
-    setStep(state, action: PayloadAction<'pre' | number | undefined>) {
+    setStep(state, action: PayloadAction<'pre' | number>) {
       state.step = action.payload;
     },
 
@@ -107,9 +108,11 @@ const autoStepSlice = createSlice({
 
     setPickedOption(
       state,
-      action: PayloadAction<{ slide: number; pre_option: string; id: string } | PickedOptionProps>,
+      action: PayloadAction<
+        { slide: number; pre_option: string; id: string; replicate?: number } | PickedOptionProps
+      >,
     ) {
-      const { slide, pre_option, id } = action.payload as any;
+      const { slide, pre_option, id, replicate = 1 } = action.payload as any;
 
       if (isUndefined(slide) || isUndefined(id)) {
         state.pickedOption = action.payload;
@@ -117,7 +120,7 @@ const autoStepSlice = createSlice({
         return;
       }
 
-      state.pickedOption = { ...state.pickedOption, [slide]: { id, pre_option } };
+      state.pickedOption = { ...state.pickedOption, [slide]: { id, pre_option, replicate } };
     },
 
     setLinkedOptionData(
@@ -152,6 +155,31 @@ const autoStepSlice = createSlice({
       }
     },
 
+    /* brand//designer */
+    setPreSelectStep(
+      state,
+      action: PayloadAction<
+        | {
+            order: number;
+            options: OptionReplicateResponse[];
+          }
+        | OptionPreSelectedProps
+      >,
+    ) {
+      const { order, options } = action.payload as any;
+
+      if (isUndefined(order) || isUndefined(options)) {
+        state.preSelectStep = action.payload;
+
+        return;
+      }
+
+      state.preSelectStep = {
+        ...state.preSelectStep,
+        [order]: { ...state.preSelectStep[order], order, options },
+      };
+    },
+
     resetAutoStepState() {
       return initialState;
     },
@@ -159,24 +187,27 @@ const autoStepSlice = createSlice({
 });
 
 export const {
-  setOptionDatasetName,
-  setSlideBar,
-  setSlide,
-  setPickedOption,
-  setLinkedOptionData,
-  setOptionsSelected,
   setStep,
-  setSubOptionSelected,
+  setSlide,
+  setSlideBar,
+  setPickedOption,
   resetAutoStepState,
+
+  /// TISC
+  setOptionsSelected,
+  setLinkedOptionData,
+  setSubOptionSelected,
+
+  /// Brand/Designer
+  setPreSelectStep,
 } = autoStepSlice.actions;
 
 export const autoStepReducer = autoStepSlice.reducer;
 
 export const clearSteps = () => {
-  store.dispatch(setOptionDatasetName(''));
   store.dispatch(setSlideBar(['', '']));
-  store.dispatch(setSlide(undefined));
+  store.dispatch(setSlide(0));
   store.dispatch(setPickedOption({}));
   store.dispatch(setOptionsSelected([]));
-  store.dispatch(setStep(undefined));
+  store.dispatch(setStep('pre'));
 };

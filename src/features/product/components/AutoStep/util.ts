@@ -4,6 +4,10 @@ import { LinkedOptionProps, OptionReplicateResponse } from '../../types/autoStep
 export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
   const b: LinkedOptionProps[] = [];
 
+  if (!options?.length) {
+    return b;
+  }
+
   options.forEach((el) => {
     const index = b.findIndex((c) => c.id === el.sub_id);
 

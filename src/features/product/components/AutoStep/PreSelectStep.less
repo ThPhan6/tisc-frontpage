@@ -60,6 +60,7 @@
   overflow: auto;
   background: #fff;
 
+  :global(.selected-all-option-radio),
   :global(.header) {
     position: sticky;
     top: 0;
@@ -73,18 +74,53 @@
     text-transform: uppercase;
     background: #fff;
     box-shadow: @border-bottom !important;
+
+    p {
+      text-transform: capitalize;
+    }
   }
 
+  :global(.checkbox-list-options),
   :global(.radio-list-options) {
     padding: 0 !important;
   }
 
-  :global(.checkbox-item) {
-    :global(.ant-checkbox-group) {
-      :global(.ant-checkbox-wrapper) {
-        display: none;
+  :global(.ant-space-item) {
+    min-height: 64px;
+    box-shadow: @border-bottom-light;
+  }
+
+  :global(.quantity) {
+    height: 100%;
+    padding-left: 8px;
+    color: @mono-color;
+    text-align: center;
+    border-left: 1px solid @mono-color-medium;
+    cursor: default;
+
+    p {
+      color: @mono-color !important;
+      font-weight: 300 !important;
+    }
+
+    svg {
+      cursor: pointer;
+    }
+
+    :global(.replicate-disabled) {
+      svg {
+        cursor: default;
+        pointer-events: none;
       }
 
+      svg path {
+        fill: @mono-color-medium;
+      }
+    }
+  }
+
+  :global(.checkbox-item) {
+    :global(.ant-checkbox-group) {
       :global(.item-option-uncheck),
       :global(.item-option-checked) {
         width: 100% !important;
@@ -141,6 +177,10 @@
 }
 
 .rightContent {
+  :global(.ant-checkbox-wrapper) {
+    display: none;
+  }
+
   :global(.ant-collapse-item .ant-collapse-content .ant-collapse-content-box) {
     padding: 0 !important;
 
@@ -148,6 +188,17 @@
       > label {
         min-height: 64px !important;
         box-shadow: @border-bottom-light;
+      }
+    }
+
+    :global(.item-option-checked) {
+      :global(.heading-option-group) {
+        font-weight: 500;
+      }
+
+      :global(.product-id-label),
+      :global(.product-id-value) {
+        color: @primary-color-dark;
       }
     }
   }

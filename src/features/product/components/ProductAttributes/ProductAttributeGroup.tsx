@@ -179,8 +179,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   }, [currentSpecAttributeGroupId]);
 
   const handleOnChangeCollapse = () => {
-    // onKeyChange(key);
-
     store.dispatch(
       setCurAttrGroupCollapse({
         [attributeGroupKey]:
@@ -361,6 +359,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   const handleOpenPreSelectAutoStepModal = () => {
+    store.dispatch(setSlide(0));
+
+    if (attrGroupItem.steps?.length) {
+      const descriptions = attrGroupItem.steps.map((el) => el.name);
+      store.dispatch(setSlideBar(descriptions));
+    }
+
     setAutoStepModal(true);
   };
 
@@ -384,7 +389,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       );
     }
 
-    const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
+    const haveOptionAttr =
+      group.attributes.some((el) => el.type === 'Options') || group?.steps?.length;
 
     /// highlighted specification attribute option type is selected
     const attributeSelected: string[] = [];

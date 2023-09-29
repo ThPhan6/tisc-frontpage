@@ -72,8 +72,8 @@
 
   .description,
   .descriptionInput {
-    color: @primary-color !important;
-    font-weight: 300 !important;
+    color: @primary-color;
+    font-weight: 300;
     cursor: default;
   }
 
@@ -88,13 +88,15 @@
 .description {
   position: relative;
   margin-right: 8px;
+  color: @primary-color-dark;
+  font-weight: 500;
 
   .descriptionInput {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    min-width: 50px;
+    min-width: 18px;
     height: 100%;
     padding: 0;
     color: @primary-color-dark;
@@ -106,16 +108,16 @@
     }
 
     &:placeholder-shown {
-      font-weight: 300;
+      font-weight: 300 !important;
     }
   }
 }
 
 .inactiveLineRightIcon {
   path {
-    fill: @primary-color !important;
-    stroke: @primary-color !important;
-    stroke-width: 0 !important;
+    fill: @primary-color;
+    stroke: @primary-color;
+    stroke-width: 0;
   }
 }
 

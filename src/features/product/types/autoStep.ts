@@ -64,3 +64,51 @@ export interface AutoStepLinkedOptionResponse {
   subs: LinkedOptionProps[];
 }
 ///
+
+/// pre-select auto-step interface
+export interface OptionQuantityProps {
+  id: string;
+  quantity: number;
+  replicate: number;
+  yours: number;
+  pre_option?: string;
+  pre_option_name?: string;
+  picked?: boolean;
+  value_1: string;
+  value_2?: string;
+  unit_1?: string;
+  unit_2?: string;
+  image?: string;
+  product_id: string;
+  sub_id: string;
+  sub_name: string;
+}
+
+export interface OptionQuantityResponse {
+  id: string;
+  quantity: number;
+}
+
+export interface AutoStepPreSelectOptionResponse {
+  id: string;
+  step_id: string;
+  product_id: string;
+  project_id: string;
+  user_id: string;
+  options: OptionQuantityResponse[];
+  created_by?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AutoStepPreSelectOptionProps {
+  step_id: string;
+  options: OptionQuantityResponse[];
+}
+
+export interface AutoStepPreSelectDataRequest {
+  project_id: string;
+  product_id: string;
+  user_id: string;
+  data: AutoStepPreSelectOptionProps[];
+}

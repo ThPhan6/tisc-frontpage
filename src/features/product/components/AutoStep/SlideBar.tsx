@@ -5,6 +5,8 @@ import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-
 import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
 import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
+import { useCheckPermission } from '@/helper/hook';
+
 import { setSlideBar } from '../../reducers';
 import store, { useAppSelector } from '@/reducers';
 
@@ -23,13 +25,15 @@ export const SlideBar: FC<SlideBarProps> = ({
   handleGoToNextSlide,
   handleRemoveStep,
 }) => {
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+
   const slide = useAppSelector((state) => state.autoStep.slide as number);
   const curOrder = slide + 2;
 
-  const slideBar = useAppSelector((state) => state.autoStep.slideBar);
+  const slideBars = useAppSelector((state) => state.autoStep.slideBars);
 
   const handleChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTopBarData = [...slideBar];
+    const newTopBarData = [...slideBars];
 
     newTopBarData[index] = e.target.value;
 
@@ -40,8 +44,10 @@ export const SlideBar: FC<SlideBarProps> = ({
     <div className={styles.topBar}>
       {/* slide bar */}
       <div className="flex-start">
-        {slideBar.map((name, index) => {
-          const curStep = index + 1;
+        {slideBars.map((name, index) => {
+          let curStep = index;
+          ++curStep;
+
           const otherSlide = index >= slide + 2 || index <= slide - 1;
 
           return (
@@ -52,7 +58,10 @@ export const SlideBar: FC<SlideBarProps> = ({
                 </BodyText>
 
                 {/* only delete last step */}
-                {curOrder > 2 && curStep === slideBar.length && slide === slideBar.length - 2 ? (
+                {isTiscAdmin &&
+                curOrder > 2 &&
+                curStep === slideBars.length &&
+                slide === slideBars.length - 2 ? (
                   <div
                     className={styles.removeStep}
                     onClick={() => {
@@ -64,22 +73,35 @@ export const SlideBar: FC<SlideBarProps> = ({
                 ) : null}
               </div>
 
-              <BodyText customClass={styles.description} level={5} fontFamily="Roboto">
-                {name || 'description'}
+              <BodyText
+                customClass={styles.description}
+                level={5}
+                fontFamily="Roboto"
+                color="primary-color-dark"
+              >
+                {name || (
+                  <BodyText level={5} fontFamily="Roboto" color="mono-color-dark">
+                    description
+                  </BodyText>
+                )}
 
-                <input
-                  value={name}
-                  onChange={handleChangeDescription(index)}
-                  className={styles.descriptionInput}
-                  placeholder="description"
-                  hidden={otherSlide}
-                />
+                {isTiscAdmin ? (
+                  <input
+                    value={name}
+                    onChange={handleChangeDescription(index)}
+                    className={styles.descriptionInput}
+                    placeholder="description"
+                    hidden={otherSlide}
+                  />
+                ) : null}
               </BodyText>
 
-              {index !== slideBar.length - 1 ? (
+              {index !== slideBars.length - 1 ? (
                 <div
-                  className={`${styles.lineRightIcon} ${styles.activeLineRightIcon} ${
-                    index === curOrder - 1 ? styles.inactiveLineRightIcon : ''
+                  className={`${styles.lineRightIcon} ${
+                    index === curOrder - 1
+                      ? styles.inactiveLineRightIcon
+                      : styles.activeLineRightIcon
                   }`}
                 >
                   <LineRightDescriptionIcon />
@@ -100,7 +122,7 @@ export const SlideBar: FC<SlideBarProps> = ({
         />
         <ActionSlideRightIcon
           className={`${styles.slideRightIcon} ${
-            slide !== slideBar.length ? styles.activeSlideRightIcon : ''
+            slide !== slideBars.length ? styles.activeSlideRightIcon : ''
           }`}
           onClick={handleGoToNextSlide}
         />

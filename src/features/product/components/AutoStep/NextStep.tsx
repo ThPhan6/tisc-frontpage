@@ -57,7 +57,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const slide = useAppSelector((state) => state.autoStep.slide as number);
   const curOrder = slide + 2;
 
-  const slideBar = useAppSelector((state) => state.autoStep.slideBar);
+  const slideBars = useAppSelector((state) => state.autoStep.slideBars);
 
   const step = useAppSelector((state) => state.autoStep.step);
 
@@ -150,14 +150,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     handleForceEnableCollapse();
   }, [step]);
-
-  const handleChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTopBarData = [...slideBar];
-
-    newTopBarData[index] = e.target.value;
-
-    store.dispatch(setSlideBar(newTopBarData));
-  };
 
   const handleBackToPrevSlide = async (props?: { isRemove?: boolean }) => {
     handleForceEnableCollapse();
@@ -252,7 +244,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     const prevSlide = slide;
 
-    if (!slideBar[prevSlide] || !slideBar[prevSlide + 1]) {
+    if (!slideBars[prevSlide] || !slideBars[prevSlide + 1]) {
       message.error('Please enter description');
       return;
     }
@@ -272,8 +264,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     /* add new slide bar for next step */
     const newSlideBarStep = newSlide + 1;
-    if (isUndefined(slideBar[newSlideBarStep])) {
-      store.dispatch(setSlideBar([...slideBar, '']));
+    if (isUndefined(slideBars[newSlideBarStep])) {
+      store.dispatch(setSlideBar([...slideBars, '']));
     }
     /* -------------------------------- */
 
@@ -382,8 +374,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
-    /* delete slideBar */
-    const newSlideBar = cloneDeep(slideBar);
+    /* delete slideBars */
+    const newSlideBar = cloneDeep(slideBars);
     newSlideBar.splice(index, 1);
     store.dispatch(setSlideBar(newSlideBar));
     /* ---------------- */

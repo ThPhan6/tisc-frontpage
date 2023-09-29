@@ -42,6 +42,7 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
                 level={5}
                 color="mono-color-medium"
                 customClass={slideBarStyles.description}
+                style={{ fontWeight: 300 }}
               >
                 description
               </BodyText>
