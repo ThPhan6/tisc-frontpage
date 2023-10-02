@@ -1,5 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
+import { message } from 'antd';
+
 // import { ReactComponent as LineRightStepIcon } from '@/assets/icons/line-right-blue-24.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as ActionBackIcon } from '@/assets/icons/single-left.svg';
@@ -135,7 +137,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     });
   };
 
-  const handleSaveStep = () => {
+  const handleCreateStep = (type: 'save' | 'create') => () => {
     const allSteps = Object.values(optionsSelected);
 
     const steps: AutoStepOnAttributeGroupResponse[] = allSteps
@@ -151,13 +153,16 @@ export const AutoStep: FC<AutoStepProps> = ({
         specification_attribute_groups: newAttributeGroup as any,
       }),
     );
-  };
 
-  const handleCreateStep = () => {
-    handleSaveStep();
+    if (type === 'save') {
+      message.success('Save successfully');
+      return;
+    }
 
-    /// close popup
-    setVisible(false);
+    if (type === 'create') {
+      /// close popup
+      setVisible(false);
+    }
   };
 
   return (
@@ -205,7 +210,7 @@ export const AutoStep: FC<AutoStepProps> = ({
               properties="rounded"
               disabled={disabledCreateStep}
               style={{ marginLeft: 16 }}
-              onClick={handleSaveStep}
+              onClick={handleCreateStep('save')}
             >
               Save
             </CustomButton>
@@ -214,7 +219,7 @@ export const AutoStep: FC<AutoStepProps> = ({
               properties="rounded"
               disabled={disabledCreateStep}
               style={{ marginLeft: 16 }}
-              onClick={handleCreateStep}
+              onClick={handleCreateStep('create')}
             >
               Create
             </CustomButton>
