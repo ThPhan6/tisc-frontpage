@@ -26,7 +26,7 @@ export interface AllLinkedDataSelectProps {
 }
 
 export interface OptionSelectedProps {
-  [order: number]: { order: number; options: OptionReplicateResponse[] };
+  [order: number]: { id?: string; order: number; options: OptionReplicateResponse[] };
 }
 
 export interface OptionPreSelectedProps {
@@ -90,14 +90,10 @@ const autoStepSlice = createSlice({
     setOptionsSelected(
       state,
       action: PayloadAction<
-        | {
-            order: number;
-            options: OptionReplicateResponse[];
-          }
-        | OptionSelectedProps
+        { id: string; order: number; options: OptionReplicateResponse[] } | OptionSelectedProps
       >,
     ) {
-      const { order, options } = action.payload as any;
+      const { id, order, options } = action.payload as any;
 
       if (isUndefined(order) || isUndefined(options)) {
         state.optionsSelected = action.payload;
@@ -105,7 +101,10 @@ const autoStepSlice = createSlice({
         return;
       }
 
-      state.optionsSelected = { ...state.optionsSelected, [order]: { order, options } };
+      state.optionsSelected = {
+        ...state.optionsSelected,
+        [order]: { id, order, options },
+      };
     },
 
     setPickedOption(
@@ -123,7 +122,10 @@ const autoStepSlice = createSlice({
         return;
       }
 
-      state.pickedOption = { ...state.pickedOption, [slide]: { id, pre_option, replicate, yours } };
+      state.pickedOption = {
+        ...state.pickedOption,
+        [slide]: { id, pre_option, replicate, yours },
+      };
     },
 
     setLinkedOptionData(

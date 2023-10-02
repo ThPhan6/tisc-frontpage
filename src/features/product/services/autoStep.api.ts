@@ -1,7 +1,12 @@
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { AutoStepLinkedOptionResponse, AutoStepOnAttributeGroupResponse } from '../types/autoStep';
+import {
+  AutoStepLinkedOptionResponse,
+  AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectDataRequest,
+  AutoStepPreSelectOptionResponse,
+} from '../types/autoStep';
 
 export const getAutoStepData = (productId: string, specificationId: string) => {
   // showPageLoading();
@@ -49,5 +54,35 @@ export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: s
 
       message.error(err?.data?.message ?? 'Failed to get rest options');
       return [] as AutoStepLinkedOptionResponse[];
+    });
+};
+
+export const getPreSelectStep = (productId: string, specificationId: string) => {
+  return request<{ data: AutoStepPreSelectOptionResponse[] }>(`/api/step/configuration`, {
+    method: 'GET',
+    params: { product_id: productId, specification_id: specificationId },
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      message.error(err?.data?.message ?? 'Failed to get pre select steps');
+      return [] as AutoStepPreSelectOptionResponse[];
+    });
+};
+
+export const upsertPreSelectStep = (payload: AutoStepPreSelectDataRequest) => {
+  return request<{ data: AutoStepPreSelectOptionResponse[] }>(`/api/step/configuration/upsert`, {
+    method: 'POST',
+    data: payload,
+  })
+    .then((res) => {
+      console.log('res', res);
+
+      return res.data;
+    })
+    .catch((err) => {
+      message.error(err?.data?.message ?? 'Failed to upsert pre select steps');
+      return [] as AutoStepPreSelectOptionResponse[];
     });
 };

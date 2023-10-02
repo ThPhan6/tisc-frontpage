@@ -73,6 +73,7 @@ export interface OptionQuantityProps {
   pre_option?: string;
   pre_option_name?: string;
   picked?: boolean;
+  yours: number; /// FE
   value_1: string;
   value_2?: string;
   unit_1?: string;

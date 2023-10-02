@@ -8,7 +8,7 @@ import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { capitalize, sortBy, uniq } from 'lodash';
+import { capitalize, merge, sortBy, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -30,7 +30,11 @@ import {
   SpecificationAttributeBasisOptionProps,
   SpecificationType,
 } from '../../types';
-import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
+import {
+  AutoStepOnAttributeGroupResponse,
+  LinkedOptionProps,
+  OptionQuantityProps,
+} from '../../types/autoStep';
 import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
 import { closeDimensionWeightGroup, closeProductFooterTab } from '@/reducers/active';
@@ -165,16 +169,110 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       return;
     }
 
-    getAutoStepData(productId, currentSpecAttributeGroupId).then((res) => {
-      const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
-        el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
-      );
+    if (isEditable) {
+      getAutoStepData(productId, currentSpecAttributeGroupId).then((res) => {
+        const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
+          el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
+        );
 
-      store.dispatch(
-        setPartialProductDetail({
-          specification_attribute_groups: newSpecificationAttributeGroup as any,
-        }),
-      );
+        store.dispatch(
+          setPartialProductDetail({
+            specification_attribute_groups:
+              newSpecificationAttributeGroup as ProductAttributeFormInput[],
+          }),
+        );
+      });
+
+      return;
+    }
+
+    getAutoStepData(productId, currentSpecAttributeGroupId).then(async (res) => {
+      if (res) {
+        const preSelectSteps = [
+          {
+            step_id: '99d40cc8-0c6e-4aa4-8f88-7cbae4387949',
+            options: [
+              {
+                id: '4859d4af-3d5a-4e0d-bcba-887353394e47',
+                quantity: 0,
+              },
+            ],
+          },
+          {
+            step_id: '997309dc-5e1c-4c7e-ac34-54c847d28c27',
+            options: [
+              {
+                id: '06d8da96-e9a3-4ac1-a73e-d18fc2369ac2',
+                quantity: 1,
+              },
+              {
+                id: '720be395-ca4d-4b6b-9db2-d4c14551815c',
+                quantity: 1,
+              },
+              {
+                id: 'aa870fd5-342a-439d-88a2-05be79e87bc3',
+                quantity: 1,
+              },
+            ],
+          },
+          {
+            step_id: 'd297e58b-1087-4171-9eac-364d3f8ea262',
+            options: [
+              {
+                id: '6d761074-4403-410b-8a20-62c1d2c2cfd9',
+                quantity: 1,
+              },
+              {
+                id: '1f13822c-7004-495b-8411-491dc409e246',
+                quantity: 1,
+              },
+              {
+                id: '3ef768b7-406e-4228-85fc-dd7d7e988ac8',
+                quantity: 1,
+              },
+            ],
+          },
+        ];
+
+        // await getPreSelectStep(productId, currentSpecAttributeGroupId);
+
+        const newRes = [...res];
+
+        [...res].forEach((opt, index) => {
+          if (index === 0) {
+            newRes[index] = {
+              ...opt,
+              options: opt.options.map((o) => ({ ...o, yours: 0 })),
+            };
+
+            return;
+          }
+
+          let newOptions: OptionQuantityProps[] = [];
+
+          preSelectSteps.forEach((el) => {
+            if (el.step_id === opt.id) {
+              newOptions = merge(opt.options, el.options) as OptionQuantityProps[];
+            }
+          });
+
+          newRes[index] = {
+            ...newRes[index],
+            options: newOptions.map((o) => ({ ...o, quantity: o.quantity ?? 0, yours: 0 })),
+          };
+        });
+
+        console.log('newRes', newRes);
+
+        /// save steps to specification attribute group
+        store.dispatch(
+          setPartialProductDetail({
+            specification_attribute_groups: [...specification_attribute_groups].map((el) =>
+              el.id === currentSpecAttributeGroupId ? { ...el, steps: newRes } : el,
+            ),
+          }),
+        );
+      }
     });
   }, [currentSpecAttributeGroupId]);
 
@@ -353,18 +451,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     store.dispatch(setStep(curIndex));
 
-    console.log('!111111111111111111');
-
     setAutoStepModal(true);
   };
 
-  const handleOpenPreSelectAutoStepModal = () => {
-    store.dispatch(setSlide(0));
+  const handleOpenPreSelectAutoStepModal = (stepIndex: number) => () => {
+    store.dispatch(setSlide(stepIndex));
 
-    if (attrGroupItem.steps?.length) {
-      const descriptions = attrGroupItem.steps.map((el) => el.name);
-      store.dispatch(setSlideBar(descriptions));
-    }
+    store.dispatch(setStep(stepIndex));
 
     setAutoStepModal(true);
   };
@@ -623,41 +716,43 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             )}
 
-            <table className={styles.table}>
-              <tbody>
-                {autoSteps?.map((step, stepIndex) => {
-                  return (
-                    <tr
-                      key={stepIndex}
-                      className={`cursor-pointer flex-between ${styles.autoStepTr}`}
-                      onClick={
-                        dontShowTISCAutoSteps
-                          ? handleOpenPreSelectAutoStepModal
-                          : handleOpenAutoStepModal(stepIndex)
-                      }
-                    >
-                      <td className="flex-start auto-step-info">
-                        <BodyText
-                          fontFamily="Roboto"
-                          level={5}
-                          style={{ width: 'fit-content', paddingRight: 12 }}
-                        >
-                          {step.order < 10 ? `0${step.order}` : step.order}
-                        </BodyText>
-                        <BodyText fontFamily="Roboto" level={5}>
-                          {step.name}
-                        </BodyText>
-                      </td>
-                      <td className="flex-start">
-                        <div className="flex-start">
-                          <ActionRightLeftIcon style={{ marginLeft: 12 }} />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {attributeGroupKey === 'specification_attribute_groups' ? (
+              <table className={styles.table}>
+                <tbody>
+                  {autoSteps?.map((step, stepIndex) => {
+                    return (
+                      <tr
+                        key={stepIndex}
+                        className={`cursor-pointer flex-between ${styles.autoStepTr}`}
+                        onClick={
+                          dontShowTISCAutoSteps
+                            ? handleOpenPreSelectAutoStepModal(stepIndex)
+                            : handleOpenAutoStepModal(stepIndex)
+                        }
+                      >
+                        <td className="flex-start auto-step-info">
+                          <BodyText
+                            fontFamily="Roboto"
+                            level={5}
+                            style={{ width: 'fit-content', paddingRight: 12 }}
+                          >
+                            {step.order < 10 ? `0${step.order}` : step.order}
+                          </BodyText>
+                          <BodyText fontFamily="Roboto" level={5}>
+                            {step.name}
+                          </BodyText>
+                        </td>
+                        <td className="flex-start">
+                          <div className="flex-start">
+                            <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : null}
 
             <div
               className={`${
@@ -684,20 +779,22 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         </div>
       </div>
 
-      {dontShowTISCAutoSteps ? (
-        <PreSelectStep
-          attrGroupItem={attrGroupItem}
-          visible={autoStepModal}
-          setVisible={setAutoStepModal}
-        />
-      ) : (
-        <AutoStep
-          attributeGroup={attributeGroup}
-          attributes={attributes ?? []}
-          visible={autoStepModal}
-          setVisible={setAutoStepModal}
-        />
-      )}
+      {attributeGroupKey === 'specification_attribute_groups' ? (
+        dontShowTISCAutoSteps ? (
+          <PreSelectStep
+            attrGroupItem={attrGroupItem}
+            visible={autoStepModal}
+            setVisible={setAutoStepModal}
+          />
+        ) : (
+          <AutoStep
+            attributeGroup={attributeGroup}
+            attributes={attributes ?? []}
+            visible={autoStepModal}
+            setVisible={setAutoStepModal}
+          />
+        )
+      ) : null}
     </div>
   );
 };
