@@ -135,7 +135,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     });
   };
 
-  const handleCreateStep = () => {
+  const handleSaveStep = () => {
     const allSteps = Object.values(optionsSelected);
 
     const steps: AutoStepOnAttributeGroupResponse[] = allSteps
@@ -151,6 +151,10 @@ export const AutoStep: FC<AutoStepProps> = ({
         specification_attribute_groups: newAttributeGroup as any,
       }),
     );
+  };
+
+  const handleCreateStep = () => {
+    handleSaveStep();
 
     /// close popup
     setVisible(false);
@@ -196,6 +200,15 @@ export const AutoStep: FC<AutoStepProps> = ({
               icon={<ActionBackIcon />}
               onClick={handleBackToSelectOption}
             />
+            <CustomButton
+              size="small"
+              properties="rounded"
+              disabled={disabledCreateStep}
+              style={{ marginLeft: 16 }}
+              onClick={handleSaveStep}
+            >
+              Save
+            </CustomButton>
             <CustomButton
               size="small"
               properties="rounded"

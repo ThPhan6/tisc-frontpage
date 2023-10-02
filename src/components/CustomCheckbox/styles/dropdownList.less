@@ -74,16 +74,10 @@
 
     :global(.select-label) {
       padding-right: 8px;
-      font-weight: 600;
+      font-weight: 300;
       font-size: 16px;
       text-transform: initial;
     }
-    // :global(.select-label) {
-    //   padding-right: 8px;
-    //   font-weight: 300;
-    //   font-size: 14px;
-    //   text-transform: initial;
-    // }
 
     :global(.ant-radio) {
       top: 0;
@@ -93,11 +87,9 @@
     }
   }
 
-  // :global(.ant-collapse-item-active) {
-  //   :global(.select-label) {
-  //     font-weight: 600;
-  //     font-size: 16px;
-  //     text-transform: initial;
-  //   }
-  // }
+  :global(.ant-collapse-item-active) {
+    :global(.select-label) {
+      font-weight: 600;
+    }
+  }
 }
