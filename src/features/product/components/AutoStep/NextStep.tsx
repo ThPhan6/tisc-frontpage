@@ -818,13 +818,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                   <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
                     {curStep}
                   </BodyText>
-
-                  {/* only delete last step */}
-                  {curOrder > 2 && curStep === slideBar.length && slide === slideBar.length - 2 ? (
-                    <div className={styles.removeStep} onClick={handleRemoveStep(index)}>
-                      <RemoveIcon />
-                    </div>
-                  ) : null}
                 </div>
 
                 <BodyText customClass={styles.description} level={5} fontFamily="Roboto">
@@ -842,6 +835,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     hidden={otherSlide}
                   />
                 </BodyText>
+
+                {/* only delete last step */}
+                {curOrder > 2 && curStep === slideBar.length && slide === slideBar.length - 2 ? (
+                  <div className={styles.removeStep} onClick={handleRemoveStep(index)}>
+                    <RemoveIcon />
+                  </div>
+                ) : null}
 
                 {index !== slideBar.length - 1 ? (
                   <div
