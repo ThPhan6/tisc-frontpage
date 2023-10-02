@@ -2,7 +2,6 @@ import { isUndefined } from 'lodash';
 
 import {
   AutoStepLinkedOptionResponse,
-  AutoStepOnAttributeGroupResponse,
   AutoStepPreSelectOnAttributeGroupResponse,
   LinkedOptionProps,
   OptionQuantityProps,
@@ -26,7 +25,11 @@ export interface AllLinkedDataSelectProps {
 }
 
 export interface OptionSelectedProps {
-  [order: number]: { id?: string; order: number; options: OptionReplicateResponse[] };
+  [order: number]: {
+    id?: string;
+    order: number;
+    options: OptionReplicateResponse[] | OptionQuantityProps[];
+  };
 }
 
 export interface OptionPreSelectedProps {
@@ -90,7 +93,8 @@ const autoStepSlice = createSlice({
     setOptionsSelected(
       state,
       action: PayloadAction<
-        { id: string; order: number; options: OptionReplicateResponse[] } | OptionSelectedProps
+        | { id: string; order: number; options: OptionReplicateResponse[] | OptionQuantityProps[] }
+        | OptionSelectedProps
       >,
     ) {
       const { id, order, options } = action.payload as any;

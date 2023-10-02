@@ -188,79 +188,88 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     getAutoStepData(productId, currentSpecAttributeGroupId).then(async (res) => {
       if (res) {
-        const preSelectSteps = [
-          {
-            step_id: '99d40cc8-0c6e-4aa4-8f88-7cbae4387949',
-            options: [
-              {
-                id: '4859d4af-3d5a-4e0d-bcba-887353394e47',
-                quantity: 0,
-              },
-            ],
-          },
-          {
-            step_id: '997309dc-5e1c-4c7e-ac34-54c847d28c27',
-            options: [
-              {
-                id: '06d8da96-e9a3-4ac1-a73e-d18fc2369ac2',
-                quantity: 1,
-              },
-              {
-                id: '720be395-ca4d-4b6b-9db2-d4c14551815c',
-                quantity: 1,
-              },
-              {
-                id: 'aa870fd5-342a-439d-88a2-05be79e87bc3',
-                quantity: 1,
-              },
-            ],
-          },
-          {
-            step_id: 'd297e58b-1087-4171-9eac-364d3f8ea262',
-            options: [
-              {
-                id: '6d761074-4403-410b-8a20-62c1d2c2cfd9',
-                quantity: 1,
-              },
-              {
-                id: '1f13822c-7004-495b-8411-491dc409e246',
-                quantity: 1,
-              },
-              {
-                id: '3ef768b7-406e-4228-85fc-dd7d7e988ac8',
-                quantity: 1,
-              },
-            ],
-          },
-        ];
+        const preSelectSteps: any[] = [];
+        //  [
+        //   {
+        //     step_id: '99d40cc8-0c6e-4aa4-8f88-7cbae4387949',
+        //     options: [
+        //       {
+        //         id: '4859d4af-3d5a-4e0d-bcba-887353394e47',
+        //         quantity: 0,
+        //       },
+        //     ],
+        //   },
+        //   {
+        //     step_id: '997309dc-5e1c-4c7e-ac34-54c847d28c27',
+        //     options: [
+        //       {
+        //         id: '06d8da96-e9a3-4ac1-a73e-d18fc2369ac2',
+        //         quantity: 1,
+        //       },
+        //       {
+        //         id: '720be395-ca4d-4b6b-9db2-d4c14551815c',
+        //         quantity: 1,
+        //       },
+        //       {
+        //         id: 'aa870fd5-342a-439d-88a2-05be79e87bc3',
+        //         quantity: 1,
+        //       },
+        //     ],
+        //   },
+        //   {
+        //     step_id: 'd297e58b-1087-4171-9eac-364d3f8ea262',
+        //     options: [
+        //       {
+        //         id: '6d761074-4403-410b-8a20-62c1d2c2cfd9',
+        //         quantity: 1,
+        //       },
+        //       {
+        //         id: '1f13822c-7004-495b-8411-491dc409e246',
+        //         quantity: 1,
+        //       },
+        //       {
+        //         id: '3ef768b7-406e-4228-85fc-dd7d7e988ac8',
+        //         quantity: 1,
+        //       },
+        //     ],
+        //   },
+        // ];
 
         // await getPreSelectStep(productId, currentSpecAttributeGroupId);
 
         const newRes = [...res];
 
-        [...res].forEach((opt, index) => {
-          if (index === 0) {
-            newRes[index] = {
-              ...opt,
-              options: opt.options.map((o) => ({ ...o, yours: 0 })),
-            };
+        if (preSelectSteps.length) {
+          [...res].forEach((opt, index) => {
+            if (index === 0) {
+              newRes[index] = {
+                ...opt,
+                options: opt.options.map((o) => ({ ...o, yours: 0 })),
+              };
 
-            return;
-          }
-
-          let newOptions: OptionQuantityProps[] = [];
-
-          preSelectSteps.forEach((el) => {
-            if (el.step_id === opt.id) {
-              newOptions = merge(opt.options, el.options) as OptionQuantityProps[];
+              return;
             }
-          });
 
-          newRes[index] = {
-            ...newRes[index],
-            options: newOptions.map((o) => ({ ...o, quantity: o.quantity ?? 0, yours: 0 })),
-          };
-        });
+            let newOptions: OptionQuantityProps[] = [];
+
+            if (opt.options.length) {
+              preSelectSteps.forEach((el) => {
+                if (el.step_id === opt.id) {
+                  newOptions = merge(opt.options, el.options) as OptionQuantityProps[];
+                }
+              });
+            }
+
+            newRes[index] = {
+              ...newRes[index],
+              options: (newOptions.length ? newOptions : opt.options).map((o: any) => ({
+                ...o,
+                quantity: o.quantity ?? 0,
+                yours: 0,
+              })),
+            };
+          });
+        }
 
         console.log('newRes', newRes);
 

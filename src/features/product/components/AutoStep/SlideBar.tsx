@@ -44,8 +44,6 @@ export const SlideBar: FC<SlideBarProps> = ({
     store.dispatch(setSlideBar(newTopBarData));
   };
 
-  console.log('slide', slide);
-
   return (
     <div className={`${styles.topBar} ${className}`}>
       {/* slide bar */}
