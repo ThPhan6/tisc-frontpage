@@ -80,6 +80,25 @@
     }
   }
 
+  :global(.radio-item) {
+    min-height: 64px;
+    box-shadow: @border-bottom-light;
+
+    :global(.checkbox-item-active) {
+      :global(.option-image-list-wrapper) {
+        :global(.heading-option-group) {
+          font-weight: 500 !important;
+        }
+
+        p,
+        span,
+        :global(.heading-option-group) {
+          color: @primary-color-dark !important;
+        }
+      }
+    }
+  }
+
   :global(.checkbox-list-options),
   :global(.radio-list-options) {
     padding: 0 !important;
@@ -92,6 +111,7 @@
 
   :global(.quantity) {
     height: 100%;
+    margin-left: 8px;
     padding-left: 8px;
     color: @mono-color;
     text-align: center;
@@ -150,13 +170,11 @@
     }
   }
 
+  :global(.item-option-checked),
   :global(.checkbox-item-active) {
-    :global(.linkage-label),
-    :global(.replicate-label) {
-      font-weight: 600 !important ;
-    }
+    :global(.amount-quantity),
     :global(.heading-option-group) {
-      font-weight: 500;
+      font-weight: 500 !important;
     }
 
     p,

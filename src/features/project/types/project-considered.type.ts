@@ -1,10 +1,19 @@
+import { OptionQuantityResponse } from '@/features/product/types/autoStep';
+
 export interface SelectedSpecAttributte {
   id: string;
   basis_option_id: string;
 }
+
+export interface SpecificationPreSelectStep {
+  step_id: string;
+  options: OptionQuantityResponse[];
+}
+
 export interface SpecificationAttributeGroup {
   id: string;
-  attributes: SelectedSpecAttributte[];
+  attributes?: SelectedSpecAttributte[];
+  configuration_steps?: SpecificationPreSelectStep[];
   isChecked?: boolean;
 }
 export interface SpecificationBodyRequest {

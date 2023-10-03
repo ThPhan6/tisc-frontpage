@@ -7,6 +7,7 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import {
+  getPreSelectAttributeSelected,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
@@ -15,7 +16,11 @@ import {
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
-import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
+import {
+  SelectedSpecAttributte,
+  SpecificationAttributeGroup,
+  SpecificationBodyRequest,
+} from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import { getNewDataAfterReordering } from '@/components/Drag';
@@ -75,14 +80,14 @@ export const getSpecificationWithSelectedValue = (
     if (selectedGroup === -1) {
       return;
     }
-    const optionIds = gr.attributes.map((e) => e.basis_option_id);
+    const optionIds = gr.attributes?.map((e) => e.basis_option_id);
     checkedSpecGroup[selectedGroup].isChecked = true;
     checkedSpecGroup[selectedGroup].attributes = checkedSpecGroup[selectedGroup].attributes.map(
       (attr) => ({
         ...attr,
         basis_options: attr.basis_options?.map((opt) => ({
           ...opt,
-          isChecked: optionIds.includes(opt.id),
+          isChecked: optionIds?.includes(opt.id),
         })),
       }),
     );
@@ -120,8 +125,6 @@ export const useProductAttributeForm = (
 
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
 
-  // const curAttrGroupCollapseId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
-
   const [autoStepPopup, setAutoStepPopup] = useState<boolean>(false);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
@@ -143,7 +146,6 @@ export const useProductAttributeForm = (
   useEffect(() => {
     if (
       attributeType === 'specification' &&
-      // specification_attribute_groups.length && // Wait for all specification attributes loaded
       loaded.value === false &&
       productId &&
       isTiscAdmin === false
@@ -155,17 +157,30 @@ export const useProductAttributeForm = (
         getSelectedProductSpecification(productId).then((res) => {
           loaded.setValue(true);
           if (res) {
+            const newSpecficationAttributeGroups = getSpecificationWithSelectedValue(
+              res.specification?.attribute_groups || [],
+              attributeGroup,
+            );
+
             dispatch(
               setPartialProductDetail({
-                specification_attribute_groups: getSpecificationWithSelectedValue(
-                  res.specification?.attribute_groups || [],
-                  attributeGroup,
-                ),
+                specification_attribute_groups: newSpecficationAttributeGroups,
                 // set vendor locations have selected from user selection
                 brand_location_id: res.brand_location_id,
                 distributor_location_id: res.distributor_location_id,
               }),
             );
+
+            const attributePreSelected = getSpecificationRequest(newSpecficationAttributeGroups);
+
+            const isReferDocument = attributePreSelected.some((el) => el.isChecked);
+
+            const newAttributePreSelected: SpecificationBodyRequest = {
+              is_refer_document: !isReferDocument,
+              attribute_groups: attributePreSelected,
+            };
+
+            dispatch(getPreSelectAttributeSelected(newAttributePreSelected));
           }
         });
       }
@@ -385,12 +400,20 @@ export const useProductAttributeForm = (
     }
 
     if (!props?.isSpecifiedModal) {
+      const newSpecficationRequest = {
+        is_refer_document: !haveCheckedAttributeGroup || false,
+        attribute_groups: getSpecificationRequest(newState),
+      };
+
+      /// update pre-select attributes
       selectProductSpecification(id, {
-        specification: {
-          is_refer_document: !haveCheckedAttributeGroup || false,
-          attribute_groups: getSpecificationRequest(newState),
-        },
+        specification: newSpecficationRequest,
       });
+
+      console.log('newSpecficationRequest', newSpecficationRequest);
+
+      /// save pre-select attributes data
+      dispatch(getPreSelectAttributeSelected(newSpecficationRequest));
     }
 
     dispatch(

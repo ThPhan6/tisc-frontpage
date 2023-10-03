@@ -7,26 +7,37 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useSelectProductSpecification } from '../../services';
 import { useGetParamId } from '@/helper/hook';
 import { uniqueArrayBy } from '@/helper/utils';
-import { cloneDeep, flatMap, forEach, groupBy, map, merge, mergeWith, sum, trimEnd } from 'lodash';
+import {
+  cloneDeep,
+  flatMap,
+  forEach,
+  groupBy,
+  isNull,
+  isUndefined,
+  map,
+  sum,
+  trimEnd,
+} from 'lodash';
 
 import {
   resetAutoStepState,
   setOptionsSelected,
+  setPartialProductDetail,
   setPickedOption,
   setPreSelectStep,
   setSlide,
-  setSlideBar,
 } from '../../reducers';
 import { ProductAttributeFormInput } from '../../types';
 import {
-  AutoStepPreSelectDataRequest,
-  AutoStepPreSelectOnAttributeGroupResponse,
+  AutoStepOnAttributeGroupResponse,
   AutoStepPreSelectOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { SpecificationBodyRequest } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -48,24 +59,22 @@ interface PreSelectStepProps {
 }
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, attrGroupItem }) => {
-  const user = useAppSelector((state) => state.user.user);
+  const { preSelectAttributes, details } = useAppSelector((state) => state.product);
+  const { specification_attribute_groups: specificationAttributeGroups } = details;
+  const selectProductSpecification = useSelectProductSpecification();
 
   const productId = useGetParamId();
   const attributeGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
   const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
+  const [firstOptionSelected, setFirstOptionSelected] = useState<string>('');
+
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
   const [newLeftPanelData, setNewLeftPanelData] = useState<AutoStepPreSelectOptionProps[]>([]);
 
-  /// this state saved all original steps data
-  const [steps, setSteps] = useState<{
-    [order: string]: AutoStepPreSelectOnAttributeGroupResponse;
-  }>({});
-
-  const { slideBars, slide, step, preSelectStep, pickedOption, optionsSelected } = useAppSelector(
-    (state) => state.autoStep,
-  );
+  const { slideBars, slide, step, stepData, preSelectStep, pickedOption, optionsSelected } =
+    useAppSelector((state) => state.autoStep);
 
   const curOrder = slide + 2;
   const curPicked = pickedOption[slide];
@@ -112,60 +121,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     .map((el) => ({ label: el.pre_option, value: el.id }));
   /* ---------------------------------------- */
 
-  useEffect(() => {
-    if (
-      !productId ||
-      !currentSpecAttributeGroupId ||
-      typeof step !== 'number' ||
-      currentSpecAttributeGroupId !== attrGroupItem?.id ||
-      (currentSpecAttributeGroupId === attrGroupItem?.id && attrGroupItem.steps?.length)
-    ) {
-      if (currentSpecAttributeGroupId === attrGroupItem?.id && attrGroupItem.steps?.length) {
-        const newRes: AutoStepPreSelectOnAttributeGroupResponse[] = (
-          attrGroupItem.steps as AutoStepPreSelectOnAttributeGroupResponse[]
-        ).map((el) => ({
-          ...el,
-          options: el.options.map((opt) => ({
-            ...opt,
-            quantity: opt.quantity ?? 0,
-            yours: opt.yours ?? 0,
-          })),
-        }));
-
-        const descriptions = newRes.map((el) => el.name);
-        store.dispatch(setSlideBar(descriptions));
-
-        let newPreSelectStep: { [order: number]: AutoStepPreSelectOnAttributeGroupResponse } = {};
-
-        newRes.forEach((el) => {
-          newPreSelectStep = { ...newPreSelectStep, [el.order]: el };
-        });
-
-        console.log('1111111111');
-
-        setSteps(newPreSelectStep);
-
-        store.dispatch(
-          setPreSelectStep({
-            order: 1,
-            options: newPreSelectStep[1].options,
-          }),
-        );
-      }
-    }
-  }, [currentSpecAttributeGroupId, step]);
-
   const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
-    setSteps({});
     setNewLeftPanelData([]);
   };
-
-  useEffect(() => {
-    return () => {
-      handleResetAutoStep();
-    };
-  }, []);
 
   const handleForceEnableCollapse = () => {
     setForceEnableCollapse(true);
@@ -174,6 +133,32 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       setForceEnableCollapse(false);
     }, 200);
   };
+
+  useEffect(() => {
+    if (isUndefined(step) || isNull(step) || typeof step !== 'number') {
+      return;
+    }
+
+    store.dispatch(setSlide(step));
+    handleForceEnableCollapse();
+
+    const newLeftData = getPickedOptionGroup(
+      optionsSelected[step === 0 ? 1 : step + 1].options,
+    ) as unknown as AutoStepPreSelectOptionProps[];
+
+    setNewLeftPanelData(newLeftData);
+
+    if (pickedOption[0]) {
+      setFirstOptionSelected(pickedOption[0].id);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    return () => {
+      handleResetAutoStep();
+      setFirstOptionSelected('');
+    };
+  }, []);
 
   const handleBackToPrevSlide = () => {
     const prevSlide = slide;
@@ -199,6 +184,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const handleGoToNextSlide = () => {
     const prevSlide = slide;
     const newSlide = prevSlide + 1;
+    const newOrder = newSlide + 1;
 
     /* last step */
     if (newSlide === slideBars.length - 1) {
@@ -209,35 +195,36 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     let invalidAmountYours = false;
     let optionNameTicked = '';
 
-    optionsSelected[curOrder - 1].options.forEach((opt) => {
+    (optionsSelected[newOrder - 1].options as OptionQuantityProps[]).forEach((opt) => {
       if (invalidAmountYours) {
         return;
       }
 
       const allSubSelected: OptionQuantityProps[] = [];
 
-      currentOptionSelected.forEach((el) => {
+      (optionsSelected[newOrder].options as OptionQuantityProps[]).forEach((el) => {
         const preOptions = el.pre_option?.split(',');
         const optionId = preOptions?.[0];
         const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
 
         if (
-          preOptionId ? opt.id === optionId && opt.pre_option === preOptionId : opt.id === optionId
+          prevSlide === 0
+            ? opt.id === optionId
+            : opt.id === optionId && opt.pre_option === preOptionId
         ) {
           allSubSelected.push(el);
         }
       });
 
-      const curSumYours = allSubSelected.length
-        ? sum(allSubSelected.map((el) => el.quantity))
-        : opt.replicate;
+      const curSumYours = allSubSelected.length ? sum(allSubSelected.map((el) => el.quantity)) : -1;
 
-      if (curSumYours < opt.replicate || curSumYours > opt.replicate) {
+      if (curSumYours !== -1 && (curSumYours < opt.replicate || curSumYours > opt.replicate)) {
         optionNameTicked = trimEnd(
           `${opt.value_1} ${opt.value_2} ${
             opt.unit_1 || opt.unit_2 ? `- ${opt.unit_1} ${opt.unit_2}` : ''
           }`,
         );
+
         invalidAmountYours = true;
       }
     });
@@ -255,8 +242,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       return;
     }
 
-    const newOrder = newSlide + 1;
-
     /* add new slide */
     store.dispatch(setSlide(newSlide));
     /* ------------- */
@@ -265,6 +250,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     const newNextLeftPanelData = getPickedOptionGroup(
       optionsSelected[newOrder].options,
     ) as AutoStepPreSelectOptionProps[];
+
     setNewLeftPanelData(newNextLeftPanelData);
     /* ------------------------------------ */
   };
@@ -276,6 +262,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       id: e.target.value,
       pre_option: (e.target as any).pre_option,
     };
+
+    if (slide === 0) {
+      setFirstOptionSelected(e.target.value);
+    }
 
     const isPrevPickedOption =
       curPicked?.id === curOptionSelected.id &&
@@ -319,8 +309,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       (el) => el.id === curOptionSelected.id && el.pre_option === curOptionSelected.pre_option,
     );
 
+    const stepDataClone = cloneDeep(stepData);
+
     /// set data view on the right panel
-    const newRightPanelData = steps[curOrder].options.filter((sub) => {
+    const newRightPanelData = stepDataClone[curOrder].options.filter((sub) => {
       const preOption = sub.pre_option?.split(',');
       const optionId = preOption?.[0] as string;
       const preOptionId = preOption?.slice(1, preOption.length).join(',');
@@ -356,71 +348,73 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     store.dispatch(setPreSelectStep({ order: curOrder, options: finalNewRightPanelData }));
   };
 
-  const handleSelectLinkedOption = (newOptionsSelected: OptionQuantityProps[]) => {
-    /// handle option following
-    if (optionsSelected[curOrder + 1]) {
-      /* remove next data selected options */
-      let prevOptionsSelectedIds = newOptionsSelected.map((el) =>
-        el.pre_option ? `${el.id},${el.pre_option}` : el.id,
+  /// handle option following
+  const handleNextOptions = (newOptionsSelected: OptionQuantityProps[]) => {
+    if (!optionsSelected[curOrder + 1]) {
+      return;
+    }
+
+    /* remove next data selected options */
+    let prevOptionsSelectedIds = newOptionsSelected.map((el) =>
+      el.pre_option ? `${el.id},${el.pre_option}` : el.id,
+    );
+
+    map(optionsSelected, (optionData: any, optIndex: number) => {
+      if (optIndex <= curOrder) {
+        return false;
+      }
+
+      const newNextOptionSelected = optionData.options.filter((el: any) =>
+        prevOptionsSelectedIds.includes(el.pre_option),
       );
 
-      map(optionsSelected, (optionData: any, optIndex: number) => {
-        if (optIndex <= curOrder) {
-          return false;
-        }
+      prevOptionsSelectedIds = prevOptionsSelectedIds.filter((el: any) =>
+        newNextOptionSelected.includes(el.pre_option),
+      );
 
-        const newNextOptionSelected = optionData.options.filter((el: any) =>
-          prevOptionsSelectedIds.includes(el.pre_option),
-        );
+      store.dispatch(
+        setOptionsSelected({
+          ...stepData[curOrder],
+          order: optIndex,
+          options: newNextOptionSelected,
+        }),
+      );
 
-        prevOptionsSelectedIds = prevOptionsSelectedIds.filter((el: any) =>
-          newNextOptionSelected.includes(el.pre_option),
-        );
+      return true;
+    });
+    /* ---------------------------------- */
 
-        store.dispatch(
-          setOptionsSelected({
-            ...steps[curOrder],
-            order: optIndex,
-            options: newNextOptionSelected,
-          }),
-        );
+    /* remove next data view */
+    const newPreSelectStep = { ...preSelectStep };
 
-        return true;
-      });
-      /* ---------------------------------- */
+    map(preSelectStep, (_data: any, order: number) => {
+      if (order <= curOrder) {
+        return false;
+      }
 
-      /* remove next data view */
-      const newPreSelectStep = { ...preSelectStep };
+      newPreSelectStep[order] = { ...newPreSelectStep[order], options: [] };
 
-      map(preSelectStep, (_data: any, order: number) => {
-        if (order <= curOrder) {
-          return false;
-        }
+      return true;
+    });
 
-        newPreSelectStep[order] = { ...newPreSelectStep[order], options: [] };
+    store.dispatch(setPreSelectStep(newPreSelectStep));
+    /* --------------------- */
 
-        return true;
-      });
+    /* remove next highlighted */
+    const newPickedOption = { ...pickedOption };
 
-      store.dispatch(setPreSelectStep(newPreSelectStep));
-      /* --------------------- */
+    map(pickedOption, (_data: any, index: number) => {
+      if (index <= slide) {
+        return false;
+      }
 
-      /* remove next highlighted */
-      const newPickedOption = { ...pickedOption };
+      newPickedOption[index] = { id: '', pre_option: '', replicate: 1, yours: 0 };
 
-      map(pickedOption, (_data: any, index: number) => {
-        if (index <= slide) {
-          return false;
-        }
+      return true;
+    });
 
-        newPickedOption[index] = { id: '', pre_option: '', replicate: 1, yours: 0 };
-
-        return true;
-      });
-
-      store.dispatch(setPickedOption(newPickedOption));
-      /* ----------------------- */
-    }
+    store.dispatch(setPickedOption(newPickedOption));
+    /* ----------------------- */
   };
 
   const handleIncreaseQuantity =
@@ -428,17 +422,19 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       e.stopPropagation();
       e.preventDefault();
 
-      const stepData = cloneDeep(steps);
+      const stepDataClone = cloneDeep(stepData);
 
       let currentOptionSelectedClone = cloneDeep(currentOptionSelected);
 
       if (!currentOptionSelectedClone.length) {
         if (slide === 0) {
-          const currentOptionTicked = steps[1].options.find((el) => el.id === option.pre_option);
+          const currentOptionTicked = stepDataClone[1].options.find(
+            (el) => el.id === option.pre_option,
+          );
 
           store.dispatch(
             setOptionsSelected({
-              id: steps[1].id,
+              id: stepDataClone[1].id,
               order: 1,
               options: currentOptionTicked ? [currentOptionTicked] : [],
             }),
@@ -450,7 +446,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         /* update current option selected */
         store.dispatch(
           setOptionsSelected({
-            id: steps[curOrder].id,
+            id: stepDataClone[curOrder].id,
             order: curOrder,
             options: newOptions,
           }),
@@ -482,7 +478,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
             .map((el) => el.quantity),
         );
 
-        // update YOURS of prev step
+        /* update YOURS of prev step */
         store.dispatch(
           setPreSelectStep({
             order: curOrder - 1,
@@ -505,17 +501,18 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         );
         /* ------------------------ */
 
-        /* update YOURS of current option picked*/
+        /* update YOURS of current option picked */
         store.dispatch(setPickedOption({ ...curPicked, slide: slide, yours: newSumYours }));
-        /* ------------ */
+        /* ------------------------------------- */
 
         return;
       }
 
+      ///
       if (
+        slide === 0 &&
         currentOptionSelectedClone.length &&
-        option.pre_option !== currentOptionSelectedClone[0].pre_option &&
-        slide === 0
+        option.pre_option !== currentOptionSelectedClone[0].pre_option
       ) {
         currentOptionSelectedClone = [];
       }
@@ -540,7 +537,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         return;
       }
 
-      const newStepData = stepData[curOrder].options.map((el) => {
+      /* mapping quantity */
+      const newStepData = stepDataClone[curOrder].options.map((el) => {
         const optFound = currentOptionSelectedClone.find(
           (opt) => opt.id === el.id && opt.pre_option === el.pre_option,
         );
@@ -551,6 +549,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
 
         return el;
       });
+      /* -------------- */
 
       let newCurrentOptionSelected = newStepData
         .map((sub) => ({
@@ -575,11 +574,13 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
           (el) => el.pre_option === curPicked.id,
         );
 
-        const currentOptionTicked = steps[1].options.find((el) => el.id === option.pre_option);
+        const currentOptionTicked = stepDataClone[1].options.find(
+          (el) => el.id === option.pre_option,
+        );
 
         store.dispatch(
           setOptionsSelected({
-            id: steps[1].id,
+            id: stepDataClone[1].id,
             order: 1,
             options: currentOptionTicked ? [currentOptionTicked] : [],
           }),
@@ -589,7 +590,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       /* update current option selected */
       store.dispatch(
         setOptionsSelected({
-          id: steps[curOrder].id,
+          id: stepDataClone[curOrder].id,
           order: curOrder,
           options: newCurrentOptionSelected,
         }),
@@ -668,9 +669,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         return;
       }
 
-      const stepData = cloneDeep(steps);
+      const stepDataClone = cloneDeep(stepData);
 
-      const newStepData = stepData[curOrder].options.map((el) => {
+      /* mapping quantity */
+      const newStepData = stepDataClone[curOrder].options.map((el) => {
         const optFound = currentOptionSelectedClone.find(
           (opt) => opt.id === el.id && opt.pre_option === el.pre_option,
         );
@@ -681,6 +683,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
 
         return el;
       });
+      /* ---------------- */
 
       const newCurrentOptionSelected = newStepData
         .map((sub) => ({
@@ -693,16 +696,33 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         .filter((el) => el.quantity > 0);
 
       /* update current option selected */
+
+      if (slide === 0) {
+        const optionSelected = stepDataClone[1].options.find((el) => el.id === curPicked.id);
+
+        store.dispatch(
+          setOptionsSelected({
+            id: stepDataClone[1].id,
+            order: 1,
+            options: optionSelected ? [optionSelected] : [],
+          }),
+        );
+      }
+
+      console.log('newCurrentOptionSelected', newCurrentOptionSelected);
+
       store.dispatch(
         setOptionsSelected({
-          ...steps[curOrder],
+          id: stepDataClone[curOrder].id,
           order: curOrder,
           options: newCurrentOptionSelected,
         }),
       );
       /* ------------------------------ */
 
-      handleSelectLinkedOption(newCurrentOptionSelected);
+      /* handle option following if have */
+      handleNextOptions(newCurrentOptionSelected);
+      /* --------------------------- */
 
       /* update current data view */
       const newCurrentPreSelectOptionData = cloneDeep(currentPreSelectOptionData).map((sub) => ({
@@ -752,8 +772,25 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const handleCreatePreSelectStep = () => {
     let inValidOption = false;
 
-    forEach(optionsSelected, (optionData, order: string) => {
-      if (inValidOption || Number(order) < 2) {
+    const stepDataClone = cloneDeep(stepData);
+    const optionsSelectedClone = cloneDeep(optionsSelected);
+
+    const allOptionSelected: {
+      id?: string | undefined;
+      order: number;
+      options: OptionQuantityProps[];
+    }[] = Object.values(optionsSelectedClone);
+
+    const noneOptionSelected = allOptionSelected.every((el) => !el.options.length);
+
+    if (noneOptionSelected) {
+      message.error('Please select options');
+      return;
+    }
+
+    /* checking all options selected has amount of YOURS equal to its REQUIRED */
+    forEach(optionsSelectedClone, (optionData, order: string) => {
+      if (inValidOption || Number(order) < 2 || !optionData.options.length) {
         return;
       }
 
@@ -806,28 +843,69 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       message.error("Some of the options's amounts YOURS selected aren't equal to required");
       return;
     }
+    /* -------------------------------------------------------------------- */
 
-    const allOptionSelected: AutoStepPreSelectOnAttributeGroupResponse[] =
-      Object.values(optionsSelected);
+    let newSteps: AutoStepOnAttributeGroupResponse[] = [];
 
-    const payload = {
-      user_id: user?.id as string,
-      product_id: productId,
-      data: allOptionSelected.map((el) => ({
+    forEach(stepDataClone, (optionData, order: string) => {
+      const newStepData = optionData.options.map((el) => {
+        const optFound = (
+          optionsSelectedClone[Number(order)].options as OptionQuantityProps[]
+        ).find((opt) => opt.id === el.id && opt.pre_option === el.pre_option);
+
+        if (optFound) {
+          return { ...el, quantity: optFound.quantity };
+        }
+
+        return el;
+      });
+
+      newSteps = newSteps.concat({ ...optionData, options: newStepData });
+    });
+
+    /// save steps to specification attribute group
+    store.dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
+          el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps } : el,
+        ),
+      }),
+    );
+
+    const stepPayload = allOptionSelected
+      .filter((el) => el.options.length !== 0)
+      .map((el, index) => ({
         step_id: el.id,
-        options: el.options.map((opt) => ({ id: opt.id, quantity: opt.quantity })),
-      })) as AutoStepPreSelectOptionProps[],
-    } as AutoStepPreSelectDataRequest;
+        options: el.options.map((opt) => ({
+          id: opt.id,
+          /* option selected in 1st step(origin) has default quantity is 1 */
+          quantity: index === 0 ? 1 : opt.quantity,
+        })),
+      })) as AutoStepPreSelectOptionProps[];
 
-    console.log('payload', payload);
+    const configurationSteps = preSelectAttributes.attribute_groups.filter(
+      (el) => el.id !== currentSpecAttributeGroupId,
+    );
 
-    // upsertPreSelectStep(payload);
+    const newAttributeGroups = configurationSteps.concat({
+      id: currentSpecAttributeGroupId as string,
+      configuration_steps: stepPayload,
+    });
+
+    const newSpecfication: SpecificationBodyRequest = {
+      is_refer_document: preSelectAttributes.is_refer_document,
+      attribute_groups: newAttributeGroups,
+    };
+
+    // selectProductSpecification(productId, { specification: newSpecfication });
+
+    setVisible(false);
   };
 
-  // console.log('pickedOption', pickedOption);
+  console.log('pickedOption', pickedOption);
   // console.log('preSelectStep', preSelectStep);
+  // console.log('stepData', stepData);
   // console.log('optionsSelected', optionsSelected);
-  // console.log('step', step);
 
   return (
     <CustomModal
@@ -863,6 +941,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
             return (
               <CheckboxDynamic
                 key={optIdx}
+                isCheckbox={slide !== 0}
+                isRadio={slide === 0}
+                selected={[{ label: '', value: firstOptionSelected }]}
                 chosenItems={currentSubPickedOptionSelected}
                 onOneChange={handleSelectPickedOption}
                 data={{
@@ -881,7 +962,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
                   ),
                   options: pickedSub.subs.map((option, subIdx) => ({
                     pre_option: option.pre_option,
-                    replicate: option.replicate,
+                    // replicate: option.replicate,
                     value: option.id,
                     label: (
                       <div
@@ -932,10 +1013,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
             <EmptyOne isCenter />
           ) : (
             <div className={styles.linkedContent}>
-              <div className={`flex-between header`}>
-                <BodyText level={5} fontFamily="Roboto" style={{ textTransform: 'capitalize' }}>
+              <div className={`flex-end header`}>
+                {/* <BodyText level={5} fontFamily="Roboto" style={{ textTransform: 'capitalize' }}>
                   {slideBars[slide + 1]}
-                </BodyText>
+                </BodyText> */}
 
                 <div className="flex-start">
                   <BodyText level={3} fontFamily="Cormorant-Garamond">
@@ -946,7 +1027,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
                     fontFamily="Roboto"
                     style={{ fontWeight: 500, margin: '0 16px 0 8px' }}
                   >
-                    {curPicked.replicate}
+                    {curPicked?.replicate ?? 'N/A'}
                   </BodyText>
                   <BodyText level={3} fontFamily="Cormorant-Garamond">
                     Yours
@@ -956,7 +1037,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
                     fontFamily="Roboto"
                     style={{ fontWeight: 500, marginLeft: 8 }}
                   >
-                    {curPicked.yours}
+                    {curPicked?.yours ?? 'N/A'}
                   </BodyText>
                 </div>
               </div>
@@ -969,7 +1050,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
                 selected={currentSubLinkedOptionSelected}
                 chosenItem={currentSubLinkedOptionSelected}
                 forceEnableCollapse={forceEnableCollapse}
-                // onOneChange={handleSelectLinkedOption}
                 renderTitle={(data) => data.label}
                 data={rightPanelData.map((option) => ({
                   label: option.name,
@@ -1013,7 +1093,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
                         >
                           <BodyText
                             fontFamily="Cormorant-Garamond"
-                            customClass="replicate-label"
+                            customClass="quantity-label"
                             level={4}
                             style={{ height: 24 }}
                           >
@@ -1034,6 +1114,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
                             <BodyText
                               fontFamily="Roboto"
                               level={6}
+                              customClass="amount-quantity"
                               style={{ padding: '0 8px', width: 30 }}
                             >
                               {sub.quantity}

@@ -43,6 +43,7 @@ interface AutoStepProps {
 
   linkedOptionData: LinkedOptionDataProps[]; /// data view when select on TISC
 
+  stepData: OptionPreSelectedProps; /// origin step data
   preSelectStep: OptionPreSelectedProps; /// data view when pre-select on Brand/Designer
 
   slide: number; /// (1) -> (2)
@@ -61,6 +62,7 @@ const initialState: AutoStepProps = {
 
   optionsSelected: [], /// this is payload of all sub options selected
 
+  stepData: {}, /// this is origin step data of Brand/Designer
   preSelectStep: {}, /// all data view on left and right panel of Brand/Designer
 
   pickedOption: {}, /// all hightlighted on the left panel
@@ -84,6 +86,10 @@ const autoStepSlice = createSlice({
 
     setStep(state, action: PayloadAction<'pre' | number>) {
       state.step = action.payload;
+    },
+
+    setStepData(state, action: PayloadAction<OptionPreSelectedProps>) {
+      state.stepData = action.payload;
     },
 
     setSubOptionSelected(state, action: PayloadAction<{ [groupAttributeId: string]: string }>) {
@@ -208,6 +214,7 @@ export const {
   setSubOptionSelected,
 
   /// Brand/Designer
+  setStepData,
   setPreSelectStep,
 } = autoStepSlice.actions;
 

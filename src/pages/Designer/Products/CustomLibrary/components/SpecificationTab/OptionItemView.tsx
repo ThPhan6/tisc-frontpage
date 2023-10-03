@@ -87,7 +87,7 @@ export const OptionItemView: FC<OptionGroupProps> = ({
       disabled={isPublicPage}
       containerStyle={{ padding: 0 }}
       noPaddingLeft
-      value={selectOption?.attributes[0].basis_option_id}
+      value={selectOption?.attributes?.[0].basis_option_id}
       onChange={(value) => {
         if (productId && value.value) {
           const optionId = option.id || '';

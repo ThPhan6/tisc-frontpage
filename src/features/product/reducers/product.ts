@@ -8,7 +8,12 @@ import type {
   SortParams,
   SpecifiedDetail,
 } from '../types';
-import { OrderMethod } from '@/features/project/types';
+import {
+  OrderMethod,
+  SelectedSpecAttributte,
+  SpecificationBodyRequest,
+  SpecificationPreSelectStep,
+} from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
@@ -26,6 +31,7 @@ interface ProductState {
   curAttrGroupCollapseId?: {
     [key: string]: string;
   };
+  preSelectAttributes: SpecificationBodyRequest;
 }
 
 const initialState: ProductState = {
@@ -87,6 +93,8 @@ const initialState: ProductState = {
       pageCount: 1,
     },
   },
+  /// save all attribute pre-selected on brand
+  preSelectAttributes: { is_refer_document: false, attribute_groups: [] },
 };
 
 const productSlice = createSlice({
@@ -189,6 +197,15 @@ const productSlice = createSlice({
     setCurAttrGroupCollapse: (state, action: PayloadAction<{ [key: string]: string }>) => {
       state.curAttrGroupCollapseId = { ...state.curAttrGroupCollapseId, ...action.payload };
     },
+
+    getPreSelectAttributeSelected: (state, action: PayloadAction<SpecificationBodyRequest>) => {
+      const { is_refer_document, attribute_groups } = action.payload;
+
+      state.preSelectAttributes = {
+        is_refer_document: is_refer_document,
+        attribute_groups: attribute_groups,
+      };
+    },
     closeActiveSpecAttributeGroup: (state) => {
       state.curAttrGroupCollapseId = {
         ...state.curAttrGroupCollapseId,
@@ -218,6 +235,7 @@ export const {
   setFinishScheduleData,
   setCurAttrGroupCollapse,
   closeActiveSpecAttributeGroup,
+  getPreSelectAttributeSelected,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

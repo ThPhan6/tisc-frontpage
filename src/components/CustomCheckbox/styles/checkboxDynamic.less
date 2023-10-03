@@ -49,4 +49,16 @@
       height: 100%;
     }
   }
+
+  .radioListItem {
+    :global(.radio-item) {
+      margin-right: 0;
+    }
+
+    :global(span.ant-radio + *) {
+      flex-grow: 1;
+      padding-right: 16px;
+      padding-left: 0;
+    }
+  }
 }

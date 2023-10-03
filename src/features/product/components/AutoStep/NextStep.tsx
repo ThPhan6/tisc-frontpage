@@ -794,7 +794,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
             return (
               <CheckboxDynamic
                 key={optIdx}
-                // chosenItems={currentSubPickedOptionSelected}
+                isCheckbox
                 onOneChange={handleSelectPickedOption}
                 data={{
                   customItemClass: 'checkbox-item',

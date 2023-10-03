@@ -4,14 +4,15 @@ import { message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { getAutoStepData, getLinkedOptionByOptionIds } from '../../services';
+import { getAutoStepData, getLinkedOptionByOptionIds, getPreSelectStep } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { capitalize, merge, sortBy, uniq } from 'lodash';
+import { capitalize, merge, sortBy, uniq, xorWith } from 'lodash';
 
 import {
   LinkedOptionDataProps,
+  OptionPreSelectedProps,
   OptionSelectedProps,
   PickedOptionProps,
   setCurAttrGroupCollapse,
@@ -19,9 +20,11 @@ import {
   setOptionsSelected,
   setPartialProductDetail,
   setPickedOption,
+  setPreSelectStep,
   setSlide,
   setSlideBar,
   setStep,
+  setStepData,
 } from '../../reducers';
 import {
   AttributeSelectedProps,
@@ -32,6 +35,8 @@ import {
 } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
+  AutoStepPreSelectOptionResponse,
   LinkedOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
@@ -92,7 +97,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     deleteAttributeItem,
     onCheckedSpecification,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
+  } = useProductAttributeForm(activeKey, curProductId, {
+    isSpecifiedModal,
+  });
+
+  const user = useAppSelector((state) => state.user.user);
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isEditable = isTiscAdmin && !isTablet;
@@ -188,54 +197,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     getAutoStepData(productId, currentSpecAttributeGroupId).then(async (res) => {
       if (res) {
-        const preSelectSteps: any[] = [];
-        //  [
-        //   {
-        //     step_id: '99d40cc8-0c6e-4aa4-8f88-7cbae4387949',
-        //     options: [
-        //       {
-        //         id: '4859d4af-3d5a-4e0d-bcba-887353394e47',
-        //         quantity: 0,
-        //       },
-        //     ],
-        //   },
-        //   {
-        //     step_id: '997309dc-5e1c-4c7e-ac34-54c847d28c27',
-        //     options: [
-        //       {
-        //         id: '06d8da96-e9a3-4ac1-a73e-d18fc2369ac2',
-        //         quantity: 1,
-        //       },
-        //       {
-        //         id: '720be395-ca4d-4b6b-9db2-d4c14551815c',
-        //         quantity: 1,
-        //       },
-        //       {
-        //         id: 'aa870fd5-342a-439d-88a2-05be79e87bc3',
-        //         quantity: 1,
-        //       },
-        //     ],
-        //   },
-        //   {
-        //     step_id: 'd297e58b-1087-4171-9eac-364d3f8ea262',
-        //     options: [
-        //       {
-        //         id: '6d761074-4403-410b-8a20-62c1d2c2cfd9',
-        //         quantity: 1,
-        //       },
-        //       {
-        //         id: '1f13822c-7004-495b-8411-491dc409e246',
-        //         quantity: 1,
-        //       },
-        //       {
-        //         id: '3ef768b7-406e-4228-85fc-dd7d7e988ac8',
-        //         quantity: 1,
-        //       },
-        //     ],
-        //   },
-        // ];
+        const preSelectSteps: AutoStepPreSelectOptionResponse[] = await getPreSelectStep(
+          user?.id as string,
+          productId,
+          currentSpecAttributeGroupId,
+        );
 
-        // await getPreSelectStep(productId, currentSpecAttributeGroupId);
+        console.log('preSelectSteps ===>>>>>', preSelectSteps);
 
         const newRes = [...res];
 
@@ -250,24 +218,28 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               return;
             }
 
-            let newOptions: OptionQuantityProps[] = [];
-
             if (opt.options.length) {
               preSelectSteps.forEach((el) => {
                 if (el.step_id === opt.id) {
-                  newOptions = merge(opt.options, el.options) as OptionQuantityProps[];
+                  el.options.forEach((o) => {
+                    console.log('el.options <..', el.options);
+                    console.log('newRes[index].options --/', opt.options);
+
+                    newRes[index] = {
+                      ...opt,
+                      options: opt.options.map((optionItem) => ({
+                        ...optionItem,
+                        quantity:
+                          optionItem.id === o.id && optionItem.pre_option === o.pre_option
+                            ? o.quantity
+                            : optionItem?.quantity ?? 0,
+                        yours: optionItem.replicate ?? 0,
+                      })),
+                    };
+                  });
                 }
               });
             }
-
-            newRes[index] = {
-              ...newRes[index],
-              options: (newOptions.length ? newOptions : opt.options).map((o: any) => ({
-                ...o,
-                quantity: o.quantity ?? 0,
-                yours: 0,
-              })),
-            };
           });
         }
 
@@ -464,9 +436,136 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   const handleOpenPreSelectAutoStepModal = (stepIndex: number) => () => {
-    store.dispatch(setSlide(stepIndex));
+    if (!productId) {
+      message.error('Product ID is required');
+      return;
+    }
 
-    store.dispatch(setStep(stepIndex));
+    if (!curAttrGroupCollapseId) {
+      message.error('Attribute Group ID is required');
+      return;
+    }
+
+    const slideBars: string[] = [];
+    const pickedOption: PickedOptionProps = {};
+    const optionsSelected: OptionSelectedProps = {};
+    const stepData: OptionPreSelectedProps = {};
+    const newPreSelectStep: OptionPreSelectedProps = {};
+
+    let curStepIndex = stepIndex;
+    if (stepIndex === (attrGroupItem.steps as any[]).length - 1) {
+      --curStepIndex;
+    }
+
+    const newSteps: AutoStepPreSelectOnAttributeGroupResponse[] = (
+      attrGroupItem.steps as AutoStepPreSelectOnAttributeGroupResponse[]
+    ).map((el) => ({
+      ...el,
+      options: el.options.map((opt) => ({
+        ...opt,
+        quantity: opt.quantity ?? 0,
+        yours: opt.yours ?? 0,
+      })),
+    }));
+
+    newSteps.forEach((el, index) => {
+      /// update slide bar
+      slideBars.push(el.name);
+
+      /// update origin step data
+      stepData[el.order] = {
+        ...el,
+        options: el.options.map((opt) => ({ ...opt, quantity: 0, yours: 0 })),
+      };
+
+      /* set option selected (except 1st option) */
+      optionsSelected[el.order] = {
+        id: el.id,
+        order: el.order,
+        options: el.options.filter((optionItem) => optionItem.quantity > 0),
+      };
+      /* ------------------ */
+
+      /* set option highlighted on left panel */
+      const optHasQuantity = el.options.find((opt) => opt.quantity > 0);
+
+      if (el.order >= 2 && optHasQuantity) {
+        /// set option highlighted is the first option found has quantity
+        const pickedPreOption = optHasQuantity.pre_option?.split(',');
+        const pickedId = pickedPreOption?.[0] as string;
+        const preOption = pickedPreOption?.slice(1, pickedPreOption.length).join(',') as string;
+
+        const leftOption = newSteps[index - 1].options.find((opt) =>
+          el.order === 2
+            ? opt.id === pickedId
+            : opt.id === pickedId && opt.pre_option === preOption,
+        );
+
+        if (leftOption) {
+          // save highlight left panel
+          pickedOption[el.order - 2] = {
+            id: leftOption.id,
+            pre_option: leftOption.pre_option ?? '',
+            replicate: leftOption.replicate,
+            yours: leftOption.replicate,
+          };
+
+          // set 1st option selected
+          optionsSelected[1] = {
+            id: el.id,
+            order: 1,
+            options: [leftOption],
+          };
+        }
+      }
+      /* ------------------------------------- */
+
+      const curPicked = pickedOption[el.order - 2];
+
+      /* set data view */
+      if (index === 0) {
+        newPreSelectStep[el.order] = el;
+      } else if (curPicked?.id) {
+        newPreSelectStep[el.order] = {
+          ...el,
+          options: el.options.every((opt) => opt.quantity === 0)
+            ? []
+            : el.options.filter((opt) => {
+                const preOptions = opt.pre_option?.split(',');
+                const optionId = preOptions?.[0];
+                const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+
+                return el.order > 2
+                  ? curPicked.id === optionId && curPicked.pre_option === preOptionId
+                  : curPicked.id === optionId;
+              }),
+        };
+      }
+      /* -------------- */
+    });
+
+    // console.log('newPreSelectStep', newPreSelectStep);
+    // console.log('stepData', stepData);
+    console.log('pickedOption', pickedOption);
+    // console.log('optionsSelected', optionsSelected);
+
+    /// set options seleted
+    store.dispatch(setOptionsSelected(optionsSelected));
+
+    /// set origin data
+    store.dispatch(setStepData(stepData));
+
+    /// set step data to view
+    store.dispatch(setPreSelectStep(newPreSelectStep));
+
+    // set option highlighted
+    store.dispatch(setPickedOption(pickedOption));
+
+    store.dispatch(setSlideBar(slideBars));
+
+    store.dispatch(setSlide(curStepIndex));
+
+    store.dispatch(setStep(curStepIndex));
 
     setAutoStepModal(true);
   };
@@ -716,12 +815,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 setCurAttributeSelect={setCurAttributeSelect}
                 collapsible={collapsible}
                 setCollapsible={setCollapsible}
-                onCheckedAttributeOption={(isAttrOptChecked) => {
-                  setShowAttributeOptionSelected(isAttrOptChecked);
-                }}
-                onCheckedAttributeGroup={(isAttrGrpChecked) => {
-                  setIsAttributeGroupSelected(isAttrGrpChecked);
-                }}
+                onCheckedAttributeOption={setShowAttributeOptionSelected}
+                onCheckedAttributeGroup={setIsAttributeGroupSelected}
               />
             )}
 
