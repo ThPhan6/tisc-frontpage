@@ -234,8 +234,6 @@ const productSpecificationSelector = (state: RootState) =>
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
   let variants = '';
 
-  console.log('specGroup', specGroup);
-
   specGroup.forEach((el) => {
     if (!el.isChecked) {
       return;

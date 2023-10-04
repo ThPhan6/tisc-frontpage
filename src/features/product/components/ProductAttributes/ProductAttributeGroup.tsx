@@ -210,37 +210,40 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
         if (preSelectSteps.length) {
           [...res].forEach((opt, index) => {
-            if (index === 0) {
-              newRes[index] = {
-                ...opt,
-                options: opt.options.map((o) => ({ ...o, yours: 0 })),
-              };
-
+            if (!opt.options.length) {
               return;
             }
 
-            if (opt.options.length) {
-              preSelectSteps.forEach((el) => {
-                if (el.step_id === opt.id) {
-                  el.options.forEach((o) => {
-                    console.log('el.options <..', el.options);
-                    console.log('newRes[index].options --/', opt.options);
+            preSelectSteps.forEach((el) => {
+              if (el.step_id === opt.id) {
+                console.log(el);
+                console.log(opt);
 
-                    newRes[index] = {
-                      ...opt,
-                      options: opt.options.map((optionItem) => ({
+                el.options.forEach((o) => {
+                  newRes[index] = {
+                    ...opt,
+                    options: opt.options.map((optionItem) => {
+                      if (index === 0) {
+                        return {
+                          ...optionItem,
+                          quantity: o.id === optionItem.id ? 1 : 0,
+                          yours: optionItem.replicate ?? 0,
+                        };
+                      }
+
+                      return {
                         ...optionItem,
                         quantity:
                           optionItem.id === o.id && optionItem.pre_option === o.pre_option
                             ? o.quantity
                             : optionItem?.quantity ?? 0,
                         yours: optionItem.replicate ?? 0,
-                      })),
-                    };
-                  });
-                }
-              });
-            }
+                      };
+                    }),
+                  };
+                });
+              }
+            });
           });
         }
 
@@ -547,8 +550,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     // console.log('newPreSelectStep', newPreSelectStep);
     // console.log('stepData', stepData);
-    console.log('pickedOption', pickedOption);
-    // console.log('optionsSelected', optionsSelected);
+    // console.log('pickedOption', pickedOption);
+    console.log('optionsSelected', optionsSelected);
 
     /// set options seleted
     store.dispatch(setOptionsSelected(optionsSelected));
@@ -836,50 +839,58 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                               : handleOpenAutoStepModal(stepIndex)
                           }
                         >
-                          <td className="auto-step-info">
-                            <BodyText
-                              fontFamily="Roboto"
-                              level={5}
-                              style={{ width: 'fit-content', paddingRight: 12 }}
-                            >
-                              {step.order < 10 ? `0${step.order}` : step.order}
-                            </BodyText>
-                          </td>
-                          <td>
-                            <BodyText fontFamily="Roboto" level={5}>
-                              {step.name}
-                            </BodyText>
-                          </td>
-                          <td className="flex-start">
-                            <div className="flex-start">
-                              <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                          <td style={{ width: '100%' }}>
+                            <div className="flex-between flex-grow">
+                              <div className="flex-start flex-grow">
+                                <BodyText
+                                  fontFamily="Roboto"
+                                  level={5}
+                                  style={{
+                                    width: 'fit-content',
+                                    paddingRight: 12,
+                                    paddingLeft: 16,
+                                  }}
+                                >
+                                  {step.order < 10 ? `0${step.order}` : step.order}
+                                </BodyText>{' '}
+                                <BodyText fontFamily="Roboto" level={5}>
+                                  {step.name}
+                                </BodyText>
+                              </div>
+
+                              <div className="flex-start">
+                                <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                              </div>
                             </div>
                           </td>
                         </tr>
-                        {/* {isEditable
+                        {isEditable
                           ? null
                           : (step.options as OptionQuantityProps[]).map((option) =>
                               option.quantity > 0 ? (
-                                <tr key={option.id} className={styles.autoStepOption}>
-                                  <td></td>
+                                <tr key={option.id}>
                                   <td>
-                                    {trimEnd(
-                                      `${option.value_1} ${option.value_2} ${
-                                        option.unit_1 || option.unit_2
-                                          ? `- ${option.unit_1} ${option.unit_2}`
-                                          : ''
-                                      }`,
-                                    )}
+                                    <div className={styles.autoStepOption}>
+                                      <BodyText fontFamily="Roboto" level={5}>
+                                        {trimEnd(
+                                          `${option.value_1} ${option.value_2} ${
+                                            option.unit_1 || option.unit_2
+                                              ? `- ${option.unit_1} ${option.unit_2}`
+                                              : ''
+                                          }`,
+                                        )}
+                                      </BodyText>
+                                      {option.image ? (
+                                        <div className="flex-start">
+                                          <img src={showImageUrl(option.image)} />
+                                        </div>
+                                      ) : null}
+                                    </div>
                                   </td>
-                                  {option.image ? (
-                                    <td>
-                                      <img src={showImageUrl(option.image)} />
-                                    </td>
-                                  ) : null}
                                 </tr>
                               ) : null,
                             )}
-                        <tr className="border-bottom-light" style={{ height: 1, width: '100%' }} /> */}
+                        <tr className="border-bottom-light" style={{ height: 2, width: '100%' }} />
                       </React.Fragment>
                     );
                   })}

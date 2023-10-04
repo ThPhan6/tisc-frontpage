@@ -777,6 +777,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     const stepDataClone = cloneDeep(stepData);
     const optionsSelectedClone = cloneDeep(optionsSelected);
 
+    console.log('optionsSelectedClone', optionsSelectedClone);
+
     const allOptionSelected: {
       id?: string | undefined;
       order: number;
@@ -880,18 +882,24 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
 
     const stepPayload = allOptionSelected
       .filter((el) => el.options.length !== 0)
-      .map((el, index) => ({
+      .map((el) => ({
         step_id: el.id,
         options: el.options.map((opt) => ({
           id: opt.id,
           /* option selected in 1st step(origin) has default quantity is 1 */
-          quantity: index === 0 ? 1 : opt.quantity,
+          quantity: el.order === 1 ? 1 : opt.quantity,
+          pre_option: opt.pre_option,
         })),
       })) as AutoStepPreSelectOptionProps[];
 
     const newSpecfication: SpecificationBodyRequest = {
       is_refer_document: false,
-      attribute_groups: stepPayload,
+      attribute_groups: [
+        {
+          id: currentSpecAttributeGroupId as string,
+          configuration_steps: stepPayload,
+        },
+      ],
     };
 
     selectProductSpecification(productId, { specification: newSpecfication });

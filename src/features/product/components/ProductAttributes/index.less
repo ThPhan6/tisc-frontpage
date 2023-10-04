@@ -157,19 +157,36 @@
 }
 
 .autoStepTr {
-  min-height: 40px;
-
   :global(.auto-step-info) {
+    width: 42px;
+    height: 40px;
+    padding-left: 16px;
     overflow: hidden;
+  }
+
+  :global(.step-name) {
+    width: 84%;
+  }
+
+  svg {
+    margin-right: 16px;
   }
 }
 
 .autoStepOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   min-height: 52px;
-  padding: 0 16px;
+  padding: 0 8px 0 44px;
+
+  td {
+    height: 52px;
+  }
 
   img {
     height: 36px;
+    padding-left: 16px;
   }
 }
 
