@@ -59,8 +59,9 @@ interface PreSelectStepProps {
 }
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, attrGroupItem }) => {
-  const { preSelectAttributes, details } = useAppSelector((state) => state.product);
-  const { specification_attribute_groups: specificationAttributeGroups } = details;
+  const { specification_attribute_groups: specificationAttributeGroups } = useAppSelector(
+    (state) => state.product.details,
+  );
   const selectProductSpecification = useSelectProductSpecification();
 
   const productId = useGetParamId();
@@ -124,6 +125,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
     setNewLeftPanelData([]);
+    setFirstOptionSelected('');
   };
 
   const handleForceEnableCollapse = () => {
@@ -851,10 +853,14 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       const newStepData = optionData.options.map((el) => {
         const optFound = (
           optionsSelectedClone[Number(order)].options as OptionQuantityProps[]
-        ).find((opt) => opt.id === el.id && opt.pre_option === el.pre_option);
+        ).find((opt) =>
+          Number(order) === 1
+            ? opt.id === el.id
+            : opt.id === el.id && opt.pre_option === el.pre_option,
+        );
 
         if (optFound) {
-          return { ...el, quantity: optFound.quantity };
+          return { ...el, quantity: Number(order) === 1 ? 1 : optFound.quantity };
         }
 
         return el;
@@ -883,26 +889,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         })),
       })) as AutoStepPreSelectOptionProps[];
 
-    const configurationSteps = preSelectAttributes.attribute_groups.filter(
-      (el) => el.id !== currentSpecAttributeGroupId,
-    );
-
-    const newAttributeGroups = configurationSteps.concat({
-      id: currentSpecAttributeGroupId as string,
-      configuration_steps: stepPayload,
-    });
-
     const newSpecfication: SpecificationBodyRequest = {
-      is_refer_document: preSelectAttributes.is_refer_document,
-      attribute_groups: newAttributeGroups,
+      is_refer_document: false,
+      attribute_groups: stepPayload,
     };
 
-    // selectProductSpecification(productId, { specification: newSpecfication });
+    selectProductSpecification(productId, { specification: newSpecfication });
 
     setVisible(false);
   };
 
-  console.log('pickedOption', pickedOption);
+  // console.log('pickedOption', pickedOption);
   // console.log('preSelectStep', preSelectStep);
   // console.log('stepData', stepData);
   // console.log('optionsSelected', optionsSelected);

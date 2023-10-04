@@ -9,11 +9,11 @@ import type {
   SpecifiedDetail,
 } from '../types';
 import {
-  OrderMethod,
-  SelectedSpecAttributte,
-  SpecificationBodyRequest,
-  SpecificationPreSelectStep,
-} from '@/features/project/types';
+  AutoStepPreSelectLinkedOptionResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
+  AutoStepPreSelectOptionResponse,
+} from '../types/autoStep';
+import { OrderMethod } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
@@ -31,7 +31,6 @@ interface ProductState {
   curAttrGroupCollapseId?: {
     [key: string]: string;
   };
-  preSelectAttributes: SpecificationBodyRequest;
 }
 
 const initialState: ProductState = {
@@ -93,8 +92,6 @@ const initialState: ProductState = {
       pageCount: 1,
     },
   },
-  /// save all attribute pre-selected on brand
-  preSelectAttributes: { is_refer_document: false, attribute_groups: [] },
 };
 
 const productSlice = createSlice({
@@ -198,14 +195,6 @@ const productSlice = createSlice({
       state.curAttrGroupCollapseId = { ...state.curAttrGroupCollapseId, ...action.payload };
     },
 
-    getPreSelectAttributeSelected: (state, action: PayloadAction<SpecificationBodyRequest>) => {
-      const { is_refer_document, attribute_groups } = action.payload;
-
-      state.preSelectAttributes = {
-        is_refer_document: is_refer_document,
-        attribute_groups: attribute_groups,
-      };
-    },
     closeActiveSpecAttributeGroup: (state) => {
       state.curAttrGroupCollapseId = {
         ...state.curAttrGroupCollapseId,
@@ -235,7 +224,6 @@ export const {
   setFinishScheduleData,
   setCurAttrGroupCollapse,
   closeActiveSpecAttributeGroup,
-  getPreSelectAttributeSelected,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
@@ -245,13 +233,16 @@ const productSpecificationSelector = (state: RootState) =>
 
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
   let variants = '';
+
+  console.log('specGroup', specGroup);
+
   specGroup.forEach((el) => {
     if (!el.isChecked) {
       return;
     }
 
-    el.attributes.forEach((attr) => {
-      attr.basis_options?.some((opt) => {
+    el?.attributes?.forEach((attr) => {
+      attr.basis_options?.forEach((opt) => {
         if (opt.isChecked) {
           const dash = opt.option_code === '' ? '' : ' - ';
           variants += opt.option_code + dash;
@@ -260,6 +251,16 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
         return false;
       });
     });
+
+    (el?.steps as AutoStepPreSelectOnAttributeGroupResponse[])?.forEach((step) => {
+      step?.options?.forEach((option) => {
+        for (let q = 0; q < option.quantity; q++) {
+          const dash = option.product_id === '' ? '' : ' - ';
+          variants += option.product_id + dash;
+        }
+      });
+    });
   });
+
   return variants.length > 2 ? variants.slice(0, -2) : variants;
 });

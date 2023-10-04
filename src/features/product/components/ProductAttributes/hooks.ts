@@ -7,7 +7,6 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import {
-  getPreSelectAttributeSelected,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
@@ -16,11 +15,7 @@ import {
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
-import {
-  SelectedSpecAttributte,
-  SpecificationAttributeGroup,
-  SpecificationBodyRequest,
-} from '@/features/project/types';
+import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import { getNewDataAfterReordering } from '@/components/Drag';
@@ -170,17 +165,6 @@ export const useProductAttributeForm = (
                 distributor_location_id: res.distributor_location_id,
               }),
             );
-
-            const attributePreSelected = getSpecificationRequest(newSpecficationAttributeGroups);
-
-            const isReferDocument = attributePreSelected.some((el) => el.isChecked);
-
-            const newAttributePreSelected: SpecificationBodyRequest = {
-              is_refer_document: !isReferDocument,
-              attribute_groups: attributePreSelected,
-            };
-
-            dispatch(getPreSelectAttributeSelected(newAttributePreSelected));
           }
         });
       }
@@ -409,11 +393,6 @@ export const useProductAttributeForm = (
       selectProductSpecification(id, {
         specification: newSpecficationRequest,
       });
-
-      console.log('newSpecficationRequest', newSpecficationRequest);
-
-      /// save pre-select attributes data
-      dispatch(getPreSelectAttributeSelected(newSpecficationRequest));
     }
 
     dispatch(

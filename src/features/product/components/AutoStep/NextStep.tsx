@@ -260,103 +260,107 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     const newSlideBarStep = newSlide + 1;
     if (isUndefined(slideBars[newSlideBarStep])) {
       store.dispatch(setSlideBar([...slideBars, '']));
-    }
-    /* -------------------------------- */
 
-    /// next picked data is collected by prev linked data and its option selected
-    const newPickedData: LinkedOptionProps[] = [];
+      /* -------------------------------- */
 
-    /// prev linked data and all its options selected
-    const prevPickedGroupOption = getPickedOptionGroup(optionsSelected[curOrder].options);
+      /// next picked data is collected by prev linked data and its option selected
+      const newPickedData: LinkedOptionProps[] = [];
 
-    /* all options selected in multiple groups */
-    prevPickedGroupOption.forEach((el) => {
-      const subItemSelected: OptionReplicateResponse[] = [];
-      let subOptionId = '';
-      let subOptionName = '';
+      /// prev linked data and all its options selected
+      const prevPickedGroupOption = getPickedOptionGroup(optionsSelected[curOrder].options);
 
-      el.subs.forEach((sub) => {
-        /// collected the same sub options into one group option
-        if (curAllLinkedIdSelect.includes(sub.id)) {
-          subItemSelected.push(sub);
+      /* all options selected in multiple groups */
+      prevPickedGroupOption.forEach((el) => {
+        const subItemSelected: OptionReplicateResponse[] = [];
+        let subOptionId = '';
+        let subOptionName = '';
+
+        el.subs.forEach((sub) => {
+          /// collected the same sub options into one group option
+          if (curAllLinkedIdSelect.includes(sub.id)) {
+            subItemSelected.push(sub);
+          }
+
+          if (subItemSelected.length) {
+            subOptionId = el.id;
+            subOptionName = el.name;
+          }
+        });
+
+        if (!subOptionId || !subItemSelected.length) {
+          return;
         }
 
-        if (subItemSelected.length) {
-          subOptionId = el.id;
-          subOptionName = el.name;
-        }
+        newPickedData.push({ id: subOptionId, name: subOptionName, subs: subItemSelected });
       });
 
-      if (!subOptionId || !subItemSelected.length) {
-        return;
+      const currentPickedOption = pickedOption[newSlide];
+
+      const newLinkedOptionData = [...linkedOptionData];
+
+      const isGetLinkedOption =
+        /// have linked id
+        !!curAllLinkedIdSelect.length &&
+        /// have picked data
+        !!newLinkedOptionData[newSlide]?.pickedData?.length &&
+        /// dont have linked data
+        !newLinkedOptionData[newSlide]?.linkedData?.length;
+
+      let newLinkedData: AutoStepLinkedOptionResponse[] = [];
+
+      /// call rest option when update
+      if (isGetLinkedOption && currentPickedOption?.id) {
+        const orders = Object.keys(optionsSelected).map((el) => Number(el));
+
+        let prevAllLinkedIdSelect: string[] = [];
+
+        orders.forEach((order) => {
+          if (order <= curOrder) {
+            const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
+
+            prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
+          }
+        });
+
+        const newExceptOptionIds = prevAllLinkedIdSelect.join(',');
+
+        const newLinkedOptions =
+          newSlide > 0 && !newExceptOptionIds
+            ? []
+            : await getLinkedOptionByOptionIds(currentPickedOption.id, newExceptOptionIds);
+
+        /// set options selected to data
+        newLinkedData = newLinkedOptions.map((el) => ({
+          ...el,
+          subs: el.subs.map((item) => ({
+            ...item,
+            subs: item.subs.map((sub) => {
+              let newSub: OptionReplicateResponse | undefined = undefined;
+
+              if (optionsSelected?.[curOrder + 1]?.options.length) {
+                newSub = {
+                  ...sub,
+                  pre_option: optionsSelected[curOrder + 1].options[0].pre_option,
+                };
+              }
+
+              return newSub ?? sub;
+            }),
+          })),
+        }));
       }
 
-      newPickedData.push({ id: subOptionId, name: subOptionName, subs: subItemSelected });
-    });
+      /// update linked option data
+      newLinkedOptionData[newSlide] = {
+        pickedData: newPickedData,
+        linkedData:
+          !isGetLinkedOption && !newLinkedData.length
+            ? linkedOptionData[newSlide]?.linkedData ?? []
+            : newLinkedData ?? [],
+      };
 
-    const currentPickedOption = pickedOption[newSlide];
-
-    const newLinkedOptionData = [...linkedOptionData];
-
-    const isGetLinkedOption =
-      /// have linked id
-      !!curAllLinkedIdSelect.length &&
-      /// have picked data
-      !!newLinkedOptionData[newSlide]?.pickedData?.length &&
-      /// dont have linked data
-      !newLinkedOptionData[newSlide]?.linkedData?.length;
-
-    let newLinkedData: AutoStepLinkedOptionResponse[] = [];
-
-    /// call rest option when update
-    if (isGetLinkedOption && currentPickedOption?.id) {
-      const orders = Object.keys(optionsSelected).map((el) => Number(el));
-
-      let prevAllLinkedIdSelect: string[] = [];
-
-      orders.forEach((order) => {
-        if (order <= curOrder) {
-          const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
-
-          prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
-        }
-      });
-
-      const newExceptOptionIds = prevAllLinkedIdSelect.join(',');
-
-      const newLinkedOptions =
-        newSlide > 0 && !newExceptOptionIds
-          ? []
-          : await getLinkedOptionByOptionIds(currentPickedOption.id, newExceptOptionIds);
-
-      /// set options selected to data
-      newLinkedData = newLinkedOptions.map((el) => ({
-        ...el,
-        subs: el.subs.map((item) => ({
-          ...item,
-          subs: item.subs.map((sub) => {
-            let newSub: OptionReplicateResponse | undefined = undefined;
-
-            if (optionsSelected?.[curOrder + 1]?.options.length) {
-              newSub = { ...sub, pre_option: optionsSelected[curOrder + 1].options[0].pre_option };
-            }
-
-            return newSub ?? sub;
-          }),
-        })),
-      }));
+      store.dispatch(setLinkedOptionData(newLinkedOptionData));
     }
-
-    /// update linked option data
-    newLinkedOptionData[newSlide] = {
-      pickedData: newPickedData,
-      linkedData:
-        !isGetLinkedOption && !newLinkedData.length
-          ? linkedOptionData[newSlide]?.linkedData ?? []
-          : newLinkedData ?? [],
-    };
-
-    store.dispatch(setLinkedOptionData(newLinkedOptionData));
   };
 
   const handleRemoveStep = async (index: number) => {
@@ -637,33 +641,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       }
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
-        const newLinkedOptionData = [...linkedOptionData];
-
-        const newPickedOption = { ...pickedOption };
-
-        linkedOptionData.forEach((_, index) => {
-          if (index <= slide) {
-            return;
-          }
-
-          newLinkedOptionData[index] = {
-            linkedData: [],
-            pickedData: [],
-          };
-
-          newPickedOption[index] = {
-            id: '',
-            pre_option: '',
-          };
-        });
-
-        // remove data view of next step
-        store.dispatch(setLinkedOptionData(newLinkedOptionData));
-
-        // remove option highlighted of next step
-        store.dispatch(setPickedOption(newPickedOption));
-
-        let newPrevOptionsSelectedIds = result.map((el) => {
+        const prevOptionsSelectedIds = result.map((el) => {
           if (el.pre_option) {
             return `${el.id},${el.pre_option}`;
           }
@@ -671,34 +649,65 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           return el.id;
         });
 
-        // remove data selected options
-        map(optionsSelected, (optionData: any, optIndex: number) => {
-          if (optIndex <= curOrder) {
-            return false;
-          }
+        // get list option selected of next step
+        if (optionsSelected[curOrder + 1]) {
+          const newLinkedOptionData = [...linkedOptionData];
 
-          const newNextOptionSelected = optionData.options.filter((el: any) =>
-            newPrevOptionsSelectedIds.includes(el.pre_option as string),
-          );
+          const newPickedOption = { ...pickedOption };
 
-          //
-          newPrevOptionsSelectedIds = newNextOptionSelected.map((el: any) => {
-            if (el.pre_option) {
-              return `${el.id},${el.pre_option}`;
+          linkedOptionData.forEach((_, index) => {
+            if (index <= slide) {
+              return;
             }
 
-            return el.id;
+            newLinkedOptionData[index] = {
+              linkedData: [],
+              pickedData: [],
+            };
+
+            newPickedOption[index] = {
+              id: '',
+              pre_option: '',
+            };
           });
 
-          store.dispatch(
-            setOptionsSelected({
-              order: optIndex,
-              options: newNextOptionSelected,
-            }),
-          );
+          // remove data view of next step
+          store.dispatch(setLinkedOptionData(newLinkedOptionData));
 
-          return true;
-        });
+          // remove option highlighted of next step
+          store.dispatch(setPickedOption(newPickedOption));
+
+          let newPrevOptionsSelectedIds = [...prevOptionsSelectedIds];
+
+          // remove data selected options
+          map(optionsSelected, (optionData: any, optIndex: number) => {
+            if (optIndex <= curOrder) {
+              return false;
+            }
+
+            const newNextOptionSelected = optionData.options.filter((el: any) =>
+              newPrevOptionsSelectedIds.includes(el.pre_option as string),
+            );
+
+            //
+            newPrevOptionsSelectedIds = newNextOptionSelected.map((el: any) => {
+              if (el.pre_option) {
+                return `${el.id},${el.pre_option}`;
+              }
+
+              return el.id;
+            });
+
+            store.dispatch(
+              setOptionsSelected({
+                order: optIndex,
+                options: newNextOptionSelected,
+              }),
+            );
+
+            return true;
+          });
+        }
       }
     };
 
