@@ -30,14 +30,13 @@ import {
   setPreSelectStep,
   setSlide,
 } from '../../reducers';
-import { ProductAttributeFormInput } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,
   AutoStepPreSelectOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { SpecificationBodyRequest } from '@/features/project/types';
+import { SpecificationBodyRequest, SpecificationPreSelectStep } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -58,9 +57,8 @@ interface PreSelectStepProps {
 }
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) => {
-  const { specification_attribute_groups: specificationAttributeGroups } = useAppSelector(
-    (state) => state.product.details,
-  );
+  const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
+  const { specification_attribute_groups: specificationAttributeGroups } = details;
   const selectProductSpecification = useSelectProductSpecification();
 
   const productId = useGetParamId();
@@ -853,26 +851,30 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       }),
     );
 
-    const stepPayload = allOptionSelected
+    const stepPayload: SpecificationPreSelectStep[] = allOptionSelected
       .filter((el) => el.options.length !== 0)
       .map((el) => ({
-        step_id: el.id,
+        step_id: el.id as string,
         options: el.options.map((opt) => ({
           id: opt.id,
           /* option selected in 1st step(origin) has default quantity is 1 */
           quantity: el.order === 1 ? 1 : opt.quantity,
           pre_option: opt.pre_option,
         })),
-      })) as AutoStepPreSelectOptionProps[];
+      }));
+
+    const newAllPreSelectAttributes = allPreSelectAttributes.filter(
+      (el) => el.id !== currentSpecAttributeGroupId,
+    );
+
+    const newAttributeGroups = newAllPreSelectAttributes.concat({
+      id: currentSpecAttributeGroupId as string,
+      configuration_steps: stepPayload,
+    });
 
     const newSpecfication: SpecificationBodyRequest = {
       is_refer_document: false,
-      attribute_groups: [
-        {
-          id: currentSpecAttributeGroupId as string,
-          configuration_steps: stepPayload,
-        },
-      ],
+      attribute_groups: newAttributeGroups,
     };
 
     /// update pre-select steps

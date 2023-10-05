@@ -8,12 +8,8 @@ import type {
   SortParams,
   SpecifiedDetail,
 } from '../types';
-import {
-  AutoStepPreSelectLinkedOptionResponse,
-  AutoStepPreSelectOnAttributeGroupResponse,
-  AutoStepPreSelectOptionResponse,
-} from '../types/autoStep';
-import { OrderMethod } from '@/features/project/types';
+import { AutoStepPreSelectOnAttributeGroupResponse } from '../types/autoStep';
+import { OrderMethod, SpecificationAttributeGroup } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
@@ -31,9 +27,11 @@ interface ProductState {
   curAttrGroupCollapseId?: {
     [key: string]: string;
   };
+  allPreSelectAttributes: SpecificationAttributeGroup[];
 }
 
 const initialState: ProductState = {
+  allPreSelectAttributes: [],
   details: {
     id: '',
     name: '',
@@ -195,6 +193,10 @@ const productSlice = createSlice({
       state.curAttrGroupCollapseId = { ...state.curAttrGroupCollapseId, ...action.payload };
     },
 
+    getAllPreSelectAttributes: (state, action: PayloadAction<SpecificationAttributeGroup[]>) => {
+      state.allPreSelectAttributes = action.payload;
+    },
+
     closeActiveSpecAttributeGroup: (state) => {
       state.curAttrGroupCollapseId = {
         ...state.curAttrGroupCollapseId,
@@ -224,6 +226,7 @@ export const {
   setFinishScheduleData,
   setCurAttrGroupCollapse,
   closeActiveSpecAttributeGroup,
+  getAllPreSelectAttributes,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

@@ -1,3 +1,4 @@
+import { SpecificationType } from '@/features/product/types';
 import { OptionQuantityResponse } from '@/features/product/types/autoStep';
 
 export interface SelectedSpecAttributte {
@@ -15,6 +16,7 @@ export interface SpecificationAttributeGroup {
   attributes?: SelectedSpecAttributte[];
   configuration_steps?: SpecificationPreSelectStep[];
   isChecked?: boolean;
+  type?: SpecificationType;
 }
 export interface SpecificationBodyRequest {
   is_refer_document: boolean;

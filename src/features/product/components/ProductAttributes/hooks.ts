@@ -7,6 +7,7 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import {
+  getAllPreSelectAttributes,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
@@ -114,6 +115,9 @@ export const useProductAttributeForm = (
     id,
     specifiedDetail,
   } = useAppSelector((state) => state.product.details);
+
+  const allPreSelectAttributes = useAppSelector((state) => state.product.allPreSelectAttributes);
+
   const referToDesignDocument = specifiedDetail?.specification?.is_refer_document;
 
   const loaded = useBoolean();
@@ -166,6 +170,14 @@ export const useProductAttributeForm = (
                 distributor_location_id: res.distributor_location_id,
               }),
             );
+
+            const newAllPreSelectAttributes = getSpecificationRequest(
+              newSpecficationAttributeGroups.filter(
+                (el) => el.type === SpecificationType.attribute,
+              ),
+            );
+
+            dispatch(getAllPreSelectAttributes(newAllPreSelectAttributes));
           }
         });
       }
@@ -384,16 +396,22 @@ export const useProductAttributeForm = (
       return;
     }
 
+    const newSpecificationOptionAttributeGroups = newState.filter(
+      (el) => el.type === SpecificationType.attribute,
+    );
+
     if (!props?.isSpecifiedModal) {
       const newSpecficationRequest = {
         is_refer_document: !haveCheckedAttributeGroup || false,
-        attribute_groups: getSpecificationRequest(newState),
+        attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
       };
 
       /// update pre-select attributes
       selectProductSpecification(id, {
         specification: newSpecficationRequest,
       });
+
+      dispatch(getAllPreSelectAttributes(newSpecficationRequest.attribute_groups));
     }
 
     dispatch(
@@ -432,10 +450,19 @@ export const useProductAttributeForm = (
       const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
       if (updatedOnchange && !props?.isSpecifiedModal) {
+        const newAllPreSelectAttributes = allPreSelectAttributes.filter(
+          (el) => el.id !== newState[groupIndex].id,
+        );
+
+        const newAttributeGroups = newAllPreSelectAttributes.concat({
+          id: newState[groupIndex].id as string,
+          configuration_steps: [],
+        });
+
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,
-            attribute_groups: [{ id: newState[groupIndex].id, configuration_steps: [] }],
+            attribute_groups: newAttributeGroups,
           },
           brand_location_id: '',
           distributor_location_id: '',
@@ -454,10 +481,14 @@ export const useProductAttributeForm = (
       const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
       if (updatedOnchange && !props?.isSpecifiedModal) {
+        const newSpecificationOptionAttributeGroups = newState.filter(
+          (el) => el.type === SpecificationType.attribute,
+        );
+
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,
-            attribute_groups: getSpecificationRequest(newState),
+            attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
           },
           brand_location_id: '',
           distributor_location_id: '',

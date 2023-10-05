@@ -98,7 +98,7 @@ export interface AutoStepPreSelectLinkedOptionResponse {
 
 export interface OptionQuantityResponse {
   id: string;
-  pre_option: string;
+  pre_option?: string;
   quantity: number;
 }
 
