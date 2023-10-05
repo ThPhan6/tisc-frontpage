@@ -132,11 +132,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
-  const dontShowTISCAutoSteps =
-    isPublicPage ||
-    !isEditable ||
-    !currentSpecAttributeGroupId ||
-    currentSpecAttributeGroupId !== attrGroupItem.id;
+  const showTISCAutoSteps = !isPublicPage && isEditable;
 
   const inactiveAutoSteps =
     !currentSpecAttributeGroupId ||
@@ -819,77 +815,82 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             )}
 
             {attributeGroupKey === 'specification_attribute_groups' ? (
-              <table className={styles.table}>
-                <tbody>
-                  {autoSteps?.map((step, stepIndex) => {
-                    return (
-                      <React.Fragment key={step.id ?? stepIndex}>
-                        <tr
-                          key={stepIndex}
-                          className={`cursor-pointer ${styles.autoStepTr}`}
-                          onClick={
-                            dontShowTISCAutoSteps
-                              ? handleOpenPreSelectAutoStepModal(stepIndex)
-                              : handleOpenAutoStepModal(stepIndex)
-                          }
-                        >
-                          <td style={{ width: '100%' }}>
-                            <div className="flex-between flex-grow">
-                              <div className="flex-start flex-grow">
-                                <BodyText
-                                  fontFamily="Roboto"
-                                  level={5}
-                                  style={{
-                                    width: 'fit-content',
-                                    paddingRight: 12,
-                                    paddingLeft: 16,
-                                  }}
-                                >
-                                  {step.order < 10 ? `0${step.order}` : step.order}
-                                </BodyText>{' '}
-                                <BodyText fontFamily="Roboto" level={5}>
-                                  {step.name}
-                                </BodyText>
-                              </div>
+              autoSteps.length ? (
+                <table className={styles.table}>
+                  <tbody>
+                    {autoSteps?.map((step, stepIndex) => {
+                      return (
+                        <React.Fragment key={step.id ?? stepIndex}>
+                          <tr
+                            key={stepIndex}
+                            className={`cursor-pointer ${styles.autoStepTr}`}
+                            onClick={
+                              showTISCAutoSteps
+                                ? handleOpenAutoStepModal(stepIndex)
+                                : handleOpenPreSelectAutoStepModal(stepIndex)
+                            }
+                          >
+                            <td style={{ width: '100%' }}>
+                              <div className="flex-between flex-grow">
+                                <div className="flex-start flex-grow">
+                                  <BodyText
+                                    fontFamily="Roboto"
+                                    level={5}
+                                    style={{
+                                      width: 'fit-content',
+                                      paddingRight: 12,
+                                      paddingLeft: 16,
+                                    }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order}
+                                  </BodyText>{' '}
+                                  <BodyText fontFamily="Roboto" level={5}>
+                                    {step.name}
+                                  </BodyText>
+                                </div>
 
-                              <div className="flex-start">
-                                <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                                <div className="flex-start">
+                                  <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        {isEditable
-                          ? null
-                          : (step.options as OptionQuantityProps[]).map((option) =>
-                              option.quantity > 0 ? (
-                                <tr key={option.id}>
-                                  <td>
-                                    <div className={styles.autoStepOption}>
-                                      <BodyText fontFamily="Roboto" level={5}>
-                                        {trimEnd(
-                                          `${option.value_1} ${option.value_2} ${
-                                            option.unit_1 || option.unit_2
-                                              ? `- ${option.unit_1} ${option.unit_2}`
-                                              : ''
-                                          }`,
-                                        )}
-                                      </BodyText>
-                                      {option.image ? (
-                                        <div className="flex-start">
-                                          <img src={showImageUrl(option.image)} />
-                                        </div>
-                                      ) : null}
-                                    </div>
-                                  </td>
-                                </tr>
-                              ) : null,
-                            )}
-                        <tr className="border-bottom-light" style={{ height: 2, width: '100%' }} />
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                            </td>
+                          </tr>
+                          {isEditable
+                            ? null
+                            : (step.options as OptionQuantityProps[]).map((option) =>
+                                option.quantity > 0 ? (
+                                  <tr key={option.id}>
+                                    <td>
+                                      <div className={styles.autoStepOption}>
+                                        <BodyText fontFamily="Roboto" level={5}>
+                                          {trimEnd(
+                                            `${option.value_1} ${option.value_2} ${
+                                              option.unit_1 || option.unit_2
+                                                ? `- ${option.unit_1} ${option.unit_2}`
+                                                : ''
+                                            }`,
+                                          )}
+                                        </BodyText>
+                                        {option.image ? (
+                                          <div className="flex-start">
+                                            <img src={showImageUrl(option.image)} />
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ) : null,
+                              )}
+                          <tr
+                            className="border-bottom-light"
+                            style={{ height: 2, width: '100%' }}
+                          />
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : null
             ) : null}
 
             <div
@@ -918,19 +919,15 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       </div>
 
       {attributeGroupKey === 'specification_attribute_groups' ? (
-        dontShowTISCAutoSteps ? (
-          <PreSelectStep
-            attrGroupItem={attrGroupItem}
-            visible={autoStepModal}
-            setVisible={setAutoStepModal}
-          />
-        ) : (
+        showTISCAutoSteps ? (
           <AutoStep
             attributeGroup={attributeGroup}
             attributes={attributes ?? []}
             visible={autoStepModal}
             setVisible={setAutoStepModal}
           />
+        ) : (
+          <PreSelectStep visible={autoStepModal} setVisible={setAutoStepModal} />
         )
       ) : null}
     </div>

@@ -55,10 +55,9 @@ import { getIDFromPreOption, getPickedOptionGroup } from './util';
 interface PreSelectStepProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  attrGroupItem: ProductAttributeFormInput;
 }
 
-export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, attrGroupItem }) => {
+export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) => {
   const { specification_attribute_groups: specificationAttributeGroups } = useAppSelector(
     (state) => state.product.details,
   );
