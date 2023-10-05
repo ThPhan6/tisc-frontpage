@@ -232,9 +232,17 @@ export const updateProductCard = async (productId: string, data: ProductFormData
       const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
       const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
-      const autoStepData = currentSpecAttributeGroupId
-        ? await getAutoStepData(productId, currentSpecAttributeGroupId)
-        : [];
+      const isGroupStep = data.specification_attribute_groups.some(
+        (group) => group.id === currentSpecAttributeGroupId && group.steps?.length,
+      );
+
+      let autoStepData: AutoStepOnAttributeGroupResponse[] = [];
+
+      if (isGroupStep) {
+        autoStepData = currentSpecAttributeGroupId
+          ? await getAutoStepData(productId, currentSpecAttributeGroupId)
+          : [];
+      }
 
       const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
         autoStepData?.length ? { ...el, steps: autoStepData } : el,

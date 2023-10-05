@@ -24,3 +24,19 @@ export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
 
   return b;
 };
+
+export const getIDFromPreOption = (preOption: string | undefined) => {
+  let optionId = '';
+  let preOptionId = '';
+
+  if (!preOption) {
+    return { optionId, preOptionId };
+  }
+
+  const curPreOptionIds = preOption?.split(',');
+
+  optionId = curPreOptionIds?.[curPreOptionIds.length - 1];
+  preOptionId = curPreOptionIds?.slice(0, curPreOptionIds.length - 1).join(',');
+
+  return { optionId, preOptionId };
+};

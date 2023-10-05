@@ -9,7 +9,7 @@ import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { capitalize, merge, sortBy, trimEnd, uniq, xorWith } from 'lodash';
+import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -40,7 +40,6 @@ import {
   AutoStepPreSelectOptionResponse,
   LinkedOptionProps,
   OptionQuantityProps,
-  OptionQuantityResponse,
 } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
@@ -54,7 +53,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AutoStep } from '../AutoStep/AutoStep';
 import { PreSelectStep } from '../AutoStep/PreSelectStep';
-import { getPickedOptionGroup } from '../AutoStep/util';
+import { getIDFromPreOption, getPickedOptionGroup } from '../AutoStep/util';
 import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { ProductAttributeSubItem, getConversionText } from './ProductAttributeSubItem';
@@ -204,21 +203,16 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           currentSpecAttributeGroupId,
         );
 
-        console.log('preSelectSteps ===>>>>>', preSelectSteps);
-
         const newRes = [...res];
 
         if (preSelectSteps.length) {
-          [...res].forEach((opt, index) => {
+          res.forEach((opt, index) => {
             if (!opt.options.length) {
               return;
             }
 
             preSelectSteps.forEach((el) => {
               if (el.step_id === opt.id) {
-                console.log(el);
-                console.log(opt);
-
                 el.options.forEach((o) => {
                   newRes[index] = {
                     ...opt,
@@ -236,7 +230,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                         quantity:
                           optionItem.id === o.id && optionItem.pre_option === o.pre_option
                             ? o.quantity
-                            : optionItem?.quantity ?? 0,
+                            : 0,
                         yours: optionItem.replicate ?? 0,
                       };
                     }),
@@ -247,13 +241,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           });
         }
 
-        console.log('newRes', newRes);
-
         /// save steps to specification attribute group
         store.dispatch(
           setPartialProductDetail({
             specification_attribute_groups: [...specification_attribute_groups].map((el) =>
-              el.id === currentSpecAttributeGroupId ? { ...el, steps: newRes } : el,
+              el.id === currentSpecAttributeGroupId
+                ? { ...el, steps: newRes, isChecked: !!preSelectSteps.length }
+                : el,
             ),
           }),
         );
@@ -382,14 +376,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       const nextStep = autoSteps[index + 1];
 
       /// get first option highlighted
-      const pickedPreOption = nextStep.options[0].pre_option?.split(',');
-      const pickedId = pickedPreOption?.[0] as string;
-      const preOption = pickedPreOption?.slice(1, pickedPreOption.length).join(',') as string;
+      const { optionId: pickedId, preOptionId } = getIDFromPreOption(
+        nextStep.options[0].pre_option,
+      );
 
       // save highlight left panel
       pickedOption[index] = {
         id: pickedId,
-        pre_option: preOption,
+        pre_option: preOptionId,
       };
 
       // handle get the ID of previous active option on left panel
@@ -482,7 +476,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         options: el.options.map((opt) => ({ ...opt, quantity: 0, yours: 0 })),
       };
 
-      /* set option selected (except 1st option) */
+      /* set option selected */
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
@@ -495,14 +489,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       if (el.order >= 2 && optHasQuantity) {
         /// set option highlighted is the first option found has quantity
-        const pickedPreOption = optHasQuantity.pre_option?.split(',');
-        const pickedId = pickedPreOption?.[0] as string;
-        const preOption = pickedPreOption?.slice(1, pickedPreOption.length).join(',') as string;
+        const { optionId: pickedId, preOptionId } = getIDFromPreOption(optHasQuantity.pre_option);
 
         const leftOption = newSteps[index - 1].options.find((opt) =>
           el.order === 2
             ? opt.id === pickedId
-            : opt.id === pickedId && opt.pre_option === preOption,
+            : opt.id === pickedId && opt.pre_option === preOptionId,
         );
 
         if (leftOption) {
@@ -515,11 +507,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           };
 
           // set 1st option selected
-          optionsSelected[1] = {
-            id: el.id,
-            order: 1,
-            options: [leftOption],
-          };
+          if (el.order === 2) {
+            optionsSelected[1] = {
+              id: el.id,
+              order: 1,
+              options: [leftOption],
+            };
+          }
         }
       }
       /* ------------------------------------- */
@@ -535,9 +529,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           options: el.options.every((opt) => opt.quantity === 0)
             ? []
             : el.options.filter((opt) => {
-                const preOptions = opt.pre_option?.split(',');
-                const optionId = preOptions?.[0];
-                const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+                const { optionId, preOptionId } = getIDFromPreOption(opt.pre_option);
 
                 return el.order > 2
                   ? curPicked.id === optionId && curPicked.pre_option === preOptionId
@@ -551,7 +543,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     // console.log('newPreSelectStep', newPreSelectStep);
     // console.log('stepData', stepData);
     // console.log('pickedOption', pickedOption);
-    console.log('optionsSelected', optionsSelected);
+    // console.log('optionsSelected', optionsSelected);
 
     /// set options seleted
     store.dispatch(setOptionsSelected(optionsSelected));
@@ -624,8 +616,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               <CustomCheckbox
                 options={[{ label: '', value: grIndex }]}
                 selected={
-                  attributeGroup.some((gr) => gr.isChecked && gr.id === group.id) &&
-                  isAttributeGroupSelected
+                  // attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
+                  group.isChecked && isAttributeGroupSelected
                     ? [{ label: group.name, value: grIndex }]
                     : []
                 }
@@ -636,6 +628,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
                   }
                 }}
+                // disabled={attributeGroup.some((gr) => !gr.isChecked && gr.id === group.id)}
+                disabled={!group.isChecked}
                 checkboxClass={styles.customLabel}
               />
               <RobotoBodyText level={6}>{group.name}</RobotoBodyText>

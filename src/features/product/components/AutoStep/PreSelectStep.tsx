@@ -50,7 +50,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './PreSelectStep.less';
 import { SlideBar } from './SlideBar';
-import { getPickedOptionGroup } from './util';
+import { getIDFromPreOption, getPickedOptionGroup } from './util';
 
 interface PreSelectStepProps {
   visible: boolean;
@@ -100,9 +100,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   const currentSubPickedOptionSelected: CheckboxValue[] = subOptionLeft
     .filter((opt) =>
       currentOptionSelected.some((sub) => {
-        const preOption = sub.pre_option?.split(',');
-        const optionId = preOption?.[0] as string;
-        const preOptionId = preOption?.slice(1, preOption.length).join(',');
+        const { optionId, preOptionId } = getIDFromPreOption(sub.pre_option);
 
         return preOptionId
           ? opt.pre_option === preOptionId && opt.id === optionId && sub.quantity > 0
@@ -205,9 +203,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       const allSubSelected: OptionQuantityProps[] = [];
 
       (optionsSelected[newOrder].options as OptionQuantityProps[]).forEach((el) => {
-        const preOptions = el.pre_option?.split(',');
-        const optionId = preOptions?.[0];
-        const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+        const { optionId, preOptionId } = getIDFromPreOption(opt.pre_option);
 
         if (
           prevSlide === 0
@@ -237,12 +233,12 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     }
     /* --------------------------------------------------------------------- */
 
-    handleForceEnableCollapse();
-
     if (!currentOptionSelected.length) {
       message.error('Please select options');
       return;
     }
+
+    handleForceEnableCollapse();
 
     /* add new slide */
     store.dispatch(setSlide(newSlide));
@@ -287,9 +283,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       const curRequired = curPicked.replicate;
 
       const currentOptionChosen = currentOptionSelected.filter((el) => {
-        const preOptions = el.pre_option?.split(',');
-        const optionId = preOptions?.[0];
-        const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+        const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
         return slide !== 0
           ? optionId === curPicked.id && preOptionId === curPicked.pre_option
@@ -315,9 +309,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
 
     /// set data view on the right panel
     const newRightPanelData = stepDataClone[curOrder].options.filter((sub) => {
-      const preOption = sub.pre_option?.split(',');
-      const optionId = preOption?.[0] as string;
-      const preOptionId = preOption?.slice(1, preOption.length).join(',');
+      const { optionId, preOptionId } = getIDFromPreOption(sub.pre_option);
 
       return preOptionId
         ? optionId === curOptionSelected.id && preOptionId === curOptionSelected.pre_option
@@ -469,9 +461,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         const newSumYours = sum(
           newOptions
             .filter((el) => {
-              const preOptions = el.pre_option?.split(',');
-              const optionId = preOptions?.[0];
-              const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+              const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
               return preOptionId
                 ? optionId === curPicked.id && preOptionId === curPicked.pre_option
@@ -485,9 +475,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
           setPreSelectStep({
             order: curOrder - 1,
             options: preSelectStep[curOrder - 1].options.map((el) => {
-              const preOptions = option.pre_option?.split(',');
-              const optionId = preOptions?.[0];
-              const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
 
               if (
                 slide === 0
@@ -523,9 +511,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       const oldSumYours = sum(
         currentOptionSelectedClone
           .filter((el) => {
-            const preOptions = el.pre_option?.split(',');
-            const optionId = preOptions?.[0];
-            const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+            const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
             return preOptionId
               ? optionId === curPicked.id && preOptionId === curPicked.pre_option
@@ -615,9 +601,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       const newSumYours = sum(
         newCurrentOptionSelected
           .filter((el) => {
-            const preOptions = el.pre_option?.split(',');
-            const optionId = preOptions?.[0];
-            const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+            const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
             return preOptionId
               ? optionId === curPicked.id && preOptionId === curPicked.pre_option
@@ -631,9 +615,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         setPreSelectStep({
           order: curOrder - 1,
           options: preSelectStep[curOrder - 1].options.map((el) => {
-            const preOptions = option.pre_option?.split(',');
-            const optionId = preOptions?.[0];
-            const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+            const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
 
             if (
               slide === 0
@@ -711,8 +693,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
         );
       }
 
-      console.log('newCurrentOptionSelected', newCurrentOptionSelected);
-
       store.dispatch(
         setOptionsSelected({
           id: stepDataClone[curOrder].id,
@@ -740,9 +720,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       const newSumYours = sum(
         newCurrentOptionSelected
           .filter((el) => {
-            const preOptions = el.pre_option?.split(',');
-            const optionId = preOptions?.[0];
-            const preOptionId = preOptions?.slice(1, preOptions.length).join(',');
+            const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
             return preOptionId
               ? optionId === curPicked.id && preOptionId === curPicked.pre_option
@@ -777,10 +755,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     const stepDataClone = cloneDeep(stepData);
     const optionsSelectedClone = cloneDeep(optionsSelected);
 
-    console.log('optionsSelectedClone', optionsSelectedClone);
-
     const allOptionSelected: {
-      id?: string | undefined;
+      id: string | undefined;
       order: number;
       options: OptionQuantityProps[];
     }[] = Object.values(optionsSelectedClone);
@@ -817,9 +793,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
           return;
         }
 
-        const preOptions = key.split(',');
-        const optionId = preOptions[0];
-        const preOptionId = preOptions.slice(1, preOptions.length).join(',');
+        const { optionId, preOptionId } = getIDFromPreOption(key);
 
         const curQuantity = sum(
           flatMap(Object.values(curOptions[key])).map((el: any) => el.quantity),
@@ -875,7 +849,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
     store.dispatch(
       setPartialProductDetail({
         specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
-          el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps } : el,
+          el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps, isChecked: true } : el,
         ),
       }),
     );
@@ -902,8 +876,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
       ],
     };
 
+    /// update pre-select steps
     selectProductSpecification(productId, { specification: newSpecfication });
 
+    /// close modal
     setVisible(false);
   };
 
@@ -911,6 +887,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, att
   // console.log('preSelectStep', preSelectStep);
   // console.log('stepData', stepData);
   // console.log('optionsSelected', optionsSelected);
+  // console.log('firstOptionSelected', firstOptionSelected);
 
   return (
     <CustomModal

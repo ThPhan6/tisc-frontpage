@@ -111,7 +111,6 @@
 
   :global(.quantity) {
     height: 100%;
-    margin-left: 8px;
     padding-left: 8px;
     color: @mono-color;
     text-align: center;
@@ -125,17 +124,6 @@
 
     svg {
       cursor: pointer;
-    }
-
-    :global(.replicate-disabled) {
-      svg {
-        cursor: default;
-        pointer-events: none;
-      }
-
-      svg path {
-        fill: @mono-color-medium;
-      }
     }
   }
 
@@ -190,6 +178,7 @@
 
   :global(.option-image-list-wrapper),
   :global(.option-attribute-label) {
+    margin-right: 8px;
     overflow: hidden;
   }
 }

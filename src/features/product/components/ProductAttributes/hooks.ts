@@ -13,6 +13,7 @@ import {
   setStep,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
+import { OptionQuantityProps } from '../../types/autoStep';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
@@ -408,9 +409,41 @@ export const useProductAttributeForm = (
 
   const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {
     const newState = cloneDeep(attributeGroup);
+
+    if (!newState[groupIndex].isChecked) {
+      return;
+    }
+
     const haveOptionAttr = newState[groupIndex].attributes.some((el) => el.type === 'Options');
 
-    if (newState[groupIndex].isChecked && haveOptionAttr) {
+    /// update update attribute group has configuration step
+    if (newState[groupIndex].type === SpecificationType.autoStep) {
+      // UNCHECK group and clear all selected option
+      newState[groupIndex].isChecked = false;
+      newState[groupIndex].steps = newState[groupIndex].steps?.map((el) => ({
+        ...el,
+        options: (el.options as OptionQuantityProps[]).map((opt) => ({
+          ...opt,
+          quantity: 0,
+          yours: 0,
+        })),
+      }));
+
+      const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
+
+      if (updatedOnchange && !props?.isSpecifiedModal) {
+        selectProductSpecification(id, {
+          specification: {
+            is_refer_document: !haveCheckedAttributeGroup || false,
+            attribute_groups: [{ id: newState[groupIndex].id, configuration_steps: [] }],
+          },
+          brand_location_id: '',
+          distributor_location_id: '',
+        });
+      }
+
+      /// update attribute group has option
+    } else if (haveOptionAttr && newState[groupIndex].type === SpecificationType.attribute) {
       // UNCHECK group and clear all selected option
       newState[groupIndex].isChecked = false;
       newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => ({
@@ -432,13 +465,14 @@ export const useProductAttributeForm = (
       }
     }
 
-    if (newState[groupIndex].isChecked || !haveOptionAttr) {
-      // CHECK group but only allow change for group don't have any option attribute
-      // If have option attribute user have to chose option
+    // CHECK group but only allow change for group don't have any option attribute
+    // If have option attribute user have to chose option
+    if (
+      (newState[groupIndex].isChecked || !haveOptionAttr) &&
+      newState[groupIndex].type !== SpecificationType.autoStep
+    ) {
       newState[groupIndex].isChecked = !newState[groupIndex].isChecked;
     }
-
-    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
     dispatch(
       setPartialProductDetail({
@@ -446,6 +480,8 @@ export const useProductAttributeForm = (
       }),
     );
 
+    /* update specifying of project */
+    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
     dispatch(
       setReferToDesignDocument(newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup),
     );
