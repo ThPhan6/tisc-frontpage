@@ -76,7 +76,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
       <BodyText
         fontFamily="Roboto"
         level={5}
-        className="text-overflow"
+        customClass="text-overflow"
         style={{ marginRight: 12, width: 60 }}
       >
         {roomId}

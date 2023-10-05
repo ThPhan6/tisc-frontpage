@@ -10,8 +10,7 @@
       display: flex;
       align-items: center;
       width: 100%;
-      height: 40px;
-      margin-bottom: 16px;
+      min-height: 40px;
       box-shadow: @border-bottom-light;
     }
     .checkedAllRadio {
@@ -48,6 +47,18 @@
       display: flex;
       align-items: center;
       height: 100%;
+    }
+  }
+
+  .radioListItem {
+    :global(.radio-item) {
+      margin-right: 0;
+    }
+
+    :global(span.ant-radio + *) {
+      flex-grow: 1;
+      padding-right: 16px;
+      padding-left: 0;
     }
   }
 }

@@ -3,12 +3,8 @@ import { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
-import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-right-grey-24.svg';
-import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
-import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { uniqueArrayBy } from '@/helper/utils';
@@ -48,7 +44,8 @@ import { BodyText } from '@/components/Typography';
 
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './AutoStep.less';
-import { getPickedOptionGroup } from './util';
+import { SlideBar } from './SlideBar';
+import { getIDFromPreOption, getPickedOptionGroup } from './util';
 
 interface NextStepProps {
   // options: SubOptionSelectedProps;
@@ -61,7 +58,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   let curOrder = slide;
   curOrder += 2;
 
-  const slideBar = useAppSelector((state) => state.autoStep.slideBar);
+  const slideBars = useAppSelector((state) => state.autoStep.slideBars);
 
   const step = useAppSelector((state) => state.autoStep.step);
 
@@ -106,14 +103,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     let a = '';
     let b = '';
 
-    subPickedPreOptionIds.forEach((el) => {
-      const preOption = el.split(',');
-      const curSubOptionId = preOption?.[0];
-      const curSubPreOption = preOption?.slice(1, preOption.length).join(',');
+    subPickedPreOptionIds.forEach((preOption) => {
+      const { optionId, preOptionId } = getIDFromPreOption(preOption);
 
-      if (curSubOptionId === sub.value && curSubPreOption === sub.label) {
-        a = curSubOptionId;
-        b = curSubPreOption;
+      if (optionId === sub.value && preOptionId === sub.label) {
+        a = optionId;
+        b = preOptionId;
       }
     });
 
@@ -154,14 +149,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     handleForceEnableCollapse();
   }, [step]);
-
-  const handleChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTopBarData = [...slideBar];
-
-    newTopBarData[index] = e.target.value;
-
-    store.dispatch(setSlideBar(newTopBarData));
-  };
 
   const handleBackToPrevSlide = async (props?: { isRemove?: boolean }) => {
     handleForceEnableCollapse();
@@ -252,11 +239,9 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   };
 
   const handleGoToNextSlide = async () => {
-    handleForceEnableCollapse();
-
     const prevSlide = slide;
 
-    if (!slideBar[prevSlide] || !slideBar[prevSlide + 1]) {
+    if (!slideBars[prevSlide] || !slideBars[prevSlide + 1]) {
       message.error('Please enter description');
       return;
     }
@@ -269,6 +254,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
+    handleForceEnableCollapse();
+
     const newSlide = prevSlide + 1;
 
     /* add new slide */
@@ -276,8 +263,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     /* add new slide bar for next step */
     const newSlideBarStep = newSlide + 1;
-    if (isUndefined(slideBar[newSlideBarStep])) {
-      store.dispatch(setSlideBar([...slideBar, '']));
+    if (isUndefined(slideBars[newSlideBarStep])) {
+      store.dispatch(setSlideBar([...slideBars, '']));
     }
     /* -------------------------------- */
 
@@ -377,7 +364,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
   };
 
-  const handleRemoveStep = (index: number) => async () => {
+  const handleRemoveStep = async (index: number) => {
     const lastStep = index + 1;
     const lastSlide = index - 1;
 
@@ -391,7 +378,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     const data = await handleBackToPrevSlide({ isRemove: true });
 
     /* delete slideBar */
-    const newSlideBar = cloneDeep(slideBar);
+    const newSlideBar = cloneDeep(slideBars);
     newSlideBar.splice(index, 1);
     store.dispatch(setSlideBar(newSlideBar));
     /* ---------------- */
@@ -513,7 +500,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
                 const preOptionName = preOptionInfo.length ? preOptionInfo.join(', ') : undefined;
 
-                const preOptionId = [curPickedOption.id, curPickedOption?.pre_option]
+                const preOptionId = [curPickedOption?.pre_option, curPickedOption.id]
                   .filter(Boolean)
                   .join(',');
 
@@ -654,16 +641,16 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }
       }
 
-      const prevOptionsSelectedIds = result.map((el) => {
-        if (el.pre_option) {
-          return `${el.id},${el.pre_option}`;
-        }
-
-        return el.id;
-      });
-
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
+        const prevOptionsSelectedIds = result.map((el) => {
+          if (el.pre_option) {
+            return `${el.pre_option},${el.id}`;
+          }
+
+          return el.id;
+        });
+
         const newLinkedOptionData = [...linkedOptionData];
 
         const newPickedOption = { ...pickedOption };
@@ -693,8 +680,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         let newPrevOptionsSelectedIds = [...prevOptionsSelectedIds];
 
         // remove data selected options
-        map(optionsSelected, (optionData: any, optIndex: number) => {
-          if (optIndex <= curOrder) {
+        map(optionsSelected, (optionData, optIndex: string) => {
+          if (Number(optIndex) <= curOrder) {
             return false;
           }
 
@@ -705,7 +692,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           //
           newPrevOptionsSelectedIds = newNextOptionSelected.map((el: any) => {
             if (el.pre_option) {
-              return `${el.id},${el.pre_option}`;
+              return `${el.pre_option},${el.id}`;
             }
 
             return el.id;
@@ -713,7 +700,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
           store.dispatch(
             setOptionsSelected({
-              order: optIndex,
+              order: Number(optIndex),
               options: newNextOptionSelected,
             }),
           );
@@ -801,78 +788,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   return (
     <div className={styles.nextStep}>
-      {/* top bar */}
-      <div className={styles.topBar}>
-        {/* slide bar */}
-        <div className="flex-start">
-          {slideBar.map((name, index) => {
-            const curStep = index + 1;
-            const otherSlide = index >= slide + 2 || index <= slide - 1;
-
-            return (
-              <div key={index} className={`flex-start ${otherSlide ? styles.otherSlide : ''}`}>
-                <div
-                  className={styles.stepCircle}
-                  style={{ background: '#2B39D4', border: 'unset' }}
-                >
-                  <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
-                    {curStep}
-                  </BodyText>
-                </div>
-
-                <BodyText customClass={styles.description} level={5} fontFamily="Roboto">
-                  {name || (
-                    <BodyText fontFamily="Roboto" level={5} color="mono-color-dark">
-                      description
-                    </BodyText>
-                  )}
-
-                  <input
-                    value={name}
-                    onChange={handleChangeDescription(index)}
-                    className={styles.descriptionInput}
-                    placeholder="description"
-                    hidden={otherSlide}
-                  />
-                </BodyText>
-
-                {/* only delete last step */}
-                {curOrder > 2 && curStep === slideBar.length && slide === slideBar.length - 2 ? (
-                  <div className={styles.removeStep} onClick={handleRemoveStep(index)}>
-                    <RemoveIcon />
-                  </div>
-                ) : null}
-
-                {index !== slideBar.length - 1 ? (
-                  <div
-                    className={`${styles.lineRightIcon} ${styles.activeLineRightIcon} ${
-                      index === curOrder - 1 ? styles.inactiveLineRightIcon : ''
-                    }`}
-                  >
-                    <LineRightDescriptionIcon />
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* slide action */}
-        <div className="flex-start slide-icons">
-          <ActionSlideLeftIcon
-            className={`${styles.slideLeftIcon} ${slide !== 0 ? styles.activeSlideLeftIcon : ''}`}
-            onClick={() => {
-              handleBackToPrevSlide({ isRemove: false });
-            }}
-          />
-          <ActionSlideRightIcon
-            className={`${styles.slideRightIcon} ${
-              slide !== slideBar.length ? styles.activeSlideRightIcon : ''
-            }`}
-            onClick={handleGoToNextSlide}
-          />
-        </div>
-      </div>
+      <SlideBar
+        handleBackToPrevSlide={handleBackToPrevSlide}
+        handleGoToNextSlide={handleGoToNextSlide}
+        handleRemoveStep={handleRemoveStep}
+      />
 
       <div className={styles.mainContent}>
         {/* left side */}
@@ -881,6 +801,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
             return (
               <CheckboxDynamic
                 key={optIdx}
+                isCheckbox
                 // chosenItems={currentSubPickedOptionSelected}
                 onOneChange={handleSelectPickedOption}
                 data={{
@@ -978,18 +899,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                             customClass="flex-center"
                           >
                             {optionsSelected?.[curOrder]?.options?.filter((el) => {
-                              const curPreOptionIds = el.pre_option?.split(',');
-
-                              const optionId = curPreOptionIds?.[0];
-                              const preOption = curPreOptionIds
-                                ?.slice(1, curPreOptionIds.length)
-                                .join(',');
+                              const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
                               if (slide === 0) {
                                 return el.pre_option === option.id;
                               }
 
-                              return optionId === option.id && preOption === option.pre_option;
+                              return optionId === option.id && preOptionId === option.pre_option;
                             }).length ?? 0}
                           </BodyText>
                         </div>

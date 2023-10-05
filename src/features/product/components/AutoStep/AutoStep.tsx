@@ -48,7 +48,7 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   const optionsSelected = useAppSelector((state) => state.autoStep.optionsSelected);
 
-  const slideBar = useAppSelector((state) => state.autoStep.slideBar);
+  const slideBars = useAppSelector((state) => state.autoStep.slideBars);
 
   const step = useAppSelector((state) => state.autoStep.step);
 
@@ -108,12 +108,12 @@ export const AutoStep: FC<AutoStepProps> = ({
   useEffect(() => {
     const optionSelected = Object.keys(optionsSelected).length > 1;
 
-    if (slideBar.includes('') || !optionSelected) {
+    if (slideBars.includes('') || !optionSelected) {
       setDisabledCreateStep(true);
     } else {
       setDisabledCreateStep(false);
     }
-  }, [slideBar, JSON.stringify(optionsSelected)]);
+  }, [slideBars, JSON.stringify(optionsSelected)]);
 
   const handleGoToNextStep = () => {
     store.dispatch(setStep(0));
@@ -141,7 +141,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     const allSteps = Object.values(optionsSelected);
 
     const steps: AutoStepOnAttributeGroupResponse[] = allSteps
-      .map((el, index) => ({ ...el, name: slideBar[index] }))
+      .map((el, index) => ({ ...el, name: slideBars[index] }))
       .filter((el) => el.options.length > 0);
 
     const newAttributeGroup: ProductAttributeFormInputWhenCreateStep[] = attributeGroup?.map((el) =>
@@ -183,7 +183,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       footer={
         step === 'pre' ? (
           <CustomButton
-            buttonClass="action-icon"
+            buttonClass="action-left-icon"
             size="small"
             properties="rounded"
             disabled={
@@ -199,7 +199,7 @@ export const AutoStep: FC<AutoStepProps> = ({
         ) : (
           <div className="flex-end">
             <CustomButton
-              buttonClass="action-icon"
+              buttonClass="action-left-icon"
               size="small"
               properties="rounded"
               icon={<ActionBackIcon />}
