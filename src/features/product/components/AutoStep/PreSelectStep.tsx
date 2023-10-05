@@ -24,6 +24,8 @@ import {
 
 import {
   resetAutoStepState,
+  setFisrtOptionSelected,
+  setNewLeftPanelData,
   setOptionsSelected,
   setPartialProductDetail,
   setPickedOption,
@@ -65,14 +67,19 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
   const attributeGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
   const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
-  const [firstOptionSelected, setFirstOptionSelected] = useState<string>('');
-
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
-  const [newLeftPanelData, setNewLeftPanelData] = useState<AutoStepPreSelectOptionProps[]>([]);
-
-  const { slideBars, slide, step, stepData, preSelectStep, pickedOption, optionsSelected } =
-    useAppSelector((state) => state.autoStep);
+  const {
+    slideBars,
+    slide,
+    step,
+    stepData,
+    preSelectStep,
+    pickedOption,
+    optionsSelected,
+    firstOptionSelected,
+    newLeftPanelData,
+  } = useAppSelector((state) => state.autoStep);
 
   const curOrder = slide + 2;
   const curPicked = pickedOption[slide];
@@ -119,8 +126,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
 
   const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
-    setNewLeftPanelData([]);
-    setFirstOptionSelected('');
   };
 
   const handleForceEnableCollapse = () => {
@@ -143,19 +148,13 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       optionsSelected[step === 0 ? 1 : step + 1].options,
     ) as unknown as AutoStepPreSelectOptionProps[];
 
-    setNewLeftPanelData(newLeftData);
+    store.dispatch(setNewLeftPanelData(newLeftData));
 
     if (pickedOption[0]) {
-      setFirstOptionSelected(pickedOption[0].id);
+      // setFirstOptionSelected(pickedOption[0].id);
+      store.dispatch(setFisrtOptionSelected(pickedOption[0].id));
     }
   }, [step]);
-
-  useEffect(() => {
-    return () => {
-      handleResetAutoStep();
-      setFirstOptionSelected('');
-    };
-  }, []);
 
   const handleBackToPrevSlide = () => {
     const prevSlide = slide;
@@ -173,7 +172,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       const newNextLeftPanelData = getPickedOptionGroup(
         optionsSelected[newOrder].options,
       ) as AutoStepPreSelectOptionProps[];
-      setNewLeftPanelData(newNextLeftPanelData);
+
+      store.dispatch(setNewLeftPanelData(newNextLeftPanelData));
+
       /* ------------------------------------ */
     }
   };
@@ -185,6 +186,11 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
 
     /* last step */
     if (newSlide === slideBars.length - 1) {
+      return;
+    }
+
+    if (!currentOptionSelected.length) {
+      message.error('Please select options');
       return;
     }
 
@@ -200,7 +206,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       const allSubSelected: OptionQuantityProps[] = [];
 
       (optionsSelected[newOrder].options as OptionQuantityProps[]).forEach((el) => {
-        const { optionId, preOptionId } = getIDFromPreOption(opt.pre_option);
+        const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
 
         if (
           prevSlide === 0
@@ -225,15 +231,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
     });
 
     if (invalidAmountYours) {
-      message.error(`Amount of yours must equal to ${optionNameTicked}'s required `);
+      message.error(`Amount of yours must equal to ${optionNameTicked}'s required`);
       return;
     }
     /* --------------------------------------------------------------------- */
-
-    if (!currentOptionSelected.length) {
-      message.error('Please select options');
-      return;
-    }
 
     handleForceEnableCollapse();
 
@@ -246,7 +247,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       optionsSelected[newOrder].options,
     ) as AutoStepPreSelectOptionProps[];
 
-    setNewLeftPanelData(newNextLeftPanelData);
+    store.dispatch(setNewLeftPanelData(newNextLeftPanelData));
+
     /* ------------------------------------ */
   };
 
@@ -259,7 +261,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
     };
 
     if (slide === 0) {
-      setFirstOptionSelected(e.target.value);
+      // setFirstOptionSelected();
+      store.dispatch(setFisrtOptionSelected(e.target.value));
     }
 
     const isPrevPickedOption =
@@ -888,7 +891,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
   // console.log('preSelectStep', preSelectStep);
   // console.log('stepData', stepData);
   // console.log('optionsSelected', optionsSelected);
-  // console.log('firstOptionSelected', firstOptionSelected);
 
   return (
     <CustomModal
@@ -899,7 +901,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       }
       secondaryModal
       visible={visible}
-      onCancel={() => setVisible(false)}
+      onCancel={() => {
+        setVisible(false);
+      }}
       className={styles.modalContainer}
       maskClosable={false}
       afterClose={handleResetAutoStep}

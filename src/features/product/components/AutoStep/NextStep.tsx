@@ -364,7 +364,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
   };
 
-  const handleRemoveStep = (index: number) => async () => {
+  const handleRemoveStep = async (index: number) => {
     const lastStep = index + 1;
     const lastSlide = index - 1;
 
@@ -641,16 +641,16 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }
       }
 
-      const prevOptionsSelectedIds = result.map((el) => {
-        if (el.pre_option) {
-          return `${el.pre_option},${el.id}`;
-        }
-
-        return el.id;
-      });
-
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
+        const prevOptionsSelectedIds = result.map((el) => {
+          if (el.pre_option) {
+            return `${el.pre_option},${el.id}`;
+          }
+
+          return el.id;
+        });
+
         const newLinkedOptionData = [...linkedOptionData];
 
         const newPickedOption = { ...pickedOption };
@@ -680,8 +680,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         let newPrevOptionsSelectedIds = [...prevOptionsSelectedIds];
 
         // remove data selected options
-        map(optionsSelected, (optionData: any, optIndex: number) => {
-          if (optIndex <= curOrder) {
+        map(optionsSelected, (optionData, optIndex: string) => {
+          if (Number(optIndex) <= curOrder) {
             return false;
           }
 
@@ -700,7 +700,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
           store.dispatch(
             setOptionsSelected({
-              order: optIndex,
+              order: Number(optIndex),
               options: newNextOptionSelected,
             }),
           );

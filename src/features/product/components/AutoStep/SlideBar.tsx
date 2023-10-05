@@ -60,21 +60,6 @@ export const SlideBar: FC<SlideBarProps> = ({
                 <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
                   {curStep}
                 </BodyText>
-
-                {/* only delete last step */}
-                {isTiscAdmin &&
-                curOrder > 2 &&
-                curStep === slideBars.length &&
-                slide === slideBars.length - 2 ? (
-                  <div
-                    className={styles.removeStep}
-                    onClick={() => {
-                      handleRemoveStep?.(index);
-                    }}
-                  >
-                    <RemoveIcon />
-                  </div>
-                ) : null}
               </div>
 
               <BodyText
@@ -99,6 +84,21 @@ export const SlideBar: FC<SlideBarProps> = ({
                   />
                 ) : null}
               </BodyText>
+
+              {/* only delete last step */}
+              {isTiscAdmin &&
+              curOrder > 2 &&
+              curStep === slideBars.length &&
+              slide === slideBars.length - 2 ? (
+                <div
+                  className={styles.removeStep}
+                  onClick={() => {
+                    handleRemoveStep?.(index);
+                  }}
+                >
+                  <RemoveIcon />
+                </div>
+              ) : null}
 
               {index !== slideBars.length - 1 ? (
                 <div

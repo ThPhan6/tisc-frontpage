@@ -3,6 +3,7 @@ import { isUndefined } from 'lodash';
 import {
   AutoStepLinkedOptionResponse,
   AutoStepPreSelectOnAttributeGroupResponse,
+  AutoStepPreSelectOptionProps,
   LinkedOptionProps,
   OptionQuantityProps,
   OptionReplicateResponse,
@@ -52,6 +53,11 @@ interface AutoStepProps {
   step: 'pre' | number; /// save for open view
 
   subOptionSelected: { [groupAttributeId: string]: string };
+
+  /// first option selected in first step(in PreSelectStep component);
+  firstOptionSelected: string;
+  /// (in PreSelectStep component)
+  newLeftPanelData: AutoStepPreSelectOptionProps[];
 }
 
 const initialState: AutoStepProps = {
@@ -61,6 +67,8 @@ const initialState: AutoStepProps = {
   step: 'pre', /// default is select option dataset in FirstStep component
 
   optionsSelected: [], /// this is payload of all sub options selected
+  firstOptionSelected: '',
+  newLeftPanelData: [],
 
   stepData: {}, /// this is origin step data of Brand/Designer
   preSelectStep: {}, /// all data view on left and right panel of Brand/Designer
@@ -90,6 +98,14 @@ const autoStepSlice = createSlice({
 
     setStepData(state, action: PayloadAction<OptionPreSelectedProps>) {
       state.stepData = action.payload;
+    },
+
+    setNewLeftPanelData(state, action: PayloadAction<AutoStepPreSelectOptionProps[]>) {
+      state.newLeftPanelData = action.payload;
+    },
+
+    setFisrtOptionSelected(state, action: PayloadAction<string>) {
+      state.firstOptionSelected = action.payload;
     },
 
     setSubOptionSelected(state, action: PayloadAction<{ [groupAttributeId: string]: string }>) {
@@ -216,6 +232,8 @@ export const {
   /// Brand/Designer
   setStepData,
   setPreSelectStep,
+  setFisrtOptionSelected,
+  setNewLeftPanelData,
 } = autoStepSlice.actions;
 
 export const autoStepReducer = autoStepSlice.reducer;
