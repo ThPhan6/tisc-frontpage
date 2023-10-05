@@ -505,7 +505,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           // set 1st option selected
           if (el.order === 2) {
             optionsSelected[1] = {
-              id: el.id,
+              id: newSteps[index - 1].id,
               order: 1,
               options: [leftOption],
             };
