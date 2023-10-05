@@ -202,37 +202,34 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         const newRes = [...res];
 
         if (preSelectSteps.length) {
-          res.forEach((opt, index) => {
-            if (!opt.options.length) {
-              return;
-            }
-
-            preSelectSteps.forEach((el) => {
-              if (el.step_id === opt.id) {
-                el.options.forEach((o) => {
-                  newRes[index] = {
-                    ...opt,
-                    options: opt.options.map((optionItem) => {
-                      if (index === 0) {
-                        return {
-                          ...optionItem,
-                          quantity: o.id === optionItem.id ? 1 : 0,
-                          yours: optionItem.replicate ?? 0,
-                        };
-                      }
-
-                      return {
-                        ...optionItem,
-                        quantity:
-                          optionItem.id === o.id && optionItem.pre_option === o.pre_option
-                            ? o.quantity
-                            : 0,
-                        yours: optionItem.replicate ?? 0,
-                      };
-                    }),
-                  };
-                });
+          preSelectSteps.forEach((el) => {
+            res.forEach((opt, index) => {
+              if (!opt.options.length || el.step_id !== opt.id) {
+                return;
               }
+
+              newRes[index] = {
+                ...opt,
+                options: opt.options.map((optionItem) => {
+                  if (index === 0) {
+                    return {
+                      ...optionItem,
+                      quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
+                      yours: optionItem.replicate ?? 0,
+                    };
+                  }
+
+                  const optionFound = el.options.find(
+                    (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
+                  );
+
+                  return {
+                    ...optionItem,
+                    quantity: optionFound ? optionFound.quantity : 0,
+                    yours: optionItem.replicate ?? 0,
+                  };
+                }),
+              };
             });
           });
         }
