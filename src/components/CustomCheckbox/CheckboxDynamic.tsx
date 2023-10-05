@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Radio } from 'antd';
+import { Radio, RadioChangeEvent } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 import { cloneDeep } from 'lodash';
@@ -34,8 +34,10 @@ interface CheckboxListProps {
   selected?: CheckBoxOptionProps[];
   chosenItems?: CheckBoxOptionProps[];
   onChange?: (value: CheckboxValue[]) => void;
-  onOneChange?: (e: CheckboxChangeEvent) => void;
+  onOneChange?: (e: CheckboxChangeEvent | RadioChangeEvent) => void;
   disabled?: boolean;
+  isRadio?: boolean;
+  isCheckbox?: boolean;
 }
 
 export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
@@ -45,6 +47,8 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
   onOneChange,
   disabled,
   chosenItems,
+  isRadio,
+  isCheckbox,
 }) => {
   const [curSelect, setCurSelect] = useState<CheckboxValue[] | undefined>([]);
   const [selectAll, setSelectAll] = useState<string[]>([]);
@@ -124,13 +128,19 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
     onChange?.([...opts, ...otherSelected]);
   };
 
-  const handleSelectSingleOption = (e: CheckboxChangeEvent) => {
-    onOneChange?.(e);
+  const handleSelectSingleOption = (e: CheckboxChangeEvent | RadioChangeEvent) => {
+    if (isCheckbox) {
+      onOneChange?.(e);
+    }
+
+    if (isRadio) {
+      onOneChange?.(e);
+    }
   };
 
   return (
     <div className={styles.checkboxListContainer}>
-      <div className={styles.checkboxListItem}>
+      <div className={`${styles.checkboxListItem} ${isRadio ? styles.radioListItem : ''}`}>
         {typeof data.heading === 'string' ? (
           <Title customClass="checkbox-list-heading" level={8}>
             {data.heading}
@@ -164,19 +174,34 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
           ) : null}
         </div>
 
-        <div className="checkbox-list-options">
-          <CustomCheckbox
-            options={data.options}
-            selected={selected}
-            onChange={handleSelectOptions}
-            onOneChange={handleSelectSingleOption}
-            heightItem="auto"
-            checkboxClass={data.customItemClass}
-            isCheckboxList
-            disabled={disabled}
-            chosenItems={curSelect}
-          />
-        </div>
+        {isCheckbox ? (
+          <div className="checkbox-list-options">
+            <CustomCheckbox
+              options={data.options}
+              // selected={selected}
+              onChange={handleSelectOptions}
+              onOneChange={handleSelectSingleOption}
+              heightItem="auto"
+              checkboxClass={data.customItemClass}
+              isCheckboxList
+              disabled={disabled}
+              chosenItems={curSelect}
+            />
+          </div>
+        ) : null}
+
+        {isRadio
+          ? data.options.map((el) => (
+              <Radio
+                className="flex-start row-reverse radio-item"
+                checked={el.value === selected?.[0].value}
+                value={el.value}
+                onChange={handleSelectSingleOption}
+              >
+                {el.label}
+              </Radio>
+            ))
+          : null}
       </div>
     </div>
   );

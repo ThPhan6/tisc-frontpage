@@ -7,12 +7,14 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep, countBy, uniqueId } from 'lodash';
 
 import {
+  getAllPreSelectAttributes,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
   setStep,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
+import { OptionQuantityProps } from '../../types/autoStep';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
@@ -75,14 +77,14 @@ export const getSpecificationWithSelectedValue = (
     if (selectedGroup === -1) {
       return;
     }
-    const optionIds = gr.attributes.map((e) => e.basis_option_id);
+    const optionIds = gr.attributes?.map((e) => e.basis_option_id);
     checkedSpecGroup[selectedGroup].isChecked = true;
     checkedSpecGroup[selectedGroup].attributes = checkedSpecGroup[selectedGroup].attributes.map(
       (attr) => ({
         ...attr,
         basis_options: attr.basis_options?.map((opt) => ({
           ...opt,
-          isChecked: optionIds.includes(opt.id),
+          isChecked: optionIds?.includes(opt.id),
         })),
       }),
     );
@@ -113,14 +115,15 @@ export const useProductAttributeForm = (
     id,
     specifiedDetail,
   } = useAppSelector((state) => state.product.details);
+
+  const allPreSelectAttributes = useAppSelector((state) => state.product.allPreSelectAttributes);
+
   const referToDesignDocument = specifiedDetail?.specification?.is_refer_document;
 
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
-
-  // const curAttrGroupCollapseId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
 
   const [autoStepPopup, setAutoStepPopup] = useState<boolean>(false);
 
@@ -143,7 +146,6 @@ export const useProductAttributeForm = (
   useEffect(() => {
     if (
       attributeType === 'specification' &&
-      // specification_attribute_groups.length && // Wait for all specification attributes loaded
       loaded.value === false &&
       productId &&
       isTiscAdmin === false
@@ -155,17 +157,27 @@ export const useProductAttributeForm = (
         getSelectedProductSpecification(productId).then((res) => {
           loaded.setValue(true);
           if (res) {
+            const newSpecficationAttributeGroups = getSpecificationWithSelectedValue(
+              res.specification?.attribute_groups || [],
+              attributeGroup,
+            );
+
             dispatch(
               setPartialProductDetail({
-                specification_attribute_groups: getSpecificationWithSelectedValue(
-                  res.specification?.attribute_groups || [],
-                  attributeGroup,
-                ),
+                specification_attribute_groups: newSpecficationAttributeGroups,
                 // set vendor locations have selected from user selection
                 brand_location_id: res.brand_location_id,
                 distributor_location_id: res.distributor_location_id,
               }),
             );
+
+            const newAllPreSelectAttributes = getSpecificationRequest(
+              newSpecficationAttributeGroups.filter(
+                (el) => el.type === SpecificationType.attribute,
+              ),
+            );
+
+            dispatch(getAllPreSelectAttributes(newAllPreSelectAttributes));
           }
         });
       }
@@ -384,13 +396,22 @@ export const useProductAttributeForm = (
       return;
     }
 
+    const newSpecificationOptionAttributeGroups = newState.filter(
+      (el) => el.type === SpecificationType.attribute,
+    );
+
     if (!props?.isSpecifiedModal) {
+      const newSpecficationRequest = {
+        is_refer_document: !haveCheckedAttributeGroup || false,
+        attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
+      };
+
+      /// update pre-select attributes
       selectProductSpecification(id, {
-        specification: {
-          is_refer_document: !haveCheckedAttributeGroup || false,
-          attribute_groups: getSpecificationRequest(newState),
-        },
+        specification: newSpecficationRequest,
       });
+
+      dispatch(getAllPreSelectAttributes(newSpecficationRequest.attribute_groups));
     }
 
     dispatch(
@@ -406,9 +427,50 @@ export const useProductAttributeForm = (
 
   const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {
     const newState = cloneDeep(attributeGroup);
+
+    if (!newState[groupIndex].isChecked) {
+      return;
+    }
+
     const haveOptionAttr = newState[groupIndex].attributes.some((el) => el.type === 'Options');
 
-    if (newState[groupIndex].isChecked && haveOptionAttr) {
+    /// update update attribute group has configuration step
+    if (newState[groupIndex].type === SpecificationType.autoStep) {
+      // UNCHECK group and clear all selected option
+      newState[groupIndex].isChecked = false;
+      newState[groupIndex].steps = newState[groupIndex].steps?.map((el) => ({
+        ...el,
+        options: (el.options as OptionQuantityProps[]).map((opt) => ({
+          ...opt,
+          quantity: 0,
+          yours: 0,
+        })),
+      }));
+
+      const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
+
+      if (updatedOnchange && !props?.isSpecifiedModal) {
+        const newAllPreSelectAttributes = allPreSelectAttributes.filter(
+          (el) => el.id !== newState[groupIndex].id,
+        );
+
+        const newAttributeGroups = newAllPreSelectAttributes.concat({
+          id: newState[groupIndex].id as string,
+          configuration_steps: [],
+        });
+
+        selectProductSpecification(id, {
+          specification: {
+            is_refer_document: !haveCheckedAttributeGroup || false,
+            attribute_groups: newAttributeGroups,
+          },
+          brand_location_id: '',
+          distributor_location_id: '',
+        });
+      }
+
+      /// update attribute group has option
+    } else if (haveOptionAttr && newState[groupIndex].type === SpecificationType.attribute) {
       // UNCHECK group and clear all selected option
       newState[groupIndex].isChecked = false;
       newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => ({
@@ -419,10 +481,14 @@ export const useProductAttributeForm = (
       const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
       if (updatedOnchange && !props?.isSpecifiedModal) {
+        const newSpecificationOptionAttributeGroups = newState.filter(
+          (el) => el.type === SpecificationType.attribute,
+        );
+
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,
-            attribute_groups: getSpecificationRequest(newState),
+            attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
           },
           brand_location_id: '',
           distributor_location_id: '',
@@ -430,13 +496,14 @@ export const useProductAttributeForm = (
       }
     }
 
-    if (newState[groupIndex].isChecked || !haveOptionAttr) {
-      // CHECK group but only allow change for group don't have any option attribute
-      // If have option attribute user have to chose option
+    // CHECK group but only allow change for group don't have any option attribute
+    // If have option attribute user have to chose option
+    if (
+      (newState[groupIndex].isChecked || !haveOptionAttr) &&
+      newState[groupIndex].type !== SpecificationType.autoStep
+    ) {
       newState[groupIndex].isChecked = !newState[groupIndex].isChecked;
     }
-
-    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
     dispatch(
       setPartialProductDetail({
@@ -444,6 +511,8 @@ export const useProductAttributeForm = (
       }),
     );
 
+    /* update specifying of project */
+    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
     dispatch(
       setReferToDesignDocument(newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup),
     );

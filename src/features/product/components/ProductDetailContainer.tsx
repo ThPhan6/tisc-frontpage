@@ -88,7 +88,7 @@ const ProductDetailContainer: React.FC = () => {
   const signature = useQuery().get('signature') || '';
   // set signature  to cookies
   Cookies.set('signature', signature);
-  const isPublicPage = signature ? true : false;
+  const isPublicPage = !!signature;
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
 

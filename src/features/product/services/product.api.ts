@@ -33,6 +33,7 @@ import store from '@/reducers';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
+import { getAutoStepData } from './autoStep.api';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export async function getProductSummary(brandId: string) {
@@ -197,44 +198,17 @@ export const likeProductById = async (productId: string) => {
     });
 };
 
-export const getAutoStepData = (productId: string, specificationId: string) => {
-  // showPageLoading();
-  return request<{ data: AutoStepOnAttributeGroupResponse[] }>(`/api/step`, {
-    method: 'GET',
-    params: { product_id: productId, specification_id: specificationId },
-  })
-    .then((res) => {
-      // hidePageLoading();
-      return res.data;
-    })
-    .catch((err) => {
-      // hidePageLoading();
-
-      message.error(err?.data?.message ?? 'Failed to get step');
-      return [] as AutoStepOnAttributeGroupResponse[];
-    });
-};
-
 export const getProductById = async (productId: string) => {
-  // const attributeGroupIds = store.getState().product.details.specification_attribute_groups.map(el => el.id);
-
-  // const autoStepData = attributeGroupId ? await getAutoStepData(productId, attributeGroupId) : [];
-
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
-      // const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
-      //   el.id === attributeGroupId ? { ...el, steps: autoStepData } : el,
-      // );
-
       store.dispatch(
         setPartialProductDetail({
           ...res.data,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';
           }) as ['', '', '', ''],
-          // specification_attribute_groups: newSpecificationAttributeGroup,
         }),
       );
     })
@@ -258,9 +232,17 @@ export const updateProductCard = async (productId: string, data: ProductFormData
       const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
       const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
-      const autoStepData = currentSpecAttributeGroupId
-        ? await getAutoStepData(productId, currentSpecAttributeGroupId)
-        : [];
+      const isGroupStep = data.specification_attribute_groups.some(
+        (group) => group.id === currentSpecAttributeGroupId && group.steps?.length,
+      );
+
+      let autoStepData: AutoStepOnAttributeGroupResponse[] = [];
+
+      if (isGroupStep) {
+        autoStepData = currentSpecAttributeGroupId
+          ? await getAutoStepData(productId, currentSpecAttributeGroupId)
+          : [];
+      }
 
       const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
         autoStepData?.length ? { ...el, steps: autoStepData } : el,

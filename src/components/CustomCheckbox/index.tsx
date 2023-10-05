@@ -81,9 +81,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     return 'item-option-uncheck';
   };
 
-  // console.log('chosenItems', chosenItems);
-  // console.log('options', options);
-
   return (
     <div
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${

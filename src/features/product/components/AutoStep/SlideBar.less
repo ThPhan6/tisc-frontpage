@@ -1,0 +1,145 @@
+.topBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  padding-left: 16px;
+  overflow: auto hidden;
+
+  :global(.slide-icons) {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+    height: 48px;
+    padding-right: 16px;
+    background-color: #fff;
+  }
+}
+
+.stepCircle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  margin: 0 8px;
+  color: @mono-color-medium;
+  background: #fff;
+  border: 1px solid @mono-color-medium;
+  border-radius: 50%;
+  cursor: default;
+}
+
+.removeStep {
+  display: flex;
+  margin-left: 4px;
+  cursor: pointer;
+
+  svg path {
+    fill: @primary-color-dark;
+  }
+}
+
+/* inactive slide of top bar */
+.otherSlide {
+  .stepCircle {
+    color: @primary-color !important;
+    background: @primary-color !important;
+  }
+
+  .description,
+  .descriptionInput {
+    color: @primary-color;
+    font-weight: 300;
+    cursor: default;
+  }
+
+  svg path {
+    fill: @primary-color !important;
+    stroke: @primary-color !important;
+    stroke-width: 0;
+  }
+}
+
+/* active slide of top bar */
+.description {
+  position: relative;
+  margin-right: 8px;
+  color: @primary-color-dark;
+  font-weight: 500;
+
+  .descriptionInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-width: 18px;
+    height: 100%;
+    padding: 0;
+    color: @primary-color-dark;
+    font-weight: 500;
+    border: 0;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:placeholder-shown {
+      font-weight: 300 !important;
+    }
+  }
+}
+
+/* LINE icon */
+.inactiveLineRightIcon {
+  path {
+    fill: @primary-color;
+    stroke: @primary-color;
+    stroke-width: 0;
+  }
+}
+
+.activeLineRightIcon {
+  path {
+    stroke: @primary-color-dark;
+    stroke-width: 1px;
+  }
+}
+
+.lineRightIcon {
+  display: flex;
+  margin: 0 4px;
+}
+
+/* --------- */
+
+/* SLIDE icon */
+.slideLeftIcon,
+.slideRightIcon {
+  path {
+    fill: @mono-color-medium;
+  }
+}
+
+.slideLeftIcon {
+  margin: 0 12px 0 16px;
+}
+
+.activeSlideRightIcon,
+.activeSlideLeftIcon {
+  cursor: pointer;
+  path {
+    fill: @mono-color;
+  }
+}
+
+.inactiveSlideRightIcon {
+  path {
+    cursor: default;
+    fill: @mono-color-medium;
+  }
+}
+
+/* ------------ */

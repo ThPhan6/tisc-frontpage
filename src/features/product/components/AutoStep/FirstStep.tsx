@@ -13,6 +13,7 @@ import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import { BodyText } from '@/components/Typography';
 
 import styles from './AutoStep.less';
+import slideBarStyles from './SlideBar.less';
 
 const topBarData = [1, 2, 3, 4, 5, 6, 7];
 
@@ -27,11 +28,11 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
 
   return (
     <div className={styles.firstStep}>
-      <div className={styles.topBar}>
+      <div className={slideBarStyles.topBar}>
         <div className="flex-start">
           {topBarData?.map((el, index) => (
             <div key={index} className="flex-start">
-              <div className={styles.stepCircle}>
+              <div className={slideBarStyles.stepCircle}>
                 <BodyText fontFamily="Roboto" level={5} color="mono-color-medium">
                   {el}
                 </BodyText>
@@ -40,12 +41,13 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
                 fontFamily="Roboto"
                 level={5}
                 color="mono-color-medium"
-                customClass={styles.description}
+                customClass={slideBarStyles.description}
+                style={{ fontWeight: 300 }}
               >
                 description
               </BodyText>
               {index !== topBarData.length - 1 ? (
-                <div className={styles.lineRightIcon}>
+                <div className={slideBarStyles.lineRightIcon}>
                   <LineRightDescriptionIcon />
                 </div>
               ) : null}
@@ -53,8 +55,8 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
           ))}
         </div>
         <div className="flex-start slide-icons">
-          <ActionSlideLeftIcon className={styles.slideLeftIcon} />
-          <ActionSlideRightIcon className={styles.slideRightIcon} />
+          <ActionSlideLeftIcon className={slideBarStyles.slideLeftIcon} />
+          <ActionSlideRightIcon className={slideBarStyles.slideRightIcon} />
         </div>
       </div>
 
