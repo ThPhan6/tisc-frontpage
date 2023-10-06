@@ -163,8 +163,6 @@ const AttributeEntryForm = () => {
   };
 
   const handleUpdateData = (submitData: AttributeForm) => {
-    console.log('submitData', submitData);
-
     isLoading.setValue(true);
     updateAttribute(idAttribute, submitData).then((isSuccess) => {
       isLoading.setValue(false);
