@@ -24,6 +24,7 @@ import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils'
 import { pick, sortBy } from 'lodash';
 
 import { ProductAttributeFormInput, ProductFormData, ProductKeyword } from '../types';
+import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import {
@@ -48,16 +49,33 @@ import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
 import Cookies from 'js-cookie';
 
-const filterDataHasIdTypeNumber = (
+const filterNewAttributeGroup = (
   data: ProductAttributeFormInput[],
+  type: ProductInfoTab,
 ): ProductAttributeFormInput[] =>
   data.map((el: any) => {
-    if (el.id && !isNaN(Number(el.id))) {
+    if (el.id.indexOf('new') !== -1) {
+      if (type !== 'specification') {
+        return {
+          name: el?.name || '',
+          attributes: el?.attributes || [],
+          selection: !!el?.selection,
+          steps: el?.steps ?? [],
+        };
+      }
+
       return {
         name: el?.name || '',
         attributes: el?.attributes || [],
-        selection: el?.selection || false,
+        selection: !!el?.selection,
+        steps: el?.steps ?? [],
+        type: el.type,
       };
+    }
+
+    if (type !== 'specification') {
+      delete el?.type;
+      return el;
     }
 
     return el;
@@ -70,7 +88,7 @@ const ProductDetailContainer: React.FC = () => {
   const signature = useQuery().get('signature') || '';
   // set signature  to cookies
   Cookies.set('signature', signature);
-  const isPublicPage = signature ? true : false;
+  const isPublicPage = !!signature;
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
 
@@ -139,7 +157,57 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    const productSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+    const productGeneralData = filterNewAttributeGroup(details.general_attribute_groups, 'feature');
+
+    const productGeneralDataTitle = productGeneralData?.some((el) => !el.name);
+
+    if (productGeneralDataTitle && productGeneralData?.length) {
+      message.error('General attribute title is required');
+      return;
+    }
+
+    const productFeatureData = filterNewAttributeGroup(details.feature_attribute_groups, 'feature');
+
+    const productFeatureDataTitle = productFeatureData?.some((el) => !el.name);
+
+    if (productFeatureDataTitle && productFeatureData?.length) {
+      message.error('Feature attribute title is required');
+      return;
+    }
+
+    const newProductSpecData = filterNewAttributeGroup(
+      details.specification_attribute_groups,
+      'specification',
+    );
+
+    const productSpecDataTitle = newProductSpecData.some((el) => !el.name);
+
+    if (productSpecDataTitle && newProductSpecData?.length) {
+      message.error('Specification attribute title is required');
+      return;
+    }
+
+    const productSpecData: ProductAttributeFormInput[] = newProductSpecData.map((el) => ({
+      ...el,
+      steps: !el?.steps?.length
+        ? []
+        : el.steps.map((step) => {
+            const newStep = { ...step } as AutoStepOnAttributeGroupResponse;
+
+            if (newStep?.id?.indexOf('new') !== -1) {
+              delete (newStep as any).id;
+            }
+
+            const options = newStep.options.map((s) => ({
+              id: s.id,
+              pre_option: s.pre_option,
+              replicate: s?.replicate ?? 1,
+              picked: !!s.picked,
+            }));
+
+            return { name: step.name, order: step.order, options: options };
+          }),
+    }));
 
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
@@ -147,8 +215,8 @@ const ProductDetailContainer: React.FC = () => {
       collection_ids: details.collections.map((collection) => collection.id),
       name: details.name.trim(),
       description: details.description.trim(),
-      general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
-      feature_attribute_groups: filterDataHasIdTypeNumber(details.feature_attribute_groups),
+      general_attribute_groups: productGeneralData,
+      feature_attribute_groups: productFeatureData,
       specification_attribute_groups: productSpecData,
       dimension_and_weight: {
         with_diameter: details.dimension_and_weight.with_diameter,

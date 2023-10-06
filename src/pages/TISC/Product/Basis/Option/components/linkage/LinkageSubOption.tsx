@@ -37,6 +37,8 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
   const preLinkageForm = useCheckPreLinkageForm();
   const dispatch = useDispatch();
 
+  const expandSubOptionIds = useAppSelector((state) => state.linkage.expandSubOptionIds);
+
   const expand = useAppSelector(isLinkageSubOptionExpandSelector(subOption.id));
 
   const allSelected = useAppSelector(isAllSelectedSubOptionSelector(subOption, preLinkageForm));
@@ -85,7 +87,6 @@ export const LinkageSubOption: FC<Props> = ({ subOption, isRoot, mainId, onChang
   return (
     <Collapse
       expandIcon={() => null}
-      accordion
       collapsible={subOption.subs.length > 0 ? undefined : 'disabled'}
       onChange={handleCollapse}
       defaultActiveKey={preLinkageForm ? undefined : subOption.id}

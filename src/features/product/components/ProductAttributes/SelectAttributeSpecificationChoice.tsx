@@ -104,7 +104,12 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
                     groupIndex,
                     attribute.id,
                     haveBasisOption?.id,
-                    false, /// dont reset attribute selected
+                    {
+                      /// dont reset attribute selected
+                      resetAttributeOptionChecked: false,
+                      /// dont update pre-select
+                      updatePreSelect: false,
+                    },
                   );
 
                   onCheckedAttributeOption?.(!!specificationGrp?.haveCheckedOptionAttribute);
