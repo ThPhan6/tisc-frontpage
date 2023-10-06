@@ -331,7 +331,10 @@ export const useProductAttributeForm = (
     groupIndex: number,
     attributeId: string,
     optionId?: string,
-    resetAttrbiteOptionIsChecked: boolean = true,
+    option: { resetAttributeOptionChecked?: boolean; updatePreSelect?: boolean } = {
+      resetAttributeOptionChecked: true,
+      updatePreSelect: true,
+    },
   ) => {
     const newState = cloneDeep(attributeGroup);
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
@@ -347,6 +350,7 @@ export const useProductAttributeForm = (
 
     newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => {
       if (!newState[groupIndex].selection) {
+        // current attribute select is equal to attribute selected
         if (attr.id === attributeId) {
           return {
             ...attr,
@@ -358,23 +362,21 @@ export const useProductAttributeForm = (
             }),
           };
         }
+
         return attr;
       }
 
-      // keep attribute selected
-      if (!resetAttrbiteOptionIsChecked) {
+      // keep prev attribute selected
+      if (!option?.resetAttributeOptionChecked) {
         return attr;
       }
-
-      // if current attribute is not equal to attribute selected
-      const isAttributeSelected = attr.id === attributeId;
 
       return {
         ...attr,
         basis_options: attr.basis_options?.map((el) => {
           return {
             ...el,
-            isChecked: el.id === optionId && isAttributeSelected,
+            isChecked: el.id === optionId && attr.id === attributeId,
           };
         }),
       };
@@ -406,10 +408,12 @@ export const useProductAttributeForm = (
         attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
       };
 
-      /// update pre-select attributes
-      selectProductSpecification(id, {
-        specification: newSpecficationRequest,
-      });
+      if (option.updatePreSelect) {
+        /// update pre-select attributes
+        selectProductSpecification(id, {
+          specification: newSpecficationRequest,
+        });
+      }
 
       dispatch(getAllPreSelectAttributes(newSpecficationRequest.attribute_groups));
     }

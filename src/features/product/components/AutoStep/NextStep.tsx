@@ -643,14 +643,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
-        const prevOptionsSelectedIds = result.map((el) => {
-          if (el.pre_option) {
-            return `${el.pre_option},${el.id}`;
-          }
-
-          return el.id;
-        });
-
         const newLinkedOptionData = [...linkedOptionData];
 
         const newPickedOption = { ...pickedOption };
@@ -677,7 +669,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         // remove option highlighted of next step
         store.dispatch(setPickedOption(newPickedOption));
 
-        let newPrevOptionsSelectedIds = [...prevOptionsSelectedIds];
+        let prevOptionsSelectedIds = result.map((el) => {
+          if (el.pre_option) {
+            return `${el.pre_option},${el.id}`;
+          }
+
+          return el.id;
+        });
 
         // remove data selected options
         map(optionsSelected, (optionData, optIndex: string) => {
@@ -686,11 +684,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           }
 
           const newNextOptionSelected = optionData.options.filter((el: any) =>
-            newPrevOptionsSelectedIds.includes(el.pre_option as string),
+            prevOptionsSelectedIds.includes(el.pre_option as string),
           );
 
           //
-          newPrevOptionsSelectedIds = newNextOptionSelected.map((el: any) => {
+          prevOptionsSelectedIds = newNextOptionSelected.map((el: any) => {
             if (el.pre_option) {
               return `${el.pre_option},${el.id}`;
             }
@@ -963,6 +961,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     chosenItem={currentSubLinkedOptionSelected}
                     forceEnableCollapse={forceEnableCollapse}
                     onOneChange={handleSelectLinkedOption(option)}
+                    showCollapseIcon
                     isSelectAll
                     combinable
                     canActiveMultiKey
