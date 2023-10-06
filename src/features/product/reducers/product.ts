@@ -8,7 +8,8 @@ import type {
   SortParams,
   SpecifiedDetail,
 } from '../types';
-import { OrderMethod } from '@/features/project/types';
+import { AutoStepPreSelectOnAttributeGroupResponse } from '../types/autoStep';
+import { OrderMethod, SpecificationAttributeGroup } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
@@ -23,9 +24,14 @@ interface ProductState {
   relatedProduct: RelatedCollection[];
   relatedProductOnView?: GeneralData & { relatedProductData?: RelatedCollection[] };
   list: ProductList;
+  curAttrGroupCollapseId?: {
+    [key: string]: string;
+  };
+  allPreSelectAttributes: SpecificationAttributeGroup[];
 }
 
 const initialState: ProductState = {
+  allPreSelectAttributes: [],
   details: {
     id: '',
     name: '',
@@ -42,6 +48,7 @@ const initialState: ProductState = {
       attributes: [],
     },
     categories: [],
+    collections: [],
     referToDesignDocument: true,
     brand_location_id: '',
     distributor_location_id: '',
@@ -182,6 +189,20 @@ const productSlice = createSlice({
         state.details.specifiedDetail.finish_schedules = [...action.payload];
       }
     },
+    setCurAttrGroupCollapse: (state, action: PayloadAction<{ [key: string]: string }>) => {
+      state.curAttrGroupCollapseId = { ...state.curAttrGroupCollapseId, ...action.payload };
+    },
+
+    getAllPreSelectAttributes: (state, action: PayloadAction<SpecificationAttributeGroup[]>) => {
+      state.allPreSelectAttributes = action.payload;
+    },
+
+    closeActiveSpecAttributeGroup: (state) => {
+      state.curAttrGroupCollapseId = {
+        ...state.curAttrGroupCollapseId,
+        ['specification_attribute_groups']: '',
+      };
+    },
   },
 });
 
@@ -203,6 +224,9 @@ export const {
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
   setFinishScheduleData,
+  setCurAttrGroupCollapse,
+  closeActiveSpecAttributeGroup,
+  getAllPreSelectAttributes,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
@@ -212,13 +236,14 @@ const productSpecificationSelector = (state: RootState) =>
 
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
   let variants = '';
+
   specGroup.forEach((el) => {
     if (!el.isChecked) {
       return;
     }
 
-    el.attributes.forEach((attr) => {
-      attr.basis_options?.some((opt) => {
+    el?.attributes?.forEach((attr) => {
+      attr.basis_options?.forEach((opt) => {
         if (opt.isChecked) {
           const dash = opt.option_code === '' ? '' : ' - ';
           variants += opt.option_code + dash;
@@ -227,6 +252,16 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
         return false;
       });
     });
+
+    (el?.steps as AutoStepPreSelectOnAttributeGroupResponse[])?.forEach((step) => {
+      step?.options?.forEach((option) => {
+        for (let q = 0; q < option.quantity; q++) {
+          const dash = option.product_id === '' ? '' : ' - ';
+          variants += option.product_id + dash;
+        }
+      });
+    });
   });
+
   return variants.length > 2 ? variants.slice(0, -2) : variants;
 });

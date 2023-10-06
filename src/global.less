@@ -241,6 +241,14 @@ button {
   flex-grow: 1;
 }
 
+.align-item-flex-start {
+  align-items: flex-start;
+}
+
+.row-reverse {
+  flex-direction: row-reverse;
+}
+
 .justify-between {
   justify-content: space-between;
 }
@@ -301,8 +309,51 @@ li.ant-menu-submenu {
   user-select: none;
 }
 
+.ant-radio-inner {
+  width: 18px;
+  height: 18px;
+  border-color: @mono-color;
+}
+
+.ant-radio-checked .ant-radio-input:focus + .ant-radio-inner,
+.ant-radio-checked .ant-radio:hover .ant-radio-inner,
+.ant-radio-checked .ant-radio-inner {
+  border-color: @primary-color-dark;
+}
+
+.ant-radio-checked::after {
+  animation: none;
+}
+
+.ant-radio:hover::after,
+.ant-radio-wrapper:hover .ant-radio::after {
+  visibility: hidden;
+}
+
+.ant-radio-checked .ant-radio-inner::after {
+  transform: scale(0.7);
+}
+
+.ant-radio.ant-radio-disabled .ant-radio-inner {
+  border-color: @mono-color-medium !important;
+  cursor: default;
+}
+
+.ant-radio-inner::after {
+  background-color: @primary-color-dark;
+}
+
+.ant-radio-input:focus + .ant-radio-inner {
+  box-shadow: unset;
+}
+
 .ant-dropdown-trigger {
   cursor: pointer;
+}
+
+.ant-input:focus,
+.ant-input-focused {
+  border-color: transparent;
 }
 
 .ant-table tr > td,
@@ -318,6 +369,17 @@ li.ant-menu-submenu {
   background: #f5f5f5;
 }
 
+.unTick {
+  .ant-checkbox.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: transparent;
+    border-color: #000;
+  }
+
+  .ant-checkbox-checked .ant-checkbox-inner::after {
+    opacity: 0;
+  }
+}
+
 .ant-checkbox.ant-checkbox-checked .ant-checkbox-inner {
   background-color: #2b39d4;
   border-color: #2b39d4;
@@ -325,6 +387,10 @@ li.ant-menu-submenu {
 .ant-checkbox .ant-checkbox-inner {
   border-color: #000;
   border-radius: 0;
+}
+
+.ant-collapse {
+  background: transparent;
 }
 
 .border-top {

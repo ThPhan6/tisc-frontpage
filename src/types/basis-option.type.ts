@@ -6,6 +6,7 @@ export interface SubBasisOption {
   value_2: string;
   unit_1: string;
   unit_2: string;
+  replicate: number;
   isBase64?: boolean;
   product_id: string;
   paired: number;

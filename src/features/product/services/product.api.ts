@@ -13,7 +13,7 @@ import {
   setProductList,
   setProductSummary,
   setRelatedProduct,
-} from '../reducers/slices';
+} from '../reducers/product';
 import {
   BrandSummary,
   GetListProductForDesignerRequestParams,
@@ -25,6 +25,7 @@ import {
   ProductSummary,
   RelatedCollection,
 } from '../types';
+import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { PaginationResponse } from '@/components/Table/types';
 import { SelectSpecificationBodyRequest } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
@@ -32,6 +33,7 @@ import store from '@/reducers';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
+import { getAutoStepData } from './autoStep.api';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export async function getProductSummary(brandId: string) {
@@ -218,15 +220,37 @@ export const getProductById = async (productId: string) => {
 
 export const updateProductCard = async (productId: string, data: ProductFormData) => {
   showPageLoading();
+
   return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
     method: 'PUT',
     data,
   })
-    .then((res) => {
+    .then(async (res) => {
       hidePageLoading();
-      getProductById(productId);
+      // getProductById(productId);
+
+      const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
+      const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
+
+      const isGroupStep = data.specification_attribute_groups.some(
+        (group) => group.id === currentSpecAttributeGroupId && group.steps?.length,
+      );
+
+      let autoStepData: AutoStepOnAttributeGroupResponse[] = [];
+
+      if (isGroupStep) {
+        autoStepData = currentSpecAttributeGroupId
+          ? await getAutoStepData(productId, currentSpecAttributeGroupId)
+          : [];
+      }
+
+      const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
+        autoStepData?.length ? { ...el, steps: autoStepData } : el,
+      );
+
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
-      return res.data;
+
+      return { ...res.data, specification_attribute_groups: newSpecificationAttributeGroup };
     })
     .catch((error) => {
       hidePageLoading();

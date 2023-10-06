@@ -17,9 +17,7 @@ export interface RadioListOption {
 interface GroupRadioListProps {
   data: RadioListOption[];
   selected?: RadioValue;
-  chosenItem?: RadioValue;
   onChange?: (value: RadioValue) => void;
-  noCollapse?: boolean;
 }
 
 const GroupRadioList: React.FC<GroupRadioListProps> = (props) => {

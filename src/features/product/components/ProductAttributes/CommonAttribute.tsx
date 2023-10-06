@@ -15,7 +15,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
-import styles from './AttributeItem.less';
+import styles from './ProductAttributeSubItem.less';
 
 interface AttributeOptionProps {
   title: string;
@@ -26,7 +26,11 @@ interface AttributeOptionProps {
   clearOnClose?: boolean;
   isPublicPage: boolean;
 }
-export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) => {
+export const AttributeOptionLabel: FC<{
+  className?: string;
+  hasBoxShadow?: boolean;
+  option: any;
+}> = ({ option, className = '', hasBoxShadow = true, children }) => {
   const currentUser = useGetUserRoleFromPathname();
   const isTISC = currentUser === USER_ROLE.tisc;
 
@@ -34,12 +38,14 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
     option.value_2
   } ${option.unit_2}`;
   return (
-    <div className={styles.defaultOptionImageList}>
-      <div
-        className={`${styles.boxShadowOptionImage} ${
-          isTISC ? styles.widthCheckboxImage : styles.widthOptionImage
-        }`}
-      ></div>
+    <div className={`${styles.defaultOptionImageList} option-attribute-label ${className}`}>
+      {hasBoxShadow ? (
+        <div
+          className={`${styles.boxShadowOptionImage} ${
+            isTISC ? styles.widthCheckboxImage : styles.widthOptionImage
+          }`}
+        ></div>
+      ) : null}
       {!option.image || option.image == '' ? null : <img src={showImageUrl(option.image)} />}
       <div className="option-image-list-wrapper">
         <BodyText

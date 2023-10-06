@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import servicesReducer from '@/features/services/reducer';
 
+import { autoStepReducer } from './../features/product/reducers/autoStep';
 import { categoryReducer } from '@/features/categories/reducers';
 import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
@@ -35,6 +36,7 @@ const reducers = combineReducers({
   active: activeReducer,
   quotation: quotationReducer,
   linkage: linkageReducer,
+  autoStep: autoStepReducer,
 });
 
 const persistConfig = {

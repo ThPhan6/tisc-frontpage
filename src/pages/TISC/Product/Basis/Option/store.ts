@@ -1,4 +1,4 @@
-import { flatMap, pick, sum, uniq, uniqBy, xor } from 'lodash';
+import { flatMap, uniq, uniqBy, xor } from 'lodash';
 
 import { RootState } from '@/reducers';
 import { BasisOptionForm, BasisOptionSubForm } from '@/types';
