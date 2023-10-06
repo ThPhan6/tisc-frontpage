@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Collapse } from 'antd';
 
@@ -87,30 +87,97 @@ export const ContentOptionTypeDetail: FC<{
   onChange: (radioValue: RadioValue) => void;
   value: any;
 }> = ({ options, onChange, value }) => {
+  const [mainOptionKey, setMainOptionKey] = useState<string>('');
+  const [optionKey, setOptionKey] = useState<string>('');
+
+  useEffect(() => {
+    let mainOptionKeyCollapse = '';
+    let optionKeyCollapse = '';
+
+    options.forEach((main) => {
+      if (mainOptionKeyCollapse && optionKeyCollapse) {
+        return;
+      }
+
+      main.subs?.forEach((option) => {
+        if (mainOptionKeyCollapse && optionKeyCollapse) {
+          return;
+        }
+
+        option.subs?.forEach((sub) => {
+          if (mainOptionKeyCollapse && optionKeyCollapse) {
+            return;
+          }
+
+          if (sub.id === value) {
+            mainOptionKeyCollapse = main.id;
+            optionKeyCollapse = option.id;
+          }
+        });
+      });
+    });
+
+    setMainOptionKey(mainOptionKeyCollapse);
+    setOptionKey(optionKeyCollapse);
+  }, [options]);
+
+  useEffect(() => {
+    return () => {
+      setMainOptionKey('');
+      setOptionKey('');
+    };
+  }, []);
+
+  const handleCollapseMainOption = (key: string | string[]) => {
+    if (typeof key === 'string') {
+      setMainOptionKey(key);
+    } else {
+      setMainOptionKey(key?.[0]);
+    }
+  };
+
+  const handleCollapseOption = (key: string | string[]) => {
+    if (typeof key === 'string') {
+      setOptionKey(key);
+    } else {
+      setOptionKey(key?.[0]);
+    }
+  };
+
   return (
-    <Collapse {...CollapseLevel1Props}>
-      {options.map((item, index) => (
+    <Collapse
+      {...CollapseLevel1Props}
+      activeKey={mainOptionKey}
+      accordion
+      onChange={handleCollapseMainOption}
+    >
+      {options.map((item) => (
         <Collapse.Panel
+          key={item.id}
+          collapsible={item.count === 0 ? 'disabled' : undefined}
           header={
             <div className="flex-center">
               <span className="text-uppercase">{item.name}</span>
               <span style={{ marginLeft: 8 }}>({item.count})</span>
             </div>
           }
-          key={index}
-          collapsible={item.count === 0 ? 'disabled' : undefined}
         >
-          <Collapse {...CollapseLevel1Props}>
-            {item?.subs?.map((opt, idx) => (
+          <Collapse
+            {...CollapseLevel1Props}
+            accordion
+            activeKey={optionKey}
+            onChange={handleCollapseOption}
+          >
+            {item?.subs?.map((opt) => (
               <Collapse.Panel
+                key={opt.id}
+                collapsible={opt.count === 0 ? 'disabled' : undefined}
                 header={
                   <div className="flex-center">
                     <span className="text-uppercase">{opt.name}</span>
                     <span style={{ marginLeft: 8 }}>({opt.count})</span>
                   </div>
                 }
-                key={`${index}-${idx}`}
-                collapsible={opt.count === 0 ? 'disabled' : undefined}
               >
                 <CustomRadio
                   options={

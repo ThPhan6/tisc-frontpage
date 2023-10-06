@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
@@ -218,17 +218,27 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   });
   /// set active tab
   let selectedTab = listTab[0];
-  if (!isUndefined(subAttribute.content_type)) {
-    const selected = listTab.find((item) => {
-      return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
-    });
-    if (selected) {
-      selectedTab = selected;
-    }
-  }
+
   const [activeTab, setActiveTab] = useState<ACTIVE_TAB>(selectedTab.key as ACTIVE_TAB);
 
   const tab = activeTab === 'text' ? 'texts' : activeTab;
+
+  useEffect(() => {
+    /// update option selected
+    setSelectedOption({ basis_id: subAttribute.basis_id });
+
+    if (!isUndefined(subAttribute.content_type)) {
+      const selected = listTab.find((item) => {
+        return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
+      });
+
+      if (selected) {
+        selectedTab = selected;
+      }
+    }
+
+    setActiveTab(selectedTab.key as ACTIVE_TAB);
+  }, [subAttribute]);
 
   return (
     <>
