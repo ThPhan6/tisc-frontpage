@@ -961,6 +961,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     chosenItem={currentSubLinkedOptionSelected}
                     forceEnableCollapse={forceEnableCollapse}
                     onOneChange={handleSelectLinkedOption(option)}
+                    showCollapseIcon
                     isSelectAll
                     combinable
                     canActiveMultiKey
