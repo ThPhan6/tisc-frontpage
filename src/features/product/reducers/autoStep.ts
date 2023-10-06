@@ -104,7 +104,7 @@ const autoStepSlice = createSlice({
       state.newLeftPanelData = action.payload;
     },
 
-    setFisrtOptionSelected(state, action: PayloadAction<string>) {
+    setFirstOptionSelected(state, action: PayloadAction<string>) {
       state.firstOptionSelected = action.payload;
     },
 
@@ -232,7 +232,7 @@ export const {
   /// Brand/Designer
   setStepData,
   setPreSelectStep,
-  setFisrtOptionSelected,
+  setFirstOptionSelected,
   setNewLeftPanelData,
 } = autoStepSlice.actions;
 
