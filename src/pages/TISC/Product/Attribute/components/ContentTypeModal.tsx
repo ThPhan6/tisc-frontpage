@@ -22,13 +22,7 @@ import { CustomTabs } from '@/components/Tabs';
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
 import { SelectedItem } from './AttributeEntryForm';
-import {
-  ContentOptionTypeDetail,
-  ContentTypeDetail,
-  formatBasisText,
-  formatConversionGroup,
-  formatPresetGroup,
-} from './util';
+import { ContentOptionTypeDetail, ContentTypeDetail, formatBasisText } from './util';
 
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
@@ -144,18 +138,6 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     return;
   };
 
-  const renderOptions = (option: any) => {
-    if (type === 'presets') {
-      return formatPresetGroup(option);
-    }
-
-    if (type === 'conversions') {
-      return formatConversionGroup(option);
-    }
-
-    return [] as RadioValue[];
-  };
-
   const newData = [...data].filter((item: any) => !isEmpty(item.subs));
 
   if (type === 'options') {
@@ -168,17 +150,16 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     );
   }
 
-  /// the others
-  return newData.map((option: any, idx) => (
+  /// type conversion or preset
+  return (
     <ContentTypeDetail
-      key={idx}
-      index={idx}
       onChange={onChange}
-      options={renderOptions(option.subs)}
+      options={newData as BasisPresetOption[]}
+      type={type}
+      // options={renderOptions(option.subs)}
       value={selectedOption.basis_id}
-      option={option}
     />
-  ));
+  );
 };
 
 interface ContentTypeModalProps {

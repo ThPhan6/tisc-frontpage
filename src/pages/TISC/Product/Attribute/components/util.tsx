@@ -54,31 +54,83 @@ export const formatConversionGroup = (items: BasisConventionOption[]): RadioValu
 //
 
 export const ContentTypeDetail: FC<{
-  index: number;
-  option: any;
+  type: 'conversions' | 'presets';
   options: any[];
   onChange: (radioValue: RadioValue) => void;
   value: any;
-}> = ({ option, options, index, onChange, value }) => {
-  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck('content-type', index);
+}> = ({ options, onChange, value, type }) => {
+  const [optionKey, setOptionKey] = useState<string>('');
+
+  useEffect(() => {
+    let collapseKey = '';
+
+    options?.forEach((el) => {
+      if (collapseKey) {
+        return;
+      }
+
+      el?.subs?.forEach((sub: any) => {
+        if (collapseKey) {
+          return;
+        }
+
+        if (sub.id === value) {
+          collapseKey = el.id;
+        }
+      });
+    });
+
+    setOptionKey(collapseKey);
+  }, [options]);
+
+  const handleCollapseOption = (key: string | string[]) => {
+    if (typeof key === 'string') {
+      setOptionKey(key);
+    } else {
+      setOptionKey(key?.[0]);
+    }
+  };
+
+  const renderOptions = (option: any) => {
+    if (type === 'presets') {
+      return formatPresetGroup(option);
+    }
+
+    if (type === 'conversions') {
+      return formatConversionGroup(option);
+    }
+
+    return [] as RadioValue[];
+  };
 
   return (
-    <CustomCollapse
-      header={
-        <div className="flex-center">
-          <span className="text-uppercase">{option.name}</span>
-          <span style={{ marginLeft: 8 }}>({option.count})</span>
-        </div>
-      }
-      className="site-collapse-custom-panel"
-      arrowAlignRight
-      noBorder
-      noPadding
-      activeKey={curActiveKey}
-      onChange={onKeyChange}
+    <Collapse
+      {...CollapseLevel1Props}
+      className="conversion-preset-collapse"
+      accordion
+      activeKey={optionKey}
+      onChange={handleCollapseOption}
     >
-      <CustomRadio options={options} value={value} onChange={onChange} isRadioList />
-    </CustomCollapse>
+      {options?.map((option) => (
+        <Collapse.Panel
+          key={option.id}
+          collapsible={option?.count === 0 ? 'disabled' : undefined}
+          header={
+            <div className="flex-center">
+              <span className="text-uppercase">{option.name}</span>
+              <span style={{ marginLeft: 8 }}>({option.count})</span>
+            </div>
+          }
+        >
+          <CustomRadio
+            options={renderOptions(option.subs)}
+            value={value}
+            onChange={onChange}
+            isRadioList
+          />
+        </Collapse.Panel>
+      ))}
+    </Collapse>
   );
 };
 
