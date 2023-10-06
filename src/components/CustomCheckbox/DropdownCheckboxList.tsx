@@ -34,6 +34,7 @@ interface DropdownCheckboxListProps {
   canActiveMultiKey?: boolean;
   isSelectAll?: boolean;
   forceEnableCollapse?: boolean;
+  showCollapseIcon?: boolean;
 }
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const {
@@ -50,6 +51,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     canActiveMultiKey,
     forceEnableCollapse = true,
     isSelectAll,
+    showCollapseIcon,
   } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
@@ -193,7 +195,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
             ''
           )}
 
-          {isSelectAll ? (
+          {showCollapseIcon ? (
             (
               typeof activeKey === 'string' || typeof activeKey === 'number'
                 ? String(activeKey) === item?.id ?? String(index)
@@ -240,7 +242,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       bordered={false}
       expandIconPosition="right"
       expandIcon={({ isActive }) =>
-        isSelectAll ? undefined : isActive ? <DropupIcon /> : <DropdownIcon />
+        showCollapseIcon ? undefined : isActive ? <DropupIcon /> : <DropdownIcon />
       }
       className={`${styles.dropdownList} ${
         isSelectAll ? styles.collapseSelectAll : ''
