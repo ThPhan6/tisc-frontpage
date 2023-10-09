@@ -844,17 +844,16 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                             <div className={`${isPublicPage ? '' : 'flex-between'}`}>
                               <div className="flex-start flex-grow">
                                 <BodyText
-                                  fontFamily="Roboto"
-                                  level={5}
+                                  fontFamily="Cormorant-Garamond"
+                                  level={3}
                                   style={{
                                     minWidth: 'fit-content',
-                                    paddingRight: 12,
-                                    paddingLeft: 16,
+                                    padding: '0 12px 2px 16px',
                                   }}
                                 >
                                   {step.order < 10 ? `0${step.order}` : step.order}
-                                </BodyText>{' '}
-                                <BodyText fontFamily="Roboto" level={5}>
+                                </BodyText>
+                                <BodyText fontFamily="Cormorant-Garamond" level={3}>
                                   {step.name}
                                 </BodyText>
                               </div>
@@ -874,7 +873,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 <tr key={option.id}>
                                   <td>
                                     <div className={styles.autoStepOption}>
-                                      <BodyText fontFamily="Roboto" level={5}>
+                                      <BodyText fontFamily="Roboto" level={6}>
                                         {trimEnd(
                                           `${option.value_1} ${option.value_2} ${
                                             option.unit_1 || option.unit_2
