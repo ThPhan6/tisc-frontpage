@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
@@ -22,13 +22,7 @@ import { CustomTabs } from '@/components/Tabs';
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
 import { SelectedItem } from './AttributeEntryForm';
-import {
-  ContentOptionTypeDetail,
-  ContentTypeDetail,
-  formatBasisText,
-  formatConversionGroup,
-  formatPresetGroup,
-} from './util';
+import { ContentOptionTypeDetail, ContentTypeDetail, formatBasisText } from './util';
 
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
@@ -144,18 +138,6 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     return;
   };
 
-  const renderOptions = (option: any) => {
-    if (type === 'presets') {
-      return formatPresetGroup(option);
-    }
-
-    if (type === 'conversions') {
-      return formatConversionGroup(option);
-    }
-
-    return [] as RadioValue[];
-  };
-
   const newData = [...data].filter((item: any) => !isEmpty(item.subs));
 
   if (type === 'options') {
@@ -168,17 +150,16 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     );
   }
 
-  /// the others
-  return newData.map((option: any, idx) => (
+  /// type conversion or preset
+  return (
     <ContentTypeDetail
-      key={idx}
-      index={idx}
       onChange={onChange}
-      options={renderOptions(option.subs)}
+      options={newData as BasisPresetOption[]}
+      type={type}
+      // options={renderOptions(option.subs)}
       value={selectedOption.basis_id}
-      option={option}
     />
-  ));
+  );
 };
 
 interface ContentTypeModalProps {
@@ -218,17 +199,27 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   });
   /// set active tab
   let selectedTab = listTab[0];
-  if (!isUndefined(subAttribute.content_type)) {
-    const selected = listTab.find((item) => {
-      return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
-    });
-    if (selected) {
-      selectedTab = selected;
-    }
-  }
+
   const [activeTab, setActiveTab] = useState<ACTIVE_TAB>(selectedTab.key as ACTIVE_TAB);
 
   const tab = activeTab === 'text' ? 'texts' : activeTab;
+
+  useEffect(() => {
+    /// update option selected
+    setSelectedOption({ basis_id: subAttribute.basis_id });
+
+    if (!isUndefined(subAttribute.content_type)) {
+      const selected = listTab.find((item) => {
+        return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
+      });
+
+      if (selected) {
+        selectedTab = selected;
+      }
+    }
+
+    setActiveTab(selectedTab.key as ACTIVE_TAB);
+  }, [subAttribute]);
 
   return (
     <>

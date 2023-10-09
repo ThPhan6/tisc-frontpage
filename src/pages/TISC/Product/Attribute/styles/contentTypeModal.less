@@ -1,5 +1,7 @@
 @import '~antd/es/style/variable.less';
 
+/* stylelint-disable selector-pseudo-class-parentheses-space-inside */
+
 .contentTypeModalWrapper {
   @height: 48px;
   .contentTypeFooter {
@@ -138,6 +140,27 @@
   // :global(.ant-space-item) {
   //   min-height: 40px;
   // }
+
+  :global(.conversion-preset-collapse) {
+    :global(.ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
+      right: 0;
+    }
+
+    :global(.ant-collapse-item > .ant-collapse-header) {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0;
+    }
+
+    :global(.ant-collapse-item.ant-collapse-item-active) {
+      border-bottom: unset;
+    }
+
+    :global(.ant-collapse-content-box) {
+      padding: 0;
+    }
+  }
 
   @media screen and (max-width: @screen-sm) {
     padding: 12px;
