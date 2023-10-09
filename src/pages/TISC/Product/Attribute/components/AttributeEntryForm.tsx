@@ -192,6 +192,7 @@ const AttributeEntryForm = () => {
         basis_id: sub.basis_id,
       };
     });
+
     handleSubmit({ ...data, type: attributeLocation.TYPE, subs: newSubs });
   };
 
