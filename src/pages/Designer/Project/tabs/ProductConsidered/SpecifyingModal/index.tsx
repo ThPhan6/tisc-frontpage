@@ -37,6 +37,7 @@ interface SpecifyingModalProps {
   projectId: string;
   product: ProductItem;
   reloadTable: () => void;
+  isSpecified?: boolean;
 }
 
 export const SpecifyingModal: FC<SpecifyingModalProps> = ({
@@ -45,12 +46,15 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   product,
   projectId,
   reloadTable,
+  isSpecified,
 }) => {
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
 
   const customProduct = product.specifiedDetail?.custom_product ? true : false;
+
+  const productId = useAppSelector(productVariantsSelector);
 
   const productDetail = useAppSelector((state) => state.product.details);
   const customProductDetail = useAppSelector((state) => state.customProduct.details);
@@ -60,7 +64,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
 
   const referToDesignDocument: boolean = customProduct
     ? specifiedDetail?.specification.is_refer_document
-    : curProduct.referToDesignDocument;
+    : (curProduct as any).referToDesignDocument;
+
   // console.log('specifiedDetail', specifiedDetail);
   // console.log('referToDesignDocument', referToDesignDocument);
 
@@ -69,10 +74,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   );
   const brandLocationId: string = customProduct
     ? specifiedDetail?.brand_location_id
-    : curProduct.brand_location_id;
+    : (curProduct as any).brand_location_id;
   const distributorLocationId: string = customProduct
     ? specifiedDetail?.distributor_location_id
-    : curProduct.distributor_location_id;
+    : (curProduct as any).distributor_location_id;
 
   const finishSchedulesData = specifiedDetail?.finish_schedules;
 
@@ -112,6 +117,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   };
 
   const onSubmit = () => {
+    console.log('specification_attribute_groups', specification_attribute_groups);
+
     if (!specifiedDetail) {
       return;
     }
@@ -131,6 +138,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Brand location is required');
       return;
     }
+
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
@@ -165,8 +173,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       );
     }
   };
-
-  const productId = useAppSelector(productVariantsSelector);
 
   return (
     <CustomModal
@@ -223,6 +229,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           productId={product.id}
           customProduct={customProduct}
           referToDesignDocument={referToDesignDocument}
+          isSpecified={isSpecified}
         />
       </CustomTabPane>
 

@@ -83,10 +83,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   attrGroupItem,
   groupIndex,
   attributes,
-  specifying,
+  // specifying,
   noBorder,
   curProductId,
-  isSpecifiedModal,
+  isSpecifiedModal, /// using for both specifing modal on product considered and product specified
+  isSpecified, /// using for specifying modal on product specified
   icon,
 }) => {
   const isTablet = useScreen().isTablet;
@@ -106,6 +107,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
+  const isBrandAdmin = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
@@ -121,8 +123,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
-  const productId = useGetParamId();
-
   const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups } = details;
 
@@ -136,7 +136,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const showTISCAutoSteps = !isPublicPage && isEditable;
 
   const inactiveAutoSteps =
-    isDesignerAdmin ||
     !currentSpecAttributeGroupId ||
     currentSpecAttributeGroupId !== attrGroupItem.id ||
     currentSpecAttributeGroupId?.indexOf('new') !== -1 /* new group */ ||
@@ -178,7 +177,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     if (showTISCAutoSteps) {
-      getAutoStepData(productId, currentSpecAttributeGroupId).then((res) => {
+      getAutoStepData(curProductId, currentSpecAttributeGroupId).then((res) => {
         const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
           el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
         );
@@ -195,18 +194,19 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     /// cheking in public page
     if (
-      user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
-      user?.access_level.toLocaleLowerCase() === 'consultant team'
+      isPublicPage &&
+      (user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
+        user?.access_level.toLocaleLowerCase() === 'consultant team')
     ) {
       return;
     }
 
-    getAutoStepData(productId, currentSpecAttributeGroupId).then(async (res) => {
+    getAutoStepData(curProductId, currentSpecAttributeGroupId).then(async (res) => {
       if (res) {
         const preSelectSteps: AutoStepPreSelectOptionResponse[] = await getPreSelectStep(
-          user?.id as string,
-          productId,
+          curProductId,
           currentSpecAttributeGroupId,
+          isSpecified ? { projectId: curProductId } : { userId: user?.id as string },
         );
 
         const newRes = [...res];
@@ -271,7 +271,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
-    if (!productId) {
+    if (!curProductId) {
       message.error('Product ID is required');
       return;
     }
@@ -437,7 +437,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   const handleOpenPreSelectAutoStepModal = (stepIndex: number) => () => {
-    if (!productId) {
+    if (!curProductId) {
       message.error('Product ID is required');
       return;
     }
@@ -785,13 +785,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           <CustomCollapse
             activeKey={curAttrGroupCollapseId?.[attributeGroupKey] === attrGroupItem.id ? '1' : ''}
             onChange={handleOnChangeCollapse}
-            showActiveBoxShadow={!specifying}
+            showActiveBoxShadow={!isSpecifiedModal}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"
-            arrowAlignRight={specifying}
+            arrowAlignRight={isSpecifiedModal}
             className={isTiscAdmin ? undefined : styles.vendorSection}
             customHeaderClass={`${styles.productAttributeItem} ${
-              specifying ? styles.specifying : ''
+              isSpecifiedModal ? styles.specifying : ''
             }`}
             header={renderCollapseHeader(groupIndex)}
           >
@@ -849,11 +849,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                   style={{
                                     minWidth: 'fit-content',
                                     paddingRight: 12,
-                                    paddingLeft: 16,
+                                    paddingLeft: isSpecifiedModal ? 0 : 16,
                                   }}
                                 >
                                   {step.order < 10 ? `0${step.order}` : step.order}
-                                </BodyText>{' '}
+                                </BodyText>
                                 <BodyText fontFamily="Roboto" level={5}>
                                   {step.name}
                                 </BodyText>
@@ -861,7 +861,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                               {isPublicPage ? null : (
                                 <div className="flex-start">
-                                  <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                                  <ActionRightLeftIcon
+                                    style={{
+                                      marginLeft: 12,
+                                      marginRight: isSpecifiedModal ? 0 : 16,
+                                    }}
+                                  />
                                 </div>
                               )}
                             </div>
@@ -873,7 +878,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                               option.quantity > 0 ? (
                                 <tr key={option.id}>
                                   <td>
-                                    <div className={styles.autoStepOption}>
+                                    <div
+                                      className={styles.autoStepOption}
+                                      style={{
+                                        padding: isSpecifiedModal ? '0 0 0 28px' : '0 8px 0 44px',
+                                      }}
+                                    >
                                       <BodyText fontFamily="Roboto" level={5}>
                                         {trimEnd(
                                           `${option.value_1} ${option.value_2} ${
@@ -893,7 +903,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 </tr>
                               ) : null,
                             )}
-                        <tr className="border-bottom-light" style={{ height: 2, width: '100%' }} />
+                        {isSpecifiedModal && stepIndex === autoSteps.length - 1 ? null : (
+                          <tr
+                            className="border-bottom-light"
+                            style={{ height: 2, width: '100%' }}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}
@@ -935,7 +950,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             setVisible={setAutoStepModal}
           />
         ) : (
-          <PreSelectStep visible={autoStepModal} setVisible={setAutoStepModal} />
+          <PreSelectStep
+            visible={autoStepModal}
+            setVisible={setAutoStepModal}
+            updatePreSelect={!isSpecifiedModal}
+          />
         )
       ) : null}
     </div>

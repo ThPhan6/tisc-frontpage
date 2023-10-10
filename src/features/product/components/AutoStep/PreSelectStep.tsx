@@ -8,6 +8,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
+import { getStepSelected } from '../ProductAttributes/hooks';
 import { useGetParamId } from '@/helper/hook';
 import { uniqueArrayBy } from '@/helper/utils';
 import { cloneDeep, flatMap, groupBy, isNull, isUndefined, map, sum, trimEnd } from 'lodash';
@@ -18,12 +19,14 @@ import {
   setNewLeftPanelData,
   setOptionsSelected,
   setPartialProductDetail,
+  setPartialProductSpecifiedData,
   setPickedOption,
   setPreSelectStep,
   setSlide,
 } from '../../reducers';
 import {
   AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
   AutoStepPreSelectOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
@@ -46,11 +49,12 @@ import { getIDFromPreOption, getPickedOptionGroup } from './util';
 interface PreSelectStepProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  updatePreSelect?: boolean;
 }
 
-export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) => {
+export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, updatePreSelect }) => {
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
-  const { specification_attribute_groups: specificationAttributeGroups } = details;
+  const { specification_attribute_groups: specificationAttributeGroups, specifiedDetail } = details;
   const selectProductSpecification = useSelectProductSpecification();
 
   const productId = useGetParamId();
@@ -744,7 +748,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       /* ------------------------------------ */
     };
 
-  const handleCreatePreSelectStep = () => {
+  const handleCreatePreSelectStep = async () => {
     let inValidOption = false;
     let stepError = -1;
 
@@ -853,6 +857,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       }),
     );
 
+    // console.log('allOptionSelected', allOptionSelected);
+
     const stepPayload: SpecificationPreSelectStep[] = allOptionSelected
       .filter((el) => el.options.length !== 0)
       .map((el) => ({
@@ -864,6 +870,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
           pre_option: opt.pre_option,
         })),
       }));
+
+    // console.log('stepPayload', stepPayload);
 
     const newAllPreSelectAttributes = allPreSelectAttributes.filter(
       (el) => el.id !== currentSpecAttributeGroupId,
@@ -879,13 +887,31 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       attribute_groups: newAttributeGroups,
     };
 
+    if (!updatePreSelect) {
+      /// save steps to specfified specification attribute group
+      store.dispatch(
+        setPartialProductSpecifiedData({
+          specification: newSpecfication,
+        }),
+      );
+
+      /// close modal
+      setVisible(false);
+
+      return;
+    }
+
     /// update pre-select steps
-    selectProductSpecification(productId, { specification: newSpecfication });
+    const isUpdateSuccess = await selectProductSpecification(productId, {
+      specification: newSpecfication,
+    });
 
     /// close modal
     setVisible(false);
 
-    message.success('Created pre-select step successfully');
+    if (isUpdateSuccess) {
+      message.success('Created pre-select step successfully');
+    }
   };
 
   // console.log('pickedOption', pickedOption);

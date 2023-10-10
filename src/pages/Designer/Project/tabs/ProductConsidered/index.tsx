@@ -4,7 +4,6 @@ import { COLUMN_WIDTH } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useParams } from 'umi';
 
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
 import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';

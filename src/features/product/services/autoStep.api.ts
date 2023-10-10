@@ -56,10 +56,16 @@ export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: s
     });
 };
 
-export const getPreSelectStep = (userId: string, productId: string, specificationId: string) => {
+export const getPreSelectStep = (
+  productId: string,
+  specificationId: string,
+  props: { userId?: string; projectId?: string },
+) => {
   return request<{ data: AutoStepPreSelectOptionResponse[] }>(`/api/step/configuration`, {
     method: 'GET',
-    params: { user_id: userId, product_id: productId, specification_id: specificationId },
+    params: props.userId
+      ? { user_id: props.userId, product_id: productId, specification_id: specificationId }
+      : { project_id: props.projectId, product_id: productId, specification_id: specificationId },
   })
     .then((res) => {
       return res.data;

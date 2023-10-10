@@ -44,7 +44,7 @@ export const SpecificationTab: FC<{
   isPublicPage?: boolean;
   specifying?: boolean;
   activeKey: ProductInfoTab;
-  specOptionData: any[];
+  specOptionData?: any[];
   setSpecOptionData?: (data: any) => void;
 }> = ({
   productId,
@@ -98,7 +98,7 @@ export const SpecificationTab: FC<{
     const randomId = uniqueId();
     setSpecOptionData?.((prevState: any) => [
       ...prevState,
-      { ...DEFAULT_CONTENT, sequence: specOptionData.length, id: randomId },
+      { ...DEFAULT_CONTENT, sequence: specOptionData?.length, id: randomId },
     ]);
 
     // const newSpecOptionData = [...specOptionData];
@@ -154,7 +154,7 @@ export const SpecificationTab: FC<{
     const randomId = uniqueId();
     setSpecOptionData?.((prevState: any) => [
       ...prevState,
-      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length, id: randomId },
+      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData?.length, id: randomId },
     ]);
 
     // store.dispatch(

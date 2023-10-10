@@ -31,7 +31,7 @@ import { CustomDropDown } from '@/features/product/components';
 import { setCustomProductDetail } from '../Products/CustomLibrary/slice';
 import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
 
-export const useSpecifyingModal = (tableRef: any) => {
+export const useSpecifyingModal = (tableRef: any, isSpecified?: boolean) => {
   const params = useParams<{ id: string }>();
   const [specifyingProduct, setSpecifyingProduct] = useState<ProductItem>();
 
@@ -43,6 +43,7 @@ export const useSpecifyingModal = (tableRef: any) => {
         projectId={params.id}
         setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
         reloadTable={tableRef.current?.reload}
+        isSpecified={isSpecified}
       />
     ) : null;
 

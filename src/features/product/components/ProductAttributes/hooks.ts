@@ -14,13 +14,46 @@ import {
   setStep,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
-import { OptionQuantityProps } from '../../types/autoStep';
+import {
+  AutoStepPreSelectOnAttributeGroupResponse,
+  OptionQuantityProps,
+} from '../../types/autoStep';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
-import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
+import {
+  SelectedSpecAttributte,
+  SpecificationAttributeGroup,
+  SpecificationPreSelectStep,
+} from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import { getNewDataAfterReordering } from '@/components/Drag';
+
+export const getStepSelected = (steps?: AutoStepPreSelectOnAttributeGroupResponse[]) => {
+  if (!steps?.length) {
+    return [];
+  }
+
+  // console.log('steps', steps);
+
+  const stepPayload: SpecificationPreSelectStep[] = steps
+    .filter((el) => el.options.length !== 0)
+    .map((el) => ({
+      step_id: el.id as string,
+      options: (el.options as OptionQuantityProps[])
+        // .filter((opt) => opt.quantity > 0)
+        .map((opt) => ({
+          id: opt.id,
+          /* option selected in 1st step(origin) has default quantity is 1 */
+          quantity: el.order === 1 ? 1 : opt.quantity,
+          pre_option: opt.pre_option,
+        })),
+    }));
+
+  // console.log('stepPayload', stepPayload);
+
+  return stepPayload;
+};
 
 const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
   const selectedAttributes: SelectedSpecAttributte[] = [];
@@ -51,16 +84,45 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
       );
 
       if (haveAttributeSelected) {
-        specState.push({
-          id: gr.id || '',
-          attributes: getSelectedAttributeAndOption([haveAttributeSelected]),
-        });
+        if (gr.id && gr.attributes?.length) {
+          const attributeGroup = getSelectedAttributeAndOption([haveAttributeSelected]) ?? [];
+
+          specState.push({
+            id: gr.id,
+            attributes: attributeGroup,
+          });
+        }
+
+        if (gr.id && gr.steps?.length) {
+          const stepGroup =
+            getStepSelected(gr.steps as unknown as AutoStepPreSelectOnAttributeGroupResponse[]) ??
+            [];
+
+          specState.push({
+            id: gr.id,
+            configuration_steps: stepGroup,
+          });
+        }
       }
     } else {
-      specState.push({
-        id: gr.id || '',
-        attributes: getSelectedAttributeAndOption(gr.attributes),
-      });
+      if (gr.id && gr.attributes?.length) {
+        const attributeGroup = getSelectedAttributeAndOption(gr.attributes) ?? [];
+
+        specState.push({
+          id: gr.id,
+          attributes: attributeGroup,
+        });
+      }
+
+      if (gr.id && gr.steps?.length) {
+        const stepGroup =
+          getStepSelected(gr.steps as unknown as AutoStepPreSelectOnAttributeGroupResponse[]) ?? [];
+
+        specState.push({
+          id: gr.id || '',
+          configuration_steps: stepGroup,
+        });
+      }
     }
   });
 
@@ -152,6 +214,8 @@ export const useProductAttributeForm = (
     ) {
       if (props?.isSpecifiedModal) {
         dispatch(setDefaultSelectionFromSpecifiedData());
+        /// get all attributes selected
+        dispatch(getAllPreSelectAttributes(specifiedDetail?.specification.attribute_groups ?? []));
         loaded.setValue(true);
       } else if (props?.isGetProductSpecification) {
         getSelectedProductSpecification(productId).then((res) => {
@@ -161,6 +225,8 @@ export const useProductAttributeForm = (
               res.specification?.attribute_groups || [],
               attributeGroup,
             );
+
+            console.log('newSpecficationAttributeGroups', newSpecficationAttributeGroups);
 
             dispatch(
               setPartialProductDetail({
