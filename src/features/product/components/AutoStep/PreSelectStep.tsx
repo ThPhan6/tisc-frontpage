@@ -857,8 +857,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       }),
     );
 
-    // console.log('allOptionSelected', allOptionSelected);
-
     const stepPayload: SpecificationPreSelectStep[] = allOptionSelected
       .filter((el) => el.options.length !== 0)
       .map((el) => ({
@@ -870,8 +868,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
           pre_option: opt.pre_option,
         })),
       }));
-
-    // console.log('stepPayload', stepPayload);
 
     const newAllPreSelectAttributes = allPreSelectAttributes.filter(
       (el) => el.id !== currentSpecAttributeGroupId,

@@ -34,23 +34,20 @@ export const getStepSelected = (steps?: AutoStepPreSelectOnAttributeGroupRespons
     return [];
   }
 
-  // console.log('steps', steps);
-
   const stepPayload: SpecificationPreSelectStep[] = steps
     .filter((el) => el.options.length !== 0)
     .map((el) => ({
       step_id: el.id as string,
       options: (el.options as OptionQuantityProps[])
-        // .filter((opt) => opt.quantity > 0)
+        .filter((opt) => opt.quantity > 0)
         .map((opt) => ({
           id: opt.id,
           /* option selected in 1st step(origin) has default quantity is 1 */
           quantity: el.order === 1 ? 1 : opt.quantity,
           pre_option: opt.pre_option,
         })),
-    }));
-
-  // console.log('stepPayload', stepPayload);
+    }))
+    .filter((el) => el.options.length !== 0);
 
   return stepPayload;
 };

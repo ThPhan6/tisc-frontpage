@@ -134,6 +134,7 @@ export interface ProductItem {
   id: string;
   brand?: BrandDetail;
   collections: GeneralData[];
+  collection?: GeneralData;
   categories: GeneralData[];
   name: string;
   code?: string;
