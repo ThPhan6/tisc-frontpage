@@ -14,7 +14,12 @@ import { ConversionSubValueProps, GeneralData } from '@/types';
 
 import { ProductTopBarFilter } from '../components/FilterAndSorter';
 
-import { AutoStepOnAttributeGroupRequest, AutoStepOnAttributeGroupResponse } from './autoStep';
+import {
+  AutoStepOnAttributeGroupRequest,
+  AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
+  AutoStepPreSelectOptionResponse,
+} from './autoStep';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -71,10 +76,12 @@ export interface ProductAttributeFormInput {
   id: string;
   name: string;
   attributes: ProductAttributeProps[];
-  isChecked?: boolean;
-  selection: boolean;
+  configuration_steps: AutoStepPreSelectOptionResponse[]; // steps selected
+  specification_steps: AutoStepPreSelectOnAttributeGroupResponse[]; // step data
+  steps?: AutoStepOnAttributeGroupRequest[]; // render UI
+  selection: boolean; // make specification as a choice
+  isChecked?: boolean; // attribute group checked
   attribute_selected_id?: string;
-  steps?: AutoStepOnAttributeGroupRequest[];
   type?: SpecificationType; /// on specification tab
 }
 

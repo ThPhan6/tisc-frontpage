@@ -8,7 +8,6 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
-import { getStepSelected } from '../ProductAttributes/hooks';
 import { useGetParamId } from '@/helper/hook';
 import { uniqueArrayBy } from '@/helper/utils';
 import { cloneDeep, flatMap, groupBy, isNull, isUndefined, map, sum, trimEnd } from 'lodash';
@@ -26,7 +25,6 @@ import {
 } from '../../reducers';
 import {
   AutoStepOnAttributeGroupResponse,
-  AutoStepPreSelectOnAttributeGroupResponse,
   AutoStepPreSelectOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
@@ -54,7 +52,7 @@ interface PreSelectStepProps {
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, updatePreSelect }) => {
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
-  const { specification_attribute_groups: specificationAttributeGroups, specifiedDetail } = details;
+  const { specification_attribute_groups: specificationAttributeGroups } = details;
   const selectProductSpecification = useSelectProductSpecification();
 
   const productId = useGetParamId();

@@ -4,10 +4,10 @@ import { message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { getAutoStepData, getLinkedOptionByOptionIds, getPreSelectStep } from '../../services';
+import { getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
+import { useCheckPermission, useQuery } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
@@ -19,7 +19,6 @@ import {
   setCurAttrGroupCollapse,
   setLinkedOptionData,
   setOptionsSelected,
-  setPartialProductDetail,
   setPickedOption,
   setPreSelectStep,
   setSlide,
@@ -32,12 +31,10 @@ import {
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
-  SpecificationType,
 } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,
   AutoStepPreSelectOnAttributeGroupResponse,
-  AutoStepPreSelectOptionResponse,
   LinkedOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
@@ -103,11 +100,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     isSpecifiedModal,
   });
 
-  const user = useAppSelector((state) => state.user.user);
+  // const user = useAppSelector((state) => state.user.user);
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
-  const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
-  const isBrandAdmin = useCheckPermission(['Brand Admin', 'Brand Team']);
+  // const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
+  // const isBrandAdmin = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
@@ -123,25 +120,25 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
-  const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
-  const { specification_attribute_groups } = details;
+  const { curAttrGroupCollapseId } = useAppSelector((state) => state.product);
 
-  const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+  // const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
 
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
+  // const autoSteps = curStepSelect;
   const autoSteps = (sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
   const showTISCAutoSteps = !isPublicPage && isEditable;
 
-  const inactiveAutoSteps =
-    !currentSpecAttributeGroupId ||
-    currentSpecAttributeGroupId !== attrGroupItem.id ||
-    currentSpecAttributeGroupId?.indexOf('new') !== -1 /* new group */ ||
-    attributeGroupKey !== 'specification_attribute_groups' ||
-    attrGroupItem?.steps?.length ||
-    attrGroupItem.type !== SpecificationType.autoStep;
+  // const inactiveAutoSteps =
+  //   !currentSpecAttributeGroupId ||
+  //   currentSpecAttributeGroupId !== attrGroupItem.id ||
+  //   currentSpecAttributeGroupId?.indexOf('new') !== -1 /* new group */ ||
+  //   attributeGroupKey !== 'specification_attribute_groups' ||
+  //   attrGroupItem?.steps?.length;
+  // || attrGroupItem.type !== SpecificationType.autoStep;
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -169,94 +166,96 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         }
       });
     }
-  }, [attrGroupItem]);
+  }, [attrGroupItem, attributeGroupKey]);
 
-  useEffect(() => {
-    if (inactiveAutoSteps) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (inactiveAutoSteps) {
+  //     return;
+  //   }
 
-    if (showTISCAutoSteps) {
-      getAutoStepData(curProductId, currentSpecAttributeGroupId).then((res) => {
-        const newSpecificationAttributeGroup = [...specification_attribute_groups].map((el) =>
-          el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
-        );
+  //   if (showTISCAutoSteps) {
+  //     getAutoStepData(curProductId, currentSpecAttributeGroupId).then((res) => {
+  //       const newSpecificationAttributeGroup = [...specficationAttributeGroup].map((el) =>
+  //         el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
+  //       );
 
-        store.dispatch(
-          setPartialProductDetail({
-            specification_attribute_groups: newSpecificationAttributeGroup,
-          }),
-        );
-      });
+  //       store.dispatch(
+  //         setPartialProductDetail({
+  //           specification_attribute_groups: newSpecificationAttributeGroup,
+  //         }),
+  //       );
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    /// cheking in public page
-    if (
-      isPublicPage &&
-      (user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
-        user?.access_level.toLocaleLowerCase() === 'consultant team')
-    ) {
-      return;
-    }
+  //   /// cheking in public page
+  //   if (
+  //     isPublicPage &&
+  //     (user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
+  //       user?.access_level.toLocaleLowerCase() === 'consultant team')
+  //   ) {
+  //     return;
+  //   }
 
-    getAutoStepData(curProductId, currentSpecAttributeGroupId).then(async (res) => {
-      if (res) {
-        const preSelectSteps: AutoStepPreSelectOptionResponse[] = await getPreSelectStep(
-          curProductId,
-          currentSpecAttributeGroupId,
-          isSpecified ? { projectId: curProductId } : { userId: user?.id as string },
-        );
+  //   getAutoStepData(curProductId, currentSpecAttributeGroupId).then(async (res) => {
+  //     if (res) {
+  //       const preSelectSteps: AutoStepPreSelectOptionResponse[] = await getPreSelectStep(
+  //         curProductId,
+  //         currentSpecAttributeGroupId,
+  //         isSpecified ? { projectId: curProductId } : { userId: user?.id as string },
+  //       );
 
-        const newRes = [...res];
+  //       const newRes = [...res];
 
-        if (preSelectSteps.length) {
-          preSelectSteps.forEach((el) => {
-            res.forEach((opt, index) => {
-              if (!opt.options.length || el.step_id !== opt.id) {
-                return;
-              }
+  //       if (preSelectSteps.length) {
+  //         preSelectSteps.forEach((el) => {
+  //           res.forEach((opt, index) => {
+  //             if (!opt.options.length || el.step_id !== opt.id) {
+  //               return;
+  //             }
 
-              newRes[index] = {
-                ...opt,
-                options: opt.options.map((optionItem) => {
-                  if (index === 0) {
-                    return {
-                      ...optionItem,
-                      quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
-                      yours: optionItem.replicate ?? 0,
-                    };
-                  }
+  //             newRes[index] = {
+  //               ...opt,
+  //               options: opt.options.map((optionItem) => {
+  //                 if (index === 0) {
+  //                   return {
+  //                     ...optionItem,
+  //                     quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
+  //                     yours: optionItem.replicate ?? 0,
+  //                   };
+  //                 }
 
-                  const optionFound = el.options.find(
-                    (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
-                  );
+  //                 const optionFound = el.options.find(
+  //                   (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
+  //                 );
 
-                  return {
-                    ...optionItem,
-                    quantity: optionFound ? optionFound.quantity : 0,
-                    yours: optionItem.replicate ?? 0,
-                  };
-                }),
-              };
-            });
-          });
-        }
+  //                 return {
+  //                   ...optionItem,
+  //                   quantity: optionFound ? optionFound.quantity : 0,
+  //                   yours: optionItem.replicate ?? 0,
+  //                 };
+  //               }),
+  //             };
+  //           });
+  //         });
+  //       }
 
-        /// save steps to specification attribute group
-        store.dispatch(
-          setPartialProductDetail({
-            specification_attribute_groups: [...specification_attribute_groups].map((el) =>
-              el.id === currentSpecAttributeGroupId
-                ? { ...el, steps: newRes, isChecked: !!preSelectSteps.length }
-                : el,
-            ),
-          }),
-        );
-      }
-    });
-  }, [currentSpecAttributeGroupId]);
+  //       console.log('specification_attribute_groups', specficationAttributeGroup);
+
+  //       /// save steps to specification attribute group
+  //       store.dispatch(
+  //         setPartialProductDetail({
+  //           specification_attribute_groups: [...specficationAttributeGroup].map((el) =>
+  //             el.id === currentSpecAttributeGroupId
+  //               ? { ...el, steps: newRes, isChecked: !!preSelectSteps.length }
+  //               : el,
+  //           ),
+  //         }),
+  //       );
+  //     }
+  //   });
+  // }, [currentSpecAttributeGroupId]);
 
   const handleOnChangeCollapse = () => {
     store.dispatch(
@@ -821,10 +820,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             )}
 
-            {attributeGroupKey !== 'specification_attribute_groups' || !autoSteps.length ? null : (
+            {attributeGroupKey !== 'specification_attribute_groups' || !autoSteps?.length ? null : (
               <table className={styles.table}>
                 <tbody>
-                  {autoSteps?.map((step, stepIndex) => {
+                  {autoSteps.map((step, stepIndex) => {
                     return (
                       <React.Fragment key={step.id ?? stepIndex}>
                         <tr

@@ -18,12 +18,14 @@ import {
   BrandSummary,
   GetListProductForDesignerRequestParams,
   GroupProductList,
+  ProductAttributeFormInput,
   ProductFormData,
   ProductGetListParameter,
   ProductItem,
   ProductItemValue,
   ProductSummary,
   RelatedCollection,
+  SpecificationType,
 } from '../types';
 import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { PaginationResponse } from '@/components/Table/types';
@@ -203,9 +205,59 @@ export const getProductById = async (productId: string) => {
     method: 'GET',
   })
     .then((res) => {
+      const newAttributeGroup: ProductAttributeFormInput[] = [];
+      res.data.specification_attribute_groups.forEach((attr) => {
+        const newRes = [...attr.specification_steps];
+
+        /// mapping quantity
+        if (attr?.configuration_steps?.length) {
+          attr.configuration_steps.forEach((el) => {
+            attr.specification_steps.forEach((opt, index) => {
+              if (!opt.options.length || el.step_id !== opt.id) {
+                return;
+              }
+
+              newRes[index] = {
+                ...opt,
+                options: opt.options.map((optionItem) => {
+                  if (index === 0) {
+                    return {
+                      ...optionItem,
+                      quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
+                      yours: optionItem.replicate ?? 0,
+                    };
+                  }
+
+                  const optionFound = el.options.find(
+                    (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
+                  );
+
+                  return {
+                    ...optionItem,
+                    quantity: optionFound ? optionFound.quantity : 0,
+                    yours: optionItem.replicate ?? 0,
+                  };
+                }),
+              };
+            });
+          });
+        }
+
+        if (attr.type === SpecificationType.attribute) {
+          newAttributeGroup.push(attr);
+        } else {
+          newAttributeGroup.push({
+            ...attr,
+            steps: newRes,
+            isChecked: !!attr.configuration_steps.length || !!attr.isChecked,
+          });
+        }
+      });
+
       store.dispatch(
         setPartialProductDetail({
           ...res.data,
+          specification_attribute_groups: newAttributeGroup,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';
           }) as ['', '', '', ''],
@@ -225,32 +277,34 @@ export const updateProductCard = async (productId: string, data: ProductFormData
     method: 'PUT',
     data,
   })
-    .then(async (res) => {
+    .then((res) => {
       hidePageLoading();
       // getProductById(productId);
 
-      const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
-      const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
+      // const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
+      // const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
-      const isGroupStep = data.specification_attribute_groups.some(
-        (group) => group.id === currentSpecAttributeGroupId && group.steps?.length,
-      );
+      // const isGroupStep = data.specification_attribute_groups.some(
+      //   (group) => group.id === currentSpecAttributeGroupId && group.steps?.length,
+      // );
 
-      let autoStepData: AutoStepOnAttributeGroupResponse[] = [];
+      // let autoStepData: AutoStepOnAttributeGroupResponse[] = [];
 
-      if (isGroupStep) {
-        autoStepData = currentSpecAttributeGroupId
-          ? await getAutoStepData(productId, currentSpecAttributeGroupId)
-          : [];
-      }
+      // if (isGroupStep) {
+      //   autoStepData = currentSpecAttributeGroupId
+      //     ? await getAutoStepData(productId, currentSpecAttributeGroupId)
+      //     : [];
+      // }
 
-      const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
-        autoStepData?.length ? { ...el, steps: autoStepData } : el,
-      );
+      // const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
+      //   autoStepData?.length ? { ...el, steps: autoStepData } : el,
+      // );
 
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
 
-      return { ...res.data, specification_attribute_groups: newSpecificationAttributeGroup };
+      return res.data;
+
+      // return { ...res.data, specification_attribute_groups: newSpecificationAttributeGroup };
     })
     .catch((error) => {
       hidePageLoading();

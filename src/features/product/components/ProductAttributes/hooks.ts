@@ -223,8 +223,6 @@ export const useProductAttributeForm = (
               attributeGroup,
             );
 
-            console.log('newSpecficationAttributeGroups', newSpecficationAttributeGroups);
-
             dispatch(
               setPartialProductDetail({
                 specification_attribute_groups: newSpecficationAttributeGroups,
@@ -298,6 +296,8 @@ export const useProductAttributeForm = (
               id: randomId,
               name: '',
               attributes: [],
+              specification_steps: [],
+              configuration_steps: [],
               steps: [],
               selection: false,
               type: SpecificationType.attribute,
