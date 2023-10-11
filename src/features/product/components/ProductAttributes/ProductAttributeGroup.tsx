@@ -127,7 +127,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
   // const autoSteps = curStepSelect;
-  const autoSteps = (sortBy(attributeGroup[groupIndex]?.steps, (o) => o.order) ??
+  const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
   const showTISCAutoSteps = !isPublicPage && isEditable;

@@ -145,7 +145,7 @@ export const AutoStep: FC<AutoStepProps> = ({
       .filter((el) => el.options.length > 0);
 
     const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
-      el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps } : el,
+      el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps, attributes: [] } : el,
     );
 
     store.dispatch(

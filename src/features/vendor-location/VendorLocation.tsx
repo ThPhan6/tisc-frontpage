@@ -118,7 +118,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
-  /// brand and distributor selected have been setted from useProductAttributeForm
+  /// brand and distributor selected have been set from useProductAttributeForm
   const brandLocationId =
     useAppSelector((state) =>
       customProduct

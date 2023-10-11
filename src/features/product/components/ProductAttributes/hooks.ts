@@ -38,7 +38,7 @@ export const getStepSelected = (steps?: AutoStepPreSelectOnAttributeGroupRespons
     .filter((el) => el.options.length !== 0)
     .map((el) => ({
       step_id: el.id as string,
-      options: (el.options as OptionQuantityProps[])
+      options: el.options
         .filter((opt) => opt.quantity > 0)
         .map((opt) => ({
           id: opt.id,
@@ -98,6 +98,8 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
           specState.push({
             id: gr.id,
             configuration_steps: stepGroup,
+            /// default each attribute group has attributes property is empty array
+            attributes: [],
           });
         }
       }
@@ -118,6 +120,8 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
         specState.push({
           id: gr.id || '',
           configuration_steps: stepGroup,
+          /// default each attribute group has attributes property is empty array
+          attributes: [],
         });
       }
     }

@@ -63,7 +63,7 @@ const SpecifiedSpecificationTab: FC<{
       if (customProduct) {
         getOneCustomProduct(productId);
       } else {
-        getProductById(productId);
+        getProductById(productId, { isSpecified });
       }
     }
   }, [productId, customProduct]);

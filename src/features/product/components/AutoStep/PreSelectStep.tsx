@@ -874,6 +874,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     const newAttributeGroups = newAllPreSelectAttributes.concat({
       id: currentSpecAttributeGroupId as string,
       configuration_steps: stepPayload,
+      /// default each attribute group has attributes property is empty array
+      attributes: [],
     });
 
     const newSpecfication: SpecificationBodyRequest = {

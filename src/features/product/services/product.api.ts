@@ -27,7 +27,7 @@ import {
   RelatedCollection,
   SpecificationType,
 } from '../types';
-import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
+// import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { PaginationResponse } from '@/components/Table/types';
 import { SelectSpecificationBodyRequest } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
@@ -35,7 +35,7 @@ import store from '@/reducers';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
-import { getAutoStepData } from './autoStep.api';
+// import { getAutoStepData } from './autoStep.api';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export async function getProductSummary(brandId: string) {
@@ -200,47 +200,56 @@ export const likeProductById = async (productId: string) => {
     });
 };
 
-export const getProductById = async (productId: string) => {
+export const getProductById = async (productId: string, props?: { isSpecified?: boolean }) => {
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
+      const specifiedData = store.getState().product.details.specifiedDetail;
+      const isProductSpecified = !!specifiedData?.id && props?.isSpecified;
+      const specifiedConfigurationSteps =
+        specifiedData?.specification.attribute_groups.filter(
+          (el) => el.configuration_steps?.length,
+        ) ?? [];
+
       const newAttributeGroup: ProductAttributeFormInput[] = [];
       res.data.specification_attribute_groups.forEach((attr) => {
         const newRes = [...attr.specification_steps];
 
         /// mapping quantity
         if (attr?.configuration_steps?.length) {
-          attr.configuration_steps.forEach((el) => {
-            attr.specification_steps.forEach((opt, index) => {
-              if (!opt.options.length || el.step_id !== opt.id) {
-                return;
-              }
+          (isProductSpecified ? specifiedConfigurationSteps : attr.configuration_steps).forEach(
+            (el) => {
+              attr.specification_steps.forEach((opt, index) => {
+                if (!opt.options.length || el.step_id !== opt.id) {
+                  return;
+                }
 
-              newRes[index] = {
-                ...opt,
-                options: opt.options.map((optionItem) => {
-                  if (index === 0) {
+                newRes[index] = {
+                  ...opt,
+                  options: opt.options.map((optionItem) => {
+                    if (index === 0) {
+                      return {
+                        ...optionItem,
+                        quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
+                        yours: optionItem.replicate ?? 0,
+                      };
+                    }
+
+                    const optionFound = el.options.find(
+                      (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
+                    );
+
                     return {
                       ...optionItem,
-                      quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
+                      quantity: optionFound ? optionFound.quantity : 0,
                       yours: optionItem.replicate ?? 0,
                     };
-                  }
-
-                  const optionFound = el.options.find(
-                    (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
-                  );
-
-                  return {
-                    ...optionItem,
-                    quantity: optionFound ? optionFound.quantity : 0,
-                    yours: optionItem.replicate ?? 0,
-                  };
-                }),
-              };
-            });
-          });
+                  }),
+                };
+              });
+            },
+          );
         }
 
         if (attr.type === SpecificationType.attribute) {
