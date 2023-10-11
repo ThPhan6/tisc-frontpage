@@ -15,6 +15,7 @@ import {
   isNull,
   isUndefined,
   map,
+  sum,
   trimEnd,
   uniq,
   uniqBy,
@@ -54,7 +55,9 @@ interface NextStepProps {
 export const NextStep: FC<NextStepProps> = ({}) => {
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
-  const slide = useAppSelector((state) => state.autoStep.slide as number);
+  const [allOptionPickedIds, setAllOptionPickedIds] = useState<string[]>([]);
+
+  const slide = useAppSelector((state) => state.autoStep.slide);
   let curOrder = slide;
   curOrder += 2;
 
@@ -137,7 +140,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     setTimeout(() => {
       setForceEnableCollapse(false);
-    }, 200);
+    }, 300);
   };
 
   useEffect(() => {
@@ -146,6 +149,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     }
 
     store.dispatch(setSlide(step));
+
+    /// get all options highlighted in first step
+    if (optionsSelected?.[1]?.options?.length) {
+      const allOptionSelectedInFirstStep = optionsSelected[1].options.map((el) => el.id);
+      setAllOptionPickedIds(allOptionSelectedInFirstStep);
+    }
 
     handleForceEnableCollapse();
   }, [step]);
@@ -516,6 +525,48 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           })),
         }),
       );
+
+      if (
+        slide === 0 &&
+        allOptionPickedIds.every((pickedId) => pickedId !== curOptionSelected.id)
+      ) {
+        /// update all options highlighted on first click
+        setAllOptionPickedIds((prevState) => [...prevState, curOptionSelected.id]);
+
+        /// set default all options in left panel will be selected in step 1
+        const currentSubOptionPickedData = flatMap(pickedData.map((el) => el.subs));
+
+        const currentSubOptionPicked = currentSubOptionPickedData.find(
+          (el) => el.id === curOptionSelected.id,
+        );
+
+        let optionSelectedOfStepOne: OptionReplicateResponse[] =
+          optionsSelected?.[1]?.options ?? [];
+
+        if (currentSubOptionPicked) {
+          optionSelectedOfStepOne = uniqBy(
+            optionSelectedOfStepOne.concat(currentSubOptionPicked),
+            'id',
+          );
+        }
+
+        store.dispatch(setOptionsSelected({ order: 1, options: optionSelectedOfStepOne }));
+
+        let optionSelectedOfStepTwo: OptionReplicateResponse[] =
+          optionsSelected?.[2]?.options ?? [];
+
+        const options = flatMap(
+          res.map((el) => flatMap(el.subs.map((sub) => sub.subs))),
+        ) as OptionReplicateResponse[];
+
+        optionSelectedOfStepTwo = uniqueArrayBy(optionSelectedOfStepTwo.concat(options), [
+          'id',
+          'pre_option',
+        ]);
+
+        /// set default all options in right panel will be selected in step 2
+        store.dispatch(setOptionsSelected({ order: 2, options: optionSelectedOfStepTwo }));
+      }
     });
   };
   //
@@ -617,25 +668,36 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       if (slide === 0) {
         const subs = flatMap(option.subs.map((el) => el.subs));
 
-        const allSecondOptions = subs.map((el) => el.pre_option) ?? [];
+        /// get pre_option to compared
+        const otherOptions = subs.map((el) => el.pre_option) ?? [];
 
-        const currentSubTicked = pickedSubs.filter((sub) => allSecondOptions.includes(sub.id));
+        const currentSubTicked = pickedSubs.filter((sub) => otherOptions.includes(sub.id));
+        const currentSubTickedIds = currentSubTicked.map((el) => el.id);
+
+        const linkageAmount = sum(
+          result.map((el) => currentSubTickedIds.includes(el?.pre_option as string)),
+        );
 
         if (optionsSelected[1]) {
+          /// remove option doesn't have any linkage
+          const newOptionSelectedInFirstStep =
+            linkageAmount > 0
+              ? uniqBy([...optionsSelected[1].options, ...currentSubTicked], (o) => o.id)
+              : [...optionsSelected[1].options].filter(
+                  (el) => !currentSubTickedIds.includes(el.id),
+                );
+
           store.dispatch(
             setOptionsSelected({
               order: 1,
-              options: uniqBy(
-                [...optionsSelected[1].options, ...currentSubTicked],
-                (o) => o.id,
-              ) as any,
+              options: newOptionSelectedInFirstStep,
             }),
           );
         } else {
           store.dispatch(
             setOptionsSelected({
               order: 1,
-              options: currentSubTicked as any,
+              options: linkageAmount > 0 ? currentSubTicked : [],
             }),
           );
         }

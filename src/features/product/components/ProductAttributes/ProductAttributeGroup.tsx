@@ -842,10 +842,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                         >
                           <td style={{ width: '100%' }}>
                             <div className={`${isPublicPage ? '' : 'flex-between'}`}>
-                              <div className="flex-start flex-grow">
+                              <div className="flex-start flex-grow text-overflow">
                                 <BodyText
                                   fontFamily="Cormorant-Garamond"
-                                  level={3}
+                                  level={5}
                                   style={{
                                     minWidth: 'fit-content',
                                     padding: '0 12px 2px 16px',
@@ -853,7 +853,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 >
                                   {step.order < 10 ? `0${step.order}` : step.order}
                                 </BodyText>
-                                <BodyText fontFamily="Cormorant-Garamond" level={3}>
+                                <BodyText fontFamily="Cormorant-Garamond" level={5}>
                                   {step.name}
                                 </BodyText>
                               </div>
