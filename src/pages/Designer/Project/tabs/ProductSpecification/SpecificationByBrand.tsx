@@ -30,7 +30,7 @@ interface BrandListProps {
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(1, [4]);
+  useAutoExpandNestedTableColumn(1, [2, 3, 4]);
   const [visible, setVisible] = useState<boolean>(false);
 
   const tableRef = useRef<any>();
@@ -44,6 +44,10 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
       sortDirections: ['ascend', 'descend', 'ascend'],
+    },
+    {
+      title: '', // image
+      render: () => <div style={{ width: 24 }} />,
     },
     {
       title: 'Collection',
@@ -81,8 +85,21 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Brand',
       noBoxShadow: true,
-      dataIndex: 'brand',
-      align: 'right',
+      // dataIndex: 'brand',
+      // align: 'right',
+      // render: (_v, record) => {
+      //   if (record.images.length) {
+      //     return <LogoIcon logo={record.images[0]} size={24} />;
+      //   }
+
+      //   return null;
+      // },
+    },
+    /// image
+    {
+      title: '',
+      dataIndex: 'image',
+      noBoxShadow: true,
       render: (_v, record) => {
         if (record.images.length) {
           return <LogoIcon logo={record.images[0]} size={24} />;
@@ -96,7 +113,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      render: (_value, record) => record.collection?.name,
+      render: (_value, record) => <span>{record.collection?.name}</span>,
     },
     {
       title: 'Product',
@@ -111,7 +128,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       onCell: onCellCancelled,
     },
     {
-      title: 'ProductID',
+      title: 'Product ID',
       noBoxShadow: true,
       dataIndex: 'product_id',
       onCell: onCellCancelled,
@@ -150,7 +167,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     <>
       <CustomTable
         footerClass={styles.summaryFooter}
-        columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
+        columns={setDefaultWidthForEachColumn(BrandColumns, 5)}
         extraParams={{ projectId }}
         ref={tableRef}
         hasPagination={false}
@@ -159,7 +176,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         }}
         fetchDataFunc={getSpecifiedProductsByBrand}
         expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(CollectionColumns, 4),
+          columns: setDefaultWidthForEachColumn(CollectionColumns, 5),
           childrenColumnName: 'products',
           level: 2,
         })}
