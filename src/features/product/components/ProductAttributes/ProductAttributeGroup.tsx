@@ -843,7 +843,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                             <div className={`${isPublicPage ? '' : 'flex-between'}`}>
                               <div className="flex-start flex-grow">
                                 <BodyText
-                                  fontFamily="Roboto"
+                                  fontFamily="Cormorant-Garamond"
                                   level={5}
                                   style={{
                                     minWidth: 'fit-content',
@@ -853,7 +853,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 >
                                   {step.order < 10 ? `0${step.order}` : step.order}
                                 </BodyText>
-                                <BodyText fontFamily="Roboto" level={5}>
+                                <BodyText fontFamily="Cormorant-Garamond" level={5}>
                                   {step.name}
                                 </BodyText>
                               </div>
@@ -883,7 +883,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                         padding: isSpecifiedModal ? '0 0 0 28px' : '0 8px 0 44px',
                                       }}
                                     >
-                                      <BodyText fontFamily="Roboto" level={5}>
+                                      <BodyText fontFamily="Roboto" level={6}>
                                         {trimEnd(
                                           `${option.value_1} ${option.value_2} ${
                                             option.unit_1 || option.unit_2
