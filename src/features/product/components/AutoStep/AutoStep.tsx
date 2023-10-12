@@ -137,7 +137,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     });
   };
 
-  const handleCreateStep = (type: 'save' | 'create') => () => {
+  const handleCreateStep = (type: 'preserve' | 'create') => () => {
     const allSteps = Object.values(optionsSelected);
 
     const steps: AutoStepOnAttributeGroupResponse[] = allSteps
@@ -154,8 +154,8 @@ export const AutoStep: FC<AutoStepProps> = ({
       }),
     );
 
-    if (type === 'save') {
-      message.success('Save successfully');
+    if (type === 'preserve') {
+      message.success('Preserved successfully');
       return;
     }
 
@@ -210,9 +210,9 @@ export const AutoStep: FC<AutoStepProps> = ({
               properties="rounded"
               disabled={disabledCreateStep}
               style={{ marginLeft: 16 }}
-              onClick={handleCreateStep('save')}
+              onClick={handleCreateStep('preserve')}
             >
-              Save
+              Preserve
             </CustomButton>
             <CustomButton
               size="small"
