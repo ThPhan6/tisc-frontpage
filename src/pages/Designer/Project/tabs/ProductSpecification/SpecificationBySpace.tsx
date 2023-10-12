@@ -260,10 +260,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
   ];
 
-  useEffect(() => {
-    tableRef.current.reload();
-  }, []);
-
   return (
     <>
       <CustomTable
