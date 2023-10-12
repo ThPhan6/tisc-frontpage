@@ -1,3 +1,5 @@
+import { trimEnd } from 'lodash';
+
 import { LinkedOptionProps, OptionReplicateResponse } from '../../types/autoStep';
 
 // set picked data when open auto-step
@@ -39,4 +41,24 @@ export const getIDFromPreOption = (preOption: string | undefined) => {
   preOptionId = curPreOptionIds?.slice(0, curPreOptionIds.length - 1).join(',');
 
   return { optionId, preOptionId };
+};
+
+export const getPreOptionName = (
+  prevPreOptionName: string,
+  curPreOptionName: { value_1: string; value_2?: string; unit_1?: string; unit_2?: string },
+) => {
+  const preOptionInfo = [
+    prevPreOptionName,
+    trimEnd(
+      `${curPreOptionName.value_1} ${curPreOptionName.value_2} ${
+        curPreOptionName.unit_1 || curPreOptionName.unit_2
+          ? `- ${curPreOptionName.unit_1} ${curPreOptionName.unit_2}`
+          : ''
+      }`,
+    ),
+  ].filter(Boolean);
+
+  const preOptionName = preOptionInfo.length ? preOptionInfo.join(', ') : '';
+
+  return preOptionName;
 };
