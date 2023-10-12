@@ -110,8 +110,6 @@ export async function updateProductSpecifying(
   { considered_product_id, ...data }: SpecifyingProductRequestBody,
   callback: () => void,
 ) {
-  console.log('updateProductSpecifying', data);
-
   await request(`/api/project-product/${considered_product_id}/update-specify`, {
     method: 'PATCH',
     data: { ...data, quantity: Number(data.quantity) },

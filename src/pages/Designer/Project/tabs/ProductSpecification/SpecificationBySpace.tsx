@@ -33,7 +33,9 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   const tableRef = useRef<any>();
   const [visible, setVisible] = useState<boolean>(false);
 
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, {
+    isSpecified: true,
+  });
 
   const getSameColumns = (props: {
     noBoxShadow: boolean;

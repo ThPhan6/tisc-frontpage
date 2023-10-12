@@ -33,7 +33,9 @@ export const SpecificationByMaterial: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const params = useParams<{ id: string }>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, {
+    isSpecified: true,
+  });
 
   const MaterialColumns: TableColumnItem<ProjectProductItem>[] = [
     {

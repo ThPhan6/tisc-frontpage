@@ -205,8 +205,9 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
     method: 'GET',
   })
     .then((res) => {
-      const specifiedData = store.getState().product.details.specifiedDetail;
-      const isProductSpecified = !!specifiedData?.id && props?.isSpecified;
+      const specifiedData = store.getState().product.details?.specifiedDetail;
+      const isProductSpecified = !!specifiedData?.id && !!props?.isSpecified;
+
       const specifiedConfigurationSteps =
         specifiedData?.specification.attribute_groups.filter(
           (el) => el.configuration_steps?.length,
@@ -216,40 +217,51 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
       res.data.specification_attribute_groups.forEach((attr) => {
         const newRes = [...attr.specification_steps];
 
+        const currentSpecifiedConfigurationSteps = isProductSpecified
+          ? specifiedConfigurationSteps.find(
+              (configurationStep) => configurationStep.id === attr.id,
+            )
+          : { configuration_steps: [] };
+
+        const isMappingQuantity = isProductSpecified
+          ? currentSpecifiedConfigurationSteps?.configuration_steps?.length
+          : attr?.configuration_steps?.length;
+
         /// mapping quantity
-        if (attr?.configuration_steps?.length) {
-          (isProductSpecified ? specifiedConfigurationSteps : attr.configuration_steps).forEach(
-            (el) => {
-              attr.specification_steps.forEach((opt, index) => {
-                if (!opt.options.length || el.step_id !== opt.id) {
-                  return;
-                }
+        if (isMappingQuantity) {
+          (isProductSpecified
+            ? currentSpecifiedConfigurationSteps?.configuration_steps
+            : attr.configuration_steps
+          )?.forEach((el) => {
+            attr.specification_steps.forEach((opt, index) => {
+              if (!opt.options.length || el.step_id !== opt.id) {
+                return;
+              }
 
-                newRes[index] = {
-                  ...opt,
-                  options: opt.options.map((optionItem) => {
-                    if (index === 0) {
-                      return {
-                        ...optionItem,
-                        quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
-                        yours: optionItem.replicate ?? 0,
-                      };
-                    }
-
-                    const optionFound = el.options.find(
-                      (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
-                    );
-
+              newRes[index] = {
+                ...opt,
+                options: opt.options.map((optionItem) => {
+                  if (index === 0) {
                     return {
                       ...optionItem,
-                      quantity: optionFound ? optionFound.quantity : 0,
+                      quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
                       yours: optionItem.replicate ?? 0,
                     };
-                  }),
-                };
-              });
-            },
-          );
+                  }
+
+                  const optionFound = el.options.find(
+                    (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
+                  );
+
+                  return {
+                    ...optionItem,
+                    quantity: optionFound ? optionFound.quantity : 0,
+                    yours: optionItem.replicate ?? 0,
+                  };
+                }),
+              };
+            });
+          });
         }
 
         if (attr.type === SpecificationType.attribute) {
@@ -274,6 +286,8 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
       );
     })
     .catch((error) => {
+      console.log('error', error);
+
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
     });

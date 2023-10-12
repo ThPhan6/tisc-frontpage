@@ -117,8 +117,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   };
 
   const onSubmit = () => {
-    console.log('specification_attribute_groups', specification_attribute_groups);
-
     if (!specifiedDetail) {
       return;
     }

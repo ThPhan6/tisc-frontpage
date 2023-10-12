@@ -34,7 +34,9 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, {
+    isSpecified: true,
+  });
 
   const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
