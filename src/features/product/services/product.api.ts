@@ -215,7 +215,7 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
 
       const newAttributeGroup: ProductAttributeFormInput[] = [];
       res.data.specification_attribute_groups.forEach((attr) => {
-        const newRes = [...attr.specification_steps];
+        const newRes = attr?.specification_steps?.length ? [...attr.specification_steps] : [];
 
         const currentSpecifiedConfigurationSteps = isProductSpecified
           ? specifiedConfigurationSteps.find(
@@ -224,16 +224,20 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           : { configuration_steps: [] };
 
         const isMappingQuantity = isProductSpecified
-          ? currentSpecifiedConfigurationSteps?.configuration_steps?.length
-          : attr?.configuration_steps?.length;
+          ? !!currentSpecifiedConfigurationSteps?.configuration_steps?.length
+          : !!attr?.configuration_steps?.length;
 
         /// mapping quantity
-        if (isMappingQuantity) {
+        if (isMappingQuantity && !!newRes.length) {
           (isProductSpecified
             ? currentSpecifiedConfigurationSteps?.configuration_steps
             : attr.configuration_steps
           )?.forEach((el) => {
-            attr.specification_steps.forEach((opt, index) => {
+            if (!attr?.specification_steps?.length) {
+              return;
+            }
+
+            attr?.specification_steps?.forEach((opt, index) => {
               if (!opt.options.length || el.step_id !== opt.id) {
                 return;
               }
@@ -266,11 +270,11 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
 
         if (attr.type === SpecificationType.attribute) {
           newAttributeGroup.push(attr);
-        } else {
+        } else if (attr.type === SpecificationType.autoStep) {
           newAttributeGroup.push({
             ...attr,
             steps: newRes,
-            isChecked: !!attr.configuration_steps.length || !!attr.isChecked,
+            isChecked: !!attr?.configuration_steps?.length || !!attr?.isChecked,
           });
         }
       });
@@ -286,8 +290,6 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
       );
     })
     .catch((error) => {
-      console.log('error', error);
-
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
     });
