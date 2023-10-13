@@ -880,7 +880,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                     <div
                                       className={styles.autoStepOption}
                                       style={{
-                                        padding: isSpecifiedModal ? '0 0 0 28px' : '0 8px 0 44px',
+                                        padding: isSpecifiedModal ? '0 0 0 24px' : '0 8px 0 40px',
                                       }}
                                     >
                                       <BodyText fontFamily="Roboto" level={6}>
