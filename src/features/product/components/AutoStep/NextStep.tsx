@@ -8,20 +8,11 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { uniqueArrayBy } from '@/helper/utils';
-import {
-  cloneDeep,
-  flatMap,
-  forEach,
-  isNull,
-  isUndefined,
-  map,
-  trimEnd,
-  uniq,
-  uniqBy,
-} from 'lodash';
+import { cloneDeep, flatMap, forEach, isNull, isUndefined, map, sum, uniq, uniqBy } from 'lodash';
 
 import {
   OptionSelectedProps,
+  setAllOptionPickedIds,
   setLinkedOptionData,
   setOptionsSelected,
   setPickedOption,
@@ -45,7 +36,7 @@ import { BodyText } from '@/components/Typography';
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './AutoStep.less';
 import { SlideBar } from './SlideBar';
-import { getIDFromPreOption, getPickedOptionGroup } from './util';
+import { getIDFromPreOption, getPickedOptionGroup, getPreOptionName } from './util';
 
 interface NextStepProps {
   // options: SubOptionSelectedProps;
@@ -54,17 +45,13 @@ interface NextStepProps {
 export const NextStep: FC<NextStepProps> = ({}) => {
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
-  const slide = useAppSelector((state) => state.autoStep.slide as number);
+  // const [allOptionPickedIds, setAllOptionPickedIds] = useState<string[]>([]);
+
+  const { slide, slideBars, step, optionsSelected, linkedOptionData, allOptionPickedIds } =
+    useAppSelector((state) => state.autoStep);
+
   let curOrder = slide;
   curOrder += 2;
-
-  const slideBars = useAppSelector((state) => state.autoStep.slideBars);
-
-  const step = useAppSelector((state) => state.autoStep.step);
-
-  const optionsSelected = useAppSelector((state) => state.autoStep.optionsSelected);
-
-  const linkedOptionData = useAppSelector((state) => state.autoStep.linkedOptionData);
 
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
@@ -137,7 +124,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     setTimeout(() => {
       setForceEnableCollapse(false);
-    }, 200);
+    }, 300);
   };
 
   useEffect(() => {
@@ -145,8 +132,24 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
+    /// update cur slide by step clicked
     store.dispatch(setSlide(step));
 
+    /// get all options highlighted
+    const allOptionSelectedIds: string[] = [];
+    map(optionsSelected, (optionSelected, order: string) => {
+      optionSelected.options.forEach((el) => {
+        const optionSelectedId =
+          Number(order) === 1 ? (optionSelected.id as string) : (el.pre_option as string);
+
+        allOptionSelectedIds.push(optionSelectedId);
+      });
+    });
+
+    /// save all option highlighted by option selected pre_option and its id
+    store.dispatch(setAllOptionPickedIds(allOptionSelectedIds));
+
+    ///
     handleForceEnableCollapse();
   }, [step]);
 
@@ -487,18 +490,24 @@ export const NextStep: FC<NextStepProps> = ({}) => {
             subs: el.subs.map((item) => ({
               ...item,
               subs: item.subs.map((sub) => {
-                const preOptionInfo = [
-                  curPickedOption.pre_option_name,
-                  trimEnd(
-                    `${curPickedOption.value_1} ${curPickedOption.value_2} ${
-                      curPickedOption.unit_1 || curPickedOption.unit_2
-                        ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
-                        : ''
-                    }`,
-                  ),
-                ].filter(Boolean);
+                // const preOptionInfo = [
+                //   curPickedOption.pre_option_name,
+                //   trimEnd(
+                //     `${curPickedOption.value_1} ${curPickedOption.value_2} ${
+                //       curPickedOption.unit_1 || curPickedOption.unit_2
+                //         ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
+                //         : ''
+                //     }`,
+                //   ),
+                // ].filter(Boolean);
 
-                const preOptionName = preOptionInfo.length ? preOptionInfo.join(', ') : undefined;
+                const preOptionName = getPreOptionName(curPickedOption.pre_option_name as string, {
+                  value_1: curPickedOption.value_1,
+                  value_2: curPickedOption.value_2,
+                  unit_1: curPickedOption.unit_1,
+                  unit_2: curPickedOption.unit_2,
+                });
+                //  preOptionInfo.length ? preOptionInfo.join(', ') : undefined;
 
                 const preOptionId = [curPickedOption?.pre_option, curPickedOption.id]
                   .filter(Boolean)
@@ -516,6 +525,68 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           })),
         }),
       );
+
+      const optionSelectedId =
+        slide === 0
+          ? curOptionSelected.id
+          : `${curOptionSelected.pre_option},${curOptionSelected.id}`;
+
+      /// only allow auto select all on first click for each option highlighted
+      if (allOptionPickedIds.every((pickedId) => pickedId !== optionSelectedId)) {
+        /// update all options highlighted on first click
+        store.dispatch(setAllOptionPickedIds([...allOptionPickedIds, optionSelectedId]));
+
+        if (slide === 0) {
+          /// set default all options in left panel will be selected in step 1
+          const currentSubOptionPickedData = flatMap(pickedData.map((el) => el.subs));
+          const currentSubOptionPicked = currentSubOptionPickedData.find(
+            (el) => el.id === curOptionSelected.id,
+          );
+          let optionSelectedOfStepOne: OptionReplicateResponse[] =
+            optionsSelected?.[1]?.options ?? [];
+
+          if (currentSubOptionPicked) {
+            optionSelectedOfStepOne = uniqBy(
+              optionSelectedOfStepOne.concat(currentSubOptionPicked),
+              'id',
+            );
+          }
+
+          store.dispatch(setOptionsSelected({ order: 1, options: optionSelectedOfStepOne }));
+        }
+
+        let optionSelectedOfCurrentStep: OptionReplicateResponse[] =
+          optionsSelected?.[curOrder]?.options ?? [];
+
+        const options = flatMap(res.map((el) => flatMap(el.subs.map((sub) => sub.subs))));
+        const newOptions = options.map((el) => {
+          const preOptionName = getPreOptionName(curPickedOption.pre_option_name as string, {
+            value_1: curPickedOption.value_1,
+            value_2: curPickedOption.value_2,
+            unit_1: curPickedOption.unit_1,
+            unit_2: curPickedOption.unit_2,
+          });
+
+          return {
+            ...el,
+            pre_option:
+              curOrder === 2
+                ? el.pre_option
+                : `${curOptionSelected.pre_option},${curOptionSelected.id}`,
+            pre_option_name: preOptionName,
+          };
+        });
+
+        optionSelectedOfCurrentStep = uniqueArrayBy(
+          optionSelectedOfCurrentStep.concat(newOptions),
+          ['id', 'pre_option'],
+        );
+
+        /// set default all options in right panel will be selected in other steps
+        store.dispatch(
+          setOptionsSelected({ order: curOrder, options: optionSelectedOfCurrentStep }),
+        );
+      }
     });
   };
   //
@@ -617,25 +688,36 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       if (slide === 0) {
         const subs = flatMap(option.subs.map((el) => el.subs));
 
-        const allSecondOptions = subs.map((el) => el.pre_option) ?? [];
+        /// get pre_option to compared
+        const otherOptions = subs.map((el) => el.pre_option) ?? [];
 
-        const currentSubTicked = pickedSubs.filter((sub) => allSecondOptions.includes(sub.id));
+        const currentSubTicked = pickedSubs.filter((sub) => otherOptions.includes(sub.id));
+        const currentSubTickedIds = currentSubTicked.map((el) => el.id);
+
+        const linkageAmount = sum(
+          result.map((el) => currentSubTickedIds.includes(el?.pre_option as string)),
+        );
 
         if (optionsSelected[1]) {
+          /// remove option doesn't have any linkage
+          const newOptionSelectedInFirstStep =
+            linkageAmount > 0
+              ? uniqBy([...optionsSelected[1].options, ...currentSubTicked], (o) => o.id)
+              : [...optionsSelected[1].options].filter(
+                  (el) => !currentSubTickedIds.includes(el.id),
+                );
+
           store.dispatch(
             setOptionsSelected({
               order: 1,
-              options: uniqBy(
-                [...optionsSelected[1].options, ...currentSubTicked],
-                (o) => o.id,
-              ) as any,
+              options: newOptionSelectedInFirstStep,
             }),
           );
         } else {
           store.dispatch(
             setOptionsSelected({
               order: 1,
-              options: currentSubTicked as any,
+              options: linkageAmount > 0 ? currentSubTicked : [],
             }),
           );
         }

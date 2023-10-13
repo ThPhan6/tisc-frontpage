@@ -1,4 +1,4 @@
-import { isUndefined } from 'lodash';
+import { isUndefined, uniq } from 'lodash';
 
 import {
   AutoStepLinkedOptionResponse,
@@ -42,6 +42,8 @@ interface AutoStepProps {
 
   optionsSelected: OptionSelectedProps;
 
+  allOptionPickedIds: string[]; // in TISC(when you click on then currently option highlighted, it will automatically select all option in the right panel )
+
   linkedOptionData: LinkedOptionDataProps[]; /// data view when select on TISC
 
   stepData: OptionPreSelectedProps; /// origin step data
@@ -75,6 +77,7 @@ const initialState: AutoStepProps = {
 
   pickedOption: {}, /// all hightlighted on the left panel
 
+  allOptionPickedIds: [],
   linkedOptionData: [], /// all data view on left and right panel of TISC
 
   subOptionSelected: {}, /// option dataset selected
@@ -98,6 +101,10 @@ const autoStepSlice = createSlice({
 
     setStepData(state, action: PayloadAction<OptionPreSelectedProps>) {
       state.stepData = action.payload;
+    },
+
+    setAllOptionPickedIds(state, action: PayloadAction<string[]>) {
+      state.allOptionPickedIds = uniq(action.payload.filter(Boolean));
     },
 
     setNewLeftPanelData(state, action: PayloadAction<AutoStepPreSelectOptionProps[]>) {
@@ -228,6 +235,7 @@ export const {
   setOptionsSelected,
   setLinkedOptionData,
   setSubOptionSelected,
+  setAllOptionPickedIds,
 
   /// Brand/Designer
   setStepData,
