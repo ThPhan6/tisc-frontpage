@@ -7,7 +7,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
-import { uniqueArrayBy } from '@/helper/utils';
+import { sortObjectArray, uniqueArrayBy } from '@/helper/utils';
 import { cloneDeep, flatMap, forEach, isNull, isUndefined, map, sum, uniq, uniqBy } from 'lodash';
 
 import {
@@ -357,7 +357,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     /// update linked option data
     newLinkedOptionData[newSlide] = {
-      pickedData: newPickedData,
+      pickedData: sortObjectArray(
+        newPickedData.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+        'name',
+      ),
       linkedData:
         !isGetLinkedOption && !newLinkedData.length
           ? linkedOptionData[newSlide]?.linkedData ?? []

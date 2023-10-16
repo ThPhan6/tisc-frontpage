@@ -5,7 +5,7 @@ import { history } from 'umi';
 
 import { ReactComponent as EqualIcon } from '@/assets/icons/equal-icon.svg';
 import { ReactComponent as Multi } from '@/assets/icons/multi-icon-18.svg';
-import { ReactComponent as CloseIcon } from '@/assets/icons/plus-18-icon.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/plus-icon-18.svg';
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
