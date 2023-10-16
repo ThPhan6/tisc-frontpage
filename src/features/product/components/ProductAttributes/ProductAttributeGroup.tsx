@@ -872,7 +872,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           {isEditable ? (
                             <tr
                               className="border-bottom-light"
-                              style={{ height: 1, width: '100%' }}
+                              style={{ height: 2, width: '100%' }}
                             />
                           ) : null}
                         </React.Fragment>
