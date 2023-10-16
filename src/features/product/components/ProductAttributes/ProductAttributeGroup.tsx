@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 
 import { getAutoStepData, getLinkedOptionByOptionIds, getPreSelectStep } from '../../services';
 import { useProductAttributeForm } from './hooks';
@@ -195,8 +196,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     /// cheking in public page
     if (
-      user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
-      user?.access_level.toLocaleLowerCase() === 'consultant team'
+      isPublicPage &&
+      (user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
+        user?.access_level.toLocaleLowerCase() === 'consultant team')
     ) {
       return;
     }
@@ -427,7 +429,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     store.dispatch(setPickedOption(pickedOption));
 
-    store.dispatch(setSlideBar(uniq(newSlideBars)));
+    store.dispatch(setSlideBar(newSlideBars));
 
     store.dispatch(setSlide(curIndex));
 
@@ -822,82 +824,118 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             )}
 
             {attributeGroupKey !== 'specification_attribute_groups' || !autoSteps.length ? null : (
-              <table className={styles.table}>
-                <tbody>
-                  {autoSteps?.map((step, stepIndex) => {
-                    return (
-                      <React.Fragment key={step.id ?? stepIndex}>
-                        <tr
-                          key={stepIndex}
-                          className={`${isPublicPage ? 'cursor-default' : 'cursor-pointer'} ${
-                            styles.autoStepTr
-                          }`}
-                          onClick={
-                            isPublicPage
-                              ? undefined
-                              : showTISCAutoSteps
-                              ? handleOpenAutoStepModal(stepIndex)
-                              : handleOpenPreSelectAutoStepModal(stepIndex)
-                          }
-                        >
-                          <td style={{ width: '100%' }}>
-                            <div className={`${isPublicPage ? '' : 'flex-between'}`}>
-                              <div className="flex-start flex-grow text-overflow">
+              <>
+                <table className={styles.table}>
+                  <tbody>
+                    {autoSteps.map((step, stepIndex) => {
+                      return (
+                        <React.Fragment key={step.id ?? stepIndex}>
+                          <tr
+                            key={stepIndex}
+                            className={`${isPublicPage ? 'cursor-default' : 'cursor-pointer'} ${
+                              styles.autoStepTr
+                            }`}
+                            onClick={
+                              isPublicPage
+                                ? undefined
+                                : showTISCAutoSteps
+                                ? handleOpenAutoStepModal(stepIndex)
+                                : handleOpenPreSelectAutoStepModal(stepIndex)
+                            }
+                          >
+                            <td style={{ width: '100%' }}>
+                              <div className={`${isPublicPage ? '' : 'flex-between'}`}>
+                                <div className="flex-start flex-grow text-overflow">
+                                  <BodyText
+                                    fontFamily="Cormorant-Garamond"
+                                    level={4}
+                                    style={{
+                                      minWidth: 'fit-content',
+                                      padding: '0 12px 1px 16px',
+                                    }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order}
+                                  </BodyText>
+                                  <BodyText fontFamily="Cormorant-Garamond" level={4}>
+                                    {step.name}
+                                  </BodyText>
+                                </div>
+
+                                {isPublicPage ? null : (
+                                  <div className="flex-start">
+                                    <ActionRightLeftIcon style={{ marginLeft: 12 }} />
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {isEditable ? (
+                            <tr
+                              className="border-bottom-light"
+                              style={{ height: 1, width: '100%' }}
+                            />
+                          ) : null}
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                {isEditable ? null : (
+                  <div className={styles.stepImages}>
+                    {autoSteps.map((step) =>
+                      (step.options as OptionQuantityProps[]).map((option, optionIdx) =>
+                        option.quantity > 0 ? (
+                          <div key={option.id} className={styles.autoStepOption}>
+                            <div>
+                              {option.image ? (
+                                <img
+                                  className="step-image"
+                                  src={showImageUrl(option.image)}
+                                  style={{}}
+                                />
+                              ) : null}
+
+                              <div className="step-text">
                                 <BodyText
-                                  fontFamily="Cormorant-Garamond"
-                                  level={5}
-                                  style={{
-                                    minWidth: 'fit-content',
-                                    padding: '0 12px 2px 16px',
-                                  }}
+                                  level={6}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  color="white"
+                                  style={{ whiteSpace: 'nowrap' }}
                                 >
-                                  {step.order < 10 ? `0${step.order}` : step.order}
+                                  {step.order < 10 ? `0${step.order}` : step.order} Step
                                 </BodyText>
-                                <BodyText fontFamily="Cormorant-Garamond" level={5}>
-                                  {step.name}
+
+                                <BodyText
+                                  level={6}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  color="white"
+                                >
+                                  {trimEnd(
+                                    `${option.value_1} ${option.value_2} ${
+                                      option.unit_1 || option.unit_2
+                                        ? `- ${option.unit_1} ${option.unit_2}`
+                                        : ''
+                                    }`,
+                                  )}
                                 </BodyText>
                               </div>
-
-                              {isPublicPage ? null : (
-                                <div className="flex-start">
-                                  <ActionRightLeftIcon style={{ marginLeft: 12 }} />
-                                </div>
-                              )}
                             </div>
-                          </td>
-                        </tr>
-                        {isEditable
-                          ? null
-                          : (step.options as OptionQuantityProps[]).map((option) =>
-                              option.quantity > 0 ? (
-                                <tr key={option.id}>
-                                  <td>
-                                    <div className={styles.autoStepOption}>
-                                      <BodyText fontFamily="Roboto" level={6}>
-                                        {trimEnd(
-                                          `${option.value_1} ${option.value_2} ${
-                                            option.unit_1 || option.unit_2
-                                              ? `- ${option.unit_1} ${option.unit_2}`
-                                              : ''
-                                          }`,
-                                        )}
-                                      </BodyText>
-                                      {option.image ? (
-                                        <div className="flex-start">
-                                          <img src={showImageUrl(option.image)} />
-                                        </div>
-                                      ) : null}
-                                    </div>
-                                  </td>
-                                </tr>
-                              ) : null,
+
+                            {optionIdx !== step.options.length - 1 ? null : (
+                              <div className="plus-icon">
+                                <PlusIcon />
+                              </div>
                             )}
-                        <tr className="border-bottom-light" style={{ height: 2, width: '100%' }} />
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </div>
+                        ) : null,
+                      ),
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             <div
