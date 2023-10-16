@@ -1,9 +1,13 @@
+import { sortObjectArray } from '@/helper/utils';
 import { trimEnd } from 'lodash';
 
 import { LinkedOptionProps, OptionReplicateResponse } from '../../types/autoStep';
+import { OptionQuantityProps } from './../../types/autoStep';
 
 // set picked data when open auto-step
-export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
+export const getPickedOptionGroup = (
+  options: OptionReplicateResponse[] | OptionQuantityProps[],
+) => {
   const b: LinkedOptionProps[] = [];
 
   if (!options?.length) {
@@ -16,7 +20,7 @@ export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
     if (index > -1) {
       b[index].subs = b[index].subs.concat(el);
     } else {
-      b.push({
+      b.unshift({
         id: el.sub_id,
         name: el.sub_name,
         subs: [el],
@@ -24,7 +28,10 @@ export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
     }
   });
 
-  return b;
+  return sortObjectArray(
+    b.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+    'name',
+  ) as LinkedOptionProps[];
 };
 
 export const getIDFromPreOption = (preOption: string | undefined) => {

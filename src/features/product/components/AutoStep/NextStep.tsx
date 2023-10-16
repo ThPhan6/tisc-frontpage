@@ -7,7 +7,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
-import { uniqueArrayBy } from '@/helper/utils';
+import { sortObjectArray, uniqueArrayBy } from '@/helper/utils';
 import { cloneDeep, flatMap, forEach, isNull, isUndefined, map, sum, uniq, uniqBy } from 'lodash';
 
 import {
@@ -162,14 +162,14 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       return;
     }
 
-    let newSlide = curSlide;
-    --newSlide;
+    const newSlide = curSlide - 1;
+    const newOrder = curSlide + 1;
 
     store.dispatch(setSlide(newSlide));
 
     const newLinkedOptionData = [...linkedOptionData];
 
-    const curOptionSelected = optionsSelected?.[curOrder]?.options ?? [];
+    const curOptionSelected = optionsSelected?.[newOrder]?.options ?? [];
     const curAllLinkedIdSelect = curOptionSelected.map((el) => el.id);
 
     const isGetLinkedOption =
@@ -202,7 +202,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       let prevAllLinkedIdSelect: string[] = [];
 
       orders.forEach((order) => {
-        if (order < curOrder - 1) {
+        if (order < newOrder) {
           const optionSelectedIds = optionsSelected[order].options.map((el) => el.id);
 
           prevAllLinkedIdSelect = uniq(prevAllLinkedIdSelect.concat(optionSelectedIds));
@@ -221,7 +221,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           subs: item.subs.map((sub) => {
             let newSub: OptionReplicateResponse | undefined = undefined;
 
-            newSub = { ...sub, pre_option: optionsSelected[curOrder - 1].options[0].pre_option };
+            newSub = { ...sub, pre_option: optionsSelected[newOrder].options[0].pre_option };
 
             return newSub ?? sub;
           }),
@@ -357,7 +357,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
     /// update linked option data
     newLinkedOptionData[newSlide] = {
-      pickedData: newPickedData,
+      pickedData: sortObjectArray(
+        newPickedData.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+        'name',
+      ),
       linkedData:
         !isGetLinkedOption && !newLinkedData.length
           ? linkedOptionData[newSlide]?.linkedData ?? []
