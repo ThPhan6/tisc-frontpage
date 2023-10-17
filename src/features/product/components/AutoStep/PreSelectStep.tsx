@@ -109,7 +109,23 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       ? (getPickedOptionGroup(
           preSelectStep[1]?.options,
         ) as unknown as AutoStepPreSelectOptionProps[]) ?? []
-      : newLeftPanelData;
+      : /// diabled option doesn't have any furthermore option linked
+        newLeftPanelData.map((el) => ({
+          ...el,
+          subs: el.subs.map((optionItem) => {
+            if (!stepData[curOrder]) {
+              return { ...optionItem, disabled: false };
+            }
+
+            const hasOptionPaired = stepData[curOrder].options.some((option) => {
+              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
+            });
+
+            return { ...optionItem, disabled: !hasOptionPaired };
+          }),
+        }));
 
   const rightPanelData = getPickedOptionGroup(
     currentPreSelectOptionData,

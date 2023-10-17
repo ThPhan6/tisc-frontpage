@@ -500,21 +500,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
-        options: el.options
-          .filter((optionItem) => optionItem.quantity > 0)
-          .map((optionItem) => {
-            if (!newSteps[index + 1]) {
-              return { ...optionItem, disabled: false };
-            }
-
-            const impaired = newSteps[index + 1].options.some((option) => {
-              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
-
-              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
-            });
-
-            return { ...optionItem, disabled: !impaired };
-          }),
+        options: el.options.filter((optionItem) => optionItem.quantity > 0),
       };
       /* ------------------ */
 
@@ -578,34 +564,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     // console.log('pickedOption', pickedOption);
     // console.log('optionsSelected', optionsSelected);
 
-    /* mapping to find option on the left side doesn't any further option linked on the right side and disabled it */
-    // const newOptionsSelected = optionsSelected;
-
-    // map(optionsSelected, (optionData, order) => {
-    //   const curOrder = Number(order);
-
-    //   if (curOrder === 1 || !stepData[curOrder + 1]) {
-    //     return false;
-    //   }
-
-    //   const newOption = optionData.options.map((el) => {
-    //     const impaired = stepData[curOrder + 1].options.find((option) => {
-    //       const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
-
-    //       return el.id === optionId && el.pre_option === preOptionId;
-    //     });
-
-    //     return { ...el, disabled: !impaired };
-    //   });
-
-    //   newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
-
-    //   return true;
-    // });
-
     /// set options seleted
     store.dispatch(setOptionsSelected(optionsSelected));
-    /* ---------------------------------------------------------------------------- */
 
     /// set origin data
     store.dispatch(setStepData(stepData));
