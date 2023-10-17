@@ -10,7 +10,7 @@ import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
+import { capitalize, map, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -485,7 +485,21 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
-        options: el.options.filter((optionItem) => optionItem.quantity > 0),
+        options: el.options
+          .filter((optionItem) => optionItem.quantity > 0)
+          .map((optionItem) => {
+            if (!newSteps[index + 1]) {
+              return { ...optionItem, disabled: false };
+            }
+
+            const impaired = newSteps[index + 1].options.find((option) => {
+              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
+            });
+
+            return { ...optionItem, disabled: !impaired };
+          }),
       };
       /* ------------------ */
 
@@ -523,9 +537,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }
       /* ------------------------------------- */
 
+      /* set current data view on step was clicked */
       const curPicked = pickedOption[el.order - 2];
 
-      /* set data view */
       if (index === 0) {
         newPreSelectStep[el.order] = el;
       } else if (curPicked?.id) {
@@ -542,10 +556,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               }),
         };
       }
-      /* -------------- */
+      /* --------------------------------------- */
     });
 
-    // console.log('newPreSelectStep', newPreSelectStep);
     // console.log('stepData', stepData);
     // console.log('pickedOption', pickedOption);
     // console.log('optionsSelected', optionsSelected);
