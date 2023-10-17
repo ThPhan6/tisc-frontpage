@@ -100,7 +100,19 @@ export const AutoStep: FC<AutoStepProps> = ({
     store.dispatch(
       setLinkedOptionData({
         index: 0,
-        pickedData: pickedData.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+        pickedData: pickedData.map((el) => ({
+          ...el,
+          subs: sortObjectArray(
+            el.subs.map((item) => ({
+              ...item,
+              sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+            })),
+            'sortField',
+          ).map((item) => {
+            const { sortField, ...temp } = item;
+            return temp;
+          }),
+        })),
         linkedData: [],
       }),
     );
