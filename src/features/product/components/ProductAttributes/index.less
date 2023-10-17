@@ -176,26 +176,33 @@
   // grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   // gap: 4px;
   display: flex;
-  padding: 8px 16px 8px;
+  // padding: 8px 16px 8px;
   overflow: auto hidden;
   border-top: 1px solid @mono-color-medium;
 
   .autoStepOption:first-of-type {
+    padding-left: 16px !important;
+
     :global(.step-info:first-child) {
       margin-left: 0 !important;
     }
   }
   .autoStepOption:last-of-type {
+    padding-right: 16px !important;
+
     :global(.step-info:last-child) {
       margin-right: 0 !important;
     }
   }
 
   .autoStepOption {
+    @pos: 8px;
+    ///
     position: relative;
     display: flex;
     align-items: center;
     min-height: @space;
+    padding: @pos 0;
 
     &:hover {
       :global(.step-text) {
@@ -221,7 +228,7 @@
 
     :global(.step-text) {
       position: absolute;
-      top: 0;
+      top: @pos;
       display: none;
       width: 50px;
       height: @space;

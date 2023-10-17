@@ -10,7 +10,7 @@ import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
+import { capitalize, map, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -523,9 +523,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }
       /* ------------------------------------- */
 
+      /* set current data view on step was clicked */
       const curPicked = pickedOption[el.order - 2];
 
-      /* set data view */
       if (index === 0) {
         newPreSelectStep[el.order] = el;
       } else if (curPicked?.id) {
@@ -542,16 +542,41 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               }),
         };
       }
-      /* -------------- */
+      /* --------------------------------------- */
     });
 
-    // console.log('newPreSelectStep', newPreSelectStep);
     // console.log('stepData', stepData);
     // console.log('pickedOption', pickedOption);
-    // console.log('optionsSelected', optionsSelected);
+    console.log('optionsSelected', optionsSelected);
+
+    /* mapping to find option on the left side doesn't any further option linked on the right side and disabled it */
+    const newOptionsSelected = optionsSelected;
+
+    map(optionsSelected, (optionData, order) => {
+      const curOrder = Number(order);
+
+      if (curOrder === 1 || !stepData[curOrder + 1]) {
+        return false;
+      }
+
+      const newOption = optionData.options.map((el) => {
+        const impaired = stepData[curOrder + 1].options.find((option) => {
+          const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+          return el.id === optionId && el.pre_option === preOptionId;
+        });
+
+        return { ...el, disabled: !impaired };
+      });
+
+      newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
+
+      return true;
+    });
 
     /// set options seleted
-    store.dispatch(setOptionsSelected(optionsSelected));
+    store.dispatch(setOptionsSelected(newOptionsSelected));
+    /* ---------------------------------------------------------------------------- */
 
     /// set origin data
     store.dispatch(setStepData(stepData));
