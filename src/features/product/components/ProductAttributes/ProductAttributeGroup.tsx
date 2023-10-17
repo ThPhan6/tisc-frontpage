@@ -485,7 +485,21 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
-        options: el.options.filter((optionItem) => optionItem.quantity > 0),
+        options: el.options
+          .filter((optionItem) => optionItem.quantity > 0)
+          .map((optionItem) => {
+            if (!newSteps[index + 1]) {
+              return { ...optionItem, disabled: false };
+            }
+
+            const impaired = newSteps[index + 1].options.find((option) => {
+              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
+            });
+
+            return { ...optionItem, disabled: !impaired };
+          }),
       };
       /* ------------------ */
 
