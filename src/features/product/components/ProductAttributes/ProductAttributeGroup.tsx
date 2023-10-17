@@ -9,7 +9,7 @@ import { getAutoStepData, getLinkedOptionByOptionIds, getPreSelectStep } from '.
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { showImageUrl } from '@/helper/utils';
+import { showImageUrl, sortObjectArray } from '@/helper/utils';
 import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
@@ -342,7 +342,22 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     ///* set picked data for first step
-    linkedOptionData[0] = { pickedData: [newOptions], linkedData: [] };
+    linkedOptionData[0] = {
+      pickedData: [newOptions].map((el) => ({
+        ...el,
+        subs: sortObjectArray(
+          el.subs.map((item) => ({
+            ...item,
+            sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+          })),
+          'sortField',
+        ).map((item) => {
+          const { sortField, ...temp } = item;
+          return temp;
+        }),
+      })),
+      linkedData: [],
+    };
 
     /// list ID of previous option
     let exceptOptionIds: string[] = [];
@@ -485,7 +500,21 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
-        options: el.options.filter((optionItem) => optionItem.quantity > 0),
+        options: el.options
+          .filter((optionItem) => optionItem.quantity > 0)
+          .map((optionItem) => {
+            if (!newSteps[index + 1]) {
+              return { ...optionItem, disabled: false };
+            }
+
+            const impaired = newSteps[index + 1].options.some((option) => {
+              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
+            });
+
+            return { ...optionItem, disabled: !impaired };
+          }),
       };
       /* ------------------ */
 
@@ -523,9 +552,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }
       /* ------------------------------------- */
 
+      /* set current data view on step was clicked */
       const curPicked = pickedOption[el.order - 2];
 
-      /* set data view */
       if (index === 0) {
         newPreSelectStep[el.order] = el;
       } else if (curPicked?.id) {
@@ -542,16 +571,41 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               }),
         };
       }
-      /* -------------- */
+      /* --------------------------------------- */
     });
 
-    // console.log('newPreSelectStep', newPreSelectStep);
     // console.log('stepData', stepData);
     // console.log('pickedOption', pickedOption);
     // console.log('optionsSelected', optionsSelected);
 
+    /* mapping to find option on the left side doesn't any further option linked on the right side and disabled it */
+    // const newOptionsSelected = optionsSelected;
+
+    // map(optionsSelected, (optionData, order) => {
+    //   const curOrder = Number(order);
+
+    //   if (curOrder === 1 || !stepData[curOrder + 1]) {
+    //     return false;
+    //   }
+
+    //   const newOption = optionData.options.map((el) => {
+    //     const impaired = stepData[curOrder + 1].options.find((option) => {
+    //       const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+    //       return el.id === optionId && el.pre_option === preOptionId;
+    //     });
+
+    //     return { ...el, disabled: !impaired };
+    //   });
+
+    //   newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
+
+    //   return true;
+    // });
+
     /// set options seleted
     store.dispatch(setOptionsSelected(optionsSelected));
+    /* ---------------------------------------------------------------------------- */
 
     /// set origin data
     store.dispatch(setStepData(stepData));
@@ -872,7 +926,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           {isEditable ? (
                             <tr
                               className="border-bottom-light"
-                              style={{ height: 1, width: '100%' }}
+                              style={{ height: 2, width: '100%' }}
                             />
                           ) : null}
                         </React.Fragment>
@@ -883,55 +937,57 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 {isEditable ? null : (
                   <div className={styles.stepImages}>
-                    {autoSteps.map((step) =>
-                      (step.options as OptionQuantityProps[]).map((option, optionIdx) =>
-                        option.quantity > 0 ? (
-                          <div key={option.id} className={styles.autoStepOption}>
-                            <div>
-                              {option.image ? (
-                                <img
-                                  className="step-image"
-                                  src={showImageUrl(option.image)}
-                                  style={{}}
-                                />
-                              ) : null}
+                    {autoSteps.map((step, stepIdx) =>
+                      (step.options as OptionQuantityProps[])
+                        .filter((el) => el.quantity > 0)
+                        .map((option, optionIdx) => {
+                          return (
+                            <div key={option.id} className={styles.autoStepOption}>
+                              <div className="step-info">
+                                {option.image ? (
+                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                ) : null}
 
-                              <div className="step-text">
-                                <BodyText
-                                  level={6}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                  style={{ whiteSpace: 'nowrap' }}
-                                >
-                                  {step.order < 10 ? `0${step.order}` : step.order} Step
-                                </BodyText>
+                                <div className="step-text">
+                                  <BodyText
+                                    level={6}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                    style={{ whiteSpace: 'nowrap' }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order} Step
+                                  </BodyText>
 
-                                <BodyText
-                                  level={6}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                >
-                                  {trimEnd(
-                                    `${option.value_1} ${option.value_2} ${
-                                      option.unit_1 || option.unit_2
-                                        ? `- ${option.unit_1} ${option.unit_2}`
-                                        : ''
-                                    }`,
-                                  )}
-                                </BodyText>
+                                  <BodyText
+                                    level={6}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {trimEnd(
+                                      `${option.value_1} ${option.value_2} ${
+                                        option.unit_1 || option.unit_2
+                                          ? `- ${option.unit_1} ${option.unit_2}`
+                                          : ''
+                                      }`,
+                                    )}
+                                  </BodyText>
+                                </div>
                               </div>
+
+                              {optionIdx !==
+                                (step.options as OptionQuantityProps[]).filter(
+                                  (el) => el.quantity > 0,
+                                ).length -
+                                  1 || stepIdx === autoSteps.length - 1 ? null : (
+                                <div className="plus-icon">
+                                  <PlusIcon />
+                                </div>
+                              )}
                             </div>
-
-                            {optionIdx !== step.options.length - 1 ? null : (
-                              <div className="plus-icon">
-                                <PlusIcon />
-                              </div>
-                            )}
-                          </div>
-                        ) : null,
-                      ),
+                          );
+                        }),
                     )}
                   </div>
                 )}
