@@ -9,8 +9,8 @@ import { getAutoStepData, getLinkedOptionByOptionIds, getPreSelectStep } from '.
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
-import { showImageUrl } from '@/helper/utils';
-import { capitalize, map, sortBy, trimEnd, uniq } from 'lodash';
+import { showImageUrl, sortObjectArray } from '@/helper/utils';
+import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -342,7 +342,22 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     ///* set picked data for first step
-    linkedOptionData[0] = { pickedData: [newOptions], linkedData: [] };
+    linkedOptionData[0] = {
+      pickedData: [newOptions].map((el) => ({
+        ...el,
+        subs: sortObjectArray(
+          el.subs.map((item) => ({
+            ...item,
+            sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+          })),
+          'sortField',
+        ).map((item) => {
+          const { sortField, ...temp } = item;
+          return temp;
+        }),
+      })),
+      linkedData: [],
+    };
 
     /// list ID of previous option
     let exceptOptionIds: string[] = [];
@@ -492,7 +507,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               return { ...optionItem, disabled: false };
             }
 
-            const impaired = newSteps[index + 1].options.find((option) => {
+            const impaired = newSteps[index + 1].options.some((option) => {
               const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
 
               return optionItem.id === optionId && optionItem.pre_option === preOptionId;
@@ -561,35 +576,35 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     // console.log('stepData', stepData);
     // console.log('pickedOption', pickedOption);
-    console.log('optionsSelected', optionsSelected);
+    // console.log('optionsSelected', optionsSelected);
 
     /* mapping to find option on the left side doesn't any further option linked on the right side and disabled it */
-    const newOptionsSelected = optionsSelected;
+    // const newOptionsSelected = optionsSelected;
 
-    map(optionsSelected, (optionData, order) => {
-      const curOrder = Number(order);
+    // map(optionsSelected, (optionData, order) => {
+    //   const curOrder = Number(order);
 
-      if (curOrder === 1 || !stepData[curOrder + 1]) {
-        return false;
-      }
+    //   if (curOrder === 1 || !stepData[curOrder + 1]) {
+    //     return false;
+    //   }
 
-      const newOption = optionData.options.map((el) => {
-        const impaired = stepData[curOrder + 1].options.find((option) => {
-          const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+    //   const newOption = optionData.options.map((el) => {
+    //     const impaired = stepData[curOrder + 1].options.find((option) => {
+    //       const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
 
-          return el.id === optionId && el.pre_option === preOptionId;
-        });
+    //       return el.id === optionId && el.pre_option === preOptionId;
+    //     });
 
-        return { ...el, disabled: !impaired };
-      });
+    //     return { ...el, disabled: !impaired };
+    //   });
 
-      newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
+    //   newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
 
-      return true;
-    });
+    //   return true;
+    // });
 
     /// set options seleted
-    store.dispatch(setOptionsSelected(newOptionsSelected));
+    store.dispatch(setOptionsSelected(optionsSelected));
     /* ---------------------------------------------------------------------------- */
 
     /// set origin data
