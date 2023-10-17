@@ -181,12 +181,12 @@
   border-top: 1px solid @mono-color-medium;
 
   .autoStepOption:first-of-type {
-    :global(.step-image:first-child) {
+    :global(.step-info:first-child) {
       margin-left: 0 !important;
     }
   }
   .autoStepOption:last-of-type {
-    :global(.step-image:first-child) {
+    :global(.step-info:last-child) {
       margin-right: 0 !important;
     }
   }
@@ -209,9 +209,13 @@
       margin: 0 2px;
     }
 
+    :global(.step-info) {
+      margin: 0 2px;
+    }
+
     :global(.step-image) {
       height: @space;
-      margin: 0 2px;
+      // margin: 0 2px;
       border: 1px solid @mono-color-medium;
     }
 

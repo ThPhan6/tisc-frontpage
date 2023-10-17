@@ -883,55 +883,57 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 {isEditable ? null : (
                   <div className={styles.stepImages}>
-                    {autoSteps.map((step) =>
-                      (step.options as OptionQuantityProps[]).map((option, optionIdx) =>
-                        option.quantity > 0 ? (
-                          <div key={option.id} className={styles.autoStepOption}>
-                            <div>
-                              {option.image ? (
-                                <img
-                                  className="step-image"
-                                  src={showImageUrl(option.image)}
-                                  style={{}}
-                                />
-                              ) : null}
+                    {autoSteps.map((step, stepIdx) =>
+                      (step.options as OptionQuantityProps[])
+                        .filter((el) => el.quantity > 0)
+                        .map((option, optionIdx) => {
+                          return (
+                            <div key={option.id} className={styles.autoStepOption}>
+                              <div className="step-info">
+                                {option.image ? (
+                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                ) : null}
 
-                              <div className="step-text">
-                                <BodyText
-                                  level={6}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                  style={{ whiteSpace: 'nowrap' }}
-                                >
-                                  {step.order < 10 ? `0${step.order}` : step.order} Step
-                                </BodyText>
+                                <div className="step-text">
+                                  <BodyText
+                                    level={6}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                    style={{ whiteSpace: 'nowrap' }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order} Step
+                                  </BodyText>
 
-                                <BodyText
-                                  level={6}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                >
-                                  {trimEnd(
-                                    `${option.value_1} ${option.value_2} ${
-                                      option.unit_1 || option.unit_2
-                                        ? `- ${option.unit_1} ${option.unit_2}`
-                                        : ''
-                                    }`,
-                                  )}
-                                </BodyText>
+                                  <BodyText
+                                    level={6}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {trimEnd(
+                                      `${option.value_1} ${option.value_2} ${
+                                        option.unit_1 || option.unit_2
+                                          ? `- ${option.unit_1} ${option.unit_2}`
+                                          : ''
+                                      }`,
+                                    )}
+                                  </BodyText>
+                                </div>
                               </div>
+
+                              {optionIdx !==
+                                (step.options as OptionQuantityProps[]).filter(
+                                  (el) => el.quantity > 0,
+                                ).length -
+                                  1 || stepIdx === autoSteps.length - 1 ? null : (
+                                <div className="plus-icon">
+                                  <PlusIcon />
+                                </div>
+                              )}
                             </div>
-
-                            {optionIdx !== step.options.length - 1 ? null : (
-                              <div className="plus-icon">
-                                <PlusIcon />
-                              </div>
-                            )}
-                          </div>
-                        ) : null,
-                      ),
+                          );
+                        }),
                     )}
                   </div>
                 )}
