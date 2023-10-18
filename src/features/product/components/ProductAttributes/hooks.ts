@@ -216,7 +216,7 @@ export const useProductAttributeForm = (
       if (props?.isSpecifiedModal) {
         dispatch(setDefaultSelectionFromSpecifiedData());
         /// get all attributes selected
-        dispatch(getAllPreSelectAttributes(specifiedDetail?.specification.attribute_groups ?? []));
+        dispatch(getAllPreSelectAttributes(specifiedDetail?.specification?.attribute_groups ?? []));
         loaded.setValue(true);
       } else if (props?.isGetProductSpecification) {
         getSelectedProductSpecification(productId).then((res) => {

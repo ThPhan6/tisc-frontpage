@@ -85,7 +85,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   noBorder,
   curProductId,
   isSpecifiedModal, /// using for both specifing modal on product considered and product specified
-  isSpecified, /// using for specifying modal on product specified
+  // isSpecified, /// using for specifying modal on product specified
   icon,
 }) => {
   const isTablet = useScreen().isTablet;
@@ -131,15 +131,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
-  const showTISCAutoSteps = !isPublicPage && isEditable;
+  const autoStepImages = autoSteps.map((el) => ({
+    ...el,
+    options: (el.options as OptionQuantityProps[]).filter((opt) => opt.quantity > 0),
+  }));
 
-  // const inactiveAutoSteps =
-  //   !currentSpecAttributeGroupId ||
-  //   currentSpecAttributeGroupId !== attrGroupItem.id ||
-  //   currentSpecAttributeGroupId?.indexOf('new') !== -1 /* new group */ ||
-  //   attributeGroupKey !== 'specification_attribute_groups' ||
-  //   attrGroupItem?.steps?.length;
-  // || attrGroupItem.type !== SpecificationType.autoStep;
+  const showTISCAutoSteps = !isPublicPage && isEditable;
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -167,96 +164,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         }
       });
     }
-  }, [attrGroupItem, attributeGroupKey]);
-
-  // useEffect(() => {
-  //   if (inactiveAutoSteps) {
-  //     return;
-  //   }
-
-  //   if (showTISCAutoSteps) {
-  //     getAutoStepData(curProductId, currentSpecAttributeGroupId).then((res) => {
-  //       const newSpecificationAttributeGroup = [...specficationAttributeGroup].map((el) =>
-  //         el.id === currentSpecAttributeGroupId ? { ...el, steps: res } : el,
-  //       );
-
-  //       store.dispatch(
-  //         setPartialProductDetail({
-  //           specification_attribute_groups: newSpecificationAttributeGroup,
-  //         }),
-  //       );
-  //     });
-
-  //     return;
-  //   }
-
-  //   /// cheking in public page
-  //   if (
-  //     isPublicPage &&
-  //     (user?.access_level.toLocaleLowerCase() === 'tisc admin' ||
-  //       user?.access_level.toLocaleLowerCase() === 'consultant team')
-  //   ) {
-  //     return;
-  //   }
-
-  //   getAutoStepData(curProductId, currentSpecAttributeGroupId).then(async (res) => {
-  //     if (res) {
-  //       const preSelectSteps: AutoStepPreSelectOptionResponse[] = await getPreSelectStep(
-  //         curProductId,
-  //         currentSpecAttributeGroupId,
-  //         isSpecified ? { projectId: curProductId } : { userId: user?.id as string },
-  //       );
-
-  //       const newRes = [...res];
-
-  //       if (preSelectSteps.length) {
-  //         preSelectSteps.forEach((el) => {
-  //           res.forEach((opt, index) => {
-  //             if (!opt.options.length || el.step_id !== opt.id) {
-  //               return;
-  //             }
-
-  //             newRes[index] = {
-  //               ...opt,
-  //               options: opt.options.map((optionItem) => {
-  //                 if (index === 0) {
-  //                   return {
-  //                     ...optionItem,
-  //                     quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
-  //                     yours: optionItem.replicate ?? 0,
-  //                   };
-  //                 }
-
-  //                 const optionFound = el.options.find(
-  //                   (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
-  //                 );
-
-  //                 return {
-  //                   ...optionItem,
-  //                   quantity: optionFound ? optionFound.quantity : 0,
-  //                   yours: optionItem.replicate ?? 0,
-  //                 };
-  //               }),
-  //             };
-  //           });
-  //         });
-  //       }
-
-  //       console.log('specification_attribute_groups', specficationAttributeGroup);
-
-  //       /// save steps to specification attribute group
-  //       store.dispatch(
-  //         setPartialProductDetail({
-  //           specification_attribute_groups: [...specficationAttributeGroup].map((el) =>
-  //             el.id === currentSpecAttributeGroupId
-  //               ? { ...el, steps: newRes, isChecked: !!preSelectSteps.length }
-  //               : el,
-  //           ),
-  //         }),
-  //       );
-  //     }
-  //   });
-  // }, [currentSpecAttributeGroupId]);
+  }, [attrGroupItem]);
 
   const handleOnChangeCollapse = () => {
     store.dispatch(
@@ -572,38 +480,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       /* --------------------------------------- */
     });
 
-    // console.log('stepData', stepData);
-    // console.log('pickedOption', pickedOption);
-    // console.log('optionsSelected', optionsSelected);
-
-    /* mapping to find option on the left side doesn't any further option linked on the right side and disabled it */
-    // const newOptionsSelected = optionsSelected;
-
-    // map(optionsSelected, (optionData, order) => {
-    //   const curOrder = Number(order);
-
-    //   if (curOrder === 1 || !stepData[curOrder + 1]) {
-    //     return false;
-    //   }
-
-    //   const newOption = optionData.options.map((el) => {
-    //     const impaired = stepData[curOrder + 1].options.find((option) => {
-    //       const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
-
-    //       return el.id === optionId && el.pre_option === preOptionId;
-    //     });
-
-    //     return { ...el, disabled: !impaired };
-    //   });
-
-    //   newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
-
-    //   return true;
-    // });
-
     /// set options seleted
     store.dispatch(setOptionsSelected(optionsSelected));
-    /* ---------------------------------------------------------------------------- */
 
     /// set origin data
     store.dispatch(setStepData(stepData));
@@ -673,7 +551,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               <CustomCheckbox
                 options={[{ label: '', value: grIndex }]}
                 selected={
-                  // attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
                   group.isChecked && isAttributeGroupSelected
                     ? [{ label: group.name, value: grIndex }]
                     : []
@@ -685,7 +562,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
                   }
                 }}
-                // disabled={attributeGroup.some((gr) => !gr.isChecked && gr.id === group.id)}
                 disabled={!group.isChecked}
                 checkboxClass={styles.customLabel}
               />
@@ -712,8 +588,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   const renderAttributeRowItem = (attribute: ProductAttributeProps, attrIndex: number) => {
     if (isEditable) {
-      if (!attribute && !attrGroupItem.steps?.length) {
-        // return null;
+      if (!attrGroupItem?.attributes?.length) {
+        return null;
       }
 
       return (
@@ -903,7 +779,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                     level={4}
                                     style={{
                                       minWidth: 'fit-content',
-                                      padding: '0 12px 1px 16px',
+                                      paddingLeft: isSpecifiedModal ? 0 : 16,
+                                      paddingRight: 12,
                                     }}
                                   >
                                     {step.order < 10 ? `0${step.order}` : step.order}
@@ -940,57 +817,57 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 {isEditable ? null : (
                   <div className={styles.stepImages}>
-                    {autoSteps.map((step, stepIdx) =>
-                      (step.options as OptionQuantityProps[])
-                        .filter((el) => el.quantity > 0)
-                        .map((option, optionIdx) => {
-                          return (
-                            <div key={option.id} className={styles.autoStepOption}>
-                              <div className="step-info">
-                                {option.image ? (
-                                  <img className="step-image" src={showImageUrl(option.image)} />
-                                ) : null}
+                    {autoStepImages.map((step, stepIdx) =>
+                      step.options.map((option, optionIdx) => {
+                        return (
+                          <div
+                            key={`${step.id}_${option.id}_${stepIdx}_${optionIdx}`}
+                            className={`${styles.autoStepOption} ${
+                              isSpecifiedModal ? styles.autoStepOptionSpec : ''
+                            }`}
+                          >
+                            <div className="step-info">
+                              {option.image ? (
+                                <img className="step-image" src={showImageUrl(option.image)} />
+                              ) : null}
 
-                                <div className="step-text">
-                                  <BodyText
-                                    level={6}
-                                    customClass="description"
-                                    fontFamily="Roboto"
-                                    color="white"
-                                    style={{ whiteSpace: 'nowrap' }}
-                                  >
-                                    {step.order < 10 ? `0${step.order}` : step.order} Step
-                                  </BodyText>
+                              <div className="step-text">
+                                <BodyText
+                                  level={6}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  color="white"
+                                  style={{ whiteSpace: 'nowrap' }}
+                                >
+                                  {step.order < 10 ? `0${step.order}` : step.order} Step
+                                </BodyText>
 
-                                  <BodyText
-                                    level={6}
-                                    customClass="description"
-                                    fontFamily="Roboto"
-                                    color="white"
-                                  >
-                                    {trimEnd(
-                                      `${option.value_1} ${option.value_2} ${
-                                        option.unit_1 || option.unit_2
-                                          ? `- ${option.unit_1} ${option.unit_2}`
-                                          : ''
-                                      }`,
-                                    )}
-                                  </BodyText>
-                                </div>
+                                <BodyText
+                                  level={6}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  color="white"
+                                >
+                                  {trimEnd(
+                                    `${option.value_1} ${option.value_2} ${
+                                      option.unit_1 || option.unit_2
+                                        ? `- ${option.unit_1} ${option.unit_2}`
+                                        : ''
+                                    }`,
+                                  )}
+                                </BodyText>
                               </div>
-
-                              {optionIdx !==
-                                (step.options as OptionQuantityProps[]).filter(
-                                  (el) => el.quantity > 0,
-                                ).length -
-                                  1 || stepIdx === autoSteps.length - 1 ? null : (
-                                <div className="plus-icon">
-                                  <PlusIcon />
-                                </div>
-                              )}
                             </div>
-                          );
-                        }),
+
+                            {optionIdx !== step.options.length - 1 ||
+                            stepIdx === autoSteps.length - 1 ? null : (
+                              <div className="plus-icon">
+                                <PlusIcon />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }),
                     )}
                   </div>
                 )}

@@ -209,7 +209,7 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
       const isProductSpecified = !!specifiedData?.id && !!props?.isSpecified;
 
       const specifiedConfigurationSteps =
-        specifiedData?.specification.attribute_groups.filter(
+        specifiedData?.specification?.attribute_groups.filter(
           (el) => el.configuration_steps?.length,
         ) ?? [];
 
@@ -268,9 +268,9 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           });
         }
 
-        if (attr.type === SpecificationType.attribute) {
+        if (attr.type === SpecificationType.attribute || attr.attributes?.length) {
           newAttributeGroup.push(attr);
-        } else if (attr.type === SpecificationType.autoStep) {
+        } else if (attr.type === SpecificationType.autoStep || newRes.length) {
           newAttributeGroup.push({
             ...attr,
             steps: newRes,

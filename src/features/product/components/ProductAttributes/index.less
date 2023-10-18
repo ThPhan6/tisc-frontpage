@@ -163,28 +163,35 @@
 
 .stepImages {
   @space: 48px;
-
-  // display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-  // gap: 4px;
+  ///
   display: flex;
-  // padding: 8px 16px 8px;
   overflow: auto hidden;
   border-top: 1px solid @mono-color-medium;
 
+  &::-webkit-scrollbar {
+    display: block !important;
+  }
+
   .autoStepOption:first-of-type {
-    padding-left: 16px !important;
+    padding-left: 16px;
 
     :global(.step-info:first-child) {
-      margin-left: 0 !important;
+      margin-left: 0;
     }
   }
   .autoStepOption:last-of-type {
-    padding-right: 16px !important;
+    padding-right: 16px;
 
     :global(.step-info:last-child) {
-      margin-right: 0 !important;
+      margin-right: 0;
     }
+  }
+
+  .autoStepOptionSpec:first-of-type {
+    padding-left: 0 !important;
+  }
+  .autoStepOptionSpec:last-of-type {
+    padding-right: 0 !important;
   }
 
   .autoStepOption {
