@@ -1,7 +1,13 @@
+import { sortObjectArray } from '@/helper/utils';
+import { trimEnd } from 'lodash';
+
 import { LinkedOptionProps, OptionReplicateResponse } from '../../types/autoStep';
+import { OptionQuantityProps } from './../../types/autoStep';
 
 // set picked data when open auto-step
-export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
+export const getPickedOptionGroup = (
+  options: OptionReplicateResponse[] | OptionQuantityProps[],
+) => {
   const b: LinkedOptionProps[] = [];
 
   if (!options?.length) {
@@ -14,7 +20,7 @@ export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
     if (index > -1) {
       b[index].subs = b[index].subs.concat(el);
     } else {
-      b.push({
+      b.unshift({
         id: el.sub_id,
         name: el.sub_name,
         subs: [el],
@@ -22,7 +28,10 @@ export const getPickedOptionGroup = (options: OptionReplicateResponse[]) => {
     }
   });
 
-  return b;
+  return sortObjectArray(
+    b.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+    'name',
+  ) as LinkedOptionProps[];
 };
 
 export const getIDFromPreOption = (preOption: string | undefined) => {
@@ -39,4 +48,24 @@ export const getIDFromPreOption = (preOption: string | undefined) => {
   preOptionId = curPreOptionIds?.slice(0, curPreOptionIds.length - 1).join(',');
 
   return { optionId, preOptionId };
+};
+
+export const getPreOptionName = (
+  prevPreOptionName: string,
+  curPreOptionName: { value_1: string; value_2?: string; unit_1?: string; unit_2?: string },
+) => {
+  const preOptionInfo = [
+    prevPreOptionName,
+    trimEnd(
+      `${curPreOptionName.value_1} ${curPreOptionName.value_2} ${
+        curPreOptionName.unit_1 || curPreOptionName.unit_2
+          ? `- ${curPreOptionName.unit_1} ${curPreOptionName.unit_2}`
+          : ''
+      }`,
+    ),
+  ].filter(Boolean);
+
+  const preOptionName = preOptionInfo.length ? preOptionInfo.join(', ') : '';
+
+  return preOptionName;
 };

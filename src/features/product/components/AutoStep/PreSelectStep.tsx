@@ -75,6 +75,33 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
 
   const curOrder = slide + 2;
   const curPicked = pickedOption[slide];
+
+  // const newPreSelectStep = (
+  //   Object.values(preSelectStep) as AutoStepPreSelectOnAttributeGroupResponse[]
+  // ).map((el) => ({
+  //   ...el,
+  //   options: el.options.map((sub) => {
+  //     if (el.order === Object.values(preSelectStep).length + 1) {
+  //       return sub;
+  //     }
+
+  //     const disabled =
+  //       preSelectStep?.[el.order + 1]?.options.some((option) => {
+  //         const { preOptionId } = getIDFromPreOption(option.pre_option);
+
+  //         if (preOptionId === option.pre_option) {
+  //           return false;
+  //         }
+
+  //         return true;
+  //       }) ?? false;
+
+  //     return { ...sub, disabled };
+  //   }),
+  // }));
+
+  // console.log('newPreSelectStep', newPreSelectStep);
+
   const currentPreSelectOptionData = preSelectStep?.[curOrder]?.options ?? [];
   const currentOptionSelected =
     (optionsSelected?.[curOrder]?.options as unknown as OptionQuantityProps[]) ?? [];
@@ -971,8 +998,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
                     </div>
                   ),
                   options: pickedSub.subs.map((option, subIdx) => ({
-                    pre_option: option.pre_option,
+                    disabled: option?.disabled,
                     // replicate: option.replicate,
+                    pre_option: option.pre_option,
                     value: option.id,
                     label: (
                       <div

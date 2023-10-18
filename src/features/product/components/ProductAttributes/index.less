@@ -159,25 +159,86 @@
 .autoStepTr {
   height: 40px;
   overflow: hidden;
-
-  :global(.step-name) {
-    width: 84%;
-  }
 }
 
-.autoStepOption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 52px;
+.stepImages {
+  @space: 48px;
 
-  td {
-    height: 52px;
+  // display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  // gap: 4px;
+  display: flex;
+  // padding: 8px 16px 8px;
+  overflow: auto hidden;
+  border-top: 1px solid @mono-color-medium;
+
+  .autoStepOption:first-of-type {
+    padding-left: 16px !important;
+
+    :global(.step-info:first-child) {
+      margin-left: 0 !important;
+    }
+  }
+  .autoStepOption:last-of-type {
+    padding-right: 16px !important;
+
+    :global(.step-info:last-child) {
+      margin-right: 0 !important;
+    }
   }
 
-  img {
-    height: 36px;
-    padding-left: 16px;
+  .autoStepOption {
+    @pos: 8px;
+    ///
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: @space;
+    padding: @pos 0;
+
+    &:hover {
+      :global(.step-text) {
+        display: block;
+      }
+    }
+
+    :global(.plus-icon) {
+      width: 18px;
+      height: 18px;
+      margin: 0 2px;
+    }
+
+    :global(.step-info) {
+      margin: 0 2px;
+    }
+
+    :global(.step-image) {
+      height: @space;
+      // margin: 0 2px;
+      border: 1px solid @mono-color-medium;
+    }
+
+    :global(.step-text) {
+      position: absolute;
+      top: @pos;
+      display: none;
+      width: 50px;
+      height: @space;
+      padding: 4px;
+      overflow: auto;
+      text-align: center;
+      background: @mono-color;
+      transition: ease-in-out all 0.3s;
+
+      :global(.description) {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
   }
 }
 

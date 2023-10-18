@@ -456,3 +456,23 @@ export const uniqueArrayBy = (arr: any[], uniqKeys: string[]) => {
     }
   });
 };
+
+export const sortObjectArray = (items: any[], field: string, order: 'asc' | 'desc' = 'asc') => {
+  const compare = (value1: any, value2: any) => {
+    const item1 = typeof value1[field] === 'string' ? value1[field].toLowerCase() : value1[field];
+
+    const item2 = typeof value2[field] === 'string' ? value2[field].toLowerCase() : value2[field];
+
+    if (order === 'asc') {
+      if (typeof item1 === 'string') {
+        return item1.localeCompare(item2, undefined, { numeric: true, sensitivity: 'base' });
+      }
+    }
+
+    if (typeof item1 === 'string') {
+      return item2.localeCompare(item1, undefined, { numeric: true, sensitivity: 'base' });
+    }
+  };
+
+  return items.sort(compare);
+};

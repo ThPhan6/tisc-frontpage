@@ -3,12 +3,13 @@ import React, { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckPermission, useQuery } from '@/helper/hook';
-import { showImageUrl } from '@/helper/utils';
+import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
+import { showImageUrl, sortObjectArray } from '@/helper/utils';
 import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
@@ -339,7 +340,22 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     ///* set picked data for first step
-    linkedOptionData[0] = { pickedData: [newOptions], linkedData: [] };
+    linkedOptionData[0] = {
+      pickedData: [newOptions].map((el) => ({
+        ...el,
+        subs: sortObjectArray(
+          el.subs.map((item) => ({
+            ...item,
+            sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+          })),
+          'sortField',
+        ).map((item) => {
+          const { sortField, ...temp } = item;
+          return temp;
+        }),
+      })),
+      linkedData: [],
+    };
 
     /// list ID of previous option
     let exceptOptionIds: string[] = [];
@@ -426,7 +442,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     store.dispatch(setPickedOption(pickedOption));
 
-    store.dispatch(setSlideBar(uniq(newSlideBars)));
+    store.dispatch(setSlideBar(newSlideBars));
 
     store.dispatch(setSlide(curIndex));
 
@@ -482,7 +498,21 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
-        options: el.options.filter((optionItem) => optionItem.quantity > 0),
+        options: el.options
+          .filter((optionItem) => optionItem.quantity > 0)
+          .map((optionItem) => {
+            if (!newSteps[index + 1]) {
+              return { ...optionItem, disabled: false };
+            }
+
+            const impaired = newSteps[index + 1].options.some((option) => {
+              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
+            });
+
+            return { ...optionItem, disabled: !impaired };
+          }),
       };
       /* ------------------ */
 
@@ -520,9 +550,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }
       /* ------------------------------------- */
 
+      /* set current data view on step was clicked */
       const curPicked = pickedOption[el.order - 2];
 
-      /* set data view */
       if (index === 0) {
         newPreSelectStep[el.order] = el;
       } else if (curPicked?.id) {
@@ -539,16 +569,41 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               }),
         };
       }
-      /* -------------- */
+      /* --------------------------------------- */
     });
 
-    // console.log('newPreSelectStep', newPreSelectStep);
     // console.log('stepData', stepData);
     // console.log('pickedOption', pickedOption);
     // console.log('optionsSelected', optionsSelected);
 
+    /* mapping to find option on the left side doesn't any further option linked on the right side and disabled it */
+    // const newOptionsSelected = optionsSelected;
+
+    // map(optionsSelected, (optionData, order) => {
+    //   const curOrder = Number(order);
+
+    //   if (curOrder === 1 || !stepData[curOrder + 1]) {
+    //     return false;
+    //   }
+
+    //   const newOption = optionData.options.map((el) => {
+    //     const impaired = stepData[curOrder + 1].options.find((option) => {
+    //       const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
+
+    //       return el.id === optionId && el.pre_option === preOptionId;
+    //     });
+
+    //     return { ...el, disabled: !impaired };
+    //   });
+
+    //   newOptionsSelected[curOrder] = { ...newOptionsSelected[curOrder], options: newOption };
+
+    //   return true;
+    // });
+
     /// set options seleted
     store.dispatch(setOptionsSelected(optionsSelected));
+    /* ---------------------------------------------------------------------------- */
 
     /// set origin data
     store.dispatch(setStepData(stepData));
@@ -820,99 +875,126 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             )}
 
-            {attributeGroupKey !== 'specification_attribute_groups' || !autoSteps?.length ? null : (
-              <table className={styles.table}>
-                <tbody>
-                  {autoSteps.map((step, stepIndex) => {
-                    return (
-                      <React.Fragment key={step.id ?? stepIndex}>
-                        <tr
-                          key={stepIndex}
-                          className={`${isPublicPage ? 'cursor-default' : 'cursor-pointer'} ${
-                            styles.autoStepTr
-                          }`}
-                          onClick={
-                            isPublicPage
-                              ? undefined
-                              : showTISCAutoSteps
-                              ? handleOpenAutoStepModal(stepIndex)
-                              : handleOpenPreSelectAutoStepModal(stepIndex)
-                          }
-                        >
-                          <td style={{ width: '100%' }}>
-                            <div className={`${isPublicPage ? '' : 'flex-between'}`}>
-                              <div className="flex-start flex-grow">
-                                <BodyText
-                                  fontFamily="Cormorant-Garamond"
-                                  level={5}
-                                  style={{
-                                    minWidth: 'fit-content',
-                                    paddingRight: 12,
-                                    paddingLeft: isSpecifiedModal ? 0 : 16,
-                                  }}
-                                >
-                                  {step.order < 10 ? `0${step.order}` : step.order}
-                                </BodyText>
-                                <BodyText fontFamily="Cormorant-Garamond" level={5}>
-                                  {step.name}
-                                </BodyText>
+            {attributeGroupKey !== 'specification_attribute_groups' || !autoSteps.length ? null : (
+              <>
+                <table className={styles.table}>
+                  <tbody>
+                    {autoSteps.map((step, stepIndex) => {
+                      return (
+                        <React.Fragment key={step.id ?? stepIndex}>
+                          <tr
+                            key={stepIndex}
+                            className={`${isPublicPage ? 'cursor-default' : 'cursor-pointer'} ${
+                              styles.autoStepTr
+                            }`}
+                            onClick={
+                              isPublicPage
+                                ? undefined
+                                : showTISCAutoSteps
+                                ? handleOpenAutoStepModal(stepIndex)
+                                : handleOpenPreSelectAutoStepModal(stepIndex)
+                            }
+                          >
+                            <td style={{ width: '100%' }}>
+                              <div className={`${isPublicPage ? '' : 'flex-between'}`}>
+                                <div className="flex-start flex-grow text-overflow">
+                                  <BodyText
+                                    fontFamily="Cormorant-Garamond"
+                                    level={4}
+                                    style={{
+                                      minWidth: 'fit-content',
+                                      padding: '0 12px 1px 16px',
+                                    }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order}
+                                  </BodyText>
+                                  <BodyText fontFamily="Cormorant-Garamond" level={4}>
+                                    {step.name}
+                                  </BodyText>
+                                </div>
+
+                                {isPublicPage ? null : (
+                                  <div className="flex-start">
+                                    <ActionRightLeftIcon
+                                      style={{
+                                        marginLeft: 12,
+                                        marginRight: isSpecifiedModal ? 0 : 16,
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {isEditable ? (
+                            <tr
+                              className="border-bottom-light"
+                              style={{ height: 2, width: '100%' }}
+                            />
+                          ) : null}
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                {isEditable ? null : (
+                  <div className={styles.stepImages}>
+                    {autoSteps.map((step, stepIdx) =>
+                      (step.options as OptionQuantityProps[])
+                        .filter((el) => el.quantity > 0)
+                        .map((option, optionIdx) => {
+                          return (
+                            <div key={option.id} className={styles.autoStepOption}>
+                              <div className="step-info">
+                                {option.image ? (
+                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                ) : null}
+
+                                <div className="step-text">
+                                  <BodyText
+                                    level={6}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                    style={{ whiteSpace: 'nowrap' }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order} Step
+                                  </BodyText>
+
+                                  <BodyText
+                                    level={6}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {trimEnd(
+                                      `${option.value_1} ${option.value_2} ${
+                                        option.unit_1 || option.unit_2
+                                          ? `- ${option.unit_1} ${option.unit_2}`
+                                          : ''
+                                      }`,
+                                    )}
+                                  </BodyText>
+                                </div>
                               </div>
 
-                              {isPublicPage ? null : (
-                                <div className="flex-start">
-                                  <ActionRightLeftIcon
-                                    style={{
-                                      marginLeft: 12,
-                                      marginRight: isSpecifiedModal ? 0 : 16,
-                                    }}
-                                  />
+                              {optionIdx !==
+                                (step.options as OptionQuantityProps[]).filter(
+                                  (el) => el.quantity > 0,
+                                ).length -
+                                  1 || stepIdx === autoSteps.length - 1 ? null : (
+                                <div className="plus-icon">
+                                  <PlusIcon />
                                 </div>
                               )}
                             </div>
-                          </td>
-                        </tr>
-                        {isEditable
-                          ? null
-                          : (step.options as OptionQuantityProps[]).map((option) =>
-                              option.quantity > 0 ? (
-                                <tr key={option.id}>
-                                  <td>
-                                    <div
-                                      className={styles.autoStepOption}
-                                      style={{
-                                        padding: isSpecifiedModal ? '0 0 0 24px' : '0 8px 0 40px',
-                                      }}
-                                    >
-                                      <BodyText fontFamily="Roboto" level={6}>
-                                        {trimEnd(
-                                          `${option.value_1} ${option.value_2} ${
-                                            option.unit_1 || option.unit_2
-                                              ? `- ${option.unit_1} ${option.unit_2}`
-                                              : ''
-                                          }`,
-                                        )}
-                                      </BodyText>
-                                      {option.image ? (
-                                        <div className="flex-start">
-                                          <img src={showImageUrl(option.image)} />
-                                        </div>
-                                      ) : null}
-                                    </div>
-                                  </td>
-                                </tr>
-                              ) : null,
-                            )}
-                        {isSpecifiedModal && stepIndex === autoSteps.length - 1 ? null : (
-                          <tr
-                            className="border-bottom-light"
-                            style={{ height: 2, width: '100%' }}
-                          />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          );
+                        }),
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             <div

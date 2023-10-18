@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import { request } from 'umi';
 
+// import { sortObjectArray } from '@/helper/utils';
 import {
   AutoStepLinkedOptionResponse, // AutoStepOnAttributeGroupResponse,
   // AutoStepPreSelectOptionResponse,
@@ -33,6 +34,27 @@ export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: s
   })
     .then((res) => {
       // hidePageLoading();
+
+      // return sortObjectArray(
+      //   res.data.map((el) => ({
+      //     ...el,
+      //     subs: sortObjectArray(
+      //       el.subs.map((item) => ({
+      //         ...item,
+      //         subs: sortObjectArray(item.subs, 'value_1', 'asc').map((sub) => ({
+      //           ...sub,
+      //           sub_id: item.id,
+      //           sub_name: item.name,
+      //           pre_option: optionId,
+      //           replicate: sub?.replicate ?? 1,
+      //         })),
+      //       })),
+      //       'name',
+      //     ),
+      //   })),
+      //   'name',
+      // );
+
       return res.data.map((el) => ({
         ...el,
         subs: el.subs.map((item) => ({
