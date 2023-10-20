@@ -535,13 +535,13 @@ export const useProductAttributeForm = (
             is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: newAttributeGroups,
           },
-          brand_location_id: '',
-          distributor_location_id: '',
+          // brand_location_id: '',
+          // distributor_location_id: '',
         });
       }
 
       /// update attribute group has option
-    } else if (haveOptionAttr && newState[groupIndex].type === SpecificationType.attribute) {
+    } else if (haveOptionAttr) {
       // UNCHECK group and clear all selected option
       newState[groupIndex].isChecked = false;
       newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => ({
@@ -561,8 +561,8 @@ export const useProductAttributeForm = (
             is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
           },
-          brand_location_id: '',
-          distributor_location_id: '',
+          // brand_location_id: '',
+          // distributor_location_id: '',
         });
       }
     }

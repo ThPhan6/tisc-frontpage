@@ -269,12 +269,13 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
         }
 
         if (attr.type === SpecificationType.attribute || attr.attributes?.length) {
-          newAttributeGroup.push(attr);
+          newAttributeGroup.push({ ...attr, type: attr.type ?? SpecificationType.attribute });
         } else if (attr.type === SpecificationType.autoStep || newRes.length) {
           newAttributeGroup.push({
             ...attr,
             steps: newRes,
             isChecked: !!attr?.configuration_steps?.length || !!attr?.isChecked,
+            type: attr.type ?? SpecificationType.autoStep,
           });
         }
       });
