@@ -8,7 +8,7 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 import { getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
+import { useCheckPermission, useQuery } from '@/helper/hook';
 import { showImageUrl, sortObjectArray } from '@/helper/utils';
 import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
@@ -51,7 +51,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AutoStep } from '../AutoStep/AutoStep';
 import { PreSelectStep } from '../AutoStep/PreSelectStep';
-import { getIDFromPreOption, getPickedOptionGroup } from '../AutoStep/util';
+import { getIDFromPreOption, mappingOptionGroups } from '../AutoStep/util';
 import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { ProductAttributeSubItem, getConversionText } from './ProductAttributeSubItem';
@@ -282,7 +282,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       //
       if (index >= autoSteps.length - 1) {
-        const options = getPickedOptionGroup(autoStep.options);
+        const options = mappingOptionGroups(autoStep.options);
         linkedOptionData[index] = { pickedData: options, linkedData: [] };
 
         return;
@@ -295,7 +295,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       if (index !== 0) {
         // set other picked data
-        const options = getPickedOptionGroup(autoStep.options);
+        const options = mappingOptionGroups(autoStep.options);
         linkedOptionData[index] = { pickedData: options, linkedData: [] };
       }
 
@@ -381,16 +381,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       --curStepIndex;
     }
 
-    const newSteps: AutoStepPreSelectOnAttributeGroupResponse[] = (
-      attrGroupItem.steps as AutoStepPreSelectOnAttributeGroupResponse[]
-    ).map((el) => ({
-      ...el,
-      options: el.options.map((opt) => ({
-        ...opt,
-        quantity: opt.quantity ?? 0,
-        yours: opt.yours ?? 0,
-      })),
-    }));
+    const newSteps: AutoStepPreSelectOnAttributeGroupResponse[] =
+      attrGroupItem.steps as AutoStepPreSelectOnAttributeGroupResponse[];
 
     newSteps.forEach((el, index) => {
       /// update slide bar

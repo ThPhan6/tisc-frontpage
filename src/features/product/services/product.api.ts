@@ -267,7 +267,6 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
             });
           });
         }
-
         if (attr.type === SpecificationType.attribute || attr.attributes?.length) {
           newAttributeGroup.push({ ...attr, type: attr.type ?? SpecificationType.attribute });
         } else if (attr.type === SpecificationType.autoStep || newRes.length) {

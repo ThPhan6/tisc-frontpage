@@ -36,7 +36,7 @@ import { BodyText } from '@/components/Typography';
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './AutoStep.less';
 import { SlideBar } from './SlideBar';
-import { getIDFromPreOption, getPickedOptionGroup, getPreOptionName } from './util';
+import { getIDFromPreOption, getPreOptionName, mappingOptionGroups } from './util';
 
 interface NextStepProps {
   // options: SubOptionSelectedProps;
@@ -275,7 +275,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     const newPickedData: LinkedOptionProps[] = [];
 
     /// prev linked data and all its options selected
-    const prevPickedGroupOption = getPickedOptionGroup(optionsSelected[curOrder].options);
+    const prevPickedGroupOption = mappingOptionGroups(optionsSelected[curOrder].options);
 
     /* all options selected in multiple groups */
     prevPickedGroupOption.forEach((el) => {

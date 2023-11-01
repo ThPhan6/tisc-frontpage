@@ -5,9 +5,7 @@ import { LinkedOptionProps, OptionReplicateResponse } from '../../types/autoStep
 import { OptionQuantityProps } from './../../types/autoStep';
 
 // set picked data when open auto-step
-export const getPickedOptionGroup = (
-  options: OptionReplicateResponse[] | OptionQuantityProps[],
-) => {
+export const mappingOptionGroups = (options: OptionReplicateResponse[] | OptionQuantityProps[]) => {
   const b: LinkedOptionProps[] = [];
 
   if (!options?.length) {
