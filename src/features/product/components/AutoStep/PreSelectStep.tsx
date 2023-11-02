@@ -19,7 +19,7 @@ import {
   setSlide,
 } from '../../reducers';
 import { AutoStepOnAttributeGroupResponse, OptionQuantityProps } from '../../types/autoStep';
-import { SpecificationBodyRequest, SpecificationPreSelectStep } from '@/features/project/types';
+import { SpecificationBodyRequest } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -62,21 +62,12 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
   const { slideBars, slide, stepData, pickedOption, optionsSelected, firstOptionSelected } =
     useAppSelector((state) => state.autoStep);
   useEffect(() => {
-    setQuantities({
-      'bf778a90-1e49-437b-bd4b-b199d8cd5de4_1,13681d09-4b1c-4db8-9915-3ac0bc33dae2_1': 3,
-      'bf778a90-1e49-437b-bd4b-b199d8cd5de4_1,9a681106-c779-4fcd-9566-3e47b40229e7_1': 2,
-      'bf778a90-1e49-437b-bd4b-b199d8cd5de4_1,d1581fe9-2a0a-4bcc-8b1c-f19e114dda83_1': 1,
-      'bf778a90-1e49-437b-bd4b-b199d8cd5de4_1,13681d09-4b1c-4db8-9915-3ac0bc33dae2_1,951af4d9-7fab-4885-903b-ef165859d90a_1': 1,
-      'bf778a90-1e49-437b-bd4b-b199d8cd5de4_1,13681d09-4b1c-4db8-9915-3ac0bc33dae2_1,f2c565af-bab4-4bd5-87d9-d46c7097c4ce_1': 1,
-    });
+    setQuantities(currentSpecification?.stepSelection.quantities || {});
     setViewSteps(currentSpecification?.viewSteps || []);
+    console.log(currentSpecification?.viewSteps);
   }, [currentSpecification]);
-  useEffect(() => {
-    console.log(quantities);
-  }, [quantities]);
 
   const setRightPannel = (id: string, pre_option: string, selectId?: string) => {
-    console.log(selectId);
     const originRight = viewSteps[slide + 1]?.options;
     // remove select id first, filter item with index 1, add real select id then mapping quantity
     const newTempRight = originRight?.filter((item: any) => {
@@ -86,7 +77,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       );
     });
 
-    console.log(newTempRight);
     const addedRealSelectId = newTempRight.map((item: any) => {
       return {
         ...item,
@@ -157,7 +147,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     }
     const newViewSteps = viewSteps.map((step: any, index: number) => {
       if (index !== newSlide) return step;
-      console.log(step.options);
       const newOptions = step.options.reduce((pre: any, cur: any) => {
         const quantity = quantities[cur.select_id];
         if (!quantity) {
@@ -178,7 +167,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
         return pre;
       }, []);
 
-      console.log(newOptions);
       return {
         ...step,
         options: newOptions,
@@ -195,7 +183,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
   };
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
-    console.log(e.target as any);
     handleForceEnableCollapse();
     let selectId = (e.target as any).select_id;
     if (slide === 0) {
@@ -245,7 +232,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     (option: OptionQuantityProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log(option);
       const selectId = option.select_id || `${option.pre_option},${option.id}`;
       const newQuantity = quantities[`${selectId}`] ? quantities[`${selectId}`] + 1 : 1;
       setQuantities({
@@ -289,21 +275,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
 
     const stepDataClone = cloneDeep(stepData);
     const optionsSelectedClone = cloneDeep(optionsSelected);
-
-    const allOptionSelected: {
-      id: string | undefined;
-      order: number;
-      options: OptionQuantityProps[];
-    }[] = Object.values(optionsSelectedClone);
-
-    const noneOptionSelected = allOptionSelected
-      .filter((el) => Number(el.order) >= 2)
-      .every((el) => !el.options.length);
-
-    if (noneOptionSelected) {
-      message.error('Please select options');
-      return;
-    }
 
     /* checking all options selected has amount of YOURS equal to its REQUIRED */
     map(optionsSelectedClone, (optionData, order: string) => {
@@ -392,25 +363,13 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       }),
     );
 
-    const stepPayload: SpecificationPreSelectStep[] = allOptionSelected
-      .filter((el) => el.options.length !== 0)
-      .map((el) => ({
-        step_id: el.id as string,
-        options: el.options.map((opt) => ({
-          id: opt.id,
-          /* option selected in 1st step(origin) has default quantity is 1 */
-          quantity: el.order === 1 ? 1 : opt.quantity,
-          pre_option: opt.pre_option,
-        })),
-      }));
-
     const newAllPreSelectAttributes = allPreSelectAttributes.filter(
       (el) => el.id !== currentSpecAttributeGroupId,
     );
 
     const newAttributeGroups = newAllPreSelectAttributes.concat({
       id: currentSpecAttributeGroupId as string,
-      configuration_steps: stepPayload,
+      step_selections: quantities,
       /// default each attribute group has attributes property is empty array
       attributes: [],
     });
@@ -448,9 +407,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
   };
 
   //-------------------------------------------------------------------------//
-  useEffect(() => {
-    console.log(curPicked);
-  }, [curPicked]);
+
   const tempLeft = viewSteps[slide]?.options;
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);

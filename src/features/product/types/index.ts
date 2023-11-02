@@ -80,6 +80,7 @@ export interface ProductAttributeFormInput {
   specification_steps: AutoStepPreSelectOnAttributeGroupResponse[]; // step data
   steps?: AutoStepOnAttributeGroupRequest[]; // render UI and using this property to update step
   viewSteps?: AutoStepOnAttributeGroupRequest[]; // render UI and using this property to update step
+  stepSelection?: any;
   selection: boolean; // make specification as a choice
   isChecked?: boolean; // attribute group checked
   attribute_selected_id?: string;
