@@ -81,6 +81,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     return 'item-option-uncheck';
   };
 
+  console.log('options', options);
+
   return (
     <div
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
@@ -98,9 +100,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             <label
               key={`${option.value}_${index}_${randomId}`}
               className={`${style['item-wrapper']} ${
-                chosenItems?.some(
-                  (el) => el.value === option.value && el?.label === (option as any)?.pre_option,
-                )
+                chosenItems?.some((el) => el.value === option.select_id)
                   ? 'item-checkbox-active'
                   : ''
               } item-wrapper-custom`}
@@ -135,7 +135,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               className={`${style['item-checkbox']} item-wrapper-checkbox`}
               style={{ minHeight: heightItem }}
             >
-              <Checkbox {...option} style={{ maxWidth: '100%' }}>
+              <Checkbox {...option} style={{ maxWidth: '100%' }} d>
                 <span className={getActiveClass(option)}>{option.label}</span>
               </Checkbox>
             </div>

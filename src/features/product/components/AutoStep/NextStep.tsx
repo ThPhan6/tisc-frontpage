@@ -141,7 +141,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       optionSelected.options.forEach((el) => {
         const optionSelectedId =
           Number(order) === 1 ? (optionSelected.id as string) : (el.pre_option as string);
-
         allOptionSelectedIds.push(optionSelectedId);
       });
     });

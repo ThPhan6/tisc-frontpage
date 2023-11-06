@@ -6,7 +6,7 @@ import { OptionQuantityProps } from './../../types/autoStep';
 
 // set picked data when open auto-step
 export const mappingOptionGroups = (options: OptionReplicateResponse[] | OptionQuantityProps[]) => {
-  const b: LinkedOptionProps[] = [];
+  const b: any[] = [];
 
   if (!options?.length) {
     return b;
@@ -22,6 +22,7 @@ export const mappingOptionGroups = (options: OptionReplicateResponse[] | OptionQ
         id: el.sub_id,
         name: el.sub_name,
         subs: [el],
+        picked: el.picked,
       });
     }
   });

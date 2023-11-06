@@ -8,12 +8,13 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
-import { useGetParamId } from '@/helper/hook';
-import { cloneDeep, flatMap, groupBy, isEmpty, map, sum } from 'lodash';
+import { useGetParamId, useNumber } from '@/helper/hook';
+import { cloneDeep, flatMap, groupBy, isEmpty, map, omit, pick, sum } from 'lodash';
 
 import {
   resetAutoStepState,
   setFirstOptionSelected,
+  setOptionsSelected,
   setPartialProductDetail,
   setPartialProductSpecifiedData,
   setSlide,
@@ -58,13 +59,15 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
   const [quantities, setQuantities] = useState<any>({});
-
+  const totalQuantity = useNumber(0);
+  // on the left panel
+  const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
+  // on the right panel
   const { slideBars, slide, stepData, pickedOption, optionsSelected, firstOptionSelected } =
     useAppSelector((state) => state.autoStep);
   useEffect(() => {
     setQuantities(currentSpecification?.stepSelection.quantities || {});
     setViewSteps(currentSpecification?.viewSteps || []);
-    console.log(currentSpecification?.viewSteps);
   }, [currentSpecification]);
 
   const setRightPannel = (id: string, pre_option: string, selectId?: string) => {
@@ -83,18 +86,31 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
         select_id: !selectId ? '' : `${selectId},${item.id}_${item.index}`,
       };
     });
-    setTempRight(
-      addedRealSelectId.map((item: any) => {
-        const quantity = quantities[item.select_id] || 0;
-        return {
-          ...item,
-          quantity,
-        };
-      }),
-    );
+    let totalQuantityTemp = 0;
+
+    const rightPanelData = addedRealSelectId.map((item: any) => {
+      const quantity = quantities[item.select_id] || 0;
+      totalQuantityTemp += quantity;
+      return {
+        ...item,
+        quantity,
+        picked: quantity > 0,
+      };
+    });
+
+    setTempRight(rightPanelData);
+    totalQuantity.setValue(totalQuantityTemp);
   };
   useEffect(() => {
-    const firstLeftOption = viewSteps[slide]?.options[0];
+    const firstLeftOption =
+      viewSteps[slide]?.options.find(
+        (option: any) => option.select_id === leftSelectedOption[slide]?.select_id,
+      ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0];
+    if (slide === 0) {
+      store.dispatch(setFirstOptionSelected(firstLeftOption?.id));
+    }
+    setLeftSelectedOption({ ...leftSelectedOption, [slide]: firstLeftOption });
+
     if (firstLeftOption) {
       setRightPannel(
         firstLeftOption.id || '',
@@ -103,8 +119,11 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       );
     }
   }, [viewSteps, slide]);
+
   const curOrder = slide + 2;
+
   const curPicked = pickedOption[slide];
+
   const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
   };
@@ -116,28 +135,51 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       setForceEnableCollapse(false);
     }, 200);
   };
+  const toRawSelectId = (selectId: string) => {
+    const pos = selectId.lastIndexOf('_');
+    return selectId.slice(0, pos);
+  };
 
-  const handleBackToPrevSlide = () => {
-    const prevSlide = slide;
-    const newSlide = prevSlide - 1;
+  const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
+    return viewSteps.map((step: any, index: number) => {
+      // if (index !== newSlide + 1) return step;
+      let newOptions: any;
+      if (index === newSlide) {
+        newOptions = step.options.reduce((pre: any, cur: any) => {
+          const quantity = quantities[cur.select_id];
+          if (!quantity) {
+            pre.push({ ...cur, picked: false });
+            return pre;
+          }
+          for (let i = 0; i < quantity; i++) {
+            const found = step.options.find((item: any) => item.index === i + 1 && i !== 0);
 
-    const newViewSteps = viewSteps.map((step: any, index: number) => {
-      if (index !== newSlide + 1) return step;
-      const newOptions = step.options.filter((option: any) => option.index === 1);
+            if (!found)
+              pre.push({
+                ...cur,
+                index: i + 1,
+                select_id: `${toRawSelectId(cur.select_id)}_${i + 1}`,
+                picked: true,
+              });
+          }
+          return pre;
+        }, []);
+      } else newOptions = step.options.filter((option: any) => option.index === 1);
       return {
         ...step,
         options: newOptions,
       };
     });
-    setViewSteps(newViewSteps);
-    handleForceEnableCollapse();
+  };
 
+  const handleBackToPrevSlide = () => {
+    const prevSlide = slide;
+    const newSlide = prevSlide - 1;
+    setViewSteps(handleDuplicateWhenGoBackAndForth(newSlide));
+    handleForceEnableCollapse();
     store.dispatch(setSlide(newSlide));
   };
-  const toRawSelectId = (selectId: string) => {
-    const pos = selectId.lastIndexOf('_');
-    return selectId.slice(0, pos);
-  };
+
   const handleGoToNextSlide = () => {
     const prevSlide = slide;
     const newSlide = prevSlide + 1;
@@ -145,38 +187,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     if (newSlide === slideBars.length - 1) {
       return;
     }
-    const newViewSteps = viewSteps.map((step: any, index: number) => {
-      if (index !== newSlide) return step;
-      const newOptions = step.options.reduce((pre: any, cur: any) => {
-        const quantity = quantities[cur.select_id];
-        if (!quantity) {
-          pre.push({ ...cur, picked: false });
-          return pre;
-        }
-        for (let i = 0; i < quantity; i++) {
-          const found = step.options.find((item: any) => item.index === i + 1 && i !== 0);
 
-          if (!found)
-            pre.push({
-              ...cur,
-              index: i + 1,
-              select_id: `${toRawSelectId(cur.select_id)}_${i + 1}`,
-              picked: true,
-            });
-        }
-        return pre;
-      }, []);
-
-      return {
-        ...step,
-        options: newOptions,
-      };
-    });
-    setViewSteps(newViewSteps);
-    // if (!currentOptionSelected.length) {
-    //   message.error('Please select options');
-    //   return;
-    // }
+    setViewSteps(handleDuplicateWhenGoBackAndForth(newSlide));
 
     /* add new slide */
     store.dispatch(setSlide(newSlide));
@@ -184,30 +196,35 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
     handleForceEnableCollapse();
-    let selectId = (e.target as any).select_id;
+    const selectId = (e.target as any).select_id;
+    let targetItem = selectId;
     if (slide === 0) {
-      const targetItem = viewSteps[0].options.find((item: any) => item.id === e.target.value);
-      selectId = targetItem.select_id;
+      targetItem = viewSteps[slide].options.find((item: any) => item.id === e.target.value);
+    } else {
+      targetItem = viewSteps[slide].options.find((item: any) => item.select_id === selectId);
     }
-    setRightPannel(e.target.value, (e.target as any).pre_option, selectId);
+    //
+    setLeftSelectedOption({ ...leftSelectedOption, [slide]: targetItem });
 
-    const curOptionSelected = {
-      id: e.target.value,
-      pre_option: (e.target as any).pre_option,
-    };
+    setRightPannel(e.target.value, (e.target as any).pre_option, targetItem?.select_id);
+    // setOptionsSelected
+    // const curOptionSelected = {
+    //   id: e.target.value,
+    //   pre_option: (e.target as any).pre_option,
+    // };
 
     if (slide === 0) {
       /// only update option highlighted(not update option selected)
       store.dispatch(setFirstOptionSelected(e.target.value));
     }
 
-    const isPrevPickedOption =
-      curPicked?.id === curOptionSelected.id &&
-      curPicked?.pre_option === curOptionSelected.pre_option;
+    // const isPrevPickedOption =
+    //   curPicked?.id === curOptionSelected.id &&
+    //   curPicked?.pre_option === curOptionSelected.pre_option;
 
-    if (isPrevPickedOption) {
-      return;
-    }
+    // if (isPrevPickedOption) {
+    //   return;
+    // }
   };
   const setViewStepsWithQuantity = (option: any, newQuantity: number) => {
     const newViewSteps = viewSteps.map((step: any, index: number) => {
@@ -217,6 +234,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
           return {
             ...item,
             quantity: newQuantity,
+            // picked: newQuantity !== 0,
           };
         }
         return item;
@@ -232,13 +250,29 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     (option: OptionQuantityProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
+      if (totalQuantity.value === leftSelectedOption[slide]?.replicate) {
+        message.info('Amount of quantity is equal to required');
+        return;
+      }
+
       const selectId = option.select_id || `${option.pre_option},${option.id}`;
       const newQuantity = quantities[`${selectId}`] ? quantities[`${selectId}`] + 1 : 1;
-      setQuantities({
-        ...quantities,
-        [`${selectId}`]: newQuantity,
-      });
 
+      if (slide === 0) {
+        const keptKey = Object.keys(quantities).filter((key) =>
+          key.startsWith(leftSelectedOption[slide].id),
+        );
+        const updatedQuantity = pick(quantities, keptKey);
+        setQuantities({
+          ...updatedQuantity,
+          [`${selectId}`]: newQuantity,
+        });
+      } else {
+        setQuantities({
+          ...quantities,
+          [`${selectId}`]: newQuantity,
+        });
+      }
       //
       setViewStepsWithQuantity(option, newQuantity);
     };
@@ -354,22 +388,26 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       newSteps = newSteps.concat({ ...optionData, options: newStepData });
     });
 
-    /// save steps to specification attribute group
-    store.dispatch(
-      setPartialProductDetail({
-        specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
-          el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps, isChecked: true } : el,
-        ),
-      }),
-    );
+    // /// save steps to specification attribute group
+    // store.dispatch(
+    //   setPartialProductDetail({
+    //     specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
+    //       el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps, isChecked: true } : el,
+    //     ),
+    //   }),
+    // );
 
     const newAllPreSelectAttributes = allPreSelectAttributes.filter(
       (el) => el.id !== currentSpecAttributeGroupId,
     );
 
+    //
+    const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+      key.startsWith(firstOptionSelected),
+    );
     const newAttributeGroups = newAllPreSelectAttributes.concat({
       id: currentSpecAttributeGroupId as string,
-      step_selections: quantities,
+      step_selections: { ...pick(quantities, quantitiesUpdate), [`${firstOptionSelected}_1`]: 1 },
       /// default each attribute group has attributes property is empty array
       attributes: [],
     });
@@ -412,6 +450,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);
   const mappedRight = mappingOptionGroups(tempRight);
+
   return (
     <CustomModal
       title={
@@ -438,7 +477,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
       <SlideBar
         handleBackToPrevSlide={handleBackToPrevSlide}
         handleGoToNextSlide={handleGoToNextSlide}
-        disabledNextSlide={curOrder === slideBars.length}
+        disabledNextSlide={
+          curOrder === slideBars.length ||
+          leftSelectedOption[slide]?.replicate !== totalQuantity.value
+        }
       />
 
       <div className={styles.mainContent}>
@@ -450,12 +492,27 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
                 key={optIdx}
                 isCheckbox={slide !== 0}
                 isRadio={slide === 0}
-                selected={[{ label: '', value: firstOptionSelected }]}
-                chosenItems={[]}
+                selected={[{ label: '', value: leftSelectedOption[slide]?.id || '' }]}
+                chosenItems={pickedSub.subs
+                  .filter((item: any) => {
+                    const keys = Object.keys(quantities).filter((key) =>
+                      key.startsWith(`${item.select_id},`),
+                    );
+                    let count = 0;
+                    keys.forEach((key) => {
+                      count += quantities[key];
+                    });
+                    return count > 0;
+                  })
+                  .map((item: any) => {
+                    return {
+                      label: '',
+                      value: item?.select_id || '',
+                    };
+                  })}
                 onOneChange={handleSelectPickedOption}
                 data={{
                   customItemClass: 'checkbox-item',
-
                   optionRadioValue: pickedSub.id,
                   optionRadioLabel: (
                     <div className="flex-between">
@@ -469,18 +526,21 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
                     </div>
                   ),
                   options: pickedSub.subs?.map((option: any, subIdx: number) => ({
-                    disabled: option?.disabled,
+                    disabled: !option.has_next_options,
                     // replicate: option.replicate,
                     pre_option: option.pre_option,
                     select_id: option.select_id,
                     value: option.id,
+                    picked: option.picked,
                     label: (
                       <div
                         className={`flex-between w-full ${
-                          (slide === 0 && pickedOption[slide]?.id === option.id) ||
+                          (slide === 0 &&
+                            option.select_id === leftSelectedOption[slide]?.select_id) ||
                           (slide !== 0 &&
-                            curPicked?.id === option.id &&
-                            curPicked?.pre_option === option.pre_option)
+                            option.picked &&
+                            option.select_id === leftSelectedOption[slide]?.select_id &&
+                            option.has_next_options)
                             ? 'checkbox-item-active'
                             : ''
                         }`}
@@ -537,7 +597,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
                     fontFamily="Roboto"
                     style={{ fontWeight: 500, margin: '0 16px 0 8px' }}
                   >
-                    {curPicked?.replicate ?? 'N/A'}
+                    {leftSelectedOption[slide]?.replicate ?? 'N/A'}
                   </BodyText>
                   <BodyText level={3} fontFamily="Cormorant-Garamond">
                     Yours
@@ -547,7 +607,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
                     fontFamily="Roboto"
                     style={{ fontWeight: 500, marginLeft: 8 }}
                   >
-                    {curPicked?.yours ?? 'N/A'}
+                    {totalQuantity.value ?? 'N/A'}
                   </BodyText>
                 </div>
               </div>
@@ -558,8 +618,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
                 canActiveMultiKey
                 showCollapseIcon
                 showCount={false}
-                selected={[]}
-                chosenItem={[]}
+                selected={tempRight
+                  .filter((el: any) => el.picked)
+                  .map((el: any) => ({ label: '', value: el.id }))}
                 forceEnableCollapse={forceEnableCollapse}
                 renderTitle={(data) => data.label}
                 data={mappedRight.map((option) => ({
