@@ -19,7 +19,11 @@ import {
   setPartialProductSpecifiedData,
   setSlide,
 } from '../../reducers';
-import { AutoStepOnAttributeGroupResponse, OptionQuantityProps } from '../../types/autoStep';
+import {
+  AutoStepOnAttributeGroupRequest,
+  AutoStepOnAttributeGroupResponse,
+  OptionQuantityProps,
+} from '../../types/autoStep';
 import { SpecificationBodyRequest } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
@@ -39,9 +43,17 @@ interface PreSelectStepProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   updatePreSelect?: boolean;
+  viewStepsDefault?: AutoStepOnAttributeGroupRequest[];
+  quantitiesDefault?: any;
 }
 
-export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, updatePreSelect }) => {
+export const PreSelectStep: FC<PreSelectStepProps> = ({
+  visible,
+  setVisible,
+  updatePreSelect,
+  viewStepsDefault,
+  quantitiesDefault,
+}) => {
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
@@ -53,22 +65,22 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
   const currentSpecification = specificationAttributeGroups.find(
     (item) => item.id === currentSpecAttributeGroupId,
   );
-  const [viewSteps, setViewSteps] = useState<any>([]);
+  const [viewSteps, setViewSteps] = useState<any>(viewStepsDefault);
   const [tempRight, setTempRight] = useState<any>([]);
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
-  const [quantities, setQuantities] = useState<any>({});
+  const [quantities, setQuantities] = useState<any>(quantitiesDefault);
   const totalQuantity = useNumber(0);
   // on the left panel
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
   // on the right panel
   const { slideBars, slide, stepData, pickedOption, optionsSelected, firstOptionSelected } =
     useAppSelector((state) => state.autoStep);
-  useEffect(() => {
-    setQuantities(currentSpecification?.stepSelection.quantities || {});
-    setViewSteps(currentSpecification?.viewSteps || []);
-  }, [currentSpecification]);
+  // useEffect(() => {
+  //   setQuantities(currentSpecification?.stepSelection?.quantities || {});
+  //   setViewSteps(currentSpecification?.viewSteps || []);
+  // }, [currentSpecification]);
 
   const setRightPannel = (id: string, pre_option: string, selectId?: string) => {
     const originRight = viewSteps[slide + 1]?.options;
@@ -101,45 +113,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     setTempRight(rightPanelData);
     totalQuantity.setValue(totalQuantityTemp);
   };
-  useEffect(() => {
-    const firstLeftOption =
-      viewSteps[slide]?.options.find(
-        (option: any) => option.select_id === leftSelectedOption[slide]?.select_id,
-      ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0];
-    if (slide === 0) {
-      store.dispatch(setFirstOptionSelected(firstLeftOption?.id));
-    }
-    setLeftSelectedOption({ ...leftSelectedOption, [slide]: firstLeftOption });
-
-    if (firstLeftOption) {
-      setRightPannel(
-        firstLeftOption.id || '',
-        firstLeftOption.pre_option || '',
-        firstLeftOption.select_id,
-      );
-    }
-  }, [viewSteps, slide]);
-
-  const curOrder = slide + 2;
-
-  const curPicked = pickedOption[slide];
-
-  const handleResetAutoStep = () => {
-    store.dispatch(resetAutoStepState());
-  };
-
-  const handleForceEnableCollapse = () => {
-    setForceEnableCollapse(true);
-
-    setTimeout(() => {
-      setForceEnableCollapse(false);
-    }, 200);
-  };
   const toRawSelectId = (selectId: string) => {
     const pos = selectId.lastIndexOf('_');
     return selectId.slice(0, pos);
   };
-
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
     return viewSteps.map((step: any, index: number) => {
       // if (index !== newSlide + 1) return step;
@@ -153,7 +130,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
           }
           for (let i = 0; i < quantity; i++) {
             const found = step.options.find((item: any) => item.index === i + 1 && i !== 0);
-
             if (!found)
               pre.push({
                 ...cur,
@@ -170,6 +146,84 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
         options: newOptions,
       };
     });
+  };
+  useEffect(() => {
+    const firstLeftOption =
+      viewSteps[slide]?.options.find(
+        (option: any) => option.select_id === leftSelectedOption[slide]?.select_id,
+      ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0];
+    const firstSlideOptionSelected =
+      viewSteps[0]?.options.find(
+        (option: any) => option.select_id === leftSelectedOption[0]?.select_id,
+      ) ||
+      viewSteps[0]?.options.filter((option: any) => option.picked)[0] ||
+      viewSteps[0]?.options[0];
+    store.dispatch(setFirstOptionSelected(firstSlideOptionSelected?.id));
+    setLeftSelectedOption({ ...leftSelectedOption, [slide]: firstLeftOption });
+    if (firstLeftOption) {
+      setRightPannel(
+        firstLeftOption.id || '',
+        firstLeftOption.pre_option || '',
+        firstLeftOption.select_id,
+      );
+    }
+  }, [viewSteps, slide]);
+  useEffect(() => {
+    if (slide === 0) return;
+    setViewSteps(handleDuplicateWhenGoBackAndForth(slide));
+  }, []);
+
+  const curOrder = slide + 2;
+
+  const curPicked = pickedOption[slide];
+
+  const handleResetAutoStep = () => {
+    store.dispatch(resetAutoStepState());
+  };
+
+  const mappingPicked = () => {
+    const newViewSteps = viewSteps.map((viewStep: any, index: number) => {
+      const combinedOptions = viewStep.options.map((option: any) => {
+        const tempSelectId: string = !option.pre_option
+          ? `${option.id}_1`
+          : option.pre_option
+              .split(',')
+              .concat(option.id)
+              .map((selectId: string) => `${selectId}_1`)
+              .join(',');
+        let picked = false;
+        if (quantities && quantities[tempSelectId] && quantities[tempSelectId] > 0) {
+          picked = true;
+        }
+        const nextOptions = viewSteps[index + 1]?.options.filter(
+          (item: any) =>
+            item.pre_option ===
+            (option.pre_option ? `${option.pre_option},${option.id}` : option.id),
+        );
+        return {
+          ...option,
+          index: 1,
+          select_id: tempSelectId,
+          picked,
+          has_next_options: nextOptions?.length > 0,
+          yours: option.replicate,
+        };
+      });
+      return {
+        ...viewStep,
+        options: combinedOptions,
+      };
+    });
+    // setViewSteps(newViewSteps);
+    return newViewSteps;
+  };
+
+  const handleForceEnableCollapse = () => {
+    setForceEnableCollapse(true);
+
+    setTimeout(() => {
+      setForceEnableCollapse(false);
+    }, 200);
   };
 
   const handleBackToPrevSlide = () => {
@@ -226,8 +280,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     //   return;
     // }
   };
-  const setViewStepsWithQuantity = (option: any, newQuantity: number) => {
-    const newViewSteps = viewSteps.map((step: any, index: number) => {
+  const setViewStepsWithQuantity = (option: any, newQuantity: number, updatedViewSteps?: any) => {
+    const viewStepToHandle = updatedViewSteps || viewSteps;
+    const newViewSteps = viewStepToHandle.map((step: any, index: number) => {
       if (index !== slide + 1) return step;
       const newOptions = step.options.map((item: any) => {
         if (option.select_id === item.select_id) {
@@ -237,6 +292,13 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
             // picked: newQuantity !== 0,
           };
         }
+        // if (leftOption && item.select_id === leftOption.select_id) {
+        //   return {
+        //     ...item,
+        //     quantity: 1,
+        //     picked: true,
+        //   };
+        // }
         return item;
       });
       return {
@@ -254,11 +316,27 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
         message.info('Amount of quantity is equal to required');
         return;
       }
-
       const selectId = option.select_id || `${option.pre_option},${option.id}`;
       const newQuantity = quantities[`${selectId}`] ? quantities[`${selectId}`] + 1 : 1;
 
       if (slide === 0) {
+        const newOptions = viewSteps[0].options.map((item) => {
+          if (item.id === leftSelectedOption[0].id) {
+            return {
+              ...item,
+              picked: true,
+            };
+          } else {
+            return {
+              ...item,
+              picked: false,
+            };
+          }
+        });
+        const newStep0 = { ...viewSteps[0], options: newOptions };
+        const updatedViewSteps = cloneDeep(viewSteps);
+        updatedViewSteps[0] = newStep0;
+        setViewStepsWithQuantity(option, newQuantity, updatedViewSteps);
         const keptKey = Object.keys(quantities).filter((key) =>
           key.startsWith(leftSelectedOption[slide].id),
         );
@@ -267,14 +345,16 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
           ...updatedQuantity,
           [`${selectId}`]: newQuantity,
         });
+        return;
       } else {
         setQuantities({
           ...quantities,
           [`${selectId}`]: newQuantity,
         });
       }
-      //
       setViewStepsWithQuantity(option, newQuantity);
+
+      //
     };
 
   const handleDecreaseQuantity =
@@ -286,10 +366,14 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
         quantities[`${selectId}`] && quantities[`${selectId}`] > 0
           ? quantities[`${selectId}`] - 1
           : 0;
-      setQuantities({
-        ...quantities,
+      const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+        key.startsWith(`${selectId.slice(0, -1)}${newQuantity + 1}`),
+      );
+      const newQuantities = {
+        ...omit(quantities, quantitiesUpdate),
         [`${selectId}`]: newQuantity,
-      });
+      };
+      setQuantities(newQuantities);
       setViewStepsWithQuantity(option, newQuantity);
     };
   const handleCloseModel = () => {
@@ -303,114 +387,113 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
     setViewSteps(newViewSteps);
     setVisible(false);
   };
-  const handleCreatePreSelectStep = async () => {
-    let inValidOption = false;
-    let stepError = -1;
-
-    const stepDataClone = cloneDeep(stepData);
-    const optionsSelectedClone = cloneDeep(optionsSelected);
-
-    /* checking all options selected has amount of YOURS equal to its REQUIRED */
-    map(optionsSelectedClone, (optionData, order: string) => {
-      if (inValidOption || Number(order) < 2 || !optionData.options.length) {
-        return;
-      }
-
-      if ((optionData.options as unknown as OptionQuantityProps[]).some((el) => el.quantity <= 0)) {
-        inValidOption = true;
-        return;
-      }
-
-      const prevOptions = optionsSelected[Number(order) - 1].options;
-
-      const curOptions = groupBy(
-        optionData.options,
-        (o) => o.pre_option,
-      ) as unknown as OptionQuantityProps[];
-
-      const keys = Object.keys(curOptions);
-
-      keys.forEach((key) => {
-        if (inValidOption) {
-          return;
-        }
-
-        const { optionId, preOptionId } = getIDFromPreOption(key);
-
-        const curQuantity = sum(
-          flatMap(Object.values(curOptions[key])).map((el: any) => el.quantity),
-        );
-
-        prevOptions.forEach((prevOpt) => {
-          if (inValidOption) {
-            return;
+  const validateQuantities = (data: any, specificationSteps: any[]) => {
+    const selectIds = Object.keys(data);
+    const combinedOptionQuantity = selectIds.reduce((pre: any, selectId: string) => {
+      const parts = selectId.split(',');
+      const destination = parts[parts.length - 1];
+      const optionId = destination;
+      const quantity = data[selectId];
+      return quantity > 0
+        ? {
+            ...pre,
+            [optionId]: {
+              quantity: pre[optionId] ? pre[optionId].quantity + quantity : quantity,
+              pre_option: parts
+                .slice(0, parts.length - 1)
+                .map((item: string) => item.split('_')[0])
+                .join(','),
+              select_id: selectId,
+            },
           }
-
-          if (
-            curOrder === 2
-              ? prevOpt.id === optionId
-              : prevOpt.id === optionId && prevOpt.pre_option === preOptionId
-          ) {
-            if (curQuantity < prevOpt.replicate) {
-              inValidOption = true;
-              stepError = Number(order);
-            }
-          }
-        });
-      });
+        : pre;
+    }, {});
+    const optionIds = Object.keys(combinedOptionQuantity);
+    const mappedQuantities = optionIds.map((optionId) => {
+      return {
+        id: optionId,
+        quantity: combinedOptionQuantity[optionId].quantity,
+        pre_option: combinedOptionQuantity[optionId].pre_option,
+        select_id: combinedOptionQuantity[optionId].select_id,
+      };
     });
+    let check = true;
+    const flatSpecificationOptions = specificationSteps.reduce((pre: any, cur: any) => {
+      return pre.concat(cur.options);
+    }, []);
+    mappedQuantities.forEach((mappedQuantity) => {
+      const optionId = mappedQuantity.id.split('_')[0];
+      const currentOption = flatSpecificationOptions.find(
+        (item: any) =>
+          item.id === optionId &&
+          isEmpty(mappedQuantity.pre_option ? item.pre_option === mappedQuantity.pre_option : true),
+      );
+      const nextOptions = flatSpecificationOptions.filter(
+        (item: any) =>
+          item.pre_option ===
+          (mappedQuantity.pre_option ? `${mappedQuantity.pre_option},${optionId}` : optionId),
+      );
+      const yours = mappedQuantities.reduce((pre: number, cur: any) => {
+        if (
+          cur.select_id.includes(mappedQuantity.select_id) &&
+          cur.select_id.split(',').length - mappedQuantity.select_id.split(',').length === 1 &&
+          cur.select_id !== mappedQuantity.select_id
+        )
+          return pre + cur.quantity;
+        return pre;
+      }, 0);
+      if (!currentOption) check = false;
+      if (currentOption && currentOption.replicate !== yours && nextOptions.length !== 0)
+        check = false;
+    });
+    return check;
+  };
 
-    if (inValidOption && stepError !== -1) {
-      message.error(`YOURS in step ${stepError} is not equal to REQUIRED`);
+  const handleCreatePreSelectStep = async () => {
+    const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+      key.startsWith(firstOptionSelected),
+    );
+    const newQuantities = {
+      ...pick(quantities, quantitiesUpdate),
+      [`${firstOptionSelected}_1`]: 1,
+    };
+    if (!validateQuantities(newQuantities, viewSteps)) {
+      message.error('error');
       return;
     }
+
+    /* checking all options selected has amount of YOURS equal to its REQUIRED */
+
+    // if (inValidOption && stepError !== -1) {
+    //   message.error(`YOURS in step ${stepError} is not equal to REQUIRED`);
+    //   return;
+    // }
     /* -------------------------------------------------------------------- */
-
-    let newSteps: AutoStepOnAttributeGroupResponse[] = [];
-
-    map(stepDataClone, (optionData, order: string) => {
-      const newStepData = optionData.options.map((el) => {
-        const optFound = (
-          optionsSelectedClone[Number(order)].options as OptionQuantityProps[]
-        ).find((opt) =>
-          Number(order) === 1
-            ? opt.id === el.id
-            : opt.id === el.id && opt.pre_option === el.pre_option,
-        );
-
-        if (optFound) {
-          return { ...el, quantity: Number(order) === 1 ? 1 : optFound.quantity };
-        }
-
-        return el;
-      });
-
-      newSteps = newSteps.concat({ ...optionData, options: newStepData });
-    });
-
-    // /// save steps to specification attribute group
-    // store.dispatch(
-    //   setPartialProductDetail({
-    //     specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
-    //       el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps, isChecked: true } : el,
-    //     ),
-    //   }),
-    // );
-
     const newAllPreSelectAttributes = allPreSelectAttributes.filter(
       (el) => el.id !== currentSpecAttributeGroupId,
     );
 
-    //
-    const quantitiesUpdate = Object.keys(quantities).filter((key) =>
-      key.startsWith(firstOptionSelected),
-    );
     const newAttributeGroups = newAllPreSelectAttributes.concat({
       id: currentSpecAttributeGroupId as string,
-      step_selections: { ...pick(quantities, quantitiesUpdate), [`${firstOptionSelected}_1`]: 1 },
+      step_selections: newQuantities,
       /// default each attribute group has attributes property is empty array
       attributes: [],
     });
+    /// save steps to specification attribute group
+    store.dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
+          el.id === currentSpecAttributeGroupId
+            ? {
+                ...el,
+                viewSteps,
+                isChecked: true,
+                stepSelection: { ...el.stepSelection, quantities: newQuantities },
+              }
+            : el,
+        ),
+      }),
+    );
 
     const newSpecfication: SpecificationBodyRequest = {
       is_refer_document: false,
@@ -430,7 +513,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible, upd
 
       return;
     }
-
     /// update pre-select steps
     const isUpdateSuccess = await selectProductSpecification(productId, {
       specification: newSpecfication,

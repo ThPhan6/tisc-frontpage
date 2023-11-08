@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { message } from 'antd';
 
@@ -131,10 +131,23 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
-  const autoStepImages = autoSteps.map((el) => ({
-    ...el,
-    options: (el.options as OptionQuantityProps[]).filter((opt) => opt.quantity > 0),
-  }));
+  const autoStepImages = attrGroupItem?.viewSteps?.map((el) => {
+    const options: OptionQuantityProps[] = [];
+    (el.options as OptionQuantityProps[]).forEach((option) => {
+      for (
+        let index = 0;
+        index < attrGroupItem?.stepSelection?.quantities[option.select_id];
+        index++
+      ) {
+        options.push(option);
+      }
+    });
+
+    return {
+      ...el,
+      options,
+    };
+  });
 
   const showTISCAutoSteps = !isPublicPage && isEditable;
 
@@ -177,6 +190,30 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     store.dispatch(closeProductFooterTab());
     store.dispatch(closeDimensionWeightGroup());
   };
+
+  const failedStep =
+    // useMemo<number>(
+    () => {
+      const viewSteps = attrGroupItem.viewSteps || [];
+      const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
+      for (let index = 0; index < viewSteps.length; index++) {
+        const totalRequireQuantity = viewSteps[index].options.reduce((a, b) => {
+          if (b.has_next_options || !b.picked) return a;
+          return a + b.replicate;
+        }, 0);
+        const totalQuantity = quantityKeys
+          .filter((key) => {
+            const lengthOfSplitKey = key.split(',').length;
+            return lengthOfSplitKey === index + 1;
+          })
+          .reduce((a, b) => {
+            return a + attrGroupItem.stepSelection.quantities[b];
+          }, 0);
+        if (totalRequireQuantity !== 0 && totalQuantity !== 0) return index;
+      }
+      return 100;
+    };
+  // , [attrGroupItem]);
 
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
@@ -369,7 +406,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       message.error('Attribute Group ID is required');
       return;
     }
-
     const slideBars: string[] = [];
     const pickedOption: PickedOptionProps = {};
     const optionsSelected: OptionSelectedProps = {};
@@ -809,7 +845,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 {isEditable ? null : (
                   <div className={styles.stepImages}>
-                    {autoStepImages.map((step, stepIdx) =>
+                    {autoStepImages?.map((step, stepIdx) =>
                       step.options.map((option, optionIdx) => {
                         return (
                           <div
@@ -891,7 +927,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         </div>
       </div>
 
-      {attributeGroupKey === 'specification_attribute_groups' || !isPublicPage ? (
+      {(attributeGroupKey === 'specification_attribute_groups' || !isPublicPage) &&
+      autoStepModal ? (
         showTISCAutoSteps ? (
           <AutoStep
             attributeGroup={attributeGroup}
@@ -904,6 +941,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             visible={autoStepModal}
             setVisible={setAutoStepModal}
             updatePreSelect={!isSpecifiedModal}
+            viewStepsDefault={attrGroupItem.viewSteps}
+            quantitiesDefault={attrGroupItem.stepSelection.quantities}
           />
         )
       ) : null}
