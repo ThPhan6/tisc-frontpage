@@ -9,7 +9,19 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useNumber } from '@/helper/hook';
-import { cloneDeep, flatMap, groupBy, isEmpty, map, omit, pick, sum } from 'lodash';
+import {
+  cloneDeep,
+  flatMap,
+  forEach,
+  groupBy,
+  isEmpty,
+  map,
+  omit,
+  pick,
+  sum,
+  uniq,
+  uniqBy,
+} from 'lodash';
 
 import {
   resetAutoStepState,
@@ -91,7 +103,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         item.index === 1
       );
     });
-
     const addedRealSelectId = newTempRight.map((item: any) => {
       return {
         ...item,
@@ -100,7 +111,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     });
     let totalQuantityTemp = 0;
 
-    const rightPanelData = addedRealSelectId.map((item: any) => {
+    const rightPanelData = uniqBy(addedRealSelectId, 'id').map((item: any) => {
       const quantity = quantities[item.select_id] || 0;
       totalQuantityTemp += quantity;
       return {
@@ -118,28 +129,49 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     return selectId.slice(0, pos);
   };
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
+    const keys = Object.keys(quantities);
     return viewSteps.map((step: any, index: number) => {
       // if (index !== newSlide + 1) return step;
       let newOptions: any;
       if (index === newSlide) {
-        newOptions = step.options.reduce((pre: any, cur: any) => {
-          const quantity = quantities[cur.select_id];
-          if (!quantity) {
-            pre.push({ ...cur, picked: false });
-            return pre;
+        const quantityKeysOfThisStep = keys.filter((key) => key.split(',').length === index + 1);
+        const oldOptions = [...step.options];
+        newOptions = [...step.options];
+        quantityKeysOfThisStep.forEach((key) => {
+          const id = key.split(',').at(-1)?.slice(0, -2);
+          const actualOption = oldOptions.find((option) => option.id === id);
+          const quantity = quantities[key] as number;
+          if (actualOption && quantity) {
+            for (let i = 0; i < quantity; i++) {
+              const found = step.options.find(
+                (item: any) => item.index === i + 1 && item.select_id === key,
+              );
+              if (!found) {
+                const clown = {
+                  ...actualOption,
+                  select_id: `${toRawSelectId(key)}_${i + 1}`,
+                  index: i + 1,
+                  picked: true,
+                };
+                newOptions.push(clown);
+              }
+            }
           }
-          for (let i = 0; i < quantity; i++) {
-            const found = step.options.find((item: any) => item.index === i + 1 && i !== 0);
-            if (!found)
-              pre.push({
-                ...cur,
-                index: i + 1,
-                select_id: `${toRawSelectId(cur.select_id)}_${i + 1}`,
-                picked: true,
-              });
+        });
+        const newQuantities = { ...quantities, [`${firstOptionSelected}_1`]: 1 };
+        newOptions = newOptions.map((item) => {
+          if (!newQuantities[`${toRawSelectId(item.select_id)}_1`]) {
+            return {
+              ...item,
+              picked: false,
+            };
           }
-          return pre;
-        }, []);
+          return {
+            ...item,
+            picked: true,
+          };
+        });
+        newOptions = uniqBy(newOptions, (e) => e.select_id);
       } else newOptions = step.options.filter((option: any) => option.index === 1);
       return {
         ...step,
@@ -150,7 +182,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   useEffect(() => {
     const firstLeftOption =
       viewSteps[slide]?.options.find(
-        (option: any) => option.select_id === leftSelectedOption[slide]?.select_id,
+        (option: any) => option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
       ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0];
     const firstSlideOptionSelected =
       viewSteps[0]?.options.find(
@@ -260,25 +292,12 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     //
     setLeftSelectedOption({ ...leftSelectedOption, [slide]: targetItem });
 
-    setRightPannel(e.target.value, (e.target as any).pre_option, targetItem?.select_id);
-    // setOptionsSelected
-    // const curOptionSelected = {
-    //   id: e.target.value,
-    //   pre_option: (e.target as any).pre_option,
-    // };
+    setRightPannel(targetItem.id, targetItem.pre_option, targetItem?.select_id);
 
     if (slide === 0) {
       /// only update option highlighted(not update option selected)
       store.dispatch(setFirstOptionSelected(e.target.value));
     }
-
-    // const isPrevPickedOption =
-    //   curPicked?.id === curOptionSelected.id &&
-    //   curPicked?.pre_option === curOptionSelected.pre_option;
-
-    // if (isPrevPickedOption) {
-    //   return;
-    // }
   };
   const setViewStepsWithQuantity = (option: any, newQuantity: number, updatedViewSteps?: any) => {
     const viewStepToHandle = updatedViewSteps || viewSteps;
@@ -289,16 +308,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
           return {
             ...item,
             quantity: newQuantity,
-            // picked: newQuantity !== 0,
+            picked: newQuantity !== 0,
           };
         }
-        // if (leftOption && item.select_id === leftOption.select_id) {
-        //   return {
-        //     ...item,
-        //     quantity: 1,
-        //     picked: true,
-        //   };
-        // }
         return item;
       });
       return {
