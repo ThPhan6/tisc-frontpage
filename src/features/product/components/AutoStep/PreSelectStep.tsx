@@ -227,8 +227,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   }, [slide]);
   useEffect(() => {
     if (slide === 0) return;
-    console.log('123');
-
     setViewSteps(handleDuplicateWhenGoBackAndForth(slide));
   }, []);
 
