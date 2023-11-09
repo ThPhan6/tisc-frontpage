@@ -9,7 +9,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useNumber } from '@/helper/hook';
-import { cloneDeep, isEmpty, omit, pick, uniqBy } from 'lodash';
+import { cloneDeep, forEach, isEmpty, omit, pick, uniqBy } from 'lodash';
 
 import {
   resetAutoStepState,
@@ -111,7 +111,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
     const keys = Object.keys(quantities);
     return viewSteps.map((step: any, index: number) => {
-      // if (index !== newSlide + 1) return step;
       let newOptions: any;
       if (index === newSlide) {
         const quantityKeysOfThisStep = keys.filter((key) => key.split(',').length === index + 1);
@@ -159,11 +158,51 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       };
     });
   };
+  const handleForceEnableCollapse = () => {
+    setForceEnableCollapse(true);
+
+    setTimeout(() => {
+      setForceEnableCollapse(false);
+    }, 200);
+  };
+  const getFirstLeftOption = () => {
+    if (slide === 0)
+      return (
+        viewSteps[slide]?.options.find(
+          (option: any) =>
+            option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
+        ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0]
+      );
+    let firstLeftOption = viewSteps[slide]?.options.find(
+      (option: any) =>
+        option.select_id === leftSelectedOption[slide]?.select_id &&
+        option.picked &&
+        option.has_next_options,
+    );
+    if (!firstLeftOption) {
+      const leftPickedOptions = viewSteps[slide]?.options.filter(
+        (option: any) => option.picked && option.has_next_options,
+      );
+      const quantityKeys = Object.keys(quantities || {});
+      for (let index = 0; index < leftPickedOptions.length; index++) {
+        const quantityKeysStartWithCurrentSelectId = quantityKeys.filter((key) =>
+          key.startsWith(leftPickedOptions[index].select_id),
+        );
+        let count = 0;
+        quantityKeysStartWithCurrentSelectId.forEach((key) => {
+          count += quantities[key];
+        });
+        if (count > 1) {
+          firstLeftOption = leftPickedOptions[index];
+          break;
+        }
+      }
+      firstLeftOption = firstLeftOption || leftPickedOptions[0];
+    }
+    return firstLeftOption;
+  };
   useEffect(() => {
-    const firstLeftOption =
-      viewSteps[slide]?.options.find(
-        (option: any) => option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
-      ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0];
+    const firstLeftOption = getFirstLeftOption();
     const firstSlideOptionSelected =
       viewSteps[0]?.options.find(
         (option: any) => option.select_id === leftSelectedOption[0]?.select_id,
@@ -178,34 +217,31 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         firstLeftOption.pre_option || '',
         firstLeftOption.select_id,
       );
+    } else {
+      setTempRight([]);
     }
   }, [viewSteps, slide]);
+
+  useEffect(() => {
+    handleForceEnableCollapse();
+  }, [slide]);
   useEffect(() => {
     if (slide === 0) return;
+    console.log('123');
+
     setViewSteps(handleDuplicateWhenGoBackAndForth(slide));
   }, []);
 
   const curOrder = slide + 2;
 
-  // const curPicked = pickedOption[slide];
-
   const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
-  };
-
-  const handleForceEnableCollapse = () => {
-    setForceEnableCollapse(true);
-
-    setTimeout(() => {
-      setForceEnableCollapse(false);
-    }, 200);
   };
 
   const handleBackToPrevSlide = () => {
     const prevSlide = slide;
     const newSlide = prevSlide - 1;
     setViewSteps(handleDuplicateWhenGoBackAndForth(newSlide));
-    handleForceEnableCollapse();
     store.dispatch(setSlide(newSlide));
   };
 
@@ -234,7 +270,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }
     //
     setLeftSelectedOption({ ...leftSelectedOption, [slide]: targetItem });
-
     setRightPannel(targetItem.id, targetItem.pre_option, targetItem?.select_id);
 
     if (slide === 0) {
@@ -342,78 +377,41 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     setViewSteps(newViewSteps);
     setVisible(false);
   };
-  const validateQuantities = (data: any, specificationSteps: any[]) => {
-    const selectIds = Object.keys(data);
-    const combinedOptionQuantity = selectIds.reduce((pre: any, selectId: string) => {
-      const parts = selectId.split(',');
-      // if (parts.length === 1) return pre;
-      const destination = parts[parts.length - 1];
-      const optionId = destination.split('_')[0];
-      const quantity = data[selectId];
-      return quantity > 0
-        ? {
-            ...pre,
-            [optionId]: {
-              quantity: pre[optionId] ? pre[optionId].quantity + quantity : quantity,
-              pre_option: parts
-                .slice(0, parts.length - 1)
-                .map((item: string) => item.split('_')[0])
-                .join(','),
-              select_id: selectId,
-            },
+  const validateQuantities = (newQuantities: any) => {
+    const quantityKeys = Object.keys(newQuantities);
+    for (let index = 0; index < viewSteps.length - 1; index++) {
+      const quantityKeysForThisStep = quantityKeys.filter(
+        (key) => key.split(',').length === index + 1,
+      );
+      const quantityKeysForNextStep = quantityKeys.filter(
+        (key) => key.split(',').length === index + 2,
+      );
+      const requiredQuantities = quantityKeysForThisStep.reduce(
+        (currentCount: number, key: string) => {
+          const remodifyKey = key
+            .split(',')
+            .map((item) => `${item.slice(0, -1)}1`)
+            .join(',');
+          const option = viewSteps[index].options.find(
+            (item: any) => item.select_id === remodifyKey,
+          );
+          if (option.has_next_options) {
+            return currentCount + option.replicate * newQuantities[key];
           }
-        : pre;
-    }, {});
-
-    const optionIds = Object.keys(combinedOptionQuantity);
-    const mappedQuantities = optionIds.map((optionId) => {
-      return {
-        id: optionId,
-        quantity: combinedOptionQuantity[optionId].quantity,
-        pre_option: combinedOptionQuantity[optionId].pre_option,
-        select_id: combinedOptionQuantity[optionId].select_id,
-      };
-    });
-    let check = true;
-    const flatSpecificationOptions = specificationSteps.reduce((pre: any, cur: any) => {
-      return pre.concat(cur.options);
-    }, []);
-
-    mappedQuantities.forEach((mappedQuantity) => {
-      const optionId = mappedQuantity.id.split('_')[0];
-
-      const currentOption = flatSpecificationOptions.find(
-        (item: any) =>
-          item.id === optionId &&
-          _.isEmpty(
-            mappedQuantity.pre_option ? item.pre_option === mappedQuantity.pre_option : true,
-          ),
+          return currentCount;
+        },
+        0,
       );
-      const nextOptions = flatSpecificationOptions.filter(
-        (item: any) =>
-          item.pre_option ===
-          (mappedQuantity.pre_option ? `${mappedQuantity.pre_option},${optionId}` : optionId),
+      const totalQuantities = quantityKeysForNextStep.reduce(
+        (currentCount: number, key: string) => {
+          return currentCount + newQuantities[key];
+        },
+        0,
       );
-      const yours = mappedQuantities.reduce((pre: number, cur: any) => {
-        if (
-          cur.select_id.includes(mappedQuantity.id) &&
-          cur.select_id.split(',').length - mappedQuantity.select_id.split(',').length === 1
-        )
-          return pre + cur.quantity;
-        return pre;
-      }, 0);
-
-      if (!currentOption) check = false;
-
-      if (
-        currentOption &&
-        yours !== 0 &&
-        yours % currentOption.replicate !== 0 &&
-        nextOptions.length !== 0
-      )
-        check = false;
-    });
-    return check;
+      if (requiredQuantities === 0) break;
+      if (totalQuantities < requiredQuantities) return index + 2;
+    }
+    return 0;
   };
 
   const handleCreatePreSelectStep = async () => {
@@ -424,8 +422,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       ...pick(quantities, quantitiesUpdate),
       [`${firstOptionSelected}_1`]: 1,
     };
-    if (!validateQuantities(newQuantities, viewSteps)) {
-      message.error('error');
+    const stepError = validateQuantities(newQuantities);
+    if (stepError !== 0) {
+      message.error(`YOURS in step ${stepError} is not equal to REQUIRED`);
       return;
     }
 
@@ -670,11 +669,15 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                 selected={tempRight
                   .filter((el: any) => el.picked)
                   .map((el: any) => ({ label: '', value: el.id }))}
+                chosenItem={tempRight
+                  .filter((el: any) => el.picked)
+                  .map((el: any) => ({ label: '', value: el.id }))}
                 forceEnableCollapse={forceEnableCollapse}
                 renderTitle={(data) => data.label}
                 data={mappedRight.map((option) => ({
                   label: option.name,
                   id: option.id,
+                  value: option.id,
 
                   options: option.subs?.map((sub: any, subIdx: number) => ({
                     value: sub.id,

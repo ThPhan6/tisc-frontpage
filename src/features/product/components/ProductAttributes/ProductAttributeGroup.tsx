@@ -131,24 +131,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
-  const autoStepImages = attrGroupItem?.viewSteps?.map((el) => {
-    const options: OptionQuantityProps[] = [];
-    (el.options as OptionQuantityProps[]).forEach((option) => {
-      for (
-        let index = 0;
-        index < attrGroupItem?.stepSelection?.quantities[option.select_id];
-        index++
-      ) {
-        options.push(option);
-      }
-    });
-
-    return {
-      ...el,
-      options,
-    };
-  });
-
   const showTISCAutoSteps = !isPublicPage && isEditable;
 
   useEffect(() => {
@@ -190,30 +172,34 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     store.dispatch(closeProductFooterTab());
     store.dispatch(closeDimensionWeightGroup());
   };
+  const autoStepImages = useMemo<any>(() => {
+    const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
+    return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
+      const quantityKeysForThisStep = quantityKeys.filter(
+        (key) => key.split(',').length === bigIndex + 1,
+      );
+      const options: OptionQuantityProps[] = [];
+      quantityKeysForThisStep.forEach((key) => {
+        const remodifyKey = key
+          .split(',')
+          .map((item) => `${item.slice(0, -1)}1`)
+          .join(',');
+        const option = el.options.find(
+          (item: any) => item.select_id === remodifyKey,
+        ) as OptionQuantityProps;
+        if (option) {
+          for (let index = 0; index < attrGroupItem.stepSelection?.quantities[key]; index++) {
+            options.push(option);
+          }
+        }
+      });
 
-  const failedStep =
-    // useMemo<number>(
-    () => {
-      const viewSteps = attrGroupItem.viewSteps || [];
-      const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
-      for (let index = 0; index < viewSteps.length; index++) {
-        const totalRequireQuantity = viewSteps[index].options.reduce((a, b) => {
-          if (b.has_next_options || !b.picked) return a;
-          return a + b.replicate;
-        }, 0);
-        const totalQuantity = quantityKeys
-          .filter((key) => {
-            const lengthOfSplitKey = key.split(',').length;
-            return lengthOfSplitKey === index + 1;
-          })
-          .reduce((a, b) => {
-            return a + attrGroupItem.stepSelection.quantities[b];
-          }, 0);
-        if (totalRequireQuantity !== 0 && totalQuantity !== 0) return index;
-      }
-      return 100;
-    };
-  // , [attrGroupItem]);
+      return {
+        ...el,
+        options,
+      };
+    });
+  }, [attrGroupItem?.stepSelection?.quantities]);
 
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
@@ -854,6 +840,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                               isSpecifiedModal ? styles.autoStepOptionSpec : ''
                             }`}
                           >
+                            {optionIdx !== 0 || stepIdx === 0 ? null : (
+                              <div className="plus-icon">
+                                <PlusIcon />
+                              </div>
+                            )}
                             <div className="step-info">
                               {option.image ? (
                                 <img className="step-image" src={showImageUrl(option.image)} />
@@ -886,13 +877,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 </BodyText>
                               </div>
                             </div>
-
-                            {optionIdx !== step.options.length - 1 ||
-                            stepIdx === autoSteps.length - 1 ? null : (
-                              <div className="plus-icon">
-                                <PlusIcon />
-                              </div>
-                            )}
                           </div>
                         );
                       }),

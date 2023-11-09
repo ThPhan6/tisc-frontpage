@@ -98,7 +98,6 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
         const selectedOption = item.options.find((option) => {
           return chosenItem && chosenItem.find((checked) => option.value === checked.value);
         });
-
         if (selectedOption) {
           if (combinable) {
             activeKeys.push(String(item?.id ?? index));
