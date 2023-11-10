@@ -63,7 +63,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
-  const [quantities, setQuantities] = useState<any>(quantitiesDefault);
+  const [quantities, setQuantities] = useState<any>(quantitiesDefault || {});
   const totalQuantity = useNumber(0);
   // on the left panel
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
@@ -325,7 +325,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         const updatedViewSteps = cloneDeep(viewSteps);
         updatedViewSteps[0] = newStep0;
         setViewStepsWithQuantity(option, newQuantity, updatedViewSteps);
-        const keptKey = Object.keys(quantities).filter((key) =>
+        const keptKey = Object.keys(quantities || {}).filter((key) =>
           key.startsWith(leftSelectedOption[slide].id),
         );
         const updatedQuantity = pick(quantities, keptKey);
@@ -354,7 +354,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         quantities[`${selectId}`] && quantities[`${selectId}`] > 0
           ? quantities[`${selectId}`] - 1
           : 0;
-      const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+      const quantitiesUpdate = Object.keys(quantities || {}).filter((key) =>
         key.startsWith(`${selectId.slice(0, -1)}${newQuantity + 1}`),
       );
       const newQuantities = {
@@ -413,7 +413,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   };
 
   const handleCreatePreSelectStep = async () => {
-    const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+    const quantitiesUpdate = Object.keys(quantities || {}).filter((key) =>
       key.startsWith(firstOptionSelected),
     );
     const newQuantities = {
@@ -541,7 +541,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                 selected={[{ label: '', value: leftSelectedOption[slide]?.id || '' }]}
                 chosenItems={pickedSub.subs
                   .filter((item: any) => {
-                    const keys = Object.keys(quantities).filter((key) =>
+                    const keys = Object.keys(quantities || {}).filter((key) =>
                       key.startsWith(`${item.select_id},`),
                     );
                     let count = 0;
