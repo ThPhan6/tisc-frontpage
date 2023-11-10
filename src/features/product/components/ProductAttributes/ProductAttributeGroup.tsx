@@ -852,7 +852,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                               <div className="step-text">
                                 <BodyText
-                                  level={6}
+                                  level={7}
                                   customClass="description"
                                   fontFamily="Roboto"
                                   color="white"
