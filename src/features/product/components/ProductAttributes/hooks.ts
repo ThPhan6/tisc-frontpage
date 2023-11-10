@@ -14,13 +14,43 @@ import {
   setStep,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
-import { OptionQuantityProps } from '../../types/autoStep';
+import {
+  AutoStepPreSelectOnAttributeGroupResponse,
+  OptionQuantityProps,
+} from '../../types/autoStep';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
-import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
+import {
+  SelectedSpecAttributte,
+  SpecificationAttributeGroup,
+  SpecificationPreSelectStep,
+} from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import { getNewDataAfterReordering } from '@/components/Drag';
+
+export const getStepSelected = (steps?: AutoStepPreSelectOnAttributeGroupResponse[]) => {
+  if (!steps?.length) {
+    return [];
+  }
+
+  const stepPayload: SpecificationPreSelectStep[] = steps
+    .filter((el) => el.options.length !== 0)
+    .map((el) => ({
+      step_id: el.id as string,
+      options: el.options
+        .filter((opt) => opt.quantity > 0)
+        .map((opt) => ({
+          id: opt.id,
+          /* option selected in 1st step(origin) has default quantity is 1 */
+          quantity: el.order === 1 ? 1 : opt.quantity,
+          pre_option: opt.pre_option,
+        })),
+    }))
+    .filter((el) => el.options.length !== 0);
+
+  return stepPayload;
+};
 
 const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
   const selectedAttributes: SelectedSpecAttributte[] = [];
@@ -51,16 +81,49 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
       );
 
       if (haveAttributeSelected) {
-        specState.push({
-          id: gr.id || '',
-          attributes: getSelectedAttributeAndOption([haveAttributeSelected]),
-        });
+        if (gr.id && gr.attributes?.length) {
+          const attributeGroup = getSelectedAttributeAndOption([haveAttributeSelected]) ?? [];
+
+          specState.push({
+            id: gr.id,
+            attributes: attributeGroup,
+          });
+        }
+
+        if (gr.id && gr.steps?.length) {
+          const stepGroup =
+            getStepSelected(gr.steps as unknown as AutoStepPreSelectOnAttributeGroupResponse[]) ??
+            [];
+
+          specState.push({
+            id: gr.id,
+            configuration_steps: stepGroup,
+            /// default each attribute group has attributes property is empty array
+            attributes: [],
+          });
+        }
       }
     } else {
-      specState.push({
-        id: gr.id || '',
-        attributes: getSelectedAttributeAndOption(gr.attributes),
-      });
+      if (gr.id && gr.attributes?.length) {
+        const attributeGroup = getSelectedAttributeAndOption(gr.attributes) ?? [];
+
+        specState.push({
+          id: gr.id,
+          attributes: attributeGroup,
+        });
+      }
+
+      if (gr.id && gr.steps?.length) {
+        const stepGroup =
+          getStepSelected(gr.steps as unknown as AutoStepPreSelectOnAttributeGroupResponse[]) ?? [];
+
+        specState.push({
+          id: gr.id || '',
+          configuration_steps: stepGroup,
+          /// default each attribute group has attributes property is empty array
+          attributes: [],
+        });
+      }
     }
   });
 
@@ -152,6 +215,8 @@ export const useProductAttributeForm = (
     ) {
       if (props?.isSpecifiedModal) {
         dispatch(setDefaultSelectionFromSpecifiedData());
+        /// get all attributes selected
+        dispatch(getAllPreSelectAttributes(specifiedDetail?.specification?.attribute_groups ?? []));
         loaded.setValue(true);
       } else if (props?.isGetProductSpecification) {
         getSelectedProductSpecification(productId).then((res) => {
@@ -235,6 +300,8 @@ export const useProductAttributeForm = (
               id: randomId,
               name: '',
               attributes: [],
+              specification_steps: [],
+              configuration_steps: [],
               steps: [],
               selection: false,
               type: SpecificationType.attribute,
@@ -468,13 +535,13 @@ export const useProductAttributeForm = (
             is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: newAttributeGroups,
           },
-          brand_location_id: '',
-          distributor_location_id: '',
+          // brand_location_id: '',
+          // distributor_location_id: '',
         });
       }
 
       /// update attribute group has option
-    } else if (haveOptionAttr && newState[groupIndex].type === SpecificationType.attribute) {
+    } else if (haveOptionAttr) {
       // UNCHECK group and clear all selected option
       newState[groupIndex].isChecked = false;
       newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => ({
@@ -494,8 +561,8 @@ export const useProductAttributeForm = (
             is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: getSpecificationRequest(newSpecificationOptionAttributeGroups),
           },
-          brand_location_id: '',
-          distributor_location_id: '',
+          // brand_location_id: '',
+          // distributor_location_id: '',
         });
       }
     }

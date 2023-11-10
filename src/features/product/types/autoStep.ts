@@ -74,6 +74,7 @@ export interface OptionQuantityProps {
   pre_option_name?: string;
   picked?: boolean;
   yours: number; /// FE
+  disabled?: boolean; /// FE
   value_1: string;
   value_2?: string;
   unit_1?: string;
@@ -82,6 +83,8 @@ export interface OptionQuantityProps {
   product_id: string;
   sub_id: string;
   sub_name: string;
+  select_id: string;
+  index: number;
 }
 
 export interface AutoStepPreSelectOptionProps {

@@ -40,7 +40,11 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
           {text_1 ? <RobotoBodyText level={6}>{text_1}</RobotoBodyText> : null}
           {text_2 ? <RobotoBodyText level={6}>{text_2}</RobotoBodyText> : null}
           {text_3 ? <RobotoBodyText level={6}>{text_3}</RobotoBodyText> : null}
-          {text_4 ? <RobotoBodyText level={6}>{text_4}</RobotoBodyText> : null}
+          {text_4 ? (
+            <RobotoBodyText level={6} title={text_4}>
+              {text_4}
+            </RobotoBodyText>
+          ) : null}
         </div>
       </div>
       {logo ? (

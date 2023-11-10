@@ -8,6 +8,7 @@ import { ReactComponent as ActionBackIcon } from '@/assets/icons/single-left.svg
 import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.svg';
 
 import { confirmModal } from '@/helper/common';
+import { sortObjectArray } from '@/helper/utils';
 
 import {
   resetAutoStepState,
@@ -16,7 +17,7 @@ import {
   setStep,
   setSubOptionSelected,
 } from '../../reducers';
-import { ProductAttributeFormInput, ProductAttributeFormInputWhenCreateStep } from '../../types';
+import { ProductAttributeFormInput } from '../../types';
 import { AutoStepOnAttributeGroupResponse, LinkedOptionProps } from '../../types/autoStep';
 import store, { useAppSelector } from '@/reducers';
 import { ProductAttributes } from '@/types';
@@ -99,7 +100,19 @@ export const AutoStep: FC<AutoStepProps> = ({
     store.dispatch(
       setLinkedOptionData({
         index: 0,
-        pickedData: pickedData,
+        pickedData: pickedData.map((el) => ({
+          ...el,
+          subs: sortObjectArray(
+            el.subs.map((item) => ({
+              ...item,
+              sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+            })),
+            'sortField',
+          ).map((item) => {
+            const { sortField, ...temp } = item;
+            return temp;
+          }),
+        })),
         linkedData: [],
       }),
     );
@@ -144,13 +157,13 @@ export const AutoStep: FC<AutoStepProps> = ({
       .map((el, index) => ({ ...el, name: slideBars[index] }))
       .filter((el) => el.options.length > 0);
 
-    const newAttributeGroup: ProductAttributeFormInputWhenCreateStep[] = attributeGroup?.map((el) =>
-      el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps } : el,
-    ) as any;
+    const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
+      el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps, attributes: [] } : el,
+    );
 
     store.dispatch(
       setPartialProductDetail({
-        specification_attribute_groups: newAttributeGroup as any,
+        specification_attribute_groups: newAttributeGroup,
       }),
     );
 

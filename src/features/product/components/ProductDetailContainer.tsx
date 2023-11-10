@@ -189,6 +189,7 @@ const ProductDetailContainer: React.FC = () => {
 
     const productSpecData: ProductAttributeFormInput[] = newProductSpecData.map((el) => ({
       ...el,
+      attributes: el?.attributes ?? [],
       steps: !el?.steps?.length
         ? []
         : el.steps.map((step) => {

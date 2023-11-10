@@ -15,6 +15,7 @@ export interface SpecificationAttributeGroup {
   id: string;
   attributes?: SelectedSpecAttributte[];
   configuration_steps?: SpecificationPreSelectStep[];
+  step_selections?: any;
   isChecked?: boolean;
   type?: SpecificationType;
 }

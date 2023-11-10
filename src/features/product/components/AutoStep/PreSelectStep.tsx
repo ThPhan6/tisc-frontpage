@@ -8,27 +8,18 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
-import { useGetParamId } from '@/helper/hook';
-import { uniqueArrayBy } from '@/helper/utils';
-import { cloneDeep, flatMap, groupBy, isNull, isUndefined, map, sum, trimEnd } from 'lodash';
+import { useGetParamId, useNumber } from '@/helper/hook';
+import { cloneDeep, forEach, isEmpty, omit, pick, uniqBy } from 'lodash';
 
 import {
   resetAutoStepState,
   setFirstOptionSelected,
-  setNewLeftPanelData,
-  setOptionsSelected,
   setPartialProductDetail,
-  setPickedOption,
-  setPreSelectStep,
+  setPartialProductSpecifiedData,
   setSlide,
 } from '../../reducers';
-import {
-  AutoStepOnAttributeGroupResponse,
-  AutoStepPreSelectOptionProps,
-  OptionQuantityProps,
-} from '../../types/autoStep';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { SpecificationBodyRequest, SpecificationPreSelectStep } from '@/features/project/types';
+import { AutoStepOnAttributeGroupRequest, OptionQuantityProps } from '../../types/autoStep';
+import { SpecificationBodyRequest } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -41,83 +32,132 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { AttributeOptionLabel } from '../ProductAttributes/CommonAttribute';
 import styles from './PreSelectStep.less';
 import { SlideBar } from './SlideBar';
-import { getIDFromPreOption, getPickedOptionGroup } from './util';
+import { mappingOptionGroups } from './util';
 
 interface PreSelectStepProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  updatePreSelect?: boolean;
+  viewStepsDefault?: AutoStepOnAttributeGroupRequest[];
+  quantitiesDefault?: any;
 }
 
-export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) => {
+export const PreSelectStep: FC<PreSelectStepProps> = ({
+  visible,
+  setVisible,
+  updatePreSelect,
+  viewStepsDefault,
+  quantitiesDefault,
+}) => {
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups: specificationAttributeGroups } = details;
+
   const selectProductSpecification = useSelectProductSpecification();
 
   const productId = useGetParamId();
   const attributeGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
   const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
 
+  const [viewSteps, setViewSteps] = useState<any>(viewStepsDefault);
+  const [tempRight, setTempRight] = useState<any>([]);
+
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
 
-  const {
-    slideBars,
-    slide,
-    step,
-    stepData,
-    preSelectStep,
-    pickedOption,
-    optionsSelected,
-    firstOptionSelected,
-    newLeftPanelData,
-  } = useAppSelector((state) => state.autoStep);
+  const [quantities, setQuantities] = useState<any>(quantitiesDefault);
+  const totalQuantity = useNumber(0);
+  // on the left panel
+  const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
+  // on the right panel
+  const { slideBars, slide, firstOptionSelected } = useAppSelector((state) => state.autoStep);
+  // useEffect(() => {
+  //   setQuantities(currentSpecification?.stepSelection?.quantities || {});
+  //   setViewSteps(currentSpecification?.viewSteps || []);
+  // }, [currentSpecification]);
 
-  const curOrder = slide + 2;
-  const curPicked = pickedOption[slide];
-  const currentPreSelectOptionData = preSelectStep?.[curOrder]?.options ?? [];
-  const currentOptionSelected =
-    (optionsSelected?.[curOrder]?.options as unknown as OptionQuantityProps[]) ?? [];
+  const setRightPannel = (id: string, pre_option: string, selectId?: string) => {
+    const originRight = viewSteps[slide + 1]?.options;
+    // remove select id first, filter item with index 1, add real select id then mapping quantity
+    const newTempRight = originRight?.filter((item: any) => {
+      return (
+        item.pre_option === [pre_option, id].filter((el: string) => !isEmpty(el)).join(',') &&
+        item.index === 1
+      );
+    });
+    const addedRealSelectId = newTempRight.map((item: any) => {
+      return {
+        ...item,
+        select_id: !selectId ? '' : `${selectId},${item.id}_${item.index}`,
+      };
+    });
+    let totalQuantityTemp = 0;
 
-  const leftPanelData =
-    slide === 0 && preSelectStep[1]
-      ? (getPickedOptionGroup(
-          preSelectStep[1]?.options,
-        ) as unknown as AutoStepPreSelectOptionProps[]) ?? []
-      : newLeftPanelData;
+    const rightPanelData = uniqBy(addedRealSelectId, 'id').map((item: any) => {
+      const quantity = quantities[item.select_id] || 0;
+      totalQuantityTemp += quantity;
+      return {
+        ...item,
+        quantity,
+        picked: quantity > 0,
+      };
+    });
 
-  const rightPanelData = getPickedOptionGroup(
-    currentPreSelectOptionData,
-  ) as AutoStepPreSelectOptionProps[];
-
-  /* set sub option ticked on the left panel  */
-  const subOptionLeft = flatMap(leftPanelData.map((el) => el.subs));
-
-  const currentSubPickedOptionSelected: CheckboxValue[] = subOptionLeft
-    .filter((opt) =>
-      currentOptionSelected.some((sub) => {
-        const { optionId, preOptionId } = getIDFromPreOption(sub.pre_option);
-
-        return preOptionId
-          ? opt.pre_option === preOptionId && opt.id === optionId && sub.quantity > 0
-          : sub.pre_option === opt.id && sub.quantity > 0;
-      }),
-    )
-    .map((el) => ({ label: el.pre_option, value: el.id }));
-  /* ---------------------------------------- */
-
-  /* set sub option ticked on the right panel  */
-  const currentSubLinkedOptionSelected: CheckboxValue[] = currentOptionSelected
-    .filter((el) =>
-      currentPreSelectOptionData.some(
-        (opt) => opt.id === el.id && opt.pre_option === el.pre_option && el.quantity > 0,
-      ),
-    )
-    .map((el) => ({ label: el.pre_option, value: el.id }));
-  /* ---------------------------------------- */
-
-  const handleResetAutoStep = () => {
-    store.dispatch(resetAutoStepState());
+    setTempRight(rightPanelData);
+    totalQuantity.setValue(totalQuantityTemp);
   };
-
+  const toRawSelectId = (selectId: string) => {
+    const pos = selectId.lastIndexOf('_');
+    return selectId.slice(0, pos);
+  };
+  const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
+    const keys = Object.keys(quantities);
+    return viewSteps.map((step: any, index: number) => {
+      let newOptions: any;
+      if (index === newSlide) {
+        const quantityKeysOfThisStep = keys.filter((key) => key.split(',').length === index + 1);
+        const oldOptions = [...step.options];
+        newOptions = [...step.options];
+        quantityKeysOfThisStep.forEach((key) => {
+          const id = key.split(',').at(-1)?.slice(0, -2);
+          const actualOption = oldOptions.find((option) => option.id === id);
+          const quantity = quantities[key] as number;
+          if (actualOption && quantity) {
+            for (let i = 0; i < quantity; i++) {
+              const found = step.options.find(
+                (item: any) => item.index === i + 1 && item.select_id === key,
+              );
+              if (!found) {
+                const clown = {
+                  ...actualOption,
+                  select_id: `${toRawSelectId(key)}_${i + 1}`,
+                  index: i + 1,
+                  picked: true,
+                };
+                newOptions.push(clown);
+              }
+            }
+          }
+        });
+        const newQuantities = { ...quantities, [`${firstOptionSelected}_1`]: 1 };
+        newOptions = newOptions.map((item) => {
+          if (!newQuantities[`${toRawSelectId(item.select_id)}_1`]) {
+            return {
+              ...item,
+              picked: false,
+            };
+          }
+          return {
+            ...item,
+            picked: true,
+          };
+        });
+        newOptions = uniqBy(newOptions, (e) => e.select_id);
+      } else newOptions = step.options.filter((option: any) => option.index === 1);
+      return {
+        ...step,
+        options: newOptions,
+      };
+    });
+  };
   const handleForceEnableCollapse = () => {
     setForceEnableCollapse(true);
 
@@ -125,773 +165,337 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       setForceEnableCollapse(false);
     }, 200);
   };
+  const getFirstLeftOption = () => {
+    if (slide === 0)
+      return (
+        viewSteps[slide]?.options.find(
+          (option: any) =>
+            option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
+        ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0]
+      );
+    let firstLeftOption = viewSteps[slide]?.options.find(
+      (option: any) =>
+        option.select_id === leftSelectedOption[slide]?.select_id &&
+        option.picked &&
+        option.has_next_options,
+    );
+    if (!firstLeftOption) {
+      const leftPickedOptions = viewSteps[slide]?.options.filter(
+        (option: any) => option.picked && option.has_next_options,
+      );
+      const quantityKeys = Object.keys(quantities || {});
+      for (let index = 0; index < leftPickedOptions.length; index++) {
+        const quantityKeysStartWithCurrentSelectId = quantityKeys.filter((key) =>
+          key.startsWith(leftPickedOptions[index].select_id),
+        );
+        let count = 0;
+        quantityKeysStartWithCurrentSelectId.forEach((key) => {
+          count += quantities[key];
+        });
+        if (count > 1) {
+          firstLeftOption = leftPickedOptions[index];
+          break;
+        }
+      }
+      firstLeftOption = firstLeftOption || leftPickedOptions[0];
+    }
+    return firstLeftOption;
+  };
+  useEffect(() => {
+    const firstLeftOption = getFirstLeftOption();
+    const firstSlideOptionSelected =
+      viewSteps[0]?.options.find(
+        (option: any) => option.select_id === leftSelectedOption[0]?.select_id,
+      ) ||
+      viewSteps[0]?.options.filter((option: any) => option.picked)[0] ||
+      viewSteps[0]?.options[0];
+    store.dispatch(setFirstOptionSelected(firstSlideOptionSelected?.id));
+    setLeftSelectedOption({ ...leftSelectedOption, [slide]: firstLeftOption });
+    if (firstLeftOption) {
+      setRightPannel(
+        firstLeftOption.id || '',
+        firstLeftOption.pre_option || '',
+        firstLeftOption.select_id,
+      );
+    } else {
+      setTempRight([]);
+    }
+  }, [viewSteps, slide]);
 
   useEffect(() => {
-    if (isUndefined(step) || isNull(step) || typeof step !== 'number') {
-      return;
-    }
-
-    store.dispatch(setSlide(step));
     handleForceEnableCollapse();
+  }, [slide]);
+  useEffect(() => {
+    if (slide === 0) return;
+    setViewSteps(handleDuplicateWhenGoBackAndForth(slide));
+  }, []);
 
-    const newLeftData = getPickedOptionGroup(
-      optionsSelected[step === 0 ? 1 : step + 1].options,
-    ) as unknown as AutoStepPreSelectOptionProps[];
+  const curOrder = slide + 2;
 
-    store.dispatch(setNewLeftPanelData(newLeftData));
-
-    if (pickedOption[0]) {
-      // setFirstOptionSelected(pickedOption[0].id);
-      store.dispatch(setFirstOptionSelected(pickedOption[0].id));
-    }
-  }, [step]);
+  const handleResetAutoStep = () => {
+    store.dispatch(resetAutoStepState());
+  };
 
   const handleBackToPrevSlide = () => {
     const prevSlide = slide;
     const newSlide = prevSlide - 1;
-    const newOrder = newSlide + 1;
-
-    handleForceEnableCollapse();
-
-    /* add new slide */
+    setViewSteps(handleDuplicateWhenGoBackAndForth(newSlide));
     store.dispatch(setSlide(newSlide));
-    /* ------------- */
-
-    if (newSlide !== 0) {
-      /* set prev data view on the left panel */
-      const newNextLeftPanelData = getPickedOptionGroup(
-        optionsSelected[newOrder].options,
-      ) as AutoStepPreSelectOptionProps[];
-
-      store.dispatch(setNewLeftPanelData(newNextLeftPanelData));
-
-      /* ------------------------------------ */
-    }
   };
 
   const handleGoToNextSlide = () => {
     const prevSlide = slide;
     const newSlide = prevSlide + 1;
-    const newOrder = newSlide + 1;
 
-    /* last step */
     if (newSlide === slideBars.length - 1) {
       return;
     }
 
-    if (!currentOptionSelected.length) {
-      message.error('Please select options');
-      return;
-    }
-
-    /* checking amount of yours is equal to required before go to next slide */
-    let invalidAmountYours = false;
-    let optionNameTicked = '';
-
-    (optionsSelected[newOrder - 1].options as OptionQuantityProps[]).forEach((opt) => {
-      if (invalidAmountYours) {
-        return;
-      }
-
-      const allSubSelected: OptionQuantityProps[] = [];
-
-      (optionsSelected[newOrder].options as OptionQuantityProps[]).forEach((el) => {
-        const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-        if (
-          prevSlide === 0
-            ? opt.id === optionId
-            : opt.id === optionId && opt.pre_option === preOptionId
-        ) {
-          allSubSelected.push(el);
-        }
-      });
-
-      const curSumYours = allSubSelected.length ? sum(allSubSelected.map((el) => el.quantity)) : -1;
-
-      if (curSumYours !== -1 && (curSumYours < opt.replicate || curSumYours > opt.replicate)) {
-        optionNameTicked = trimEnd(
-          `${opt.value_1} ${opt.value_2} ${
-            opt.unit_1 || opt.unit_2 ? `- ${opt.unit_1} ${opt.unit_2}` : ''
-          }`,
-        );
-
-        invalidAmountYours = true;
-      }
-    });
-
-    if (invalidAmountYours) {
-      message.error(`Amount of yours must equal to ${optionNameTicked}'s required`);
-      return;
-    }
-    /* --------------------------------------------------------------------- */
-
-    handleForceEnableCollapse();
+    setViewSteps(handleDuplicateWhenGoBackAndForth(newSlide));
 
     /* add new slide */
     store.dispatch(setSlide(newSlide));
-    /* ------------- */
-
-    /* set next data view on the left panel */
-    const newNextLeftPanelData = getPickedOptionGroup(
-      optionsSelected[newOrder].options,
-    ) as AutoStepPreSelectOptionProps[];
-
-    store.dispatch(setNewLeftPanelData(newNextLeftPanelData));
-
-    /* ------------------------------------ */
   };
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
     handleForceEnableCollapse();
-
-    const curOptionSelected = {
-      id: e.target.value,
-      pre_option: (e.target as any).pre_option,
-    };
+    const selectId = (e.target as any).select_id;
+    let targetItem = selectId;
+    if (slide === 0) {
+      targetItem = viewSteps[slide].options.find((item: any) => item.id === e.target.value);
+    } else {
+      targetItem = viewSteps[slide].options.find((item: any) => item.select_id === selectId);
+    }
+    //
+    setLeftSelectedOption({ ...leftSelectedOption, [slide]: targetItem });
+    setRightPannel(targetItem.id, targetItem.pre_option, targetItem?.select_id);
 
     if (slide === 0) {
       /// only update option highlighted(not update option selected)
       store.dispatch(setFirstOptionSelected(e.target.value));
     }
-
-    const isPrevPickedOption =
-      curPicked?.id === curOptionSelected.id &&
-      curPicked?.pre_option === curOptionSelected.pre_option;
-
-    if (isPrevPickedOption) {
-      return;
-    }
-
-    /// make quantity equal to required before select other option
-    if (
-      curOrder > 2 &&
-      curPicked?.replicate &&
-      currentOptionSelected.length &&
-      rightPanelData.length
-    ) {
-      const curRequired = curPicked.replicate;
-
-      const currentOptionChosen = currentOptionSelected.filter((el) => {
-        const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-        return slide !== 0
-          ? optionId === curPicked.id && preOptionId === curPicked.pre_option
-          : el.pre_option === curPicked.id;
+  };
+  const setViewStepsWithQuantity = (option: any, newQuantity: number, updatedViewSteps?: any) => {
+    const viewStepToHandle = updatedViewSteps || viewSteps;
+    const newViewSteps = viewStepToHandle.map((step: any, index: number) => {
+      if (index !== slide + 1) return step;
+      const newOptions = step.options.map((item: any) => {
+        if (option.select_id === item.select_id) {
+          return {
+            ...item,
+            quantity: newQuantity,
+            picked: newQuantity !== 0,
+          };
+        }
+        return item;
       });
-
-      const curSumYours = sum(currentOptionChosen.map((el) => el.quantity));
-
-      if (currentOptionChosen.length && curSumYours < curRequired) {
-        message.error('Please make your selection equal to required');
-        return;
-      }
-    }
-
-    const curPickedSubData =
-      slide === 0 ? preSelectStep?.[1]?.options ?? [] : flatMap(leftPanelData.map((el) => el.subs));
-
-    const curPickedOption = curPickedSubData.find(
-      (el) => el.id === curOptionSelected.id && el.pre_option === curOptionSelected.pre_option,
-    );
-
-    const stepDataClone = cloneDeep(stepData);
-
-    /// set data view on the right panel
-    const newRightPanelData = stepDataClone[curOrder].options.filter((sub) => {
-      const { optionId, preOptionId } = getIDFromPreOption(sub.pre_option);
-
-      return preOptionId
-        ? optionId === curOptionSelected.id && preOptionId === curOptionSelected.pre_option
-        : sub.pre_option === curOptionSelected.id;
+      return {
+        ...step,
+        options: newOptions,
+      };
     });
-
-    /// mapping quantity
-    const finalNewRightPanelData = newRightPanelData.map((el) => {
-      const optSelected = currentOptionSelected.find(
-        (opt) => opt.id === el.id && opt.pre_option === el.pre_option,
-      );
-
-      return optSelected ? { ...el, quantity: optSelected.quantity } : { ...el, quantity: 0 };
-    });
-
-    /// update current option hightlighted
-    if (curPickedOption?.id) {
-      store.dispatch(
-        setPickedOption({
-          slide: slide,
-          id: curPickedOption.id,
-          pre_option: curPickedOption?.pre_option,
-          replicate: curPickedOption.replicate,
-          yours: sum(finalNewRightPanelData.map((el) => el.quantity)),
-        }),
-      );
-    }
-
-    /// update next data view on the right side
-    store.dispatch(setPreSelectStep({ order: curOrder, options: finalNewRightPanelData }));
+    setViewSteps(newViewSteps);
   };
-
-  /// handle option following
-  const handleNextOptions = (newOptionsSelected: OptionQuantityProps[]) => {
-    if (!optionsSelected[curOrder + 1]) {
-      return;
-    }
-
-    /* pre_option must match with pre_option when create auto step in TISC(in NextStep component) */
-    let prevOptionsSelectedIds = newOptionsSelected.map((el) =>
-      el.pre_option ? `${el.pre_option},${el.id}` : el.id,
-    );
-
-    /* remove next data selected options */
-    map(optionsSelected, (optionData, order: string) => {
-      if (Number(order) <= curOrder) {
-        return false;
-      }
-
-      const newNextOptionSelected = (optionData.options as OptionQuantityProps[]).filter((el) =>
-        prevOptionsSelectedIds.includes(el.pre_option as string),
-      );
-
-      prevOptionsSelectedIds = newNextOptionSelected.map((el) =>
-        el.pre_option ? `${el.pre_option},${el.id}` : el.id,
-      );
-
-      store.dispatch(
-        setOptionsSelected({
-          id: stepData[curOrder].id,
-          order: Number(order),
-          options: newNextOptionSelected,
-        }),
-      );
-
-      return true;
-    });
-    /* ---------------------------------- */
-
-    /* remove next data view */
-    const newPreSelectStep = { ...preSelectStep };
-
-    map(preSelectStep, (_data: any, order: string) => {
-      if (Number(order) <= curOrder) {
-        return false;
-      }
-
-      newPreSelectStep[Number(order)] = { ...newPreSelectStep[Number(order)], options: [] };
-
-      return true;
-    });
-
-    store.dispatch(setPreSelectStep(newPreSelectStep));
-    /* --------------------- */
-
-    /* remove next highlighted */
-    const newPickedOption = { ...pickedOption };
-
-    map(pickedOption, (_data: any, index: number) => {
-      if (index <= slide) {
-        return false;
-      }
-
-      newPickedOption[index] = { id: '', pre_option: '', replicate: 1, yours: 0 };
-
-      return true;
-    });
-
-    store.dispatch(setPickedOption(newPickedOption));
-    /* ----------------------- */
-  };
-
   const handleIncreaseQuantity =
     (option: OptionQuantityProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
-
-      const stepDataClone = cloneDeep(stepData);
-
-      let currentOptionSelectedClone = cloneDeep(currentOptionSelected);
-
-      if (!currentOptionSelectedClone.length) {
-        if (slide === 0) {
-          const currentOptionTicked = stepDataClone[1].options.find(
-            (el) => el.id === option.pre_option,
-          );
-
-          store.dispatch(
-            setOptionsSelected({
-              id: stepDataClone[1].id,
-              order: 1,
-              options: currentOptionTicked ? [currentOptionTicked] : [],
-            }),
-          );
-        }
-
-        const newOptions = [option].map((el) => ({ ...el, quantity: 1 }));
-
-        /* update current option selected */
-        store.dispatch(
-          setOptionsSelected({
-            id: stepDataClone[curOrder].id,
-            order: curOrder,
-            options: newOptions,
-          }),
-        );
-        /* ------------------------------ */
-
-        /* update current data view */
-        const newCurrentPreSelectOptionData = cloneDeep(currentPreSelectOptionData).map((sub) => ({
-          ...sub,
-          quantity: sub.id === option.id && sub.pre_option === option.pre_option ? 1 : sub.quantity,
-        }));
-
-        store.dispatch(
-          setPreSelectStep({ order: curOrder, options: newCurrentPreSelectOptionData }),
-        );
-        /* ------------------------- */
-
-        const newSumYours = sum(
-          newOptions
-            .filter((el) => {
-              const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-              return preOptionId
-                ? optionId === curPicked.id && preOptionId === curPicked.pre_option
-                : optionId === curPicked.id;
-            })
-            .map((el) => el.quantity),
-        );
-
-        /* update YOURS of prev step */
-        store.dispatch(
-          setPreSelectStep({
-            order: curOrder - 1,
-            options: preSelectStep[curOrder - 1].options.map((el) => {
-              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
-
-              if (
-                slide === 0
-                  ? el.id === option.pre_option
-                  : optionId === el.id && preOptionId === el.pre_option
-              ) {
-                return { ...el, yours: newSumYours };
-              }
-
-              return el;
-            }),
-          }),
-        );
-        /* ------------------------ */
-
-        /* update YOURS of current option picked */
-        store.dispatch(setPickedOption({ ...curPicked, slide: slide, yours: newSumYours }));
-        /* ------------------------------------- */
-
-        return;
-      }
-
-      ///
-      if (
-        slide === 0 &&
-        currentOptionSelectedClone.length &&
-        option.pre_option !== currentOptionSelectedClone[0].pre_option
-      ) {
-        currentOptionSelectedClone = [];
-      }
-
-      const curRequired = curPicked.replicate as number;
-      const oldSumYours = sum(
-        currentOptionSelectedClone
-          .filter((el) => {
-            const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-            return preOptionId
-              ? optionId === curPicked.id && preOptionId === curPicked.pre_option
-              : optionId === curPicked.id;
-          })
-          .map((el) => el.quantity),
-      );
-
-      if (oldSumYours >= curRequired) {
+      if (totalQuantity.value === leftSelectedOption[slide]?.replicate) {
         message.info('Amount of quantity is equal to required');
         return;
       }
+      const selectId = option.select_id || `${option.pre_option},${option.id}`;
+      const newQuantity = quantities[`${selectId}`] ? quantities[`${selectId}`] + 1 : 1;
 
-      /* mapping quantity */
-      const newStepData = stepDataClone[curOrder].options.map((el) => {
-        const optFound = currentOptionSelectedClone.find(
-          (opt) => opt.id === el.id && opt.pre_option === el.pre_option,
-        );
-
-        if (optFound) {
-          return { ...el, quantity: optFound.quantity };
-        }
-
-        return el;
-      });
-      /* -------------- */
-
-      let newCurrentOptionSelected = newStepData
-        .map((sub) => ({
-          ...sub,
-          quantity:
-            sub.quantity <= curRequired &&
-            sub.id === option.id &&
-            sub.pre_option === option.pre_option
-              ? ++sub.quantity
-              : sub.quantity,
-        }))
-        .filter((el) => el.quantity > 0);
-
-      newCurrentOptionSelected = uniqueArrayBy(
-        newCurrentOptionSelected.concat(currentOptionSelectedClone),
-        ['id', 'pre_option'],
-      );
-
-      /* save option ticked on first step */
       if (slide === 0) {
-        newCurrentOptionSelected = newCurrentOptionSelected.filter(
-          (el) => el.pre_option === curPicked.id,
+        const newOptions = viewSteps[0].options.map((item) => {
+          if (item.id === leftSelectedOption[0].id) {
+            return {
+              ...item,
+              picked: true,
+            };
+          } else {
+            return {
+              ...item,
+              picked: false,
+            };
+          }
+        });
+        const newStep0 = { ...viewSteps[0], options: newOptions };
+        const updatedViewSteps = cloneDeep(viewSteps);
+        updatedViewSteps[0] = newStep0;
+        setViewStepsWithQuantity(option, newQuantity, updatedViewSteps);
+        const keptKey = Object.keys(quantities).filter((key) =>
+          key.startsWith(leftSelectedOption[slide].id),
         );
-
-        const currentOptionTicked = stepDataClone[1].options.find(
-          (el) => el.id === option.pre_option,
-        );
-
-        store.dispatch(
-          setOptionsSelected({
-            id: stepDataClone[1].id,
-            order: 1,
-            options: currentOptionTicked ? [currentOptionTicked] : [],
-          }),
-        );
+        const updatedQuantity = pick(quantities, keptKey);
+        setQuantities({
+          ...updatedQuantity,
+          [`${selectId}`]: newQuantity,
+        });
+        return;
+      } else {
+        setQuantities({
+          ...quantities,
+          [`${selectId}`]: newQuantity,
+        });
       }
+      setViewStepsWithQuantity(option, newQuantity);
 
-      /* update current option selected */
-      store.dispatch(
-        setOptionsSelected({
-          id: stepDataClone[curOrder].id,
-          order: curOrder,
-          options: newCurrentOptionSelected,
-        }),
-      );
-      /* ------------------------------ */
-
-      /* handle option following if have */
-      handleNextOptions(newCurrentOptionSelected);
-      /* ------------------------------- */
-
-      /* update current data view */
-      const newCurrentPreSelectOptionData = cloneDeep(currentPreSelectOptionData).map((sub) => ({
-        ...sub,
-        quantity:
-          sub.quantity <= curRequired &&
-          sub.id === option.id &&
-          sub.pre_option === option.pre_option
-            ? ++sub.quantity
-            : sub.quantity,
-      }));
-
-      store.dispatch(setPreSelectStep({ order: curOrder, options: newCurrentPreSelectOptionData }));
-
-      const newSumYours = sum(
-        newCurrentOptionSelected
-          .filter((el) => {
-            const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-            return preOptionId
-              ? optionId === curPicked.id && preOptionId === curPicked.pre_option
-              : optionId === curPicked.id;
-          })
-          .map((el) => el.quantity),
-      );
-
-      // update YOURS of prev step
-      store.dispatch(
-        setPreSelectStep({
-          order: curOrder - 1,
-          options: preSelectStep[curOrder - 1].options.map((el) => {
-            const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
-
-            if (
-              slide === 0
-                ? el.id === option.pre_option
-                : optionId === el.id && preOptionId === el.pre_option
-            ) {
-              return { ...el, yours: newSumYours };
-            }
-
-            return el;
-          }),
-        }),
-      );
-      /* ------------------------ */
-
-      /* update YOURS of current option picked*/
-      store.dispatch(setPickedOption({ ...curPicked, slide: slide, yours: newSumYours }));
-      /* ------------ */
+      //
     };
 
   const handleDecreaseQuantity =
     (option: OptionQuantityProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
-
-      const currentOptionSelectedClone = cloneDeep(currentOptionSelected);
-
-      const oldSumYours = sum(
-        currentOptionSelectedClone.map((sub) =>
-          sub.id === option.id && sub.pre_option === option.pre_option ? sub.quantity : 0,
-        ),
+      const selectId = option.select_id || `${option.pre_option},${option.id}`;
+      const newQuantity =
+        quantities[`${selectId}`] && quantities[`${selectId}`] > 0
+          ? quantities[`${selectId}`] - 1
+          : 0;
+      const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+        key.startsWith(`${selectId.slice(0, -1)}${newQuantity + 1}`),
       );
-
-      if (oldSumYours === 0) {
-        return;
-      }
-
-      const stepDataClone = cloneDeep(stepData);
-
-      /* mapping quantity */
-      const newStepData = stepDataClone[curOrder].options.map((el) => {
-        const optFound = currentOptionSelectedClone.find(
-          (opt) => opt.id === el.id && opt.pre_option === el.pre_option,
-        );
-
-        if (optFound) {
-          return { ...el, quantity: optFound.quantity };
-        }
-
-        return el;
-      });
-      /* ---------------- */
-
-      const newCurrentOptionSelected = newStepData
-        .map((sub) => ({
-          ...sub,
-          quantity:
-            sub.quantity > 0 && sub.id === option.id && sub.pre_option === option.pre_option
-              ? --sub.quantity
-              : sub.quantity,
-        }))
-        .filter((el) => el.quantity > 0);
-
-      /* update current option selected */
-
-      if (slide === 0) {
-        const optionSelected = stepDataClone[1].options.find((el) => el.id === curPicked.id);
-
-        store.dispatch(
-          setOptionsSelected({
-            id: stepDataClone[1].id,
-            order: 1,
-            options: optionSelected ? [optionSelected] : [],
-          }),
-        );
-      }
-
-      store.dispatch(
-        setOptionsSelected({
-          id: stepDataClone[curOrder].id,
-          order: curOrder,
-          options: newCurrentOptionSelected,
-        }),
-      );
-      /* ------------------------------ */
-
-      /* handle option following if have */
-      handleNextOptions(newCurrentOptionSelected);
-      /* ------------------------------- */
-
-      /* update current data view */
-      const newCurrentPreSelectOptionData = cloneDeep(currentPreSelectOptionData).map((sub) => ({
-        ...sub,
-        quantity:
-          sub.quantity > 0 && sub.id === option.id && sub.pre_option === option.pre_option
-            ? --sub.quantity
-            : sub.quantity,
-      }));
-
-      store.dispatch(setPreSelectStep({ order: curOrder, options: newCurrentPreSelectOptionData }));
-
-      const newSumYours = sum(
-        newCurrentOptionSelected
-          .filter((el) => {
-            const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-            return preOptionId
-              ? optionId === curPicked.id && preOptionId === curPicked.pre_option
-              : optionId === curPicked.id;
-          })
-          .map((el) => el.quantity),
-      );
-
-      /// update YOURS of prev step
-      store.dispatch(
-        setPreSelectStep({
-          order: curOrder - 1,
-          options: preSelectStep[curOrder - 1].options.map((el) => ({
-            ...el,
-            yours:
-              el.id === curPicked.id && el.pre_option === curPicked.pre_option
-                ? newSumYours
-                : el.yours,
-          })),
-        }),
-      );
-      /* ------------------------ */
-
-      /* update YOURS of current option picked*/
-      store.dispatch(setPickedOption({ ...curPicked, slide: slide, yours: newSumYours }));
-      /* ------------------------------------ */
+      const newQuantities = {
+        ...omit(quantities, quantitiesUpdate),
+        [`${selectId}`]: newQuantity,
+      };
+      setQuantities(newQuantities);
+      setViewStepsWithQuantity(option, newQuantity);
     };
+  const handleCloseModel = () => {
+    const newViewSteps = viewSteps.map((step: any) => {
+      const newOptions = step.options.filter((option: any) => option.index === 1);
+      return {
+        ...step,
+        options: newOptions,
+      };
+    });
+    setViewSteps(newViewSteps);
+    setVisible(false);
+  };
+  const validateQuantities = (newQuantities: any) => {
+    const quantityKeys = Object.keys(newQuantities);
+    for (let index = 0; index < viewSteps.length - 1; index++) {
+      const quantityKeysForThisStep = quantityKeys.filter(
+        (key) => key.split(',').length === index + 1,
+      );
+      const quantityKeysForNextStep = quantityKeys.filter(
+        (key) => key.split(',').length === index + 2,
+      );
+      const requiredQuantities = quantityKeysForThisStep.reduce(
+        (currentCount: number, key: string) => {
+          const remodifyKey = key
+            .split(',')
+            .map((item) => `${item.slice(0, -1)}1`)
+            .join(',');
+          const option = viewSteps[index].options.find(
+            (item: any) => item.select_id === remodifyKey,
+          );
+          if (option.has_next_options) {
+            return currentCount + option.replicate * newQuantities[key];
+          }
+          return currentCount;
+        },
+        0,
+      );
+      const totalQuantities = quantityKeysForNextStep.reduce(
+        (currentCount: number, key: string) => {
+          return currentCount + newQuantities[key];
+        },
+        0,
+      );
+      if (requiredQuantities === 0) break;
+      if (totalQuantities < requiredQuantities) return index + 2;
+    }
+    return 0;
+  };
 
-  const handleCreatePreSelectStep = () => {
-    let inValidOption = false;
-    let stepError = -1;
-
-    const stepDataClone = cloneDeep(stepData);
-    const optionsSelectedClone = cloneDeep(optionsSelected);
-
-    const allOptionSelected: {
-      id: string | undefined;
-      order: number;
-      options: OptionQuantityProps[];
-    }[] = Object.values(optionsSelectedClone);
-
-    const noneOptionSelected = allOptionSelected
-      .filter((el) => Number(el.order) >= 2)
-      .every((el) => !el.options.length);
-
-    if (noneOptionSelected) {
-      message.error('Please select options');
+  const handleCreatePreSelectStep = async () => {
+    const quantitiesUpdate = Object.keys(quantities).filter((key) =>
+      key.startsWith(firstOptionSelected),
+    );
+    const newQuantities = {
+      ...pick(quantities, quantitiesUpdate),
+      [`${firstOptionSelected}_1`]: 1,
+    };
+    const stepError = validateQuantities(newQuantities);
+    if (stepError !== 0) {
+      message.error(`YOURS in step ${stepError} is not equal to REQUIRED`);
       return;
     }
 
     /* checking all options selected has amount of YOURS equal to its REQUIRED */
-    map(optionsSelectedClone, (optionData, order: string) => {
-      if (inValidOption || Number(order) < 2 || !optionData.options.length) {
-        return;
-      }
 
-      if ((optionData.options as unknown as OptionQuantityProps[]).some((el) => el.quantity <= 0)) {
-        inValidOption = true;
-        return;
-      }
-
-      const prevOptions = optionsSelected[Number(order) - 1].options;
-
-      const curOptions = groupBy(
-        optionData.options,
-        (o) => o.pre_option,
-      ) as unknown as OptionQuantityProps[];
-
-      const keys = Object.keys(curOptions);
-
-      keys.forEach((key) => {
-        if (inValidOption) {
-          return;
-        }
-
-        const { optionId, preOptionId } = getIDFromPreOption(key);
-
-        const curQuantity = sum(
-          flatMap(Object.values(curOptions[key])).map((el: any) => el.quantity),
-        );
-
-        prevOptions.forEach((prevOpt) => {
-          if (inValidOption) {
-            return;
-          }
-
-          if (
-            curOrder === 2
-              ? prevOpt.id === optionId
-              : prevOpt.id === optionId && prevOpt.pre_option === preOptionId
-          ) {
-            if (curQuantity < prevOpt.replicate) {
-              inValidOption = true;
-              stepError = Number(order);
-            }
-          }
-        });
-      });
-    });
-
-    if (inValidOption && stepError !== -1) {
-      message.error(`YOURS in step ${stepError} is not equal to REQUIRED`);
-      return;
-    }
+    // if (inValidOption && stepError !== -1) {
+    //   message.error(`YOURS in step ${stepError} is not equal to REQUIRED`);
+    //   return;
+    // }
     /* -------------------------------------------------------------------- */
-
-    let newSteps: AutoStepOnAttributeGroupResponse[] = [];
-
-    map(stepDataClone, (optionData, order: string) => {
-      const newStepData = optionData.options.map((el) => {
-        const optFound = (
-          optionsSelectedClone[Number(order)].options as OptionQuantityProps[]
-        ).find((opt) =>
-          Number(order) === 1
-            ? opt.id === el.id
-            : opt.id === el.id && opt.pre_option === el.pre_option,
-        );
-
-        if (optFound) {
-          return { ...el, quantity: Number(order) === 1 ? 1 : optFound.quantity };
-        }
-
-        return el;
-      });
-
-      newSteps = newSteps.concat({ ...optionData, options: newStepData });
-    });
-
-    /// save steps to specification attribute group
-    store.dispatch(
-      setPartialProductDetail({
-        specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
-          el.id === currentSpecAttributeGroupId ? { ...el, steps: newSteps, isChecked: true } : el,
-        ),
-      }),
-    );
-
-    const stepPayload: SpecificationPreSelectStep[] = allOptionSelected
-      .filter((el) => el.options.length !== 0)
-      .map((el) => ({
-        step_id: el.id as string,
-        options: el.options.map((opt) => ({
-          id: opt.id,
-          /* option selected in 1st step(origin) has default quantity is 1 */
-          quantity: el.order === 1 ? 1 : opt.quantity,
-          pre_option: opt.pre_option,
-        })),
-      }));
-
     const newAllPreSelectAttributes = allPreSelectAttributes.filter(
       (el) => el.id !== currentSpecAttributeGroupId,
     );
 
     const newAttributeGroups = newAllPreSelectAttributes.concat({
       id: currentSpecAttributeGroupId as string,
-      configuration_steps: stepPayload,
+      step_selections: newQuantities,
+      /// default each attribute group has attributes property is empty array
+      attributes: [],
     });
+    /// save steps to specification attribute group
+    store.dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: [...specificationAttributeGroups].map((el) =>
+          el.id === currentSpecAttributeGroupId
+            ? {
+                ...el,
+                viewSteps,
+                isChecked: true,
+                stepSelection: { ...el.stepSelection, quantities: newQuantities },
+              }
+            : el,
+        ),
+      }),
+    );
 
     const newSpecfication: SpecificationBodyRequest = {
       is_refer_document: false,
       attribute_groups: newAttributeGroups,
     };
 
+    if (!updatePreSelect) {
+      /// save steps to specfified specification attribute group
+      store.dispatch(
+        setPartialProductSpecifiedData({
+          specification: newSpecfication,
+        }),
+      );
+
+      /// close modal
+      handleCloseModel();
+
+      return;
+    }
     /// update pre-select steps
-    selectProductSpecification(productId, { specification: newSpecfication });
+    const isUpdateSuccess = await selectProductSpecification(productId, {
+      specification: newSpecfication,
+    });
 
     /// close modal
-    setVisible(false);
+    handleCloseModel();
 
-    message.success('Created pre-select step successfully');
+    if (isUpdateSuccess) {
+      message.success('Created pre-select step successfully');
+    }
   };
 
-  // console.log('pickedOption', pickedOption);
-  // console.log('preSelectStep', preSelectStep);
-  // console.log('stepData', stepData);
-  // console.log('optionsSelected', optionsSelected);
+  //-------------------------------------------------------------------------//
+
+  const tempLeft = viewSteps[slide]?.options;
+  const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
+  const mappedLeft = mappingOptionGroups(currentLeft);
+  const mappedRight = mappingOptionGroups(tempRight);
 
   return (
     <CustomModal
@@ -903,7 +507,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       secondaryModal
       visible={visible}
       onCancel={() => {
-        setVisible(false);
+        handleCloseModel();
       }}
       className={styles.modalContainer}
       maskClosable={false}
@@ -919,20 +523,39 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
       <SlideBar
         handleBackToPrevSlide={handleBackToPrevSlide}
         handleGoToNextSlide={handleGoToNextSlide}
-        disabledNextSlide={curOrder === slideBars.length}
+        disabledNextSlide={
+          curOrder === slideBars.length ||
+          leftSelectedOption[slide]?.replicate !== totalQuantity.value
+        }
       />
 
       <div className={styles.mainContent}>
         {/* left side */}
         <div className={styles.content} style={{ marginRight: 8 }}>
-          {leftPanelData.map((pickedSub, optIdx) => {
+          {mappedLeft.map((pickedSub, optIdx) => {
             return (
               <CheckboxDynamic
                 key={optIdx}
                 isCheckbox={slide !== 0}
                 isRadio={slide === 0}
-                selected={[{ label: '', value: firstOptionSelected }]}
-                chosenItems={currentSubPickedOptionSelected}
+                selected={[{ label: '', value: leftSelectedOption[slide]?.id || '' }]}
+                chosenItems={pickedSub.subs
+                  .filter((item: any) => {
+                    const keys = Object.keys(quantities).filter((key) =>
+                      key.startsWith(`${item.select_id},`),
+                    );
+                    let count = 0;
+                    keys.forEach((key) => {
+                      count += quantities[key];
+                    });
+                    return count > 0;
+                  })
+                  .map((item: any) => {
+                    return {
+                      label: '',
+                      value: item?.select_id || '',
+                    };
+                  })}
                 onOneChange={handleSelectPickedOption}
                 data={{
                   customItemClass: 'checkbox-item',
@@ -948,17 +571,22 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
                       </BodyText>
                     </div>
                   ),
-                  options: pickedSub.subs.map((option, subIdx) => ({
-                    pre_option: option.pre_option,
+                  options: pickedSub.subs?.map((option: any, subIdx: number) => ({
+                    disabled: !option.has_next_options,
                     // replicate: option.replicate,
+                    pre_option: option.pre_option,
+                    select_id: option.select_id,
                     value: option.id,
+                    picked: option.picked,
                     label: (
                       <div
                         className={`flex-between w-full ${
-                          (slide === 0 && pickedOption[slide]?.id === option.id) ||
+                          (slide === 0 &&
+                            option.select_id === leftSelectedOption[slide]?.select_id) ||
                           (slide !== 0 &&
-                            curPicked?.id === option.id &&
-                            curPicked?.pre_option === option.pre_option)
+                            option.picked &&
+                            option.select_id === leftSelectedOption[slide]?.select_id &&
+                            option.has_next_options)
                             ? 'checkbox-item-active'
                             : ''
                         }`}
@@ -997,7 +625,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
 
         {/* right side */}
         <div className={`${styles.content} ${styles.rightContent}`}>
-          {!rightPanelData.length ? (
+          {!mappedRight.length ? (
             <EmptyOne isCenter />
           ) : (
             <div className={styles.linkedContent}>
@@ -1015,7 +643,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
                     fontFamily="Roboto"
                     style={{ fontWeight: 500, margin: '0 16px 0 8px' }}
                   >
-                    {curPicked?.replicate ?? 'N/A'}
+                    {leftSelectedOption[slide]?.replicate ?? 'N/A'}
                   </BodyText>
                   <BodyText level={3} fontFamily="Cormorant-Garamond">
                     Yours
@@ -1025,7 +653,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
                     fontFamily="Roboto"
                     style={{ fontWeight: 500, marginLeft: 8 }}
                   >
-                    {curPicked?.yours ?? 'N/A'}
+                    {totalQuantity.value ?? 'N/A'}
                   </BodyText>
                 </div>
               </div>
@@ -1036,15 +664,20 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({ visible, setVisible }) =
                 canActiveMultiKey
                 showCollapseIcon
                 showCount={false}
-                selected={currentSubLinkedOptionSelected}
-                chosenItem={currentSubLinkedOptionSelected}
+                selected={tempRight
+                  .filter((el: any) => el.picked)
+                  .map((el: any) => ({ label: '', value: el.id }))}
+                chosenItem={tempRight
+                  .filter((el: any) => el.picked)
+                  .map((el: any) => ({ label: '', value: el.id }))}
                 forceEnableCollapse={forceEnableCollapse}
                 renderTitle={(data) => data.label}
-                data={rightPanelData.map((option) => ({
+                data={mappedRight.map((option) => ({
                   label: option.name,
                   id: option.id,
+                  value: option.id,
 
-                  options: option.subs.map((sub, subIdx) => ({
+                  options: option.subs?.map((sub: any, subIdx: number) => ({
                     value: sub.id,
                     pre_option: sub.pre_option,
                     productId: sub.product_id,
