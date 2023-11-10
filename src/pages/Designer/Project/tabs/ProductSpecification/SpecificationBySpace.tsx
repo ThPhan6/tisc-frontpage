@@ -29,11 +29,13 @@ export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(3, [7]);
+  useAutoExpandNestedTableColumn(3, [4, 5, 6, 7]);
   const tableRef = useRef<any>();
   const [visible, setVisible] = useState<boolean>(false);
 
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, {
+    isSpecified: true,
+  });
 
   const getSameColumns = (props: {
     noBoxShadow: boolean;
@@ -257,10 +259,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       render: renderActionCell(setSpecifyingProduct, tableRef, true),
     },
   ];
-
-  useEffect(() => {
-    tableRef.current.reload();
-  }, []);
 
   return (
     <>

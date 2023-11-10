@@ -30,7 +30,7 @@ export async function getUnitTypeList() {
       return units;
     })
     .catch((error) => {
-      console.log('getUnitTypeList error', error);
+      // console.log('getUnitTypeList error', error);
       return [] as UnitType[];
     });
 }
@@ -46,7 +46,7 @@ export async function getInstructionTypeList() {
       return response.data;
     })
     .catch((error) => {
-      console.log('getInstructionTypeList error', error);
+      // console.log('getInstructionTypeList error', error);
       return [] as GeneralData[];
     });
 }
@@ -62,7 +62,7 @@ export async function getRequirementTypeList() {
       return response.data;
     })
     .catch((error) => {
-      console.log('getRequirementTypeList error', error);
+      // console.log('getRequirementTypeList error', error);
       return [] as GeneralData[];
     });
 }
@@ -87,7 +87,7 @@ export async function getFinishScheduleList(
       }
     })
     .catch((error) => {
-      console.log('getFinishScheduleList error', error);
+      // console.log('getFinishScheduleList error', error);
       return [] as FinishScheduleResponse[];
     });
 }
@@ -101,7 +101,7 @@ export async function getProductSpecifying(consider_id: string) {
       return response.data;
     })
     .catch((error) => {
-      console.log('getInstructionTypeList error', error);
+      // console.log('getInstructionTypeList error', error);
       return undefined;
     });
 }
@@ -115,13 +115,11 @@ export async function updateProductSpecifying(
     data: { ...data, quantity: Number(data.quantity) },
   })
     .then(() => {
-      console.log('updateProductSpecifying', data);
-
       message.success(getResponseMessage('update', 'product specifying'));
       callback();
     })
     .catch((error) => {
       message.error(getResponseMessage('update', 'product specifying', 'failed', error));
-      console.log('updateProductSpecifying error', error);
+      // console.log('updateProductSpecifying error', error);
     });
 }

@@ -14,6 +14,7 @@ import styles from './styles/checkboxDynamic.less';
 
 export interface CheckBoxOptionProps extends CheckboxValue {
   pre_option?: string;
+  select_id?: string;
 }
 
 export interface CheckboxOption {
@@ -58,12 +59,9 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
     const selectAllIds: string[] = [];
 
     data.options.forEach((item) => {
-      const optSelected: CheckboxValue[] = chosenItems
-        ?.filter(
-          (selectedItem) =>
-            item.value === selectedItem.value && item?.pre_option === selectedItem?.label,
-        )
-        .filter(Boolean) as CheckboxValue[];
+      const optSelected: CheckboxValue[] = chosenItems?.filter(
+        (selectedItem) => item.select_id === selectedItem.value,
+      ) as CheckboxValue[];
 
       if (optSelected?.length) {
         optSelected.forEach((el) => {

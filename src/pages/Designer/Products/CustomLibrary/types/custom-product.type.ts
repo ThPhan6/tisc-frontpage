@@ -87,7 +87,7 @@ export interface CustomProductRequestBody {
 export interface OptionGroupProps {
   data: ProductOptionProps[];
   setSpecOptionData?: (data: any) => void;
-  dataIndex: number;
+  dataIndex?: number;
   specification: SpecificationBodyRequest;
   specifiedDetail?: SpecifiedDetail;
   productId?: string;

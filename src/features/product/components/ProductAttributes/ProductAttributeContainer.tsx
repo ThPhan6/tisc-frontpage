@@ -24,19 +24,21 @@ import { DimensionWeight } from '@/features/dimension-weight';
 export interface ProductAttributeContainerProps {
   attributes?: ProductAttributes[];
   activeKey: ProductInfoTab;
-  specifying?: boolean;
+  // specifying?: boolean;
   noBorder?: boolean;
   isSpecifiedModal?: boolean;
   productId?: string;
+  isSpecified?: boolean;
 }
 
 export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   activeKey,
   attributes,
-  specifying,
+  // specifying,
   noBorder,
   productId,
   isSpecifiedModal,
+  isSpecified,
 }) => {
   const productIdParam = useGetParamId();
   const isTablet = useScreen().isTablet;
@@ -122,10 +124,11 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
                     attrGroupItem={attrGroupItem}
                     groupIndex={groupIndex}
                     attributes={attributes}
-                    specifying={specifying}
+                    // specifying={specifying}
+                    isSpecified={isSpecified} /// on project product specified tab
                     noBorder={noBorder}
                     curProductId={curProductId}
-                    isSpecifiedModal={isSpecifiedModal}
+                    isSpecifiedModal={isSpecifiedModal} /// using for both specifing modal on product considered and product specified
                     icon={
                       <div
                         {...dragProvided.dragHandleProps}

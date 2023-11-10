@@ -10,7 +10,6 @@ import { useAppSelector } from '@/reducers';
 
 import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
 import styles from './CatelogueDownload.less';
@@ -54,7 +53,7 @@ export const CatelogueDownload = () => {
   }
 
   if (!catelogue_downloads || catelogue_downloads.length === 0) {
-    return <EmptyOne customClass={styles.paddingRounded} />;
+    return <EmptyOne customClass={styles.emptyOne} />;
   }
 
   return (

@@ -27,7 +27,7 @@ const POPOVER_TITLE = {
   specification: 'Select Specification',
 };
 
-interface Props {
+interface SelectAttributesToGroupRowProps {
   activeKey: ProductInfoTab;
   groupItem: ProductAttributeFormInput;
   groupIndex: number;
@@ -35,7 +35,7 @@ interface Props {
   productId: string;
 }
 
-export const SelectAttributesToGroupRow: FC<Props> = memo(
+export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = memo(
   ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
     const [visible, setVisible] = useState(false);
 
@@ -123,6 +123,9 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
 
           return newAttribute;
         });
+
+        // close modal
+        setVisible(false);
       }
 
       /// set selection for each group attribute has attribute option type
@@ -156,7 +159,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       ///
       let description = '';
       /// must found basis
-      if (basis && basis.id) {
+      if (basis?.id) {
         description = basis.name;
         if (!description) {
           /// only conversion don't have name
@@ -242,7 +245,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
             }))}
             dropdownCheckboxTitle={(data) => data.name}
             chosenValue={selected}
-            setChosenValue={onSelectValue}
+            onFormSubmit={onSelectValue}
             secondaryModal
           />
         )}
