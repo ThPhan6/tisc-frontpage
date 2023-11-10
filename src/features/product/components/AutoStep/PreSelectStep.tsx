@@ -62,7 +62,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const [tempRight, setTempRight] = useState<any>([]);
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
-
   const [quantities, setQuantities] = useState<any>(quantitiesDefault || {});
   const totalQuantity = useNumber(0);
   // on the left panel
