@@ -83,6 +83,8 @@ export interface OptionQuantityProps {
   product_id: string;
   sub_id: string;
   sub_name: string;
+  select_id: string;
+  index: number;
 }
 
 export interface AutoStepPreSelectOptionProps {

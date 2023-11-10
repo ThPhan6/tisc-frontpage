@@ -118,7 +118,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
-  /// brand and distributor selected have been setted from useProductAttributeForm
+  /// brand and distributor selected have been set from useProductAttributeForm
   const brandLocationId =
     useAppSelector((state) =>
       customProduct
@@ -203,14 +203,18 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
   const handleOnChangeSpecifying = (checked?: RadioValue, isBrand?: boolean) => {
     const newValue = checked?.value ? String(checked.value) : '';
+
     const updateProductDetailFunc = customProduct
       ? updateCustomProductSpecifiedDetail
       : setPartialProductDetail;
+
     const newUpdate =
       locationPopup === 'brand' || isBrand
         ? { brand_location_id: newValue }
         : { distributor_location_id: newValue };
+
     store.dispatch(updateProductDetailFunc(newUpdate));
+
     if (userSelection) {
       selectProductSpecification(productId, newUpdate);
     }
@@ -334,8 +338,14 @@ export const VendorLocation: FC<VendorTabProps> = ({
     noFooter: isTiscAdmin,
     disabledDropDownRadio: isTiscAdmin,
     chosenValue: getChosenValue(),
-    setChosenValue: (checked: any) =>
-      locationPopup ? handleOnChangeSpecifying(checked) : undefined,
+    onFormSubmit: (checked: RadioValue) => {
+      if (locationPopup) {
+        handleOnChangeSpecifying(checked);
+      }
+
+      /// close modal
+      setLocationPopup('');
+    },
   };
 
   return (

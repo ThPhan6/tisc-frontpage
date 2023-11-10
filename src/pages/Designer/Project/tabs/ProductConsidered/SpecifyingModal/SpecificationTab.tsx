@@ -30,7 +30,8 @@ const ReferToDesignLabel = () => {
         }
         overlayInnerStyle={{
           width: 197,
-        }}>
+        }}
+      >
         <WarningIcon />
       </Tooltip>
     </Title>
@@ -41,7 +42,8 @@ const SpecifiedSpecificationTab: FC<{
   productId: string;
   referToDesignDocument: boolean;
   customProduct?: boolean;
-}> = ({ productId, customProduct, referToDesignDocument }) => {
+  isSpecified?: boolean;
+}> = ({ productId, customProduct, referToDesignDocument, isSpecified }) => {
   const checkReferToDesignDocument = () => {
     if (customProduct) {
       store.dispatch(onCheckCustomProductReferToDocument());
@@ -61,7 +63,7 @@ const SpecifiedSpecificationTab: FC<{
       if (customProduct) {
         getOneCustomProduct(productId);
       } else {
-        getProductById(productId);
+        getProductById(productId, { isSpecified });
       }
     }
   }, [productId, customProduct]);
@@ -82,10 +84,11 @@ const SpecifiedSpecificationTab: FC<{
       ) : (
         <ProductAttributeContainer
           activeKey="specification"
-          specifying
+          // specifying
           noBorder
           productId={productId}
           isSpecifiedModal
+          isSpecified={isSpecified}
         />
       )}
     </div>

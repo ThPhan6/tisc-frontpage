@@ -3,28 +3,27 @@ import { request } from 'umi';
 
 // import { sortObjectArray } from '@/helper/utils';
 import {
-  AutoStepLinkedOptionResponse,
-  AutoStepOnAttributeGroupResponse,
-  AutoStepPreSelectOptionResponse,
+  AutoStepLinkedOptionResponse, // AutoStepOnAttributeGroupResponse,
+  // AutoStepPreSelectOptionResponse,
 } from '../types/autoStep';
 
-export const getAutoStepData = (productId: string, specificationId: string) => {
-  // showPageLoading();
-  return request<{ data: AutoStepOnAttributeGroupResponse[] }>(`/api/step`, {
-    method: 'GET',
-    params: { product_id: productId, specification_id: specificationId },
-  })
-    .then((res) => {
-      // hidePageLoading();
-      return res.data;
-    })
-    .catch((err) => {
-      // hidePageLoading();
+// export const getAutoStepData = (productId: string, specificationId: string) => {
+//   // showPageLoading();
+//   return request<{ data: AutoStepOnAttributeGroupResponse[] }>(`/api/step`, {
+//     method: 'GET',
+//     params: { product_id: productId, specification_id: specificationId },
+//   })
+//     .then((res) => {
+//       // hidePageLoading();
+//       return res.data;
+//     })
+//     .catch((err) => {
+//       // hidePageLoading();
 
-      message.error(err?.data?.message ?? 'Failed to get step');
-      return [] as AutoStepOnAttributeGroupResponse[];
-    });
-};
+//       message.error(err?.data?.message ?? 'Failed to get step');
+//       return [] as AutoStepOnAttributeGroupResponse[];
+//     });
+// };
 
 export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: string) => {
   // showPageLoading();
@@ -78,16 +77,22 @@ export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: s
     });
 };
 
-export const getPreSelectStep = (userId: string, productId: string, specificationId: string) => {
-  return request<{ data: AutoStepPreSelectOptionResponse[] }>(`/api/step/configuration`, {
-    method: 'GET',
-    params: { user_id: userId, product_id: productId, specification_id: specificationId },
-  })
-    .then((res) => {
-      return res.data;
-    })
-    .catch((err) => {
-      message.error(err?.data?.message ?? 'Failed to get pre select steps');
-      return [] as AutoStepPreSelectOptionResponse[];
-    });
-};
+// export const getPreSelectStep = (
+//   productId: string,
+//   specificationId: string,
+//   props: { userId?: string; projectId?: string },
+// ) => {
+//   return request<{ data: AutoStepPreSelectOptionResponse[] }>(`/api/step/configuration`, {
+//     method: 'GET',
+//     params: props.userId
+//       ? { user_id: props.userId, product_id: productId, specification_id: specificationId }
+//       : { project_id: props.projectId, product_id: productId, specification_id: specificationId },
+//   })
+//     .then((res) => {
+//       return res.data;
+//     })
+//     .catch((err) => {
+//       message.error(err?.data?.message ?? 'Failed to get pre select steps');
+//       return [] as AutoStepPreSelectOptionResponse[];
+//     });
+// };
