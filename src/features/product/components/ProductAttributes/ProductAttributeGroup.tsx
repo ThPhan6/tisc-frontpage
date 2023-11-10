@@ -852,7 +852,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                               <div className="step-text">
                                 <BodyText
-                                  level={6}
+                                  level={7}
                                   customClass="description"
                                   fontFamily="Roboto"
                                   color="white"
@@ -862,7 +862,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 </BodyText>
 
                                 <BodyText
-                                  level={6}
+                                  level={7}
                                   customClass="description"
                                   fontFamily="Roboto"
                                   color="white"
@@ -926,7 +926,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             setVisible={setAutoStepModal}
             updatePreSelect={!isSpecifiedModal}
             viewStepsDefault={attrGroupItem.viewSteps}
-            quantitiesDefault={attrGroupItem.stepSelection.quantities}
+            quantitiesDefault={attrGroupItem.stepSelection?.quantities}
           />
         )
       ) : null}
