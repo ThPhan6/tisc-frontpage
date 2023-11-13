@@ -8,7 +8,18 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { sortObjectArray, uniqueArrayBy } from '@/helper/utils';
-import { cloneDeep, flatMap, forEach, isNull, isUndefined, map, sum, uniq, uniqBy } from 'lodash';
+import {
+  cloneDeep,
+  flatMap,
+  forEach,
+  isNull,
+  isUndefined,
+  map,
+  sortBy,
+  sum,
+  uniq,
+  uniqBy,
+} from 'lodash';
 
 import {
   OptionSelectedProps,
@@ -357,7 +368,19 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     /// update linked option data
     newLinkedOptionData[newSlide] = {
       pickedData: sortObjectArray(
-        newPickedData.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+        newPickedData.map((el) => ({
+          ...el,
+          subs: sortBy(
+            el.subs.map((item: any) => ({
+              ...item,
+              sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+            })),
+            ['pre_option_name', 'sortField'],
+          ).map((item: any) => {
+            const { sortField, ...temp } = item;
+            return temp;
+          }),
+        })),
         'name',
       ),
       linkedData:
@@ -867,7 +890,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }),
       );
     };
-
+  console.log(pickedData);
   return (
     <div className={styles.nextStep}>
       <SlideBar
@@ -918,6 +941,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                           <div className="d-flex align-item-flex-start justify-between option-info">
                             <div
                               className="product-id"
+                              NextStep
                               title={option.product_id}
                               style={{ minWidth: option.pre_option_name ? '45%' : '100%' }}
                             >
