@@ -8,7 +8,6 @@ import type {
   SortParams,
   SpecifiedDetail,
 } from '../types';
-import { AutoStepPreSelectOnAttributeGroupResponse } from '../types/autoStep';
 import { OrderMethod, SpecificationAttributeGroup } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
@@ -234,6 +233,29 @@ export const productReducer = productSlice.reducer;
 const productSpecificationSelector = (state: RootState) =>
   state.product.details.specification_attribute_groups;
 
+const combineQuantityForStepSelection = (data: any) => {
+  const selectIds = Object.keys(data);
+  const combinedOptionQuantity = selectIds.reduce((pre: any, selectId: string) => {
+    const parts = selectId.split(',');
+    const last = parts[parts.length - 1];
+    const lastParts = last.split('_');
+    const optionId = lastParts[0];
+    const quantity = data[selectId];
+    return quantity > 0
+      ? {
+          ...pre,
+          [optionId]: pre[optionId] ? pre[optionId] + quantity : quantity,
+        }
+      : pre;
+  }, {});
+  const optionIds = Object.keys(combinedOptionQuantity);
+  return optionIds.map((optionId: string) => {
+    return {
+      id: optionId,
+      quantity: combinedOptionQuantity[optionId],
+    };
+  });
+};
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
   let variants = '';
 
@@ -253,13 +275,26 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       });
     });
 
-    (el?.steps as AutoStepPreSelectOnAttributeGroupResponse[])?.forEach((step) => {
-      step?.options?.forEach((option) => {
-        for (let q = 0; q < option.quantity; q++) {
-          const dash = option.product_id === '' ? '' : ' - ';
-          variants += option.product_id + dash;
-        }
-      });
+    const viewStepAllOptions = el.viewSteps?.reduce((pre: any, cur: any) => {
+      return pre.concat(
+        cur.options.map((item: any) => ({ id: item.id, product_id: item.product_id })),
+      );
+    }, []);
+
+    const combinedQuantities = combineQuantityForStepSelection(
+      el?.stepSelection?.quantities || [],
+    ).map((item: any) => {
+      const found = viewStepAllOptions.find((viewStepOption: any) => viewStepOption.id === item.id);
+      return {
+        ...item,
+        product_id: found?.product_id,
+      };
+    });
+    combinedQuantities.forEach((option) => {
+      for (let q = 0; q < option.quantity; q++) {
+        const dash = option.product_id === '' ? '' : ' - ';
+        variants += option.product_id + dash;
+      }
     });
   });
 
