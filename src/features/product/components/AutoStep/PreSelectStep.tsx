@@ -107,6 +107,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     const pos = selectId.lastIndexOf('_');
     return selectId.slice(0, pos);
   };
+
+  const toPreOptionId = (selectId: string) => {
+    const parts = selectId.split(',');
+    const ids = parts.reduce((pre: any, cur: string, index: number) => {
+      if (index !== parts.length - 1) {
+        return pre.concat([cur.split('_')[0]]);
+      }
+      return pre;
+    }, []);
+    return ids.join(',');
+  };
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
     const keys = Object.keys(quantities);
     return viewSteps.map((step: any, index: number) => {
@@ -117,15 +128,14 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         newOptions = [...step.options];
         quantityKeysOfThisStep.forEach((key) => {
           const id = key.split(',').at(-1)?.slice(0, -2);
-          const actualOption = oldOptions.find((option) => option.id === id);
+          const actualOption = oldOptions.find(
+            (option) => option.id === id && option.pre_option === toPreOptionId(key),
+          );
           const quantity = quantities[key] as number;
           if (actualOption && quantity) {
             for (let i = 0; i < quantity; i++) {
               const found = step.options.find(
-                (item: any) =>
-                  item.index === i + 1 &&
-                  item.select_id === key &&
-                  item.pre_option === actualOption.pre_option,
+                (item: any) => item.index === i + 1 && item.select_id === key,
               );
               if (!found) {
                 const clown = {
