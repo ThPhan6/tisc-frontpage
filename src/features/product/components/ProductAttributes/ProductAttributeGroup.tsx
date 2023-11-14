@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { message } from 'antd';
 
@@ -172,35 +172,43 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     store.dispatch(closeProductFooterTab());
     store.dispatch(closeDimensionWeightGroup());
   };
-  const autoStepImages = useMemo<any>(() => {
-    const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
-    return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
-      const quantityKeysForThisStep = quantityKeys.filter(
-        (key) => key.split(',').length === bigIndex + 1,
-      );
-      const options: OptionQuantityProps[] = [];
-      quantityKeysForThisStep.forEach((key) => {
-        const remodifyKey = key
-          .split(',')
-          .map((item) => `${item.slice(0, -1)}1`)
-          .join(',');
-        const option = el.options.find(
-          (item: any) => item.select_id === remodifyKey,
-        ) as OptionQuantityProps;
-        if (option) {
-          for (let index = 0; index < attrGroupItem.stepSelection?.quantities[key]; index++) {
-            options.push(option);
+  const [images, setImages] = useState<any>([]);
+
+  useEffect(() => {
+    if (!attrGroupItem.isChecked) {
+      setImages([]);
+      return;
+    }
+    const autoStepImages = () => {
+      const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
+      return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
+        const quantityKeysForThisStep = quantityKeys.filter(
+          (key) => key.split(',').length === bigIndex + 1,
+        );
+        const options: OptionQuantityProps[] = [];
+        quantityKeysForThisStep.forEach((key) => {
+          const remodifyKey = key
+            .split(',')
+            .map((item) => `${item.slice(0, -1)}1`)
+            .join(',');
+          const option = el.options.find(
+            (item: any) => item.select_id === remodifyKey,
+          ) as OptionQuantityProps;
+          if (option) {
+            for (let index = 0; index < attrGroupItem.stepSelection?.quantities[key]; index++) {
+              options.push(option);
+            }
           }
-        }
+        });
+
+        return {
+          ...el,
+          options,
+        };
       });
-
-      return {
-        ...el,
-        options,
-      };
-    });
+    };
+    setImages(autoStepImages());
   }, [attrGroupItem?.stepSelection?.quantities]);
-
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
       message.error('Product ID is required');
@@ -558,6 +566,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 onChange={() => {
                   onCheckedSpecification(grIndex, !isTiscAdmin);
 
+                  setImages([]);
                   if (curAttributeSelect.groupId && curAttributeSelect.attribute?.id) {
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
                   }
@@ -771,7 +780,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 : handleOpenPreSelectAutoStepModal(stepIndex)
                             }
                           >
-                            <td style={{ width: '100%' }}>
+                            <td style={{ width: '20%' }}>
                               <div className={`${isPublicPage ? '' : 'flex-between'}`}>
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
@@ -789,7 +798,29 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                     {step.name}
                                   </BodyText>
                                 </div>
-
+                              </div>
+                            </td>
+                            <td style={{ width: '80%' }}>
+                              <div className={`${isPublicPage ? '' : 'flex-between'}`}>
+                                <div className="flex-start flex-grow text-overflow">
+                                  <BodyText
+                                    fontFamily="Cormorant-Garamond"
+                                    level={4}
+                                    style={{
+                                      minWidth: 'fit-content',
+                                      paddingLeft: isSpecifiedModal ? 0 : 16,
+                                      paddingRight: 12,
+                                    }}
+                                  >
+                                    {images?.[stepIndex]?.options
+                                      .reduce((pre: any, cur: any) => {
+                                        return pre.concat([
+                                          `${cur.value_1} ${cur.unit_1} ${cur.value_2} ${cur.unit_2}`.trim(),
+                                        ]);
+                                      }, [])
+                                      .join(', ')}
+                                  </BodyText>
+                                </div>
                                 {isPublicPage ? null : (
                                   <div className="flex-start">
                                     <ActionRightLeftIcon
@@ -817,7 +848,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 {isEditable ? null : (
                   <div className={styles.stepImages}>
-                    {autoStepImages?.map((step, stepIdx) =>
+                    {images?.map((step, stepIdx) =>
                       step.options.map((option, optionIdx) => {
                         return (
                           <div
@@ -897,8 +928,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         </div>
       </div>
 
-      {(attributeGroupKey === 'specification_attribute_groups' || !isPublicPage) &&
-      autoStepModal ? (
+      {attributeGroupKey === 'specification_attribute_groups' || !isPublicPage ? (
         showTISCAutoSteps ? (
           <AutoStep
             attributeGroup={attributeGroup}
@@ -906,15 +936,17 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             visible={autoStepModal}
             setVisible={setAutoStepModal}
           />
-        ) : (
+        ) : autoStepModal ? (
           <PreSelectStep
             visible={autoStepModal}
             setVisible={setAutoStepModal}
             updatePreSelect={!isSpecifiedModal}
             viewStepsDefault={attrGroupItem.viewSteps}
-            quantitiesDefault={attrGroupItem.stepSelection?.quantities}
+            quantitiesDefault={
+              !attrGroupItem.isChecked ? {} : attrGroupItem.stepSelection?.quantities
+            }
           />
-        )
+        ) : null
       ) : null}
     </div>
   );

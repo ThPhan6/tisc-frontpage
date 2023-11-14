@@ -9,7 +9,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useNumber } from '@/helper/hook';
-import { cloneDeep, forEach, isEmpty, omit, pick, uniqBy } from 'lodash';
+import { cloneDeep, isEmpty, omit, pick, uniqBy } from 'lodash';
 
 import {
   resetAutoStepState,
@@ -122,7 +122,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
           if (actualOption && quantity) {
             for (let i = 0; i < quantity; i++) {
               const found = step.options.find(
-                (item: any) => item.index === i + 1 && item.select_id === key,
+                (item: any) =>
+                  item.index === i + 1 &&
+                  item.select_id === key &&
+                  item.pre_option === actualOption.pre_option,
               );
               if (!found) {
                 const clown = {
@@ -607,7 +610,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             </div>
                             {option.pre_option_name ? (
                               <div className="pre-option" title={option.pre_option_name}>
-                                <span className="product-id-label">Pre Option:</span>
+                                <span className="product-id-label">Selection:</span>
                                 <span className="product-id-value">{option.pre_option_name}</span>
                               </div>
                             ) : null}
@@ -699,7 +702,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             </div>
                             {sub.pre_option_name ? (
                               <div className="pre-option" title={sub.pre_option_name}>
-                                <span className="product-id-label">Pre Option:</span>
+                                <span className="product-id-label">Selection:</span>
                                 <span className="product-id-value">{sub.pre_option_name}</span>
                               </div>
                             ) : null}
