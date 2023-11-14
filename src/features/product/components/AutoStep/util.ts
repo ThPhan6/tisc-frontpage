@@ -1,5 +1,5 @@
 import { sortObjectArray } from '@/helper/utils';
-import { trimEnd } from 'lodash';
+import { sortBy, trimEnd } from 'lodash';
 
 import { LinkedOptionProps, OptionReplicateResponse } from '../../types/autoStep';
 import { OptionQuantityProps } from './../../types/autoStep';
@@ -28,7 +28,19 @@ export const mappingOptionGroups = (options: OptionReplicateResponse[] | OptionQ
   });
 
   return sortObjectArray(
-    b.map((el) => ({ ...el, subs: sortObjectArray(el.subs, 'value_1') })),
+    b.map((el) => ({
+      ...el,
+      subs: sortBy(
+        el.subs.map((item: any) => ({
+          ...item,
+          sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+        })),
+        ['sortField', 'pre_option_name'],
+      ).map((item: any) => {
+        const { sortField, ...temp } = item;
+        return temp;
+      }),
+    })),
     'name',
   ) as LinkedOptionProps[];
 };

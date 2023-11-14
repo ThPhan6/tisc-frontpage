@@ -6,7 +6,7 @@ import { message } from 'antd';
 // import { TablePaginationConfig } from 'antd/es/table/interface';
 import { request } from 'umi';
 
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 import {
   setPartialProductDetail,
@@ -273,7 +273,7 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           newAttributeGroup.push({
             ...attr,
             steps: newRes,
-            isChecked: !!attr?.configuration_steps?.length || !!attr?.isChecked,
+            isChecked: !isEmpty(attr?.stepSelection?.quantities),
             type: attr.type ?? SpecificationType.autoStep,
           });
         }
