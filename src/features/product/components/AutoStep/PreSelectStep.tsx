@@ -68,10 +68,20 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
   // on the right panel
   const { slideBars, slide, firstOptionSelected } = useAppSelector((state) => state.autoStep);
-  // useEffect(() => {
-  //   setQuantities(currentSpecification?.stepSelection?.quantities || {});
-  //   setViewSteps(currentSpecification?.viewSteps || []);
-  // }, [currentSpecification]);
+  useEffect(() => {
+    const newViewSteps = viewSteps.map((step: any) => {
+      return {
+        ...step,
+        options: step.options.map((option: any) => {
+          return {
+            ...option,
+            picked: quantities[option.select_id] > 0,
+          };
+        }),
+      };
+    });
+    setViewSteps(newViewSteps);
+  }, [quantitiesDefault]);
 
   const setRightPannel = (id: string, pre_option: string, selectId?: string) => {
     const originRight = viewSteps[slide + 1]?.options;
@@ -473,7 +483,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
     const newSpecfication: SpecificationBodyRequest = {
       is_refer_document: false,
-      attribute_groups: newAttributeGroups,
+      attribute_groups: newAttributeGroups.map((el) => {
+        if (el.id !== currentSpecAttributeGroupId) {
+          return el;
+        }
+        return {
+          ...el,
+          viewSteps,
+          isChecked: true,
+          step_selections: { quantities: newQuantities },
+        };
+      }),
     };
 
     if (!updatePreSelect) {
@@ -491,7 +511,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }
     /// update pre-select steps
     const isUpdateSuccess = await selectProductSpecification(productId, {
-      specification: newSpecfication,
+      specification: {
+        is_refer_document: false,
+        attribute_groups: newAttributeGroups,
+      },
     });
 
     /// close modal
@@ -620,7 +643,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             </div>
                             {option.pre_option_name ? (
                               <div className="pre-option" title={option.pre_option_name}>
-                                <span className="product-id-label">Selection:</span>
+                                <span className="product-id-label">Pre. Selection:</span>
                                 <span className="product-id-value">{option.pre_option_name}</span>
                               </div>
                             ) : null}
@@ -712,7 +735,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             </div>
                             {sub.pre_option_name ? (
                               <div className="pre-option" title={sub.pre_option_name}>
-                                <span className="product-id-label">Selection:</span>
+                                <span className="product-id-label">Pre. Selection:</span>
                                 <span className="product-id-value">{sub.pre_option_name}</span>
                               </div>
                             ) : null}

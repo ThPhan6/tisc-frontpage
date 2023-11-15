@@ -121,9 +121,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
-  const { curAttrGroupCollapseId } = useAppSelector((state) => state.product);
-
-  // const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+  const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
+  const { specifiedDetail } = details;
+  const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+  const specifiedQuantity = isSpecifiedModal
+    ? specifiedDetail?.specification.attribute_groups.find(
+        (item) => item.id === currentSpecAttributeGroupId,
+      )?.step_selections.quantities || {}
+    : {};
 
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
@@ -179,8 +184,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       setImages([]);
       return;
     }
+
+    const quantities = isSpecifiedModal
+      ? specifiedQuantity
+      : attrGroupItem.stepSelection?.quantities;
     const autoStepImages = () => {
-      const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
+      const quantityKeys = Object.keys(quantities || {});
       return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
         const quantityKeysForThisStep = quantityKeys.filter(
           (key) => key.split(',').length === bigIndex + 1,
@@ -195,7 +204,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             (item: any) => item.select_id === remodifyKey,
           ) as OptionQuantityProps;
           if (option) {
-            for (let index = 0; index < attrGroupItem.stepSelection?.quantities[key]; index++) {
+            for (let index = 0; index < quantities[key]; index++) {
               options.push(option);
             }
           }
@@ -208,7 +217,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       });
     };
     setImages(autoStepImages());
-  }, [attrGroupItem?.stepSelection?.quantities]);
+  }, [attrGroupItem?.stepSelection?.quantities, specifiedDetail]);
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
       message.error('Product ID is required');
@@ -943,7 +952,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             updatePreSelect={!isSpecifiedModal}
             viewStepsDefault={attrGroupItem.viewSteps}
             quantitiesDefault={
-              !attrGroupItem.isChecked ? {} : attrGroupItem.stepSelection?.quantities
+              !attrGroupItem.isChecked
+                ? {}
+                : isSpecifiedModal
+                ? specifiedQuantity
+                : attrGroupItem.stepSelection?.quantities
             }
           />
         ) : null
