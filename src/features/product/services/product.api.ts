@@ -270,10 +270,15 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
         if (attr.type === SpecificationType.attribute || attr.attributes?.length) {
           newAttributeGroup.push({ ...attr, type: attr.type ?? SpecificationType.attribute });
         } else if (attr.type === SpecificationType.autoStep || newRes.length) {
+          const quantities = specifiedData?.specification.attribute_groups.find(
+            (el) => el.id === attr.id,
+          )?.step_selections?.quantities;
           newAttributeGroup.push({
             ...attr,
             steps: newRes,
-            isChecked: !isEmpty(attr?.stepSelection?.quantities),
+            isChecked: !props?.isSpecified
+              ? !isEmpty(attr?.stepSelection?.quantities)
+              : !isEmpty(quantities),
             type: attr.type ?? SpecificationType.autoStep,
           });
         }

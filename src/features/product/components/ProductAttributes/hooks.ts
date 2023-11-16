@@ -98,6 +98,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
           specState.push({
             id: gr.id,
             configuration_steps: stepGroup,
+            step_selections: gr.stepSelection.quantities,
             /// default each attribute group has attributes property is empty array
             attributes: [],
           });
@@ -120,6 +121,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
         specState.push({
           id: gr.id || '',
           configuration_steps: stepGroup,
+          step_selections: gr.stepSelection.quantities,
           /// default each attribute group has attributes property is empty array
           attributes: [],
         });
