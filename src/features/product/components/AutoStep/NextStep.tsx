@@ -981,8 +981,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }),
       );
     };
-  console.log(optionsSelected);
-
   return (
     <div className={styles.nextStep}>
       <SlideBar
