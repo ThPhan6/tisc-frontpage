@@ -245,6 +245,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const optionIds = firstStep.options.map((opt) => opt.id);
 
     let newOptions: LinkedOptionProps | undefined;
+    console.log('attributes : ', attributes);
+
     ///* mapping from specfication basis to get step 1 data
     attributes?.forEach((attr) => {
       if (newOptions) {
@@ -270,7 +272,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 return {
                   ...item,
-                  replicate: opt?.replicate ?? 1,
+                  replicate: opt?.replicate ?? 0,
                   sub_id: el.basis.id,
                   sub_name: el.basis.name,
                   pre_option: undefined,

@@ -70,6 +70,7 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   useEffect(() => {
     const pickedData: LinkedOptionProps[] = [];
+    console.log('attributes : ', attributes);
 
     attributes?.forEach((el) => {
       if (pickedData?.length) {
@@ -90,7 +91,7 @@ export const AutoStep: FC<AutoStepProps> = ({
               sub_id: sub.id,
               sub_name: sub.name,
               pre_option: item.pre_option ?? undefined,
-              replicate: item?.replicate ?? 1,
+              replicate: 0,
             })),
           });
         }
@@ -160,6 +161,8 @@ export const AutoStep: FC<AutoStepProps> = ({
     const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
       el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps, attributes: [] } : el,
     );
+
+    console.log('newAttributeGroup', newAttributeGroup);
 
     store.dispatch(
       setPartialProductDetail({
