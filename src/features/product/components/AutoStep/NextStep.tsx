@@ -67,6 +67,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
 
+  // mappingOptionGroups(linkedOptionData?.[slide]?.pickedData , optionsSelected[slide+1].options)
+
   const pickedOption = useAppSelector((state) => state.autoStep.pickedOption);
   // const curPickedOption = pickedOption[slide];
   // const curPickedSubData = flatMap(pickedData.map((el) => el.subs));
@@ -371,10 +373,17 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         newPickedData.map((el) => ({
           ...el,
           subs: sortBy(
-            el.subs.map((item: any) => ({
-              ...item,
-              sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
-            })),
+            el.subs.map((item) => {
+              const optMatch = optionsSelected[curOrder].options.find(
+                (opt) => opt.id === item.id && opt.pre_option === item.pre_option,
+              );
+
+              return {
+                ...item,
+                replicate: optMatch ? optMatch.replicate : 0,
+                sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+              };
+            }),
             ['pre_option_name', 'sortField'],
           ).map((item: any) => {
             const { sortField, ...temp } = item;
@@ -449,7 +458,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   const handleSelectPickedOption = (e: CheckboxChangeEvent) => {
     handleForceEnableCollapse();
-
     const curOptionSelected = {
       id: e.target.value,
       pre_option: (e.target as any).pre_option,
@@ -503,37 +511,36 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           index: slide,
           pickedData: pickedData.map((el) => ({
             ...el,
-            subs: el.subs.map((item) => ({
-              ...item,
-              sub_id: el.id,
-              sub_name: el.name,
-              pre_option: slide === 0 ? undefined : item.pre_option,
-            })),
+            subs: el.subs.map((item) => {
+              const optMatched = optionsSelected[slide === 0 ? 1 : curOrder]?.options?.find(
+                (opt) => opt.id === item.id && opt.pre_option === item.pre_option,
+              );
+              return {
+                ...item,
+                sub_id: el.id,
+                sub_name: el.name,
+                pre_option: slide === 0 ? undefined : item.pre_option,
+                replicate: optMatched
+                  ? optMatched.replicate
+                  : res.length > 0 &&
+                    item.id === curOptionSelected.id &&
+                    item.pre_option === curOptionSelected.pre_option
+                  ? 1
+                  : item.replicate,
+              };
+            }),
           })),
           linkedData: res.map((el) => ({
             ...el,
             subs: el.subs.map((item) => ({
               ...item,
               subs: item.subs.map((sub) => {
-                // const preOptionInfo = [
-                //   curPickedOption.pre_option_name,
-                //   trimEnd(
-                //     `${curPickedOption.value_1} ${curPickedOption.value_2} ${
-                //       curPickedOption.unit_1 || curPickedOption.unit_2
-                //         ? `- ${curPickedOption.unit_1} ${curPickedOption.unit_2}`
-                //         : ''
-                //     }`,
-                //   ),
-                // ].filter(Boolean);
-
                 const preOptionName = getPreOptionName(curPickedOption.pre_option_name as string, {
                   value_1: curPickedOption.value_1,
                   value_2: curPickedOption.value_2,
                   unit_1: curPickedOption.unit_1,
                   unit_2: curPickedOption.unit_2,
                 });
-                //  preOptionInfo.length ? preOptionInfo.join(', ') : undefined;
-
                 const preOptionId = [curPickedOption?.pre_option, curPickedOption.id]
                   .filter(Boolean)
                   .join(',');
@@ -544,6 +551,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                   sub_name: item.name,
                   pre_option: preOptionId,
                   pre_option_name: preOptionName,
+                  replicate: 0,
                 };
               }),
             })),
@@ -572,11 +580,13 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
           if (currentSubOptionPicked) {
             optionSelectedOfStepOne = uniqBy(
-              optionSelectedOfStepOne.concat(currentSubOptionPicked),
+              optionSelectedOfStepOne.concat({
+                ...currentSubOptionPicked,
+                replicate: res.length > 0 ? 1 : 0,
+              }),
               'id',
             );
           }
-
           store.dispatch(setOptionsSelected({ order: 1, options: optionSelectedOfStepOne }));
         }
 
@@ -584,6 +594,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           optionsSelected?.[curOrder]?.options ?? [];
 
         const options = flatMap(res.map((el) => flatMap(el.subs.map((sub) => sub.subs))));
+
         const newOptions = options.map((el) => {
           const preOptionName = getPreOptionName(curPickedOption.pre_option_name as string, {
             value_1: curPickedOption.value_1,
@@ -594,6 +605,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
           return {
             ...el,
+            replicate:
+              res.length > 0 &&
+              el.id === curOptionSelected.id &&
+              el.pre_option === curOptionSelected.pre_option
+                ? 1
+                : el.replicate,
             pre_option:
               curOrder === 2
                 ? el.pre_option
@@ -608,11 +625,44 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         );
 
         /// set default all options in right panel will be selected in other steps
+        // if()
         store.dispatch(
           setOptionsSelected({ order: curOrder, options: optionSelectedOfCurrentStep }),
         );
+        if (optionsSelected[curOrder - 1] && curOrder !== 2) {
+          store.dispatch(
+            setOptionsSelected({
+              order: curOrder - 1,
+              options: optionsSelected[curOrder - 1].options.map((el) => ({
+                ...el,
+                linkage: sum(flatMap(res.map((k) => k.subs.map((l) => l.subs.length)))),
+
+                replicate:
+                  curOptionSelected.id === el.id &&
+                  curOptionSelected.pre_option === el.pre_option &&
+                  res.length > 0
+                    ? 1
+                    : el.replicate,
+              })),
+            }),
+          );
+        }
       }
     });
+  };
+
+  const getLinkage = (option: OptionReplicateResponse, options: OptionReplicateResponse[]) => {
+    return (
+      options?.filter((el) => {
+        const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
+
+        if (slide === 0) {
+          return el.pre_option === option.id;
+        }
+
+        return optionId === option.id && preOptionId === option.pre_option;
+      }).length ?? 0
+    );
   };
   //
   const handleSelectLinkedOption =
@@ -622,12 +672,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         ?.target as CheckboxChangeEvent['target'] & {
         pre_option: string;
       };
-
       const { isSelectedAll, options } = event as {
         isSelectedAll: boolean;
         options: CheckBoxOptionProps[];
       };
-
       const curLinkedData = flatMap(
         linkedOptionData[slide].linkedData.map((el) => flatMap(el.subs.map((item) => item.subs))),
       );
@@ -709,6 +757,27 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }),
       );
 
+      store.dispatch(
+        setOptionsSelected({
+          order: curOrder - 1,
+          options: optionsSelected[curOrder - 1].options.map((el) => {
+            if (el.id === curPicked.id && curPicked.pre_option === el.pre_option) {
+              return {
+                ...el,
+                replicate:
+                  getLinkage(el, optionsSelected[curOrder - 1].options) === 0
+                    ? 0
+                    : el.replicate === 0
+                    ? 1
+                    : el.replicate,
+              };
+            }
+
+            return el;
+          }),
+        }),
+      );
+
       /// save all picked options ticked in first step
       if (slide === 0) {
         const subs = flatMap(option.subs.map((el) => el.subs));
@@ -750,32 +819,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
-        const newLinkedOptionData = [...linkedOptionData];
-
-        const newPickedOption = { ...pickedOption };
-
-        linkedOptionData.forEach((_, index) => {
-          if (index <= slide) {
-            return;
-          }
-
-          newLinkedOptionData[index] = {
-            linkedData: [],
-            pickedData: [],
-          };
-
-          newPickedOption[index] = {
-            id: '',
-            pre_option: '',
-          };
-        });
-
-        // remove data view of next step
-        store.dispatch(setLinkedOptionData(newLinkedOptionData));
-
-        // remove option highlighted of next step
-        store.dispatch(setPickedOption(newPickedOption));
-
         let prevOptionsSelectedIds = result.map((el) => {
           if (el.pre_option) {
             return `${el.pre_option},${el.id}`;
@@ -813,6 +856,54 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           return true;
         });
       }
+      const newLinkedOptionData = [...linkedOptionData];
+
+      const newPickedOption = { ...pickedOption };
+
+      linkedOptionData.forEach((_, index) => {
+        if (index < slide) {
+          return;
+        }
+        if (index === slide) {
+          const newPickedData = newLinkedOptionData[index].pickedData.map((data) => {
+            const newSubData = data.subs.map((item) => {
+              if (
+                item.id === curPicked.id &&
+                (item.pre_option === curPicked.pre_option || slide === 0)
+              ) {
+                const linkage = getLinkage(item, newOptionsSelected);
+                return {
+                  ...item,
+                  replicate: linkage === 0 ? 0 : item.replicate > 0 ? item.replicate : 1,
+                };
+              }
+              return item;
+            });
+            return { ...data, subs: newSubData };
+          });
+          newLinkedOptionData[index] = {
+            ...newLinkedOptionData[index],
+            pickedData: newPickedData,
+          };
+          return;
+        }
+
+        newLinkedOptionData[index] = {
+          linkedData: [],
+          pickedData: [],
+        };
+
+        newPickedOption[index] = {
+          id: '',
+          pre_option: '',
+        };
+      });
+
+      // remove data view of next step
+      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+
+      // remove option highlighted of next step
+      store.dispatch(setPickedOption(newPickedOption));
     };
 
   const handleDecreaseReplicate =
@@ -890,7 +981,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }),
       );
     };
-  console.log(pickedData);
+  console.log(optionsSelected);
+
   return (
     <div className={styles.nextStep}>
       <SlideBar
@@ -941,7 +1033,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                           <div className="d-flex align-item-flex-start justify-between option-info">
                             <div
                               className="product-id"
-                              NextStep
                               title={option.product_id}
                               style={{ minWidth: option.pre_option_name ? '45%' : '100%' }}
                             >
@@ -989,6 +1080,11 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                               level={6}
                               style={{ padding: '0 8px', width: 30 }}
                             >
+                              {/* {currentSubPickedOptionSelected?.some(
+                                (el) => el.value === option.id && el.label === option.pre_option,
+                              )
+                                ? option.replicate
+                                : 0} */}
                               {option.replicate}
                             </BodyText>
                             <DropupIcon onClick={handleIncreaseReplicate(option)} />
@@ -1004,15 +1100,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                             style={{ height: 24 }}
                             customClass="flex-center"
                           >
-                            {optionsSelected?.[curOrder]?.options?.filter((el) => {
-                              const { optionId, preOptionId } = getIDFromPreOption(el.pre_option);
-
-                              if (slide === 0) {
-                                return el.pre_option === option.id;
-                              }
-
-                              return optionId === option.id && preOptionId === option.pre_option;
-                            }).length ?? 0}
+                            {getLinkage(option, optionsSelected[curOrder]?.options)}
+                            {/* {option.linkage || 0} */}
                           </BodyText>
                         </div>
                       </div>
