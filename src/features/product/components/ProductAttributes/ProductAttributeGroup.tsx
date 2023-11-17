@@ -727,7 +727,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     return null;
   };
-  console.log('styles.customPopover : ', styles.customPopover);
 
   return (
     <div key={groupIndex} style={{ marginBottom: 8, marginTop: isEditable ? undefined : 8 }}>
