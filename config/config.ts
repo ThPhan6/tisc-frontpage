@@ -52,7 +52,6 @@ export default defineConfig({
     'mono-color-dark': '#808080',
     'mono-color-medium': '#BFBFBF',
     'mono-color-light': '#E6E6E6',
-
     // box-shadow border
     'border-top': 'inset 0 .7px 0 #000',
     'border-bottom': 'inset 0 -.7px 0 #000',

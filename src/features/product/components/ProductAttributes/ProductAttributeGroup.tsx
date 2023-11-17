@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { message } from 'antd';
+import { Popover, message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
@@ -815,8 +815,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                               <div className={`${isPublicPage ? '' : 'flex-between'}`}>
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
-                                    fontFamily="Cormorant-Garamond"
-                                    level={4}
+                                    fontFamily="Roboto"
+                                    level={5}
                                     style={{
                                       minWidth: 'fit-content',
                                       paddingLeft: isSpecifiedModal ? 0 : 16,
@@ -865,7 +865,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           <div
                             key={`${step.id}_${option.id}_${stepIdx}_${optionIdx}`}
                             className={`${styles.autoStepOption} ${
-                              isSpecifiedModal ? styles.autoStepOptionSpec : ''
+                              isSpecifiedModal ? styles.autoStepOptionSpec : 'autoStepOption'
                             }`}
                           >
                             {optionIdx !== 0 || stepIdx === 0 ? null : (
@@ -873,38 +873,44 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 <PlusIcon />
                               </div>
                             )}
-                            <div className="step-info">
-                              {option.image ? (
-                                <img className="step-image" src={showImageUrl(option.image)} />
-                              ) : null}
+                            <Popover
+                              className={`${styles.customPopover}`}
+                              showArrow={false}
+                              content={
+                                <div className="step-text">
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    style={{ whiteSpace: 'nowrap' }}
+                                    color="white"
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order} Step
+                                  </BodyText>
 
-                              <div className="step-text">
-                                <BodyText
-                                  level={7}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                  style={{ whiteSpace: 'nowrap' }}
-                                >
-                                  {step.order < 10 ? `0${step.order}` : step.order} Step
-                                </BodyText>
-
-                                <BodyText
-                                  level={7}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                >
-                                  {trimEnd(
-                                    `${option.value_1} ${option.value_2} ${
-                                      option.unit_1 || option.unit_2
-                                        ? `- ${option.unit_1} ${option.unit_2}`
-                                        : ''
-                                    }`,
-                                  )}
-                                </BodyText>
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {trimEnd(
+                                      `${option.value_1} ${option.value_2} ${
+                                        option.unit_1 || option.unit_2
+                                          ? `- ${option.unit_1} ${option.unit_2}`
+                                          : ''
+                                      }`,
+                                    )}
+                                  </BodyText>
+                                </div>
+                              }
+                            >
+                              <div className="step-info">
+                                {option.image ? (
+                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                ) : null}
                               </div>
-                            </div>
+                            </Popover>
                           </div>
                         );
                       }),
