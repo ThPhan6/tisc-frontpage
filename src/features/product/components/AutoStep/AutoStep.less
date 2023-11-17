@@ -135,9 +135,14 @@
         margin-right: 0 !important;
         font-weight: 300;
       }
+
       :global(.item-option-uncheck:hover) {
-        :global(.product-id-label) {
-          font-weight: bold !important;
+        :global(.checkbox-item-unactive) {
+          :global(.product-id-label),
+          :global(.product-id-value) {
+            color: #000;
+            font-weight: bold !important;
+          }
         }
       }
 
@@ -165,8 +170,7 @@
 
   :global(.checkbox-item-active) {
     :global(.linkage-label),
-    :global(.replicate-label),
-    :global(.product-id-label) {
+    :global(.replicate-label) {
       font-weight: 600 !important ;
     }
     :global(.heading-option-group) {
@@ -209,6 +213,14 @@
       :global(.product-id-label),
       :global(.product-id-value) {
         color: @primary-color-dark;
+      }
+    }
+
+    :global(.item-option-uncheck:hover) {
+      :global(.product-id-label),
+      :global(.product-id-value) {
+        color: #000;
+        font-weight: bold !important;
       }
     }
   }

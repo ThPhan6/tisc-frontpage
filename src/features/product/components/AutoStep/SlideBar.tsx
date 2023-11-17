@@ -66,7 +66,11 @@ export const SlideBar: FC<SlideBarProps> = ({
                 customClass={styles.description}
                 level={5}
                 fontFamily="Roboto"
-                color="primary-color-dark"
+                color={`${
+                  curOrder == index + 1 || curOrder === index + 2
+                    ? 'primary-color-dark'
+                    : 'pure-black'
+                }`}
               >
                 {name || (
                   <BodyText level={5} fontFamily="Roboto" color="mono-color-dark">
