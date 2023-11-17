@@ -246,8 +246,15 @@
     }
   }
 }
-.ant-popover-inner-content {
-  background-color: black !important;
+.customPopover {
+  :global(.ant-popover-inner-content) {
+    background-color: black !important;
+  }
+  :global(.ant-popover-arrow-content) {
+    background-color: black;
+
+    --antd-arrow-background-color: 'black';
+  }
 }
 
 .marginTopSpace {

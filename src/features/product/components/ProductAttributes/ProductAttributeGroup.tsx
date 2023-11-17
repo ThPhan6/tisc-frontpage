@@ -875,7 +875,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                             )}
                             <Popover
                               className={`${styles.customPopover}`}
-                              showArrow={false}
+                              overlayClassName={`${styles.customPopover}`}
                               content={
                                 <div className="step-text">
                                   <BodyText
