@@ -384,7 +384,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                 sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
               };
             }),
-            ['pre_option_name', 'sortField'],
+            ['sortField', 'pre_option_name'],
           ).map((item: any) => {
             const { sortField, ...temp } = item;
             return temp;
@@ -1024,7 +1024,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                             curPicked?.id === option.id &&
                             curPicked?.pre_option === option.pre_option)
                             ? 'checkbox-item-active'
-                            : ''
+                            : 'checkbox-item-unactive'
                         }`}
                       >
                         <AttributeOptionLabel className="w-full" option={option} key={subIdx}>
@@ -1078,11 +1078,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                               level={6}
                               style={{ padding: '0 8px', width: 30 }}
                             >
-                              {/* {currentSubPickedOptionSelected?.some(
-                                (el) => el.value === option.id && el.label === option.pre_option,
-                              )
-                                ? option.replicate
-                                : 0} */}
                               {option.replicate}
                             </BodyText>
                             <DropupIcon onClick={handleIncreaseReplicate(option)} />
@@ -1160,6 +1155,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     isSelectAll
                     combinable
                     canActiveMultiKey
+                    customClass="checkbox-item"
                   />
                 </div>
               );
