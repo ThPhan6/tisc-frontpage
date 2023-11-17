@@ -1155,6 +1155,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     isSelectAll
                     combinable
                     canActiveMultiKey
+                    customClass="checkbox-item"
                   />
                 </div>
               );
