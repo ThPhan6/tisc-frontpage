@@ -623,7 +623,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             option.select_id === leftSelectedOption[slide]?.select_id &&
                             option.has_next_options)
                             ? 'checkbox-item-active'
-                            : ''
+                            : 'checkbox-item-unactive'
                         }`}
                       >
                         <AttributeOptionLabel
