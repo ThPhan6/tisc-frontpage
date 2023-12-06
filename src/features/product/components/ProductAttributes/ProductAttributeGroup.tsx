@@ -345,7 +345,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       /// get first option highlighted
       const { optionId: pickedId, preOptionId } = getIDFromPreOption(
-        nextStep.options[0].pre_option,
+        nextStep.options[0]?.pre_option,
       );
 
       // save highlight left panel
