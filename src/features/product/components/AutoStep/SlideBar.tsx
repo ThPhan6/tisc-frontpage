@@ -56,7 +56,13 @@ export const SlideBar: FC<SlideBarProps> = ({
 
           return (
             <div key={index} className={`flex-start ${otherSlide ? styles.otherSlide : ''}`}>
-              <div className={styles.stepCircle} style={{ background: '#2B39D4', border: 'unset' }}>
+              <div
+                className={styles.stepCircle}
+                style={{
+                  background: curOrder == index + 1 || curOrder === index + 2 ? '#2B39D4' : 'black',
+                  border: 'unset',
+                }}
+              >
                 <BodyText fontFamily="Roboto" level={5} color="white" style={{ fontWeight: 700 }}>
                   {curStep}
                 </BodyText>
@@ -66,7 +72,11 @@ export const SlideBar: FC<SlideBarProps> = ({
                 customClass={styles.description}
                 level={5}
                 fontFamily="Roboto"
-                color="primary-color-dark"
+                color={`${
+                  curOrder == index + 1 || curOrder === index + 2
+                    ? 'primary-color-dark'
+                    : 'pure-black'
+                }`}
               >
                 {name || (
                   <BodyText level={5} fontFamily="Roboto" color="mono-color-dark">

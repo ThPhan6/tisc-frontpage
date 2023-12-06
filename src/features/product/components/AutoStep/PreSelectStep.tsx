@@ -62,17 +62,26 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const [tempRight, setTempRight] = useState<any>([]);
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
-
   const [quantities, setQuantities] = useState<any>(quantitiesDefault || {});
   const totalQuantity = useNumber(0);
   // on the left panel
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
   // on the right panel
   const { slideBars, slide, firstOptionSelected } = useAppSelector((state) => state.autoStep);
-  // useEffect(() => {
-  //   setQuantities(currentSpecification?.stepSelection?.quantities || {});
-  //   setViewSteps(currentSpecification?.viewSteps || []);
-  // }, [currentSpecification]);
+  useEffect(() => {
+    const newViewSteps = viewSteps.map((step: any) => {
+      return {
+        ...step,
+        options: step.options.map((option: any) => {
+          return {
+            ...option,
+            picked: quantities[option.select_id] > 0,
+          };
+        }),
+      };
+    });
+    setViewSteps(newViewSteps);
+  }, [quantitiesDefault]);
 
   const setRightPannel = (id: string, pre_option: string, selectId?: string) => {
     const originRight = viewSteps[slide + 1]?.options;
@@ -108,6 +117,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     const pos = selectId.lastIndexOf('_');
     return selectId.slice(0, pos);
   };
+
+  const toPreOptionId = (selectId: string) => {
+    const parts = selectId.split(',');
+    const ids = parts.reduce((pre: any, cur: string, index: number) => {
+      if (index !== parts.length - 1) {
+        return pre.concat([cur.split('_')[0]]);
+      }
+      return pre;
+    }, []);
+    return ids.join(',');
+  };
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
     const keys = Object.keys(quantities);
     return viewSteps.map((step: any, index: number) => {
@@ -118,15 +138,14 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         newOptions = [...step.options];
         quantityKeysOfThisStep.forEach((key) => {
           const id = key.split(',').at(-1)?.slice(0, -2);
-          const actualOption = oldOptions.find((option) => option.id === id);
+          const actualOption = oldOptions.find(
+            (option) => option.id === id && option.pre_option === toPreOptionId(key),
+          );
           const quantity = quantities[key] as number;
           if (actualOption && quantity) {
             for (let i = 0; i < quantity; i++) {
               const found = step.options.find(
-                (item: any) =>
-                  item.index === i + 1 &&
-                  item.select_id === key &&
-                  item.pre_option === actualOption.pre_option,
+                (item: any) => item.index === i + 1 && item.select_id === key,
               );
               if (!found) {
                 const clown = {
@@ -464,7 +483,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
     const newSpecfication: SpecificationBodyRequest = {
       is_refer_document: false,
-      attribute_groups: newAttributeGroups,
+      attribute_groups: newAttributeGroups.map((el) => {
+        if (el.id !== currentSpecAttributeGroupId) {
+          return el;
+        }
+        return {
+          ...el,
+          viewSteps,
+          isChecked: true,
+          step_selections: { quantities: newQuantities },
+        };
+      }),
     };
 
     if (!updatePreSelect) {
@@ -482,7 +511,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }
     /// update pre-select steps
     const isUpdateSuccess = await selectProductSpecification(productId, {
-      specification: newSpecfication,
+      specification: {
+        is_refer_document: false,
+        attribute_groups: newAttributeGroups,
+      },
     });
 
     /// close modal
@@ -591,7 +623,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             option.select_id === leftSelectedOption[slide]?.select_id &&
                             option.has_next_options)
                             ? 'checkbox-item-active'
-                            : ''
+                            : 'checkbox-item-unactive'
                         }`}
                       >
                         <AttributeOptionLabel
@@ -611,7 +643,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             </div>
                             {option.pre_option_name ? (
                               <div className="pre-option" title={option.pre_option_name}>
-                                <span className="product-id-label">Selection:</span>
+                                <span className="product-id-label">Pre. Selection:</span>
                                 <span className="product-id-value">{option.pre_option_name}</span>
                               </div>
                             ) : null}
@@ -703,7 +735,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             </div>
                             {sub.pre_option_name ? (
                               <div className="pre-option" title={sub.pre_option_name}>
-                                <span className="product-id-label">Selection:</span>
+                                <span className="product-id-label">Pre. Selection:</span>
                                 <span className="product-id-value">{sub.pre_option_name}</span>
                               </div>
                             ) : null}

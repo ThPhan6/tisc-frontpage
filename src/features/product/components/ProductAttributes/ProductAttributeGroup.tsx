@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { message } from 'antd';
+import { Popover, message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
@@ -121,9 +121,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
-  const { curAttrGroupCollapseId } = useAppSelector((state) => state.product);
-
-  // const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+  const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
+  const { specifiedDetail } = details;
+  const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+  const specifiedQuantity = isSpecifiedModal
+    ? specifiedDetail?.specification.attribute_groups.find(
+        (item) => item.id === currentSpecAttributeGroupId,
+      )?.step_selections.quantities || {}
+    : {};
 
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
@@ -179,8 +184,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       setImages([]);
       return;
     }
+
+    const quantities = isSpecifiedModal
+      ? specifiedQuantity
+      : attrGroupItem.stepSelection?.quantities;
     const autoStepImages = () => {
-      const quantityKeys = Object.keys(attrGroupItem.stepSelection?.quantities || {});
+      const quantityKeys = Object.keys(quantities || {});
       return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
         const quantityKeysForThisStep = quantityKeys.filter(
           (key) => key.split(',').length === bigIndex + 1,
@@ -195,7 +204,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             (item: any) => item.select_id === remodifyKey,
           ) as OptionQuantityProps;
           if (option) {
-            for (let index = 0; index < attrGroupItem.stepSelection?.quantities[key]; index++) {
+            for (let index = 0; index < quantities[key]; index++) {
               options.push(option);
             }
           }
@@ -208,7 +217,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       });
     };
     setImages(autoStepImages());
-  }, [attrGroupItem?.stepSelection?.quantities]);
+  }, [attrGroupItem?.stepSelection?.quantities, specifiedDetail]);
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
       message.error('Product ID is required');
@@ -236,6 +245,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const optionIds = firstStep.options.map((opt) => opt.id);
 
     let newOptions: LinkedOptionProps | undefined;
+    console.log('attributes : ', attributes);
+
     ///* mapping from specfication basis to get step 1 data
     attributes?.forEach((attr) => {
       if (newOptions) {
@@ -261,7 +272,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 return {
                   ...item,
-                  replicate: opt?.replicate ?? 1,
+                  replicate: opt?.replicate ?? 0,
                   sub_id: el.basis.id,
                   sub_name: el.basis.name,
                   pre_option: undefined,
@@ -334,7 +345,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       /// get first option highlighted
       const { optionId: pickedId, preOptionId } = getIDFromPreOption(
-        nextStep.options[0].pre_option,
+        nextStep.options[0]?.pre_option,
       );
 
       // save highlight left panel
@@ -428,21 +439,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       optionsSelected[el.order] = {
         id: el.id,
         order: el.order,
-        options: el.options
-          .filter((optionItem) => optionItem.quantity > 0)
-          .map((optionItem) => {
-            if (!newSteps[index + 1]) {
-              return { ...optionItem, disabled: false };
-            }
-
-            const impaired = newSteps[index + 1].options.some((option) => {
-              const { optionId, preOptionId } = getIDFromPreOption(option.pre_option);
-
-              return optionItem.id === optionId && optionItem.pre_option === preOptionId;
-            });
-
-            return { ...optionItem, disabled: !impaired };
-          }),
+        options: el.options.filter((optionItem) => optionItem.quantity > 0),
       };
       /* ------------------ */
 
@@ -818,8 +815,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                               <div className={`${isPublicPage ? '' : 'flex-between'}`}>
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
-                                    fontFamily="Cormorant-Garamond"
-                                    level={4}
+                                    fontFamily="Roboto"
+                                    level={5}
                                     style={{
                                       minWidth: 'fit-content',
                                       paddingLeft: isSpecifiedModal ? 0 : 16,
@@ -868,7 +865,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           <div
                             key={`${step.id}_${option.id}_${stepIdx}_${optionIdx}`}
                             className={`${styles.autoStepOption} ${
-                              isSpecifiedModal ? styles.autoStepOptionSpec : ''
+                              isSpecifiedModal ? styles.autoStepOptionSpec : 'autoStepOption'
                             }`}
                           >
                             {optionIdx !== 0 || stepIdx === 0 ? null : (
@@ -876,38 +873,44 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 <PlusIcon />
                               </div>
                             )}
-                            <div className="step-info">
-                              {option.image ? (
-                                <img className="step-image" src={showImageUrl(option.image)} />
-                              ) : null}
+                            <Popover
+                              className={`${styles.customPopover}`}
+                              overlayClassName={`${styles.customPopover}`}
+                              content={
+                                <div className="step-text">
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    style={{ whiteSpace: 'nowrap' }}
+                                    color="white"
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order} Step
+                                  </BodyText>
 
-                              <div className="step-text">
-                                <BodyText
-                                  level={7}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                  style={{ whiteSpace: 'nowrap' }}
-                                >
-                                  {step.order < 10 ? `0${step.order}` : step.order} Step
-                                </BodyText>
-
-                                <BodyText
-                                  level={7}
-                                  customClass="description"
-                                  fontFamily="Roboto"
-                                  color="white"
-                                >
-                                  {trimEnd(
-                                    `${option.value_1} ${option.value_2} ${
-                                      option.unit_1 || option.unit_2
-                                        ? `- ${option.unit_1} ${option.unit_2}`
-                                        : ''
-                                    }`,
-                                  )}
-                                </BodyText>
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {trimEnd(
+                                      `${option.value_1} ${option.value_2} ${
+                                        option.unit_1 || option.unit_2
+                                          ? `- ${option.unit_1} ${option.unit_2}`
+                                          : ''
+                                      }`,
+                                    )}
+                                  </BodyText>
+                                </div>
+                              }
+                            >
+                              <div className="step-info">
+                                {option.image ? (
+                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                ) : null}
                               </div>
-                            </div>
+                            </Popover>
                           </div>
                         );
                       }),
@@ -957,7 +960,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             updatePreSelect={!isSpecifiedModal}
             viewStepsDefault={attrGroupItem.viewSteps}
             quantitiesDefault={
-              !attrGroupItem.isChecked ? {} : attrGroupItem.stepSelection?.quantities
+              !attrGroupItem.isChecked
+                ? {}
+                : isSpecifiedModal
+                ? specifiedQuantity
+                : attrGroupItem.stepSelection?.quantities
             }
           />
         ) : null

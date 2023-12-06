@@ -202,7 +202,7 @@ const ProductDetailContainer: React.FC = () => {
             const options = newStep.options.map((s) => ({
               id: s.id,
               pre_option: s.pre_option,
-              replicate: s?.replicate ?? 1,
+              replicate: s?.replicate ?? 0,
               picked: !!s.picked,
             }));
 
@@ -236,6 +236,8 @@ const ProductDetailContainer: React.FC = () => {
       downloads: details.downloads,
       catelogue_downloads: details.catelogue_downloads,
     };
+
+    console.log('data', data.specification_attribute_groups);
 
     if (productId) {
       updateProductCard(productId, data);

@@ -64,7 +64,7 @@ export const getLinkedOptionByOptionIds = (optionId: string, exceptOptionIds?: s
             sub_id: item.id,
             sub_name: item.name,
             pre_option: optionId,
-            replicate: sub?.replicate ?? 1,
+            replicate: sub?.replicate ?? 0,
           })),
         })),
       })) as AutoStepLinkedOptionResponse[];

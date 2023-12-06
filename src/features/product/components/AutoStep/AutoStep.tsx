@@ -54,8 +54,11 @@ export const AutoStep: FC<AutoStepProps> = ({
   const step = useAppSelector((state) => state.autoStep.step);
 
   const subOptionSelected = useAppSelector((state) => state.autoStep.subOptionSelected);
-
+  const brandName = (useAppSelector((state) => state.product.brand?.name) || '').toLowerCase();
+  const foundGroup = attributes.find((item) => item.name.toLowerCase().includes(brandName));
+  const defaultSelected = foundGroup?.subs[0];
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+
   const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
 
   const handleResetAutoStep = () => {
@@ -70,6 +73,7 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   useEffect(() => {
     const pickedData: LinkedOptionProps[] = [];
+    console.log('attributes : ', attributes);
 
     attributes?.forEach((el) => {
       if (pickedData?.length) {
@@ -90,7 +94,7 @@ export const AutoStep: FC<AutoStepProps> = ({
               sub_id: sub.id,
               sub_name: sub.name,
               pre_option: item.pre_option ?? undefined,
-              replicate: item?.replicate ?? 1,
+              replicate: 0,
             })),
           });
         }
@@ -160,6 +164,8 @@ export const AutoStep: FC<AutoStepProps> = ({
     const newAttributeGroup: ProductAttributeFormInput[] = attributeGroup?.map((el) =>
       el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps, attributes: [] } : el,
     );
+
+    console.log('newAttributeGroup', newAttributeGroup);
 
     store.dispatch(
       setPartialProductDetail({
@@ -244,9 +250,9 @@ export const AutoStep: FC<AutoStepProps> = ({
         <FirstStep
           data={attributes}
           selected={
-            currentActiveSpecAttributeGroupId
+            currentActiveSpecAttributeGroupId && !currentActiveSpecAttributeGroupId.includes('new')
               ? subOptionSelected?.[currentActiveSpecAttributeGroupId]
-              : ''
+              : defaultSelected?.id || ''
           }
         />
       ) : (

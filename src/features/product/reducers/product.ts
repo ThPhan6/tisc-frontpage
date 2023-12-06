@@ -1,4 +1,5 @@
 import { getSpecificationWithSelectedValue } from '../components/ProductAttributes/hooks';
+import { isEmpty } from 'lodash';
 
 import type {
   ProductItem,
@@ -230,8 +231,14 @@ export const {
 
 export const productReducer = productSlice.reducer;
 
-const productSpecificationSelector = (state: RootState) =>
-  state.product.details.specification_attribute_groups;
+const productSpecificationSelector = (state: RootState) => {
+  return state.product.details.specifiedDetail && !isEmpty(state.product.details.specifiedDetail.id)
+    ? state.product.details.specifiedDetail.specification.attribute_groups.map((item: any) => ({
+        ...item,
+        stepSelection: item.step_selections,
+      }))
+    : state.product.details.specification_attribute_groups;
+};
 
 const combineQuantityForStepSelection = (data: any) => {
   const selectIds = Object.keys(data);
@@ -260,9 +267,9 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
   let variants = '';
 
   specGroup.forEach((el) => {
-    if (!el.isChecked) {
-      return;
-    }
+    // if (!el.isChecked) {
+    //   return;
+    // }
 
     el?.attributes?.forEach((attr) => {
       attr.basis_options?.forEach((opt) => {
