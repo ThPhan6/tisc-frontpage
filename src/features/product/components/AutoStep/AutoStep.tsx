@@ -70,7 +70,7 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   useEffect(() => {
     const pickedData: LinkedOptionProps[] = [];
-    console.log('attributes : ', attributes);
+    // console.log('attributes : ', attributes);
 
     attributes?.forEach((el) => {
       if (pickedData?.length) {
