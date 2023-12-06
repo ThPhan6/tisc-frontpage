@@ -397,7 +397,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           ? linkedOptionData[newSlide]?.linkedData ?? []
           : newLinkedData ?? [],
     };
-
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
   };
 
@@ -659,7 +658,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         if (slide === 0) {
           return el.pre_option === option.id;
         }
-
         return optionId === option.id && preOptionId === option.pre_option;
       }).length ?? 0
     );
@@ -761,15 +759,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         setOptionsSelected({
           order: curOrder - 1,
           options: optionsSelected[curOrder - 1].options.map((el) => {
+            const linkageNumber = getLinkage(el, optionsSelected[curOrder].options);
+            const replicate = linkageNumber === 0 ? 0 : el.replicate === 0 ? 1 : el.replicate;
             if (el.id === curPicked.id && curPicked.pre_option === el.pre_option) {
               return {
                 ...el,
-                replicate:
-                  getLinkage(el, optionsSelected[curOrder - 1].options) === 0
-                    ? 0
-                    : el.replicate === 0
-                    ? 1
-                    : el.replicate,
+                replicate,
               };
             }
 
