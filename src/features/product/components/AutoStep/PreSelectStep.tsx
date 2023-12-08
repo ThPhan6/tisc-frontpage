@@ -128,6 +128,16 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }, []);
     return ids.join(',');
   };
+  const toIdChain = (selectId: string) => {
+    const parts = selectId.split(',');
+    const ids = parts.reduce((pre: string[], cur: string, index: number) => {
+      if (index !== parts.length - 1) {
+        return pre.concat([cur.split('_')[0]]);
+      }
+      return pre;
+    }, []);
+    return ids;
+  };
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
     const keys = Object.keys(quantities);
     return viewSteps.map((step: any, index: number) => {
@@ -188,13 +198,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }, 200);
   };
   const getFirstLeftOption = () => {
-    if (slide === 0)
+    if (slide === 0) {
+      if (viewSteps[0].options.length === 1) {
+        return viewSteps[0].options[0];
+      }
       return (
         viewSteps[slide]?.options.find(
           (option: any) =>
             option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
         ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0]
       );
+    }
     let firstLeftOption = viewSteps[slide]?.options.find(
       (option: any) =>
         option.select_id === leftSelectedOption[slide]?.select_id &&
@@ -525,8 +539,54 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }
   };
 
+  const handleChangeViewStepByQuantities = () => {
+    const newViewSteps = viewSteps.map((step: any) => {
+      return {
+        ...step,
+        options: step.options.map((option: any) => {
+          return {
+            ...option,
+            quantity: quantities[option.select_id],
+          };
+        }),
+      };
+    });
+    setViewSteps(newViewSteps);
+  };
+  const handleDeselectSub = (options: any[]) => (e: React.MouseEvent<SVGSVGElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const ids = options.map((option) => option.select_id);
+    const quantityKeys = Object.keys(quantities);
+    const deselected = ids.reduce((pre: any, cur: string) => {
+      if (quantities[cur] > 0) {
+        const relatedQuantityKeys = quantityKeys
+          .filter((quantityKey) => {
+            const chain = toIdChain(cur);
+            return chain.every((id) => quantityKey.includes(id));
+          })
+          .reduce((preRelated: any, curQuantityKey: string) => {
+            return {
+              ...preRelated,
+              [curQuantityKey]: 0,
+            };
+          }, {});
+        return {
+          ...pre,
+          ...relatedQuantityKeys,
+        };
+      }
+      return pre;
+    }, {});
+    const newQuantities = {
+      ...quantities,
+      ...deselected,
+    };
+    setQuantities(newQuantities);
+    handleChangeViewStepByQuantities();
+  };
   //-------------------------------------------------------------------------//
-
+  console.log(quantities);
   const tempLeft = viewSteps[slide]?.options;
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);
@@ -711,11 +771,37 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                   label: option.name,
                   id: option.id,
                   value: option.id,
-
+                  rightHeader: (
+                    <div className="flex-start">
+                      <BodyText
+                        level={3}
+                        fontFamily="Cormorant-Garamond"
+                        style={{ textTransform: 'capitalize' }}
+                      >
+                        count:{' '}
+                      </BodyText>
+                      <BodyText level={5} fontFamily="Roboto" style={{ margin: '0 16px 0 8px' }}>
+                        {option.subs.reduce((pre: any, cur: any) => {
+                          return pre + cur.quantity;
+                        }, 0)}
+                      </BodyText>
+                      <button onClick={handleDeselectSub(option.subs)}>
+                        {' '}
+                        <BodyText
+                          level={3}
+                          fontFamily="Cormorant-Garamond"
+                          style={{ textTransform: 'capitalize' }}
+                        >
+                          deselect
+                        </BodyText>
+                      </button>
+                    </div>
+                  ),
                   options: option.subs?.map((sub: any, subIdx: number) => ({
                     value: sub.id,
                     pre_option: sub.pre_option,
                     productId: sub.product_id,
+                    quantity: sub.quantity || 0,
                     label: (
                       <div className={`flex-between w-full`}>
                         <AttributeOptionLabel
