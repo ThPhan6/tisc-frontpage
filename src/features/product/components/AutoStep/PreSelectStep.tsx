@@ -49,6 +49,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   viewStepsDefault,
   quantitiesDefault,
 }) => {
+  const defaultSelectedProductIds = 'AL2404TSAD';
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
@@ -63,6 +64,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
   const [quantities, setQuantities] = useState<any>(quantitiesDefault || {});
+  const [appliedDefault, setAppliedDefault] = useState<any>({});
   const totalQuantity = useNumber(0);
   // on the left panel
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
@@ -101,7 +103,19 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     let totalQuantityTemp = 0;
 
     const rightPanelData = uniqBy(addedRealSelectId, 'id').map((item: any) => {
-      const quantity = quantities[item.select_id] || 0;
+      let quantity = quantities[item.select_id] || 0;
+      if (
+        selectId &&
+        defaultSelectedProductIds.split(',').includes(item.product_id) &&
+        !appliedDefault[selectId]
+      ) {
+        setAppliedDefault({ ...appliedDefault, [selectId]: true });
+        quantity = 1;
+        setQuantities({
+          ...quantities,
+          [item.select_id]: 1,
+        });
+      }
       totalQuantityTemp += quantity;
       return {
         ...item,
@@ -130,11 +144,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   };
   const toIdChain = (selectId: string) => {
     const parts = selectId.split(',');
-    const ids = parts.reduce((pre: string[], cur: string, index: number) => {
-      if (index !== parts.length - 1) {
-        return pre.concat([cur.split('_')[0]]);
-      }
-      return pre;
+    const ids = parts.reduce((pre: string[], cur: string) => {
+      return pre.concat([cur.split('_')[0]]);
     }, []);
     return ids;
   };
@@ -204,8 +215,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       }
       return (
         viewSteps[slide]?.options.find(
-          (option: any) =>
-            option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
+          (option: any) => option.select_id === leftSelectedOption[slide]?.select_id,
         ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0]
       );
     }
@@ -586,7 +596,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     handleChangeViewStepByQuantities();
   };
   //-------------------------------------------------------------------------//
-  console.log(quantities);
   const tempLeft = viewSteps[slide]?.options;
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);
