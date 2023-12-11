@@ -816,7 +816,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
                                     fontFamily="Roboto"
-                                    level={5}
+                                    level={7}
                                     style={{
                                       minWidth: 'fit-content',
                                       paddingLeft: isSpecifiedModal ? 0 : 16,

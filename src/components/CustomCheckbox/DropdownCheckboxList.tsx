@@ -232,10 +232,10 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
             </Radio>
           </div>
         ) : null}
+        {item.rightHeader}
       </div>
     );
   };
-
   return (
     <Collapse
       bordered={false}
