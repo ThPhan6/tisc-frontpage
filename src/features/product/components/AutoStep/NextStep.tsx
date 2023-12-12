@@ -4,7 +4,9 @@ import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as ArrowDown } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import { ReactComponent as ArrowUp } from '@/assets/icons/drop-up-icon.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
 import { sortObjectArray, uniqueArrayBy } from '@/helper/utils';
@@ -39,6 +41,7 @@ import {
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store, { useAppSelector } from '@/reducers';
 
+import CustomCollapse from '@/components/Collapse';
 import { CheckBoxOptionProps, CheckboxDynamic } from '@/components/CustomCheckbox/CheckboxDynamic';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { EmptyOne } from '@/components/Empty';
@@ -66,7 +69,26 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
-
+  const setDefaultActiveCollapse = () => {
+    const curPickedData = linkedOptionData[slide]?.pickedData;
+    if (!curPickedData) return [];
+    if (curPickedData.length === 1) {
+      return [curPickedData[0].id];
+    }
+    return curPickedData
+      .filter((item) => {
+        let check = false;
+        item.subs.forEach((option) => {
+          if (option.replicate !== 0) check = true;
+        });
+        return check;
+      })
+      .map((item) => item.id);
+  };
+  const [curActiveKey, setCurActiveKey] = useState<string[]>(setDefaultActiveCollapse());
+  useEffect(() => {
+    setCurActiveKey(setDefaultActiveCollapse());
+  }, [slide]);
   // mappingOptionGroups(linkedOptionData?.[slide]?.pickedData , optionsSelected[slide+1].options)
 
   const pickedOption = useAppSelector((state) => state.autoStep.pickedOption);
@@ -249,7 +271,6 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         store.dispatch(setLinkedOptionData(newLinkedOptionData));
       }
     }
-
     return newLinkedOptionData;
   };
 
@@ -976,6 +997,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         }),
       );
     };
+
+  const onChangeCurActiveKey = (activeKey: string) => {
+    if (curActiveKey.includes(activeKey)) {
+      setCurActiveKey(curActiveKey.filter((item) => item !== activeKey));
+    } else setCurActiveKey(curActiveKey.concat([activeKey]));
+  };
   return (
     <div className={styles.nextStep}>
       <SlideBar
@@ -989,114 +1016,149 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         <div className={styles.content} style={{ marginRight: 8 }}>
           {pickedData.map((pickedSub, optIdx) => {
             return (
-              <CheckboxDynamic
-                key={optIdx}
-                isCheckbox
-                // chosenItems={currentSubPickedOptionSelected}
-                onOneChange={handleSelectPickedOption}
-                data={{
-                  customItemClass: 'checkbox-item',
-                  optionRadioValue: pickedSub.id,
-                  optionRadioLabel: (
+              <>
+                <CustomCollapse
+                  activeKey={curActiveKey.includes(pickedSub.id) ? '1' : ''}
+                  onChange={() => onChangeCurActiveKey(pickedSub.id)}
+                  header={
                     <div className="flex-between">
                       <BodyText
                         level={5}
                         fontFamily="Roboto"
-                        style={{ fontWeight: 500, textTransform: 'capitalize', color: '#000' }}
+                        style={{
+                          fontWeight: curActiveKey.includes(pickedSub.id) ? 500 : 200,
+                          textTransform: 'capitalize',
+                          color: '#000',
+                        }}
                       >
                         {pickedSub.name}
                       </BodyText>
+                      {curActiveKey.includes(pickedSub.id) ? (
+                        <ArrowUp style={{ marginLeft: 12 }} />
+                      ) : (
+                        <ArrowDown style={{ marginLeft: 12 }} />
+                      )}
                     </div>
-                  ),
-                  options: pickedSub.subs.map((option, subIdx) => ({
-                    pre_option: option.pre_option,
-                    value: option.id,
-                    label: (
-                      <div
-                        className={`flex-between w-full ${
-                          (slide === 0 && pickedOption[slide]?.id === option.id) ||
-                          (slide !== 0 &&
-                            curPicked?.id === option.id &&
-                            curPicked?.pre_option === option.pre_option)
-                            ? 'checkbox-item-active'
-                            : 'checkbox-item-unactive'
-                        }`}
-                      >
-                        <AttributeOptionLabel className="w-full" option={option} key={subIdx}>
-                          <div className="d-flex align-item-flex-start justify-between option-info">
+                  }
+                  noPadding
+                  noBorder
+                  arrowHidden
+                  style={{ marginBottom: 8 }}
+                >
+                  {
+                    <CheckboxDynamic
+                      key={optIdx}
+                      isCheckbox
+                      // chosenItems={currentSubPickedOptionSelected}
+                      onOneChange={handleSelectPickedOption}
+                      data={{
+                        customItemClass: 'checkbox-item',
+                        optionRadioValue: pickedSub.id,
+                        options: pickedSub.subs.map((option, subIdx) => ({
+                          pre_option: option.pre_option,
+                          value: option.id,
+                          label: (
                             <div
-                              className="product-id"
-                              title={option.product_id}
-                              style={{ minWidth: option.pre_option_name ? '45%' : '100%' }}
+                              className={`flex-between w-full ${
+                                (slide === 0 && pickedOption[slide]?.id === option.id) ||
+                                (slide !== 0 &&
+                                  curPicked?.id === option.id &&
+                                  curPicked?.pre_option === option.pre_option)
+                                  ? 'checkbox-item-active'
+                                  : 'checkbox-item-unactive'
+                              }`}
                             >
-                              <span className="product-id-label">Product ID:</span>
-                              <span className="product-id-value">{option.product_id}</span>
-                            </div>
-                            {option.pre_option_name ? (
-                              <div className="pre-option" title={option.pre_option_name}>
-                                <span className="product-id-label">Pre Option:</span>
-                                <span className="product-id-value">{option.pre_option_name}</span>
+                              <AttributeOptionLabel className="w-full" option={option} key={subIdx}>
+                                <div className="d-flex align-item-flex-start justify-between option-info">
+                                  <div
+                                    className="product-id"
+                                    title={option.product_id}
+                                    style={{ minWidth: option.pre_option_name ? '45%' : '100%' }}
+                                  >
+                                    <span className="product-id-label">Product ID:</span>
+                                    <span className="product-id-value">{option.product_id}</span>
+                                  </div>
+                                  {option.pre_option_name ? (
+                                    <div className="pre-option" title={option.pre_option_name}>
+                                      <span className="product-id-label">Pre Option:</span>
+                                      <span className="product-id-value">
+                                        {option.pre_option_name}
+                                      </span>
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </AttributeOptionLabel>
+                              <div
+                                className="replicate"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                }}
+                              >
+                                <BodyText
+                                  customClass="replicate-label"
+                                  level={4}
+                                  style={{ height: 24 }}
+                                >
+                                  Replicate
+                                </BodyText>
+                                <div
+                                  className={`flex-start ${
+                                    currentSubPickedOptionSelected?.some(
+                                      (el) =>
+                                        el.value === option.id && el.label === option.pre_option,
+                                    )
+                                      ? ''
+                                      : 'replicate-disabled'
+                                  }`}
+                                  style={{ height: 24 }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                  }}
+                                >
+                                  <DropdownIcon
+                                    style={{
+                                      cursor: option.replicate === 1 ? 'default' : 'pointer',
+                                    }}
+                                    onClick={handleDecreaseReplicate(option)}
+                                  />
+                                  <BodyText
+                                    fontFamily="Roboto"
+                                    level={6}
+                                    style={{ padding: '0 8px', width: 30 }}
+                                  >
+                                    {option.replicate}
+                                  </BodyText>
+                                  <DropupIcon onClick={handleIncreaseReplicate(option)} />
+                                </div>
                               </div>
-                            ) : null}
-                          </div>
-                        </AttributeOptionLabel>
-                        <div
-                          className="replicate"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                          }}
-                        >
-                          <BodyText customClass="replicate-label" level={4} style={{ height: 24 }}>
-                            Replicate
-                          </BodyText>
-                          <div
-                            className={`flex-start ${
-                              currentSubPickedOptionSelected?.some(
-                                (el) => el.value === option.id && el.label === option.pre_option,
-                              )
-                                ? ''
-                                : 'replicate-disabled'
-                            }`}
-                            style={{ height: 24 }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                            }}
-                          >
-                            <DropdownIcon
-                              style={{ cursor: option.replicate === 1 ? 'default' : 'pointer' }}
-                              onClick={handleDecreaseReplicate(option)}
-                            />
-                            <BodyText
-                              fontFamily="Roboto"
-                              level={6}
-                              style={{ padding: '0 8px', width: 30 }}
-                            >
-                              {option.replicate}
-                            </BodyText>
-                            <DropupIcon onClick={handleIncreaseReplicate(option)} />
-                          </div>
-                        </div>
-                        <div className="linkage">
-                          <BodyText customClass="linkage-label" level={4} style={{ height: 24 }}>
-                            Linkage
-                          </BodyText>
-                          <BodyText
-                            fontFamily="Roboto"
-                            level={6}
-                            style={{ height: 24 }}
-                            customClass="flex-center"
-                          >
-                            {getLinkage(option, optionsSelected[curOrder]?.options)}
-                            {/* {option.linkage || 0} */}
-                          </BodyText>
-                        </div>
-                      </div>
-                    ),
-                  })),
-                }}
-              />
+                              <div className="linkage">
+                                <BodyText
+                                  customClass="linkage-label"
+                                  level={4}
+                                  style={{ height: 24 }}
+                                >
+                                  Linkage
+                                </BodyText>
+                                <BodyText
+                                  fontFamily="Roboto"
+                                  level={6}
+                                  style={{ height: 24 }}
+                                  customClass="flex-center"
+                                >
+                                  {getLinkage(option, optionsSelected[curOrder]?.options)}
+                                  {/* {option.linkage || 0} */}
+                                </BodyText>
+                              </div>
+                            </div>
+                          ),
+                        })),
+                      }}
+                    />
+                  }
+                </CustomCollapse>
+              </>
             );
           })}
         </div>

@@ -146,31 +146,33 @@ export const CheckboxDynamic: React.FC<CheckboxListProps> = ({
         ) : (
           data.heading
         )}
-        <div className={`${styles.checkedAllRadio} selected-all-option-radio`}>
-          <BodyText level={5} fontFamily="Roboto">
-            {data.optionRadioLabel}
-          </BodyText>
+        {data.optionRadioLabel ? (
+          <div className={`${styles.checkedAllRadio} selected-all-option-radio`}>
+            <BodyText level={5} fontFamily="Roboto">
+              {data.optionRadioLabel}
+            </BodyText>
 
-          {data.isSelectAll ? (
-            <Radio
-              checked={
-                selectAll?.includes(data.optionRadioValue as string) ||
-                (selected?.length === data.options.length &&
-                  selectAll?.includes(data.optionRadioValue as string))
-              }
-              disabled={data.disabledSelectAll ?? chosenItems?.length !== data.options.length}
-              onClick={handleClickSelectAll}
-              style={{ display: 'flex', flexDirection: 'row-reverse', marginRight: 0 }}
-            >
-              <MainTitle
-                level={4}
-                style={{ fontWeight: 600, textTransform: 'capitalize', color: '#000' }}
+            {data.isSelectAll ? (
+              <Radio
+                checked={
+                  selectAll?.includes(data.optionRadioValue as string) ||
+                  (selected?.length === data.options.length &&
+                    selectAll?.includes(data.optionRadioValue as string))
+                }
+                disabled={data.disabledSelectAll ?? chosenItems?.length !== data.options.length}
+                onClick={handleClickSelectAll}
+                style={{ display: 'flex', flexDirection: 'row-reverse', marginRight: 0 }}
               >
-                Select all
-              </MainTitle>
-            </Radio>
-          ) : null}
-        </div>
+                <MainTitle
+                  level={4}
+                  style={{ fontWeight: 600, textTransform: 'capitalize', color: '#000' }}
+                >
+                  Select all
+                </MainTitle>
+              </Radio>
+            ) : null}
+          </div>
+        ) : null}
 
         {isCheckbox ? (
           <div className="checkbox-list-options">
