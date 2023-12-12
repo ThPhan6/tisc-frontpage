@@ -222,6 +222,7 @@ export interface ProductGetListParameter {
 export interface GroupProductList {
   count: number;
   id: string; // collection_id
+  type: number;
   name: string;
   products: ProductItem[];
   description?: string;
