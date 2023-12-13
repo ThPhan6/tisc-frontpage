@@ -267,9 +267,9 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
   let variants = '';
 
   specGroup.forEach((el) => {
-    // if (!el.isChecked) {
-    //   return;
-    // }
+    if (!el.isChecked) {
+      return;
+    }
 
     el?.attributes?.forEach((attr) => {
       attr.basis_options?.forEach((opt) => {
