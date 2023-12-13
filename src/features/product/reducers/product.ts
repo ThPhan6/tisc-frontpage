@@ -1,4 +1,5 @@
 import { getSpecificationWithSelectedValue } from '../components/ProductAttributes/hooks';
+import { sortObjectArray } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
 import type {
@@ -240,7 +241,7 @@ const productSpecificationSelector = (state: RootState) => {
     : state.product.details.specification_attribute_groups;
 };
 
-const combineQuantityForStepSelection = (data: any) => {
+export const combineQuantityForStepSelection = (data: any) => {
   const selectIds = Object.keys(data);
   const combinedOptionQuantity = selectIds.reduce((pre: any, selectId: string) => {
     const parts = selectId.split(',');
@@ -265,14 +266,12 @@ const combineQuantityForStepSelection = (data: any) => {
 };
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
   let variants = '';
-
   specGroup.forEach((el) => {
     if (!el.isChecked) {
       return;
     }
-
-    el?.attributes?.forEach((attr) => {
-      attr.basis_options?.forEach((opt) => {
+    el?.attributes?.forEach((attr: any) => {
+      attr.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
           const dash = opt.option_code === '' ? '' : ' - ';
           variants += opt.option_code + dash;
@@ -284,20 +283,29 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
 
     const viewStepAllOptions = el.viewSteps?.reduce((pre: any, cur: any) => {
       return pre.concat(
-        cur.options.map((item: any) => ({ id: item.id, product_id: item.product_id })),
+        cur.options.map((item: any, index: number) => ({
+          id: item.id,
+          product_id: item.product_id,
+          order_key: `${cur.order}_${index}`,
+        })),
       );
     }, []);
-
-    const combinedQuantities = combineQuantityForStepSelection(
-      el?.stepSelection?.quantities || [],
-    ).map((item: any) => {
-      const found = viewStepAllOptions.find((viewStepOption: any) => viewStepOption.id === item.id);
+    // For remove the items that not pair in the linkage data anymore
+    const specificationAllOptions: string[] = el.viewSteps?.reduce((pre: any, cur: any) => {
+      return pre.concat(cur.options.map((item: any) => item.id));
+    }, []);
+    const combinedQuantities = el?.stepSelection?.combined_quantities.map((item: any) => {
+      const found = viewStepAllOptions.find(
+        (viewStepOption: any) =>
+          viewStepOption.id === item.id && specificationAllOptions.includes(item.id),
+      );
       return {
         ...item,
         product_id: found?.product_id,
+        order_key: found?.order_key,
       };
     });
-    combinedQuantities.forEach((option) => {
+    sortObjectArray(combinedQuantities, 'order_key', 'asc').forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
         const dash = option.product_id === '' ? '' : ' - ';
         variants += option.product_id + dash;
