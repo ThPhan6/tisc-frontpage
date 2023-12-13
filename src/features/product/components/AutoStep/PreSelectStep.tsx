@@ -49,6 +49,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   viewStepsDefault,
   quantitiesDefault,
 }) => {
+  const defaultSelectedProductIds = 'AL2404TSAD';
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
@@ -63,6 +64,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
   const [quantities, setQuantities] = useState<any>(quantitiesDefault || {});
+  const [appliedDefault, setAppliedDefault] = useState<any>({});
   const totalQuantity = useNumber(0);
   // on the left panel
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
@@ -101,7 +103,19 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     let totalQuantityTemp = 0;
 
     const rightPanelData = uniqBy(addedRealSelectId, 'id').map((item: any) => {
-      const quantity = quantities[item.select_id] || 0;
+      let quantity = quantities[item.select_id] || 0;
+      if (
+        selectId &&
+        defaultSelectedProductIds.split(',').includes(item.product_id) &&
+        !appliedDefault[selectId]
+      ) {
+        setAppliedDefault({ ...appliedDefault, [selectId]: true });
+        quantity = 1;
+        setQuantities({
+          ...quantities,
+          [item.select_id]: 1,
+        });
+      }
       totalQuantityTemp += quantity;
       return {
         ...item,
@@ -127,6 +141,13 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       return pre;
     }, []);
     return ids.join(',');
+  };
+  const toIdChain = (selectId: string) => {
+    const parts = selectId.split(',');
+    const ids = parts.reduce((pre: string[], cur: string) => {
+      return pre.concat([cur.split('_')[0]]);
+    }, []);
+    return ids;
   };
   const handleDuplicateWhenGoBackAndForth = (newSlide: number) => {
     const keys = Object.keys(quantities);
@@ -188,13 +209,16 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }, 200);
   };
   const getFirstLeftOption = () => {
-    if (slide === 0)
+    if (slide === 0) {
+      if (viewSteps[0].options.length === 1) {
+        return viewSteps[0].options[0];
+      }
       return (
         viewSteps[slide]?.options.find(
-          (option: any) =>
-            option.select_id === leftSelectedOption[slide]?.select_id && option.picked,
+          (option: any) => option.select_id === leftSelectedOption[slide]?.select_id,
         ) || viewSteps[slide]?.options.filter((option: any) => option.picked)[0]
       );
+    }
     let firstLeftOption = viewSteps[slide]?.options.find(
       (option: any) =>
         option.select_id === leftSelectedOption[slide]?.select_id &&
@@ -525,8 +549,53 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     }
   };
 
+  const handleChangeViewStepByQuantities = () => {
+    const newViewSteps = viewSteps.map((step: any) => {
+      return {
+        ...step,
+        options: step.options.map((option: any) => {
+          return {
+            ...option,
+            quantity: quantities[option.select_id],
+          };
+        }),
+      };
+    });
+    setViewSteps(newViewSteps);
+  };
+  const handleDeselectSub = (options: any[]) => (e: React.MouseEvent<SVGSVGElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const ids = options.map((option) => option.select_id);
+    const quantityKeys = Object.keys(quantities);
+    const deselected = ids.reduce((pre: any, cur: string) => {
+      if (quantities[cur] > 0) {
+        const relatedQuantityKeys = quantityKeys
+          .filter((quantityKey) => {
+            const chain = toIdChain(cur);
+            return chain.every((id) => quantityKey.includes(id));
+          })
+          .reduce((preRelated: any, curQuantityKey: string) => {
+            return {
+              ...preRelated,
+              [curQuantityKey]: 0,
+            };
+          }, {});
+        return {
+          ...pre,
+          ...relatedQuantityKeys,
+        };
+      }
+      return pre;
+    }, {});
+    const newQuantities = {
+      ...quantities,
+      ...deselected,
+    };
+    setQuantities(newQuantities);
+    handleChangeViewStepByQuantities();
+  };
   //-------------------------------------------------------------------------//
-
   const tempLeft = viewSteps[slide]?.options;
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);
@@ -711,11 +780,37 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                   label: option.name,
                   id: option.id,
                   value: option.id,
-
+                  rightHeader: (
+                    <div className="flex-start">
+                      <BodyText
+                        level={3}
+                        fontFamily="Cormorant-Garamond"
+                        style={{ textTransform: 'capitalize' }}
+                      >
+                        count:{' '}
+                      </BodyText>
+                      <BodyText level={5} fontFamily="Roboto" style={{ margin: '0 16px 0 8px' }}>
+                        {option.subs.reduce((pre: any, cur: any) => {
+                          return pre + cur.quantity;
+                        }, 0)}
+                      </BodyText>
+                      <button onClick={handleDeselectSub(option.subs)}>
+                        {' '}
+                        <BodyText
+                          level={3}
+                          fontFamily="Cormorant-Garamond"
+                          style={{ textTransform: 'capitalize' }}
+                        >
+                          deselect
+                        </BodyText>
+                      </button>
+                    </div>
+                  ),
                   options: option.subs?.map((sub: any, subIdx: number) => ({
                     value: sub.id,
                     pre_option: sub.pre_option,
                     productId: sub.product_id,
+                    quantity: sub.quantity || 0,
                     label: (
                       <div className={`flex-between w-full`}>
                         <AttributeOptionLabel

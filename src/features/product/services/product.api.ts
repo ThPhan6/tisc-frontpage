@@ -201,6 +201,7 @@ export const likeProductById = async (productId: string) => {
 };
 
 export const getProductById = async (productId: string, props?: { isSpecified?: boolean }) => {
+  showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
@@ -293,8 +294,10 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           }) as ['', '', '', ''],
         }),
       );
+      hidePageLoading();
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
     });

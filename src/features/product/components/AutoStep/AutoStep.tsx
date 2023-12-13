@@ -54,8 +54,11 @@ export const AutoStep: FC<AutoStepProps> = ({
   const step = useAppSelector((state) => state.autoStep.step);
 
   const subOptionSelected = useAppSelector((state) => state.autoStep.subOptionSelected);
-
+  const brandName = (useAppSelector((state) => state.product.brand?.name) || '').toLowerCase();
+  const foundGroup = attributes.find((item) => item.name.toLowerCase().includes(brandName));
+  const defaultSelected = foundGroup?.subs[0];
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+
   const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
 
   const handleResetAutoStep = () => {
@@ -70,7 +73,7 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   useEffect(() => {
     const pickedData: LinkedOptionProps[] = [];
-    console.log('attributes : ', attributes);
+    // console.log('attributes : ', attributes);
 
     attributes?.forEach((el) => {
       if (pickedData?.length) {
@@ -247,9 +250,9 @@ export const AutoStep: FC<AutoStepProps> = ({
         <FirstStep
           data={attributes}
           selected={
-            currentActiveSpecAttributeGroupId
+            currentActiveSpecAttributeGroupId && !currentActiveSpecAttributeGroupId.includes('new')
               ? subOptionSelected?.[currentActiveSpecAttributeGroupId]
-              : ''
+              : defaultSelected?.id || ''
           }
         />
       ) : (

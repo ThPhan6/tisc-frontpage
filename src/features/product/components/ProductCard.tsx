@@ -32,7 +32,7 @@ import {
   duplicateCustomProduct,
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
-import { updateCollection } from '@/services';
+import { deleteCollection, updateCollection } from '@/services';
 import { capitalize, truncate } from 'lodash';
 
 import { setProductList } from '../reducers';
@@ -40,8 +40,10 @@ import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
+import { CollectionRelationType } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import CustomButton from '@/components/Button/index';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
@@ -461,20 +463,45 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     />
                   )}
                   {isTiscAdmin ? (
-                    <CustomSaveButton
-                      style={{ marginRight: 16 }}
-                      onClick={() => {
-                        if (!group.description) {
-                          message.error('Please enter description');
-                          return;
-                        }
+                    <>
+                      <CustomButton
+                        style={{ marginRight: 16, borderRadius: 12 }}
+                        properties={'warning'}
+                        variant={'primary'}
+                        size={'small'}
+                        disabled={group.type === CollectionRelationType.Color}
+                        onClick={() => {
+                          confirmDelete(() => {
+                            deleteCollection(group.id).then(() => {
+                              const brandId = data[0].products[0].brand?.id || '';
+                              getProductSummary(brandId).then(() => {
+                                const params = {
+                                  brand_id: brandId,
+                                  collection_id: 'all',
+                                } as ProductGetListParameter;
+                                getProductListByBrandId(params);
+                              });
+                            });
+                          });
+                        }}
+                      >
+                        Delete
+                      </CustomButton>
+                      <CustomSaveButton
+                        style={{ marginRight: 16 }}
+                        onClick={() => {
+                          if (!group.description) {
+                            message.error('Please enter description');
+                            return;
+                          }
 
-                        updateCollection(group.id, {
-                          name: group.name,
-                          description: group.description,
-                        });
-                      }}
-                    />
+                          updateCollection(group.id, {
+                            name: group.name,
+                            description: group.description,
+                          });
+                        }}
+                      />
+                    </>
                   ) : null}
                 </div>
               </div>

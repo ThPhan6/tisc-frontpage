@@ -345,7 +345,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       /// get first option highlighted
       const { optionId: pickedId, preOptionId } = getIDFromPreOption(
-        nextStep.options[0].pre_option,
+        nextStep.options[0]?.pre_option,
       );
 
       // save highlight left panel
@@ -816,7 +816,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
                                     fontFamily="Roboto"
-                                    level={5}
+                                    level={7}
                                     style={{
                                       minWidth: 'fit-content',
                                       paddingLeft: isSpecifiedModal ? 0 : 16,
