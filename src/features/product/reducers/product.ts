@@ -270,9 +270,6 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     if (!el.isChecked) {
       return;
     }
-    if (el.id === '01d925b3-cf01-40a1-abc0-43d1278eee79') {
-      console.log(el);
-    }
     el?.attributes?.forEach((attr: any) => {
       attr.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
