@@ -266,7 +266,7 @@ export const combineQuantityForStepSelection = (data: any) => {
 };
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
   let variants = '';
-  specGroup.forEach((el) => {
+  specGroup?.forEach((el) => {
     if (!el.isChecked) {
       return;
     }
@@ -294,7 +294,9 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     const specificationAllOptions: string[] = el.viewSteps?.reduce((pre: any, cur: any) => {
       return pre.concat(cur.options.map((item: any) => item.id));
     }, []);
-    const combinedQuantities = el?.stepSelection?.combined_quantities.map((item: any) => {
+    const combinedQuantities = combineQuantityForStepSelection(
+      el?.stepSelection?.quantities || [],
+    ).map((item: any) => {
       const found = viewStepAllOptions.find(
         (viewStepOption: any) =>
           viewStepOption.id === item.id && specificationAllOptions.includes(item.id),
@@ -305,7 +307,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
         order_key: found?.order_key,
       };
     });
-    sortObjectArray(combinedQuantities, 'order_key', 'asc').forEach((option: any) => {
+    sortObjectArray(combinedQuantities, 'order_key', 'asc')?.forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
         const dash = option.product_id === '' ? '' : ' - ';
         variants += option.product_id + dash;
