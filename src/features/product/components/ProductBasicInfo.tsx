@@ -222,7 +222,7 @@ export const ProductBasicInfo: React.FC = () => {
         <FormGroup
           label="Description"
           layout="horizontal"
-          formClass="mb-16"
+          // formClass="mb-16"
           labelFontSize={4}
           noColon
         >
@@ -246,7 +246,7 @@ export const ProductBasicInfo: React.FC = () => {
         <InputGroup
           horizontal
           fontLevel={4}
-          containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
+          containerClass={`mb-16 ${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
           label="Selection ID"
           readOnly={true}
           noWrap
