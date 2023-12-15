@@ -218,17 +218,6 @@ export const ProductBasicInfo: React.FC = () => {
             );
           }}
         />
-        {/* Product ID */}
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
-          label="Product ID"
-          readOnly={true}
-          noWrap
-          value={productId}
-          inputTitle={productId}
-        />
         {/* Description */}
         <FormGroup
           label="Description"
@@ -253,6 +242,17 @@ export const ProductBasicInfo: React.FC = () => {
             autoResize
           />
         </FormGroup>
+        {/* Product ID */}
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
+          label="Selection ID"
+          readOnly={true}
+          noWrap
+          value={productId}
+          inputTitle={productId}
+        />
       </CustomCollapse>
       {editable && brand?.id ? (
         <MultiCollectionModal
