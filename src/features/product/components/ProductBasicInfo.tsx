@@ -243,16 +243,18 @@ export const ProductBasicInfo: React.FC = () => {
           />
         </FormGroup>
         {/* Product ID */}
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          containerClass={`mb-16 ${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
-          label="Selection ID"
-          readOnly={true}
-          noWrap
-          value={productId}
-          inputTitle={productId}
-        />
+        <div className="mb-4">
+          <InputGroup
+            horizontal
+            fontLevel={4}
+            containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
+            label="Selection ID"
+            readOnly={true}
+            noWrap
+            value={productId}
+            inputTitle={productId}
+          />
+        </div>
       </CustomCollapse>
       {editable && brand?.id ? (
         <MultiCollectionModal
