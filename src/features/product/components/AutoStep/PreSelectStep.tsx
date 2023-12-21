@@ -564,7 +564,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     setViewSteps(newViewSteps);
   };
   const handleDeselectSub = (options: any[]) => (e: React.MouseEvent<SVGSVGElement>) => {
-    console.log('click here');
     e.stopPropagation();
     e.preventDefault();
     const ids = options.map((option) => option.select_id);
