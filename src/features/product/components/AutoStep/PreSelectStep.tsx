@@ -794,7 +794,16 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                           return pre + cur.quantity;
                         }, 0)}
                       </BodyText>
-                      <button onClick={handleDeselectSub(option.subs)}>
+                      <CustomButton
+                        size="small"
+                        variant="primary"
+                        properties="rounded"
+                        buttonClass="done-btn"
+                        onClick={handleDeselectSub(option.subs)}
+                      >
+                        Deselect
+                      </CustomButton>
+                      {/* <button onClick={handleDeselectSub(option.subs)}>
                         {' '}
                         <BodyText
                           level={3}
@@ -803,7 +812,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                         >
                           deselect
                         </BodyText>
-                      </button>
+                      </button> */}
                     </div>
                   ),
                   options: option.subs?.map((sub: any, subIdx: number) => ({
