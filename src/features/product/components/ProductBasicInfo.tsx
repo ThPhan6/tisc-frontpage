@@ -242,12 +242,23 @@ export const ProductBasicInfo: React.FC = () => {
             autoResize
           />
         </FormGroup>
+        <hr
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            margin: 0,
+            borderTop: 0,
+            borderBottom: '1px solid #cdcdcd',
+          }}
+        />
         {/* Product ID */}
-        <div className="mb-4">
+        <div style={{ paddingBottom: 6, paddingTop: 8 }}>
           <InputGroup
             horizontal
             fontLevel={4}
             containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
+            hasPadding
             label="Selection ID"
             readOnly={true}
             noWrap
