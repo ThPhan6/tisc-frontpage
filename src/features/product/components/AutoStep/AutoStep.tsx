@@ -73,7 +73,6 @@ export const AutoStep: FC<AutoStepProps> = ({
 
   useEffect(() => {
     const pickedData: LinkedOptionProps[] = [];
-    // console.log('attributes : ', attributes);
 
     attributes?.forEach((el) => {
       if (pickedData?.length) {
@@ -145,7 +144,11 @@ export const AutoStep: FC<AutoStepProps> = ({
         store.dispatch(resetAutoStepState());
 
         if (currentActiveSpecAttributeGroupId) {
-          setSubOptionSelected({ [currentActiveSpecAttributeGroupId]: '' });
+          store.dispatch(
+            setSubOptionSelected({
+              [currentActiveSpecAttributeGroupId]: defaultSelected?.id as string,
+            }),
+          );
         }
 
         /// go back to select option dataset
@@ -165,8 +168,6 @@ export const AutoStep: FC<AutoStepProps> = ({
       el.id === currentActiveSpecAttributeGroupId ? { ...el, steps: steps, attributes: [] } : el,
     );
 
-    console.log('newAttributeGroup', newAttributeGroup);
-
     store.dispatch(
       setPartialProductDetail({
         specification_attribute_groups: newAttributeGroup,
@@ -183,7 +184,15 @@ export const AutoStep: FC<AutoStepProps> = ({
       setVisible(false);
     }
   };
-
+  useEffect(() => {
+    if (currentActiveSpecAttributeGroupId) {
+      store.dispatch(
+        setSubOptionSelected({
+          [currentActiveSpecAttributeGroupId]: defaultSelected?.id as string,
+        }),
+      );
+    }
+  }, [defaultSelected]);
   return (
     <CustomModal
       title={
@@ -208,9 +217,11 @@ export const AutoStep: FC<AutoStepProps> = ({
             disabled={
               (!linkedOptionData[0]?.pickedData.length &&
                 !!currentActiveSpecAttributeGroupId &&
-                !!subOptionSelected?.[currentActiveSpecAttributeGroupId]) ||
+                !!subOptionSelected?.[currentActiveSpecAttributeGroupId] &&
+                !defaultSelected) ||
               (!!currentActiveSpecAttributeGroupId &&
-                !subOptionSelected?.[currentActiveSpecAttributeGroupId])
+                !subOptionSelected?.[currentActiveSpecAttributeGroupId] &&
+                !defaultSelected)
             }
             icon={<ActionNextIcon />}
             onClick={handleGoToNextStep}
@@ -250,9 +261,9 @@ export const AutoStep: FC<AutoStepProps> = ({
         <FirstStep
           data={attributes}
           selected={
-            currentActiveSpecAttributeGroupId && !currentActiveSpecAttributeGroupId.includes('new')
-              ? subOptionSelected?.[currentActiveSpecAttributeGroupId]
-              : defaultSelected?.id || ''
+            subOptionSelected?.[currentActiveSpecAttributeGroupId || ''] ||
+            defaultSelected?.id ||
+            ''
           }
         />
       ) : (
