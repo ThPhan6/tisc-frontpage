@@ -74,11 +74,7 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
                     <BodyText level={5} fontFamily="Roboto">
                       {item.name}
                     </BodyText>
-                    <BodyText
-                      level={5}
-                      fontFamily="Roboto"
-                      style={{ paddingLeft: 12, color: '#bfbfbf', fontWeight: 300 }}
-                    >
+                    <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: 12 }}>
                       {`${item.basis.name} (${item.basis.subs?.length ?? 0})`}
                     </BodyText>
                   </div>
