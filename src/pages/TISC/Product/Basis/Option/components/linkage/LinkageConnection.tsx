@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { Col } from 'antd';
 
 import { ReactComponent as InactivePairIcon } from '@/assets/icons/inactive-pair-icon-16.svg';
@@ -18,6 +20,7 @@ const unPairProps = { title: 'Unpaired' } as any;
 const inactiveProps = { title: 'Inactive' } as any;
 
 export const LinkageConnection = () => {
+  const [hasScroll, setHasScroll] = useState(false);
   const connectionList = useAppSelector((state) =>
     sortBy(state.linkage.connectionList, (o) => o.productId),
   );
@@ -27,16 +30,24 @@ export const LinkageConnection = () => {
   const handleChangeConnectionStatus = (item: LinkedOption) => () => {
     store.dispatch(updateLinkedOptionStatus(item));
   };
+  const checkItem = document.getElementById('connectionList');
+
+  useEffect(() => {
+    if (checkItem) {
+      const hasVerticalScrollbar = checkItem.scrollHeight > checkItem.clientHeight;
+      setHasScroll(hasVerticalScrollbar);
+    }
+  }, [connectionList]);
 
   return (
     <Col span={6} className={style.borderLeft} style={{ height: '100%' }}>
-      <div className="border-bottom-light">
+      <div className="border-bottom-light" style={{ paddingRight: hasScroll ? 12 : 0 }}>
         <div className="flex-between" style={{ margin: '0 8px 8px', minHeight: 32 }}>
           <BodyText level={4}>Connection List</BodyText>
           <BodyText level={4}>Status</BodyText>
         </div>
       </div>
-      <div style={{ height: 'calc(100% - 48px)', overflow: 'auto' }}>
+      <div id="connectionList" style={{ height: 'calc(100% - 48px)', overflow: 'auto' }}>
         {!connectionList.length ? (
           <BodyText
             level={6}

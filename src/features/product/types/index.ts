@@ -1,6 +1,6 @@
 import { TablePaginationConfig } from 'antd/es/table/interface';
 
-import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { ProductDimensionWeight, ProductInformationData } from '@/features/dimension-weight/types';
 import {
   OrderMethod,
   ProductConsiderStatus,
@@ -154,6 +154,7 @@ export interface ProductItem {
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
   dimension_and_weight: ProductDimensionWeight;
+  product_information: ProductInformationData;
   favorites?: number;
   images: string[];
   keywords: ProductKeyword;
@@ -197,6 +198,7 @@ export interface ProductFormData {
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
   dimension_and_weight: ProductDimensionWeight;
+  product_information: ProductInformationData;
   images: string[];
   keywords: ProductKeyword;
   tips: ProductTipData[];

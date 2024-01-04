@@ -1,11 +1,13 @@
 import { FC, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
+import { Tooltip } from 'antd';
 
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
+import { isEmpty } from 'lodash';
 
 import type { SpecificationAttributeBasisOptionProps } from '../../types';
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -15,6 +17,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
+import { getProductDetailPathname } from '../../utils';
 import styles from './ProductAttributeSubItem.less';
 
 interface AttributeOptionProps {
@@ -30,7 +33,8 @@ export const AttributeOptionLabel: FC<{
   className?: string;
   hasBoxShadow?: boolean;
   option: any;
-}> = ({ option, className = '', hasBoxShadow = true, children }) => {
+  userRole?: string;
+}> = ({ option, userRole = 'tisc', className = '', hasBoxShadow = true, children }) => {
   const currentUser = useGetUserRoleFromPathname();
   const isTISC = currentUser === USER_ROLE.tisc;
 
@@ -46,7 +50,26 @@ export const AttributeOptionLabel: FC<{
           }`}
         ></div>
       ) : null}
-      {!option.image || option.image == '' ? null : <img src={showImageUrl(option.image)} />}
+      {!option.image || option.image == '' ? null : (
+        <Tooltip title={option.product_information_description}>
+          <img
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const path = getProductDetailPathname(
+                userRole,
+                option.product_information_id,
+                '',
+                false,
+              );
+              if (!isEmpty(path)) {
+                window.open(`${window.location.origin}${path}`, '_blank', 'noopener,noreferrer');
+              }
+            }}
+            src={showImageUrl(option.image)}
+          />
+        </Tooltip>
+      )}
       <div className="option-image-list-wrapper">
         <BodyText
           level={6}

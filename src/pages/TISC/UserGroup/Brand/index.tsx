@@ -234,6 +234,7 @@ const BrandList: React.FC = () => {
               goToSeeViewDetailPage(rowRecord.id);
             },
           })}
+          dynamicPageSize
         />
       </PageContainer>
     </div>
