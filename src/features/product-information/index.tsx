@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 import { ProductInformationData } from '../dimension-weight/types';
 
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -17,7 +19,11 @@ export const ProductInformation = (props: productInformationProps) => {
   if (!data) {
     dataToShow = { product_name: '', product_id: '' };
   }
-  return isShow ? (
+  let show = isShow;
+  if (!editable && isEmpty(dataToShow.product_id) && isEmpty(dataToShow.product_name)) {
+    show = false;
+  }
+  return show ? (
     <div className={styles.productInformationContainer}>
       <RobotoBodyText level={6} style={{ paddingBottom: 8 }}>
         Product Information
