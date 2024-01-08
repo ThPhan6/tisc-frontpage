@@ -9,6 +9,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as ArrowUp } from '@/assets/icons/drop-up-icon.svg';
 
 import { getLinkedOptionByOptionIds } from '../../services';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { sortObjectArray, uniqueArrayBy } from '@/helper/utils';
 import {
   cloneDeep,
@@ -69,6 +70,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
+  const userRole = useGetUserRoleFromPathname();
+
   const setDefaultActiveCollapse = () => {
     const curPickedData = linkedOptionData[slide]?.pickedData;
     if (!curPickedData) return [];
@@ -1003,6 +1006,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       setCurActiveKey(curActiveKey.filter((item) => item !== activeKey));
     } else setCurActiveKey(curActiveKey.concat([activeKey]));
   };
+
   return (
     <div className={styles.nextStep}>
       <SlideBar
@@ -1191,7 +1195,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
                       options: item.subs.map((el) => ({
                         label: (
-                          <AttributeOptionLabel option={el} key={index}>
+                          <AttributeOptionLabel option={el} key={index} userRole={userRole}>
                             <div>
                               <span className="product-id-label">Product ID:</span>
                               <span className="product-id-value">{el.product_id}</span>

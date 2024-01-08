@@ -20,6 +20,7 @@ import { AutoStep } from '../AutoStep/AutoStep';
 import { ProductAttributeGroup } from './ProductAttributeGroup';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
+import { ProductInformation } from '@/features/product-information';
 
 export interface ProductAttributeContainerProps {
   attributes?: ProductAttributes[];
@@ -52,6 +53,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     attributeGroup,
     attributeGroupKey,
     dimensionWeightData,
+    productInformationData,
     autoStepPopup,
     setAutoStepPopup,
     onDragEnd,
@@ -102,6 +104,18 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
           store.dispatch(
             setPartialProductDetail({
               dimension_and_weight: data,
+            }),
+          );
+        }}
+      />
+      <ProductInformation
+        isShow={activeKey === 'specification'}
+        editable={isEditable}
+        data={productInformationData}
+        onChange={(data) => {
+          store.dispatch(
+            setPartialProductDetail({
+              product_information: data,
             }),
           );
         }}

@@ -177,6 +177,7 @@ export const useProductAttributeForm = (
     general_attribute_groups,
     specification_attribute_groups,
     dimension_and_weight,
+    product_information,
     id,
     specifiedDetail,
   } = useAppSelector((state) => state.product.details);
@@ -603,6 +604,7 @@ export const useProductAttributeForm = (
     onSelectSpecificationOption,
     referToDesignDocument,
     dimensionWeightData,
+    productInformationData: product_information,
     onDragEnd,
 
     /// auto-steps

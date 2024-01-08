@@ -225,6 +225,7 @@ const ProductDetailContainer: React.FC = () => {
           .filter((el) => (el.conversion_value_1 ? true : false))
           .map((el) => pick(el, 'id', 'conversion_value_1', 'conversion_value_2', 'with_diameter')),
       } as ProductDimensionWeight,
+      product_information: details.product_information,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
         if (image.indexOf('data:image') > -1) {

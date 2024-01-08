@@ -8,7 +8,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
-import { useGetParamId, useNumber } from '@/helper/hook';
+import { useGetParamId, useGetUserRoleFromPathname, useNumber } from '@/helper/hook';
 import { cloneDeep, isEmpty, omit, pick, uniqBy } from 'lodash';
 
 import {
@@ -61,6 +61,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
   const [viewSteps, setViewSteps] = useState<any>(viewStepsDefault);
   const [tempRight, setTempRight] = useState<any>([]);
+  const userRole = useGetUserRoleFromPathname();
 
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
   const [quantities, setQuantities] = useState<any>(quantitiesDefault || {});
@@ -787,7 +788,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                         fontFamily="Cormorant-Garamond"
                         style={{ textTransform: 'capitalize' }}
                       >
-                        count:{' '}
+                        Selected:{' '}
                       </BodyText>
                       <BodyText level={5} fontFamily="Roboto" style={{ margin: '0 16px 0 8px' }}>
                         {option.subs.reduce((pre: any, cur: any) => {
@@ -827,6 +828,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                           className="w-full"
                           hasBoxShadow={false}
                           option={sub}
+                          userRole={userRole}
                         >
                           <div className="d-flex align-item-flex-start option-info">
                             <div
