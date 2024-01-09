@@ -3,8 +3,8 @@ import { FC, useState } from 'react';
 import { USER_ROLE } from '@/constants/userRoles';
 import { Tooltip } from 'antd';
 
-import ArrowRightIcon from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
+import ArrowRightIcon from '@/assets/icons/line-right-white.svg';
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
@@ -59,7 +59,7 @@ export const AttributeOptionLabel: FC<{
           }
         >
           <img
-            style={isMouseover ? { padding: 10 } : {}}
+            style={isMouseover ? { padding: 10, backgroundColor: 'black' } : {}}
             onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
