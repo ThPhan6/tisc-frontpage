@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import { USER_ROLE } from '@/constants/userRoles';
 import { Tooltip } from 'antd';
 
+import ArrowRightIcon from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
@@ -37,7 +38,8 @@ export const AttributeOptionLabel: FC<{
 }> = ({ option, userRole = 'tisc', className = '', hasBoxShadow = true, children }) => {
   const currentUser = useGetUserRoleFromPathname();
   const isTISC = currentUser === USER_ROLE.tisc;
-
+  const [imageSrc, setImageSrc] = useState(showImageUrl(option.image));
+  const [isMouseover, setIsMouseover] = useState(false);
   const optionValue = `${option.value_1} ${option.unit_1} ${option.value_2 ? '-' : ''} ${
     option.value_2
   } ${option.unit_2}`;
@@ -51,8 +53,13 @@ export const AttributeOptionLabel: FC<{
         ></div>
       ) : null}
       {!option.image || option.image == '' ? null : (
-        <Tooltip title={option.product_information_description}>
+        <Tooltip
+          title={
+            option.product_information_description ? 'Click icon to see product details.' : null
+          }
+        >
           <img
+            style={isMouseover ? { padding: 10 } : {}}
             onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -66,7 +73,19 @@ export const AttributeOptionLabel: FC<{
                 window.open(`${window.location.origin}${path}`, '_blank', 'noopener,noreferrer');
               }
             }}
-            src={showImageUrl(option.image)}
+            onMouseOver={() => {
+              if (option.product_information_description) {
+                setImageSrc(ArrowRightIcon);
+                setIsMouseover(true);
+              }
+            }}
+            onMouseOut={() => {
+              if (option.product_information_description) {
+                setImageSrc(showImageUrl(option.image));
+                setIsMouseover(false);
+              }
+            }}
+            src={imageSrc}
           />
         </Tooltip>
       )}
