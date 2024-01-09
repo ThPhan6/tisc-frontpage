@@ -38,7 +38,6 @@ export const AttributeOptionLabel: FC<{
 }> = ({ option, userRole = 'tisc', className = '', hasBoxShadow = true, children }) => {
   const currentUser = useGetUserRoleFromPathname();
   const isTISC = currentUser === USER_ROLE.tisc;
-  const [imageSrc, setImageSrc] = useState(showImageUrl(option.image));
   const [isMouseover, setIsMouseover] = useState(false);
   const optionValue = `${option.value_1} ${option.unit_1} ${option.value_2 ? '-' : ''} ${
     option.value_2
@@ -57,36 +56,40 @@ export const AttributeOptionLabel: FC<{
           title={
             option.product_information_description ? 'Click icon to see product details.' : null
           }
+          style={{ position: 'relative' }}
         >
-          <img
-            style={isMouseover ? { padding: 10, backgroundColor: 'black' } : {}}
-            onClick={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const path = getProductDetailPathname(
-                userRole,
-                option.product_information_id,
-                '',
-                false,
-              );
-              if (!isEmpty(path)) {
-                window.open(`${window.location.origin}${path}`, '_blank', 'noopener,noreferrer');
-              }
-            }}
+          <div
             onMouseOver={() => {
               if (option.product_information_description) {
-                setImageSrc(ArrowRightIcon);
                 setIsMouseover(true);
               }
             }}
             onMouseOut={() => {
               if (option.product_information_description) {
-                setImageSrc(showImageUrl(option.image));
                 setIsMouseover(false);
               }
             }}
-            src={imageSrc}
-          />
+          >
+            <img
+              src={ArrowRightIcon}
+              alt=""
+              className={`${styles.imgFrame} ${isMouseover ? styles.toggleIn : styles.toggleOut}`}
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const path = getProductDetailPathname(
+                  userRole,
+                  option.product_information_id,
+                  '',
+                  false,
+                );
+                if (!isEmpty(path)) {
+                  window.open(`${window.location.origin}${path}`, '_blank', 'noopener,noreferrer');
+                }
+              }}
+            />
+            <img src={showImageUrl(option.image)} />
+          </div>
         </Tooltip>
       )}
       <div className="option-image-list-wrapper">

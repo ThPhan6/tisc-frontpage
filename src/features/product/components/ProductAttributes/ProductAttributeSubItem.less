@@ -168,3 +168,40 @@
     color: @mono-color !important;
   }
 }
+
+@keyframes fadeout {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes fadein {
+  0% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.toggleOut {
+  opacity: 0;
+  animation: fadeout 500ms;
+}
+
+.toggleIn {
+  opacity: 1;
+  animation: fadein 1000ms;
+}
+.imgFrame {
+  position: absolute;
+  padding: 10px;
+  background-color: black;
+}
