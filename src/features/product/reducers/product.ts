@@ -232,12 +232,37 @@ export const {
 
 export const productReducer = productSlice.reducer;
 
-const productSpecificationSelector = (state: RootState) => {
-  return state.product.details.specifiedDetail && !isEmpty(state.product.details.specifiedDetail.id)
-    ? state.product.details.specifiedDetail.specification.attribute_groups.map((item: any) => ({
-        ...item,
-        stepSelection: item.step_selections,
-      }))
+export const productSpecificationSelector = (state: RootState) => {
+  return state.product.details.specifiedDetail &&
+    !isEmpty(state.product.details.specifiedDetail.specification?.attribute_groups)
+    ? state.product.details.specifiedDetail.specification?.attribute_groups?.map(
+        (attributeGroup: any) => {
+          const allNormalAttribute = state.product.details.specification_attribute_groups.reduce(
+            (pre: any, cur) => {
+              if (cur.type === 0) {
+                return pre.concat(cur.attributes);
+              }
+              return pre;
+            },
+            [],
+          );
+          const newAttributes = attributeGroup.attributes.map((attribute: any) => {
+            const foundAttribute = allNormalAttribute.find((el: any) => el.id === attribute.id);
+            return {
+              ...attribute,
+              ...foundAttribute,
+              basis_options: foundAttribute?.basis_options.filter(
+                (bo: any) => bo.id === attribute.basis_option_id,
+              ),
+            };
+          });
+          return {
+            ...attributeGroup,
+            attributes: newAttributes,
+            stepSelection: attributeGroup.step_selections,
+          };
+        },
+      )
     : state.product.details.specification_attribute_groups;
 };
 
@@ -271,7 +296,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       return;
     }
     el?.attributes?.forEach((attr: any) => {
-      attr.basis_options?.forEach((opt: any) => {
+      attr?.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
           const dash = opt.option_code === '' ? '' : ' - ';
           variants += opt.option_code + dash;
@@ -307,6 +332,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
         order_key: found?.order_key,
       };
     });
+
     sortObjectArray(combinedQuantities, 'order_key', 'asc')?.forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
         const dash = option.product_id === '' ? '' : ' - ';
@@ -314,6 +340,5 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       }
     });
   });
-
   return variants.length > 2 ? variants.slice(0, -2) : variants;
 });

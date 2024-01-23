@@ -19,7 +19,6 @@ import {
   setSlide,
 } from '../../reducers';
 import { AutoStepOnAttributeGroupRequest, OptionQuantityProps } from '../../types/autoStep';
-import { SpecificationBodyRequest } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -506,26 +505,26 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       }),
     );
 
-    const newSpecfication: SpecificationBodyRequest = {
-      is_refer_document: false,
-      attribute_groups: newAttributeGroups.map((el) => {
-        if (el.id !== currentSpecAttributeGroupId) {
-          return el;
-        }
-        return {
-          ...el,
-          viewSteps,
-          isChecked: true,
-          step_selections: { quantities: newQuantities },
-        };
-      }),
-    };
-
     if (!updatePreSelect) {
       /// save steps to specfified specification attribute group
+      const originDetail = details.specifiedDetail?.specification.attribute_groups.concat(
+        newAttributeGroups
+          .map((el) => {
+            if (el.id !== currentSpecAttributeGroupId) {
+              return el;
+            }
+            return {
+              ...el,
+              viewSteps,
+              isChecked: true,
+              step_selections: { quantities: newQuantities },
+            };
+          })
+          .filter((item) => !isEmpty(item)),
+      );
       store.dispatch(
         setPartialProductSpecifiedData({
-          specification: newSpecfication,
+          specification: originDetail as any,
         }),
       );
 

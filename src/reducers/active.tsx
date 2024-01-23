@@ -13,12 +13,14 @@ interface ActiveState {
   };
   productFooter: ProductFooterTabs;
   dimensionWeight: string | string[];
+  productInformation: string | string[];
 }
 
 const initialState: ActiveState = {
   collapse: {},
   productFooter: '',
   dimensionWeight: '',
+  productInformation: '',
 };
 
 const activeSlice = createSlice({
@@ -44,11 +46,17 @@ const activeSlice = createSlice({
     activeDimensionWeightCollapse: (state, action: PayloadAction<string | string[]>) => {
       state.dimensionWeight = action.payload;
     },
+    activeProductInformationCollapse: (state, action: PayloadAction<string | string[]>) => {
+      state.productInformation = action.payload;
+    },
     closeProductFooterTab: (state) => {
       state.productFooter = '';
     },
     closeDimensionWeightGroup: (state) => {
       state.dimensionWeight = '';
+    },
+    closeProductInformationGroup: (state) => {
+      state.productInformation = '';
     },
   },
 });
@@ -59,6 +67,8 @@ export const {
   closeProductFooterTab,
   closeDimensionWeightGroup,
   activeDimensionWeightCollapse,
+  activeProductInformationCollapse,
+  closeProductInformationGroup,
 } = activeSlice.actions;
 
 export const activeReducer = activeSlice.reducer;
