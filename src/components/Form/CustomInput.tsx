@@ -51,7 +51,11 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
         setWidth(textWidth);
       }
     }, [props.value]);
-
+    const [cursor, setCursor] = useState<number | null>(null);
+    const defaultRef = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      defaultRef.current?.setSelectionRange(cursor, cursor);
+    }, [defaultRef, cursor, props.value]);
     const getDisabledTheme = () => {
       if (props.disabled) {
         switch (theme) {
@@ -104,10 +108,11 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
               </span>
             ) : null}
             <Input
-              ref={ref}
+              ref={ref || defaultRef}
               type={type}
               {...props}
               onChange={(e) => {
+                setCursor(e.target.selectionStart);
                 if (inputValidation) {
                   if (!inputValidation(e.target.value)) {
                     return false;
