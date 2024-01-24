@@ -804,7 +804,12 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         /// get pre_option to compared
         const otherOptions = subs.map((el) => el.pre_option) ?? [];
 
-        const currentSubTicked = pickedSubs.filter((sub) => otherOptions.includes(sub.id));
+        const currentSubTicked = [...pickedSubs]
+          .filter((sub) => otherOptions.includes(sub.id))
+          .map((i) => ({
+            ...i,
+            replicate: i.replicate + 1,
+          }));
         const currentSubTickedIds = currentSubTicked.map((el) => el.id);
 
         const linkageAmount = sum(
