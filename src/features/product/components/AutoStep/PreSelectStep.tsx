@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
+import { ReactComponent as DropdownIcon } from '@/assets/icons/action-extend.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/action-plus-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useGetUserRoleFromPathname, useNumber } from '@/helper/hook';
