@@ -40,8 +40,13 @@ import {
   OptionQuantityProps,
 } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
+import { ProjectProductStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
-import { closeDimensionWeightGroup, closeProductFooterTab } from '@/reducers/active';
+import {
+  closeDimensionWeightGroup,
+  closeProductFooterTab,
+  closeProductInformationGroup,
+} from '@/reducers/active';
 import { SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -125,11 +130,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const { specifiedDetail } = details;
   const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
   const specifiedQuantity = isSpecifiedModal
-    ? specifiedDetail?.specification.attribute_groups.find(
+    ? specifiedDetail?.specification.attribute_groups?.find(
         (item) => item.id === currentSpecAttributeGroupId,
-      )?.step_selections.quantities || {}
+      )?.step_selections?.quantities || {}
     : {};
-
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
   // const autoSteps = curStepSelect;
@@ -176,6 +180,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     store.dispatch(closeProductFooterTab());
     store.dispatch(closeDimensionWeightGroup());
+    store.dispatch(closeProductInformationGroup());
   };
   const [images, setImages] = useState<any>([]);
 
@@ -185,9 +190,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       return;
     }
 
-    const quantities = isSpecifiedModal
-      ? specifiedQuantity
-      : attrGroupItem.stepSelection?.quantities;
+    const quantities =
+      isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider
+        ? specifiedQuantity
+        : attrGroupItem.stepSelection?.quantities;
     const autoStepImages = () => {
       const quantityKeys = Object.keys(quantities || {});
       return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
@@ -217,7 +223,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       });
     };
     setImages(autoStepImages());
-  }, [attrGroupItem?.stepSelection?.quantities, specifiedDetail]);
+  }, [attrGroupItem?.stepSelection?.quantities, specifiedDetail, currentSpecAttributeGroupId]);
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
       message.error('Product ID is required');
@@ -245,7 +251,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const optionIds = firstStep.options.map((opt) => opt.id);
 
     let newOptions: LinkedOptionProps | undefined;
-    console.log('attributes : ', attributes);
 
     ///* mapping from specfication basis to get step 1 data
     attributes?.forEach((attr) => {
@@ -385,7 +390,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         })),
       }));
     }
-    console.log(newLinkedOptionData);
     store.dispatch(setLinkedOptionData(newLinkedOptionData));
 
     store.dispatch(setOptionsSelected(optionsSelected));
@@ -522,6 +526,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
+
     if (isTiscAdmin) {
       return isEditable ? (
         <InputGroup
@@ -561,7 +566,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }
     });
     const attributeSelectedContent = attributeSelected.join('; ');
-
     return (
       <div className={styles.attrGroupTitle}>
         {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
@@ -727,7 +731,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     return null;
   };
-
   return (
     <div key={groupIndex} style={{ marginBottom: 8, marginTop: isEditable ? undefined : 8 }}>
       <div className={styles.attributes}>

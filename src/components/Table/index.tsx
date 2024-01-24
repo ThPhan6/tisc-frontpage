@@ -1,12 +1,4 @@
-import {
-  ReactNode,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { Table } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
@@ -310,7 +302,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       });
     }
   };
-
   // The component instance will be extended
   // with whatever you return from the callback passed
   // as the second argument
@@ -321,12 +312,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         ...pagination,
         pageSize: getTablePaginationSize(),
       };
-
       return {
         reload() {
           fetchData({
             pagination: newPagination,
             sorter: currentSorter,
+            ...extraParams,
           });
         },
 
@@ -337,12 +328,13 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
               current: DEFAULT_PAGE_NUMBER,
             },
             sorter: currentSorter,
+            ...extraParams,
           });
         },
       };
     },
 
-    [pagination.pageSize],
+    [pagination.pageSize, extraParams],
   );
 
   return (

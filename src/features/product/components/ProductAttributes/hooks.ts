@@ -4,13 +4,15 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep, countBy, uniqueId } from 'lodash';
+import { cloneDeep, countBy, isEmpty, uniqueId } from 'lodash';
 
 import {
   getAllPreSelectAttributes,
+  productSpecificationSelector,
   setCurAttrGroupCollapse,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductDetail,
+  setPartialProductSpecifiedData,
   setStep,
 } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
@@ -21,6 +23,7 @@ import {
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import {
+  ProjectProductStatus,
   SelectedSpecAttributte,
   SpecificationAttributeGroup,
   SpecificationPreSelectStep,
@@ -121,7 +124,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
         specState.push({
           id: gr.id || '',
           configuration_steps: stepGroup,
-          step_selections: gr.stepSelection.quantities,
+          step_selections: gr.stepSelection?.quantities,
           /// default each attribute group has attributes property is empty array
           attributes: [],
         });
@@ -154,7 +157,6 @@ export const getSpecificationWithSelectedValue = (
       }),
     );
   });
-
   return checkedSpecGroup;
 };
 
@@ -181,9 +183,8 @@ export const useProductAttributeForm = (
     id,
     specifiedDetail,
   } = useAppSelector((state) => state.product.details);
-
   const allPreSelectAttributes = useAppSelector((state) => state.product.allPreSelectAttributes);
-
+  const productSpecifiedData = useAppSelector(productSpecificationSelector);
   const referToDesignDocument = specifiedDetail?.specification?.is_refer_document;
 
   const loaded = useBoolean();
@@ -216,12 +217,12 @@ export const useProductAttributeForm = (
       productId &&
       isTiscAdmin === false
     ) {
-      if (props?.isSpecifiedModal) {
+      if (props?.isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider) {
         dispatch(setDefaultSelectionFromSpecifiedData());
         /// get all attributes selected
-        dispatch(getAllPreSelectAttributes(specifiedDetail?.specification?.attribute_groups ?? []));
+        dispatch(getAllPreSelectAttributes(productSpecifiedData ?? []));
         loaded.setValue(true);
-      } else if (props?.isGetProductSpecification) {
+      } else if (props?.isGetProductSpecification && !isEmpty(specification_attribute_groups)) {
         getSelectedProductSpecification(productId).then((res) => {
           loaded.setValue(true);
           if (res) {
@@ -229,7 +230,6 @@ export const useProductAttributeForm = (
               res.specification?.attribute_groups || [],
               attributeGroup,
             );
-
             dispatch(
               setPartialProductDetail({
                 specification_attribute_groups: newSpecficationAttributeGroups,
@@ -494,6 +494,43 @@ export const useProductAttributeForm = (
       }),
     );
 
+    if (props?.isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider) {
+      const foundId = newState[groupIndex].id;
+      const foundGroup = specifiedDetail?.specification.attribute_groups.find(
+        (item) => item.id === foundId,
+      );
+      const newGroup = {
+        ...newState[groupIndex],
+        ...foundGroup,
+        attributes: newState[groupIndex].attributes
+          .map((attribute) => {
+            return {
+              id: attribute.id,
+              basis_option_id: attribute.basis_options?.find((bo) => bo.isChecked === true)?.id,
+            };
+          })
+          .filter((el) => el.basis_option_id),
+      };
+      const newAttributeGroups = newState
+        .filter((item) => item.isChecked)
+        .map((item) => {
+          if (item.id !== foundId) {
+            const originItem = specifiedDetail?.specification.attribute_groups.find(
+              (el) => el.id === item.id,
+            );
+            return originItem;
+          }
+          return newGroup;
+        });
+      dispatch(
+        setPartialProductSpecifiedData({
+          specification: {
+            is_refer_document: specifiedDetail?.specification.is_refer_document as any,
+            attribute_groups: newAttributeGroups as any,
+          },
+        }),
+      );
+    }
     dispatch(setReferToDesignDocument(!haveCheckedAttributeGroup));
 
     return { haveCheckedOptionAttribute, haveCheckedAttributeGroup };
@@ -501,7 +538,6 @@ export const useProductAttributeForm = (
 
   const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {
     const newState = cloneDeep(attributeGroup);
-
     if (!newState[groupIndex].isChecked) {
       return;
     }
@@ -584,6 +620,19 @@ export const useProductAttributeForm = (
         specification_attribute_groups: newState,
       }),
     );
+    if (props?.isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider) {
+      const foundId = newState[groupIndex].id;
+      dispatch(
+        setPartialProductSpecifiedData({
+          specification: {
+            is_refer_document: specifiedDetail?.specification.is_refer_document as any,
+            attribute_groups: specifiedDetail?.specification.attribute_groups?.filter(
+              (item) => item.id !== foundId,
+            ) as any,
+          },
+        }),
+      );
+    }
 
     /* update specifying of project */
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);

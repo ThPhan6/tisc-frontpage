@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
+import { ReactComponent as DropdownIcon } from '@/assets/icons/action-extend.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/action-plus-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useGetUserRoleFromPathname, useNumber } from '@/helper/hook';
@@ -19,7 +19,6 @@ import {
   setSlide,
 } from '../../reducers';
 import { AutoStepOnAttributeGroupRequest, OptionQuantityProps } from '../../types/autoStep';
-import { SpecificationBodyRequest } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -506,26 +505,26 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       }),
     );
 
-    const newSpecfication: SpecificationBodyRequest = {
-      is_refer_document: false,
-      attribute_groups: newAttributeGroups.map((el) => {
-        if (el.id !== currentSpecAttributeGroupId) {
-          return el;
-        }
-        return {
-          ...el,
-          viewSteps,
-          isChecked: true,
-          step_selections: { quantities: newQuantities },
-        };
-      }),
-    };
-
     if (!updatePreSelect) {
       /// save steps to specfified specification attribute group
+      const originDetail = details.specifiedDetail?.specification.attribute_groups.concat(
+        newAttributeGroups
+          .map((el) => {
+            if (el.id !== currentSpecAttributeGroupId) {
+              return el;
+            }
+            return {
+              ...el,
+              viewSteps,
+              isChecked: true,
+              step_selections: { quantities: newQuantities },
+            };
+          })
+          .filter((item) => !isEmpty(item)),
+      );
       store.dispatch(
         setPartialProductSpecifiedData({
-          specification: newSpecfication,
+          specification: originDetail as any,
         }),
       );
 

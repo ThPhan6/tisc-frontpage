@@ -10,7 +10,7 @@ import { useCheckPermission, useGetParamId } from '@/helper/hook';
 import { closeActiveSpecAttributeGroup, setPartialProductDetail } from '../../reducers';
 import { ProductInfoTab } from './types';
 import store, { useAppSelector } from '@/reducers';
-import { activeDimensionWeightCollapse } from '@/reducers/active';
+import { activeDimensionWeightCollapse, activeProductInformationCollapse } from '@/reducers/active';
 import { ProductAttributes } from '@/types';
 
 import { DragDropContainer } from '@/components/Drag';
@@ -64,7 +64,9 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   });
 
   const dimensionWightActiveCollapseKey = useAppSelector((state) => state.active.dimensionWeight);
-
+  const productInformationActiveCollapseKey = useAppSelector(
+    (state) => state.active.productInformation,
+  );
   return (
     <>
       {isEditable ? (
@@ -109,6 +111,13 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
         }}
       />
       <ProductInformation
+        activeCollapse={productInformationActiveCollapseKey}
+        onChangeCollapse={(key) => {
+          store.dispatch(activeProductInformationCollapse(key));
+          store.dispatch(closeActiveSpecAttributeGroup());
+        }}
+        collapseStyles={!isSpecifiedModal}
+        noPadding={isSpecifiedModal}
         isShow={activeKey === 'specification'}
         editable={isEditable}
         data={productInformationData}
