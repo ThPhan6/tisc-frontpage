@@ -123,7 +123,19 @@ export const onOpenSpecifiyingProductModal = (record: ProjectProductItem) => {
       }),
     );
   } else {
-    store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+    store.dispatch(
+      setPartialProductSpecifiedData({
+        ...record.specifiedDetail,
+        specification: {
+          is_refer_document: record.specifiedDetail.specification?.is_refer_document || false,
+          attribute_groups:
+            record.specifiedDetail.specification?.attribute_groups?.map((el) => ({
+              ...el,
+              isChecked: el.isChecked === undefined ? true : el.isChecked,
+            })) || [],
+        },
+      }),
+    );
     store.dispatch(
       setPartialProductDetail({
         distributor_location_id: record.specifiedDetail.distributor_location_id,

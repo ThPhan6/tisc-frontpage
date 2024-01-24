@@ -2,7 +2,10 @@ import { isEmpty } from 'lodash';
 
 import { ProductInformationData } from '../dimension-weight/types';
 
+import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { RobotoBodyText } from '@/components/Typography';
 
 import styles from './index.less';
@@ -12,9 +15,22 @@ interface productInformationProps {
   onChange?: (data: ProductInformationData) => void;
   editable: boolean;
   isShow: boolean;
+  activeCollapse: string | string[];
+  onChangeCollapse: any;
+  collapseStyles: boolean;
+  noPadding?: boolean;
 }
 export const ProductInformation = (props: productInformationProps) => {
-  const { data, isShow, onChange, editable } = props;
+  const {
+    data,
+    isShow,
+    onChange,
+    editable,
+    activeCollapse,
+    onChangeCollapse,
+    collapseStyles,
+    noPadding,
+  } = props;
   let dataToShow = data;
   if (!data) {
     dataToShow = { product_name: '', product_id: '' };
@@ -25,49 +41,59 @@ export const ProductInformation = (props: productInformationProps) => {
   }
   return show ? (
     <div className={styles.productInformationContainer}>
-      <RobotoBodyText level={6} style={{ paddingBottom: 8 }}>
-        Product Information
-      </RobotoBodyText>
-      <hr
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          margin: 0,
-          borderTop: 0,
-          borderBottom: '1px solid #cdcdcd',
+      <CustomCollapse
+        activeKey={activeCollapse}
+        onChange={(key) => {
+          if (onChangeCollapse) {
+            onChangeCollapse?.(key);
+          }
         }}
-      />
-      <div style={{ paddingTop: 10 }}>
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          containerClass={editable ? `` : styles.viewInfo}
-          placeholder={editable ? 'type product name here' : ''}
-          hasPadding
-          label="Product name"
-          readOnly={!editable}
-          value={dataToShow.product_name}
-          inputTitle={dataToShow.product_name}
-          onChange={(e) => {
-            if (onChange) onChange({ ...dataToShow, product_name: e.target.value });
-          }}
-        />
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          containerClass={editable ? `` : styles.viewInfo}
-          placeholder={editable ? 'type product ID here' : ''}
-          hasPadding
-          label="Product ID"
-          readOnly={!editable}
-          value={dataToShow.product_id}
-          inputTitle={dataToShow.product_id}
-          onChange={(e) => {
-            if (onChange) onChange({ ...dataToShow, product_id: e.target.value });
-          }}
-        />
-      </div>
+        showActiveBoxShadow={collapseStyles}
+        expandingHeaderFontStyle="bold"
+        noBorder={!collapseStyles}
+        customHeaderClass={`${noPadding ? styles.noPadding : ''}`}
+        header={
+          <RobotoBodyText
+            level={6}
+            style={{ paddingBottom: 8, paddingTop: 8, paddingLeft: collapseStyles ? 16 : 0 }}
+          >
+            Product Information
+          </RobotoBodyText>
+        }
+      >
+        <div>
+          <FormGroup label="Product name" layout="horizontal" labelFontSize={4} noColon>
+            <CustomTextArea
+              maxWords={50}
+              placeholder={editable ? 'type product name here' : ''}
+              value={dataToShow.product_name}
+              onChange={(e) => {
+                if (onChange) onChange({ ...dataToShow, product_name: e.target.value });
+              }}
+              customClass={`${styles.customTextArea} ${
+                collapseStyles ? styles.productNamePaddingLeft50 : styles.productNamePaddingLeft14
+              } ${editable ? '' : styles.viewInfo}`}
+              readOnly={editable === false}
+              autoResize
+            />
+          </FormGroup>
+
+          <InputGroup
+            horizontal
+            fontLevel={4}
+            containerClass={editable ? `` : styles.viewInfo}
+            placeholder={editable ? 'type product ID here' : ''}
+            hasPadding
+            label="Product ID"
+            readOnly={!editable}
+            value={dataToShow.product_id}
+            inputTitle={dataToShow.product_id}
+            onChange={(e) => {
+              if (onChange) onChange({ ...dataToShow, product_id: e.target.value });
+            }}
+          />
+        </div>
+      </CustomCollapse>
     </div>
   ) : null;
 };
