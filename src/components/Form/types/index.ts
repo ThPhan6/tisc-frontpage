@@ -8,6 +8,7 @@ import { BodyTextProps, CustomTypography } from '@/components/Typography/types/i
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';
   formClass?: string;
+  customClass?: string;
   optional?: boolean;
   required?: boolean;
   tooltip?: string | JSX.Element;

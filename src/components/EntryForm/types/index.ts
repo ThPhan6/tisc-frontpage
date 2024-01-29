@@ -42,4 +42,5 @@ export interface FormNameInputProps {
 export interface MainContentProps {
   hasHeight?: boolean;
   noWrap?: boolean;
+  customClass?: string;
 }
