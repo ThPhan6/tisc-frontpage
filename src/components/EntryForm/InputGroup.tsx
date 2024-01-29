@@ -16,9 +16,11 @@ import TableContent from '../Table/TableContent';
 import styles from './styles/InputGroup.less';
 import { useGeneralFeature } from './utils';
 
-const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap }) => (
+const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap, customClass }) => (
   <Row
-    className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
+    className={`${styles.inputGroupContainer} ${
+      hasHeight ? styles.heightInputGroup : ''
+    } ${customClass}`}
     gutter={0}
     align="middle"
     wrap={!noWrap}
@@ -50,6 +52,7 @@ interface InputGroupProps extends Omit<CustomInputProps, 'title'> {
   autoResize?: boolean;
   inputTitle?: string;
   inputClass?: string;
+  customClass?: string;
   labelTitle?: string;
 }
 
@@ -80,6 +83,7 @@ const InputGroup: FC<InputGroupProps> = ({
   inputTitle,
   inputClass = '',
   labelTitle,
+  customClass,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -196,7 +200,7 @@ const InputGroup: FC<InputGroupProps> = ({
   }
 
   return (
-    <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
+    <InputGroupContent hasHeight={hasHeight} noWrap={noWrap} customClass={customClass}>
       {renderLabel()}
       {renderInput()}
       {renderMessage()}

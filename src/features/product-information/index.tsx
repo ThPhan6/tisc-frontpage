@@ -62,7 +62,13 @@ export const ProductInformation = (props: productInformationProps) => {
         }
       >
         <div>
-          <FormGroup label="Product name" layout="horizontal" labelFontSize={4} noColon>
+          <FormGroup
+            label="Product name"
+            layout="horizontal"
+            labelFontSize={4}
+            noColon
+            customClass={styles.customFormGroup}
+          >
             <CustomTextArea
               maxWords={50}
               placeholder={editable ? 'type product name here' : ''}
@@ -70,9 +76,7 @@ export const ProductInformation = (props: productInformationProps) => {
               onChange={(e) => {
                 if (onChange) onChange({ ...dataToShow, product_name: e.target.value });
               }}
-              customClass={`${styles.customTextArea} ${
-                collapseStyles ? styles.productNamePaddingLeft50 : styles.productNamePaddingLeft14
-              } ${editable ? '' : styles.viewInfo}`}
+              customClass={`${styles.customTextArea}  ${editable ? '' : styles.viewInfo}`}
               readOnly={editable === false}
               autoResize
             />
@@ -80,6 +84,7 @@ export const ProductInformation = (props: productInformationProps) => {
 
           <InputGroup
             horizontal
+            customClass={styles.customInputGroup}
             fontLevel={4}
             containerClass={editable ? `` : styles.viewInfo}
             placeholder={editable ? 'type product ID here' : ''}
