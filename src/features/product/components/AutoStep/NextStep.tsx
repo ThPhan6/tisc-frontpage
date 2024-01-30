@@ -535,7 +535,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
           pickedData: pickedData.map((el) => ({
             ...el,
             subs: el.subs.map((item) => {
-              const optMatched = optionsSelected[slide === 0 ? 1 : curOrder]?.options?.find(
+              const optMatched = optionsSelected[slide === 0 ? 1 : curOrder - 1]?.options?.find(
                 (opt) => opt.id === item.id && opt.pre_option === item.pre_option,
               );
               return {
@@ -543,13 +543,14 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                 sub_id: el.id,
                 sub_name: el.name,
                 pre_option: slide === 0 ? undefined : item.pre_option,
-                replicate: optMatched
-                  ? optMatched.replicate
-                  : res.length > 0 &&
-                    item.id === curOptionSelected.id &&
-                    item.pre_option === curOptionSelected.pre_option
-                  ? 1
-                  : item.replicate,
+                replicate:
+                  optMatched && optMatched.replicate !== 0
+                    ? optMatched.replicate
+                    : res.length > 0 &&
+                      item.id === curOptionSelected.id &&
+                      item.pre_option === curOptionSelected.pre_option
+                    ? 1
+                    : item.replicate,
               };
             }),
           })),
@@ -690,6 +691,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
   const handleSelectLinkedOption =
     (option: AutoStepLinkedOptionResponse) =>
     (event: CheckboxChangeEvent | { isSelectedAll: boolean; options: CheckBoxOptionProps[] }) => {
+      console.log(option);
       const eachSubOptionSelected = (event as CheckboxChangeEvent)
         ?.target as CheckboxChangeEvent['target'] & {
         pre_option: string;
@@ -783,7 +785,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
         setOptionsSelected({
           order: curOrder - 1,
           options: optionsSelected[curOrder - 1].options.map((el) => {
-            const linkageNumber = getLinkage(el, optionsSelected[curOrder].options);
+            const linkageNumber = getLinkage(el, result);
             const replicate = linkageNumber === 0 ? 0 : el.replicate === 0 ? 1 : el.replicate;
             if (el.id === curPicked.id && curPicked.pre_option === el.pre_option) {
               return {
@@ -798,48 +800,48 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       );
 
       /// save all picked options ticked in first step
-      if (slide === 0) {
-        const subs = flatMap(option.subs.map((el) => el.subs));
+      // {
+      //   const subs = flatMap(option.subs.map((el) => el.subs));
 
-        /// get pre_option to compared
-        const otherOptions = subs.map((el) => el.pre_option) ?? [];
+      //   /// get pre_option to compared
+      //   const otherOptions = subs.map((el) => el.pre_option) ?? [];
+      //   console.log(pickedSubs);
+      //   const currentSubTicked = [...pickedSubs]
+      //     .filter((sub) => otherOptions.includes(sub.id))
+      //     .map((i) => ({
+      //       ...i,
+      //       replicate: i.replicate + 1,
+      //     }));
+      //   const currentSubTickedIds = currentSubTicked.map((el) => el.id);
 
-        const currentSubTicked = [...pickedSubs]
-          .filter((sub) => otherOptions.includes(sub.id))
-          .map((i) => ({
-            ...i,
-            replicate: i.replicate + 1,
-          }));
-        const currentSubTickedIds = currentSubTicked.map((el) => el.id);
+      //   const linkageAmount = sum(
+      //     result.map((el) => currentSubTickedIds.includes(el?.pre_option as string)),
+      //   );
 
-        const linkageAmount = sum(
-          result.map((el) => currentSubTickedIds.includes(el?.pre_option as string)),
-        );
+      //   if (optionsSelected[slide + 1]) {
+      //     /// remove option doesn't have any linkage
+      //     let newOptionSelectedInFirstStep =
+      //       linkageAmount > 0
+      //         ? uniqBy([...optionsSelected[slide + 1].options, ...currentSubTicked], (o) => o.id)
+      //         : [...optionsSelected[slide + 1].options].filter(
+      //             (el) => !currentSubTickedIds.includes(el.id),
+      //           );
 
-        if (optionsSelected[1]) {
-          /// remove option doesn't have any linkage
-          const newOptionSelectedInFirstStep =
-            linkageAmount > 0
-              ? uniqBy([...optionsSelected[1].options, ...currentSubTicked], (o) => o.id)
-              : [...optionsSelected[1].options].filter(
-                  (el) => !currentSubTickedIds.includes(el.id),
-                );
-
-          store.dispatch(
-            setOptionsSelected({
-              order: 1,
-              options: newOptionSelectedInFirstStep,
-            }),
-          );
-        } else {
-          store.dispatch(
-            setOptionsSelected({
-              order: 1,
-              options: linkageAmount > 0 ? currentSubTicked : [],
-            }),
-          );
-        }
-      }
+      //     store.dispatch(
+      //       setOptionsSelected({
+      //         order: slide + 1,
+      //         options: newOptionSelectedInFirstStep,
+      //       }),
+      //     );
+      //   } else {
+      //     store.dispatch(
+      //       setOptionsSelected({
+      //         order: slide + 1,
+      //         options: linkageAmount > 0 ? currentSubTicked : [],
+      //       }),
+      //     );
+      //   }
+      // }
 
       // get list option selected of next step
       if (optionsSelected[curOrder + 1]) {
@@ -896,9 +898,10 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                 (item.pre_option === curPicked.pre_option || slide === 0)
               ) {
                 const linkage = getLinkage(item, newOptionsSelected);
+                const newReplicate = linkage === 0 ? 0 : item.replicate === 0 ? 1 : item.replicate;
                 return {
                   ...item,
-                  replicate: linkage === 0 ? 0 : item.replicate > 0 ? item.replicate : 1,
+                  replicate: newReplicate,
                 };
               }
               return item;
