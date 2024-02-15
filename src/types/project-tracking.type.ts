@@ -57,6 +57,7 @@ export interface DesignerInfo {
 }
 
 export interface Project {
+  id: string;
   created_at: string;
   name: string;
   location: string;
@@ -97,6 +98,7 @@ export interface ProjectTrackingDetail {
 
 export const DEFAULT_PROJECT_TRACKING_DETAIL: ProjectTrackingDetail = {
   projects: {
+    id: '',
     created_at: '',
     name: '',
     location: '',

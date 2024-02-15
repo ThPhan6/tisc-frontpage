@@ -29,6 +29,7 @@ interface AttributeOptionProps {
   setChosenOptions?: (value: RadioValue) => void;
   clearOnClose?: boolean;
   isPublicPage: boolean;
+  isOpenOptionModal?: boolean;
 }
 export const AttributeOptionLabel: FC<{
   className?: string;
@@ -115,6 +116,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   setChosenOptions,
   clearOnClose,
   isPublicPage,
+  isOpenOptionModal,
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
@@ -134,12 +136,20 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
     return 'select';
   };
 
+  const handleOpenOptionModal = () => {
+    if (!isOpenOptionModal) {
+      return;
+    }
+
+    setVisible(true);
+  };
+
   return (
     <>
       <div
         className={`${styles.content}  product-attribute-option-wrapper`}
-        style={{ cursor: isPublicPage ? 'text' : undefined }}
-        onClick={() => setVisible(true)}
+        style={{ cursor: isPublicPage || !isOpenOptionModal ? 'text' : undefined }}
+        onClick={handleOpenOptionModal}
       >
         <BodyText
           level={6}

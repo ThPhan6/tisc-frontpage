@@ -1,10 +1,14 @@
 import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
+import { PATH } from '@/constants/path';
+import { message } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
+import { pushTo } from '@/helper/history';
+import { useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
@@ -26,6 +30,7 @@ import { ProjectTrackingTabs } from './Detail';
 import moment from 'moment';
 
 interface RequestsAndNotificationsProps {
+  projectId?: string;
   requestAndNotification: RequestAndNotificationDetail[];
   activeKey: ProjectTrackingTabs;
   setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
@@ -201,6 +206,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
   activeKey,
   setData,
+  projectId,
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
@@ -220,6 +226,21 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
 
       return newData;
     });
+  };
+
+  const handleShowProjectProduct = () => {
+    // if (!projectId) {
+    //   message.error('Project not found');
+    //   return;
+    // }
+
+    pushTo(
+      PATH.designerUpdateProject.replace(
+        ':id',
+        '38ba3ca1-db51-47c4-8b9f-ef2a1b7aafae',
+        /* projectId */
+      ),
+    );
   };
 
   return (
@@ -242,6 +263,17 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             handleCloseDetailItem={handleCloseDetailItem}
           />
           <div className={`footer-button ${styles.cancelButton}`}>
+            {activeKey === 'request' ? (
+              <CustomButton
+                size="small"
+                variant="primary"
+                properties="rounded"
+                onClick={handleShowProjectProduct}
+              >
+                Request detail
+              </CustomButton>
+            ) : null}
+
             <CustomButton
               size="small"
               variant="primary"

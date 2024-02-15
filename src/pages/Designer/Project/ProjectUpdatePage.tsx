@@ -4,7 +4,7 @@ import { ProjectTabKeys } from './constants/tab';
 import { useAccess } from 'umi';
 
 import { getProjectById } from '@/features/project/services';
-import { useGetParamId } from '@/helper/hook';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import type { ProjectDetailProps } from '@/features/project/types';
 
@@ -23,6 +23,7 @@ const ProjectUpdatePage: React.FC = () => {
   const zoneAreaRoomTab = accessPermission.design_project_zone_area_zoom;
   const productConsideredTab = accessPermission.design_project_product_considered;
   const productSpecifiedTab = accessPermission.design_project_product_specified;
+  const brandProjectTrackingRequestTab = accessPermission.brand_project_tracking;
 
   const getCurrentActiveTab = () => {
     if (basicInformationTab) {
@@ -56,15 +57,15 @@ const ProjectUpdatePage: React.FC = () => {
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} project={project} />
 
       <CustomTabPane
-        active={selectedTab === ProjectTabKeys.basicInformation}
-        disable={!basicInformationTab}
+        active={selectedTab === ProjectTabKeys.basicInformation && !brandProjectTrackingRequestTab}
+        disable={!basicInformationTab || brandProjectTrackingRequestTab}
       >
         <GeneralInformation project={project} setProject={setProject} />
       </CustomTabPane>
 
       <CustomTabPane
-        active={selectedTab === ProjectTabKeys.zoneAreaRoom}
-        disable={!zoneAreaRoomTab}
+        active={selectedTab === ProjectTabKeys.zoneAreaRoom && !brandProjectTrackingRequestTab}
+        disable={!zoneAreaRoomTab || brandProjectTrackingRequestTab}
         lazyLoad
         forceReload
       >
@@ -72,8 +73,8 @@ const ProjectUpdatePage: React.FC = () => {
       </CustomTabPane>
 
       <CustomTabPane
-        active={selectedTab === ProjectTabKeys.productConsidered}
-        disable={!productConsideredTab}
+        active={selectedTab === ProjectTabKeys.productConsidered && !brandProjectTrackingRequestTab}
+        disable={!productConsideredTab || brandProjectTrackingRequestTab}
         lazyLoad
         forceReload
       >
@@ -82,7 +83,7 @@ const ProjectUpdatePage: React.FC = () => {
 
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.productSpecified}
-        disable={!productSpecifiedTab}
+        disable={!productSpecifiedTab && !brandProjectTrackingRequestTab}
         lazyLoad
         forceReload
       >

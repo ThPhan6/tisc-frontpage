@@ -13,6 +13,7 @@ import {
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductsByBrand } from '@/features/project/services';
+import { useCheckPermission } from '@/helper/hook';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
@@ -37,6 +38,8 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, {
     isSpecified: true,
   });
+
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
 
   const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
@@ -161,7 +164,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       align: 'center',
       width: '5%',
       noBoxShadow: true,
-      render: renderActionCell(setSpecifyingProduct, tableRef),
+      render: renderActionCell(setSpecifyingProduct, tableRef, false, !isBrandUser),
     },
   ];
 

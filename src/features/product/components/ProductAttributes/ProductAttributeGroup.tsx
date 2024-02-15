@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 
 import { Popover, message } from 'antd';
+import { useAccess } from 'umi';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
@@ -90,7 +91,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   noBorder,
   curProductId,
   isSpecifiedModal, /// using for both specifing modal on product considered and product specified
-  // isSpecified, /// using for specifying modal on product specified
+  isSpecified, /// using for specifying modal on product specified
   icon,
 }) => {
   const isTablet = useScreen().isTablet;
@@ -110,7 +111,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   // const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
-  // const isBrandAdmin = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isBrandAdmin = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isBrandSpecified = isBrandAdmin && isSpecified;
   const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
@@ -119,6 +121,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const [curAttributeSelect, setCurAttributeSelect] = useState<AttributeSelectedProps>(
     ATTRIBUTE_SELECTED_DEFAULT_VALUE,
   );
+
+  const [images, setImages] = useState<any>([]);
 
   /// for specification choice attribute
   const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
@@ -182,7 +186,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     store.dispatch(closeDimensionWeightGroup());
     store.dispatch(closeProductInformationGroup());
   };
-  const [images, setImages] = useState<any>([]);
 
   useEffect(() => {
     if (!attrGroupItem.isChecked) {
@@ -668,6 +671,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       );
     }
 
+    const group = attributeGroup[groupIndex];
+
     const renderAttributeOption = () => (
       <tr className={styles.attributeSubItem} key={attribute.id}>
         <td className={styles.attributeName}>
@@ -686,6 +691,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           <AttributeOption
             title={attrGroupItem.name}
             isPublicPage={isPublicPage}
+            isOpenOptionModal={
+              !isBrandSpecified ||
+              (!!isBrandSpecified && !!group.isChecked && isAttributeGroupSelected)
+            }
             attributeName={attribute.name}
             options={attribute.basis_options ?? []}
             chosenOption={
@@ -862,8 +871,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
                 {isEditable ? null : (
                   <div className={styles.stepImages}>
-                    {images?.map((step, stepIdx) =>
-                      step.options.map((option, optionIdx) => {
+                    {images?.map((step: any, stepIdx: number) =>
+                      step.options.map((option: any, optionIdx: number) => {
                         return (
                           <div
                             key={`${step.id}_${option.id}_${stepIdx}_${optionIdx}`}
