@@ -26,6 +26,7 @@ interface SelectAttributeSpecificationChoiceProps {
   setCollapsible: (collapsible: ActiveKeyType) => void;
   onCheckedAttributeOption?: (isOptChecked: boolean) => void;
   onCheckedAttributeGroup?: (isOptChecked: boolean) => void;
+  disabled?: boolean;
 }
 
 export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecificationChoiceProps> = ({
@@ -40,6 +41,7 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
   setCollapsible,
   onCheckedAttributeOption,
   onCheckedAttributeGroup,
+  disabled,
 }) => {
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
@@ -48,6 +50,14 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
   const { onSelectSpecificationOption } = useProductAttributeForm(activeKey, productId, {
     isSpecifiedModal,
   });
+
+  const handleOnChangeCollapse = (key: string | string[]) => {
+    if (disabled) {
+      return;
+    }
+
+    setCollapsible(key);
+  };
 
   if (isTiscAdmin || activeKey !== 'specification' || !attrGroupItem.selection) {
     return null;
@@ -59,7 +69,8 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
       className={styles.noBoxShadow}
       expandIcon={({ isActive }) => (isActive ? <ActionUpIcon /> : <ActionDownIcon />)}
       activeKey={collapsible}
-      onChange={setCollapsible}
+      arrowHidden={disabled}
+      onChange={handleOnChangeCollapse}
       header={
         <div className="specification-choice">
           <BodyText level={4}>Choose Specification</BodyText>
@@ -68,7 +79,9 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
             color={curAttributeSelect.attribute?.id ? 'primary-color-dark' : 'mono-color-medium'}
             customClass={`${isSpecifiedModal ? 'header-label' : 'label-space'}`}
           >
-            {curAttributeSelect.attribute?.name || 'select'}
+            {disabled && !curAttributeSelect.attribute?.name
+              ? ''
+              : curAttributeSelect.attribute?.name || 'select'}
           </RobotoBodyText>
         </div>
       }
@@ -86,6 +99,10 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
                 isSpecifiedModal ? 'left-none' : 'left-space'
               }`}
               onClick={async () => {
+                if (disabled) {
+                  return;
+                }
+
                 if (attrGroupItem.id && attrGroupItem.attributes.length) {
                   const newSelectAttribute: AttributeSelectedProps = {
                     groupId: attrGroupItem.id,

@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
 import { Popover, message } from 'antd';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
@@ -8,7 +9,12 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 import { getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckBrandSpecified, useCheckPermission, useQuery } from '@/helper/hook';
+import {
+  useCheckBrandSpecified,
+  useCheckPermission,
+  useGetQueryFromOriginURL,
+  useQuery,
+} from '@/helper/hook';
 import { showImageUrl, sortObjectArray } from '@/helper/utils';
 import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
@@ -32,6 +38,7 @@ import {
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
+  SpecificationType,
 } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,
@@ -110,7 +117,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   // const user = useAppSelector((state) => state.user.user);
 
+  /// Currently, using to tracking brand user accesses to project page
   const isBrandSpecified = useCheckBrandSpecified(!!isSpecified);
+
+  /// Currently, using to tracking brand user accesses to product detail page from assistance request of project request
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   // const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
@@ -118,6 +129,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   const signature = useQuery().get('signature') ?? '';
   const isPublicPage = !!signature;
+
+  const hideAction = isPublicPage || !!projectProductId;
 
   const [curAttributeSelect, setCurAttributeSelect] = useState<AttributeSelectedProps>(
     ATTRIBUTE_SELECTED_DEFAULT_VALUE,
@@ -145,7 +158,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
-  const showTISCAutoSteps = !isPublicPage && isEditable;
+  const showTISCAutoSteps = hideAction && isEditable;
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -528,6 +541,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     setAutoStepModal(true);
   };
 
+  console.log('attributeGroup', attributeGroup);
+
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
 
@@ -572,7 +587,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const attributeSelectedContent = attributeSelected.join('; ');
     return (
       <div className={styles.attrGroupTitle}>
-        {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
+        {!hideAction && activeKey === 'specification' && haveOptionAttr ? (
           <div className="flex-between">
             <div
               className="flex-start"
@@ -597,7 +612,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
                   }
                 }}
-                disabled={!group.isChecked}
+                disabled={!group.isChecked || !!projectProductId}
                 checkboxClass={styles.customLabel}
               />
               <RobotoBodyText level={6}>{group.name}</RobotoBodyText>
@@ -699,8 +714,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <td className={styles.attributeDescription}>
           <AttributeOption
             title={attrGroupItem.name}
-            isPublicPage={isPublicPage}
-            isOpenOptionModal={!isBrandSpecified || isAttributeSelected}
+            hideSelect={hideAction || (isBrandSpecified && !isAttributeSelected)}
             labelRowTitle={
               isBrandSpecified && isAttributeSelected ? 'brand can re-select' : undefined
             }
@@ -749,6 +763,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     return null;
   };
+
   return (
     <div key={groupIndex} style={{ marginBottom: 8, marginTop: isEditable ? undefined : 8 }}>
       <div className={styles.attributes}>
@@ -776,7 +791,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             ) : null}
 
-            {isPublicPage ? null : (
+            {hideAction ? null : (
               <SelectAttributeSpecificationChoice
                 activeKey={activeKey}
                 attributeGroup={attributeGroup}
@@ -801,11 +816,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                         <React.Fragment key={step.id ?? stepIndex}>
                           <tr
                             key={stepIndex}
-                            className={`${isPublicPage ? 'cursor-default' : 'cursor-pointer'} ${
+                            className={`${hideAction ? 'cursor-default' : 'cursor-pointer'} ${
                               styles.autoStepTr
                             }`}
                             onClick={
-                              isPublicPage
+                              hideAction
                                 ? undefined
                                 : showTISCAutoSteps
                                 ? handleOpenAutoStepModal(stepIndex)
@@ -813,7 +828,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                             }
                           >
                             <td style={{ width: '20%' }}>
-                              <div className={`${isPublicPage ? '' : 'flex-between'}`}>
+                              <div className={`${hideAction ? '' : 'flex-between'}`}>
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
                                     fontFamily="Cormorant-Garamond"
@@ -833,7 +848,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                               </div>
                             </td>
                             <td style={{ width: '80%' }}>
-                              <div className={`${isPublicPage ? '' : 'flex-between'}`}>
+                              <div className={`${hideAction ? '' : 'flex-between'}`}>
                                 <div className="flex-start flex-grow text-overflow">
                                   <BodyText
                                     fontFamily="Roboto"
@@ -853,7 +868,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                       .join(', ')}
                                   </BodyText>
                                 </div>
-                                {isPublicPage ? null : (
+                                {hideAction ? null : (
                                   <div className="flex-start">
                                     <ActionRightLeftIcon
                                       style={{
@@ -945,11 +960,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               className={`${
                 isSpecifiedModal
                   ? styles.paddingNone
-                  : attrGroupItem?.attributes?.length
-                  ? styles.paddingRounded
+                  : (isTiscAdmin && attrGroupItem?.attributes?.length) ||
+                    (attrGroupItem?.attributes?.length && !attrGroupItem.selection)
+                  ? // attrGroupItem?.attributes?.length
+                    styles.paddingRounded
                   : ''
               } ${
-                attrGroupItem.selection && !isTiscAdmin && !isPublicPage
+                attrGroupItem.selection && !isTiscAdmin && !hideAction
                   ? styles.paddingWrapper
                   : styles.colorInput
               } ${styles.tableContent}`}
@@ -966,7 +983,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         </div>
       </div>
 
-      {attributeGroupKey === 'specification_attribute_groups' || !isPublicPage ? (
+      {attributeGroupKey === 'specification_attribute_groups' || !hideAction ? (
         showTISCAutoSteps ? (
           <AutoStep
             attributeGroup={attributeGroup}

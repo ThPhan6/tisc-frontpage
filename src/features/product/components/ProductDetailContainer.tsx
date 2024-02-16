@@ -19,7 +19,7 @@ import {
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
+import { useGetQueryFromOriginURL, useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
@@ -85,6 +85,8 @@ const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
+
   const signature = useQuery().get('signature') || '';
   // set signature  to cookies
   Cookies.set('signature', signature);
@@ -103,7 +105,9 @@ const ProductDetailContainer: React.FC = () => {
 
   const details = useAppSelector((state) => state.product.details);
 
-  const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
+  const [activeKey, setActiveKey] = useState<ProductInfoTab>(
+    projectProductId ? 'specification' : 'general',
+  );
   const [title, setTitle] = useState<string>('');
 
   useEffect(() => {
@@ -238,8 +242,6 @@ const ProductDetailContainer: React.FC = () => {
       catelogue_downloads: details.catelogue_downloads,
     };
 
-    console.log('data', data.specification_attribute_groups);
-
     if (productId) {
       updateProductCard(productId, data);
       return;
@@ -256,12 +258,19 @@ const ProductDetailContainer: React.FC = () => {
   const query = useQuery();
 
   const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
+  const newTabFromRequest = query.get(QUERY_KEY.new_tab_from_request);
 
   const handleCloseProductDetail = () => {
+    if (newTabFromRequest) {
+      pushTo(PATH.brandHomePage);
+      return;
+    }
+
     if (!noPreviousPage) {
       history.goBack();
       return;
     }
+
     pushTo(
       getValueByCondition(
         [

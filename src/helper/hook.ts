@@ -5,7 +5,7 @@ import { useLocation, useModel, useParams } from 'umi';
 
 import { useAppSelector } from '@/reducers';
 
-import { redirectAfterLogin } from './utils';
+import { getQueryVariableFromOriginURL, redirectAfterLogin } from './utils';
 import access from '@/access';
 
 export function useDefault<T>(defaultValue: T) {
@@ -91,6 +91,11 @@ export const useCheckBrandSpecified = (isSpecified: boolean) => {
   const brandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
 
   return brandUser && isSpecified;
+};
+
+export const useGetQueryFromOriginURL = (queryKey: string) => {
+  const query = getQueryVariableFromOriginURL(window.location.href);
+  return query[queryKey];
 };
 
 export const useGetUserRoleFromPathname = () => {

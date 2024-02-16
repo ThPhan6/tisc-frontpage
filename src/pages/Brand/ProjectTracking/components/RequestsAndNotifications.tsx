@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
 import { PATH } from '@/constants/path';
+import { NEW_TAB_FROM_REQUEST_QUERY, NEW_TAB_QUERY } from '@/constants/util';
 import { message } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
@@ -111,7 +112,14 @@ const DetaiItem: FC<DetaiItemProps> = ({
   setData,
   indexItem,
   handleCloseDetailItem,
+  projectId,
 }) => {
+  // const linkText = projectId
+  //   ? `${window.location.origin}/brand/product/${detailItem.product.id}?project_product_id=${projectId}${NEW_TAB_FROM_REQUEST_QUERY}`
+  //   : `${window.location.origin}/brand/product/${detailItem.product.id}${NEW_TAB_FROM_REQUEST_QUERY}`;
+
+  const linkText = `${window.location.origin}/brand/product/${detailItem.product.id}?project_product_id=1178c26d-6d58-48f5-8b6c-951323437a4e&${NEW_TAB_FROM_REQUEST_QUERY}`;
+
   return (
     <div style={{ overflow: 'auto' }} className={`mainContent ${styles.detailContent}`}>
       <TableHeader
@@ -135,13 +143,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
         text_1={detailItem.product.collection_name}
         text_2={detailItem.product.description}
         text_3={
-          <a
-            href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: '#000' }}
-          >
-            {window.location.origin}/brand/product/{detailItem.product.id}
+          <a href={linkText} target="_blank" rel="noreferrer" title={linkText}>
+            {linkText}
           </a>
         }
         customClass={styles.brandProduct}
@@ -256,6 +259,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
       ) : (
         <>
           <DetaiItem
+            projectId={projectId}
             detailItem={detailItem}
             indexItem={indexItem}
             activeKey={activeKey}
