@@ -87,6 +87,12 @@ export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType
     : allowRoles.some((role) => access_level.includes(role.toLocaleLowerCase()));
 };
 
+export const useCheckBrandSpecified = (isSpecified: boolean) => {
+  const brandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+
+  return brandUser && isSpecified;
+};
+
 export const useGetUserRoleFromPathname = () => {
   return useLocation().pathname.split('/')[1] as USER_ROLE;
 };

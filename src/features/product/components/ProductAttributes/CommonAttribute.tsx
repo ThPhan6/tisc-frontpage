@@ -30,6 +30,7 @@ interface AttributeOptionProps {
   clearOnClose?: boolean;
   isPublicPage: boolean;
   isOpenOptionModal?: boolean;
+  labelRowTitle?: string;
 }
 export const AttributeOptionLabel: FC<{
   className?: string;
@@ -117,6 +118,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   clearOnClose,
   isPublicPage,
   isOpenOptionModal,
+  labelRowTitle,
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
@@ -156,6 +158,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
           fontFamily="Roboto"
           customClass={isPublicPage ? styles.content_select : ''}
           color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
+          title={labelRowTitle}
         >
           {showChosenOption()}
         </BodyText>

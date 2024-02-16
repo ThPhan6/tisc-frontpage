@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 
 import { Popover, message } from 'antd';
-import { useAccess } from 'umi';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
@@ -9,7 +8,7 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 import { getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckPermission, useQuery } from '@/helper/hook';
+import { useCheckBrandSpecified, useCheckPermission, useQuery } from '@/helper/hook';
 import { showImageUrl, sortObjectArray } from '@/helper/utils';
 import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
@@ -79,6 +78,7 @@ interface ProductAttributeGroupProps extends ProductAttributeContainerProps {
   groupIndex: number;
   curProductId: string;
   icon?: JSX.Element;
+  prevAttributeGroupSelectedIds: string[];
 }
 
 export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
@@ -93,6 +93,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   isSpecifiedModal, /// using for both specifing modal on product considered and product specified
   isSpecified, /// using for specifying modal on product specified
   icon,
+  prevAttributeGroupSelectedIds,
 }) => {
   const isTablet = useScreen().isTablet;
 
@@ -109,10 +110,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   // const user = useAppSelector((state) => state.user.user);
 
+  const isBrandSpecified = useCheckBrandSpecified(!!isSpecified);
+
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   // const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
-  const isBrandAdmin = useCheckPermission(['Brand Admin', 'Brand Team']);
-  const isBrandSpecified = isBrandAdmin && isSpecified;
   const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
@@ -573,7 +574,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <div className={styles.attrGroupTitle}>
         {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
           <div className="flex-between">
-            <div className="flex-start">
+            <div
+              className="flex-start"
+              title={
+                isBrandSpecified && prevAttributeGroupSelectedIds.includes(group.id)
+                  ? 'brand can re-select'
+                  : undefined
+              }
+            >
               <CustomCheckbox
                 options={[{ label: '', value: grIndex }]}
                 selected={
@@ -672,6 +680,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     const group = attributeGroup[groupIndex];
+    const isAttributeSelected = prevAttributeGroupSelectedIds.includes(group.id);
 
     const renderAttributeOption = () => (
       <tr className={styles.attributeSubItem} key={attribute.id}>
@@ -691,9 +700,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           <AttributeOption
             title={attrGroupItem.name}
             isPublicPage={isPublicPage}
-            isOpenOptionModal={
-              !isBrandSpecified ||
-              (!!isBrandSpecified && !!group.isChecked && isAttributeGroupSelected)
+            isOpenOptionModal={!isBrandSpecified || isAttributeSelected}
+            labelRowTitle={
+              isBrandSpecified && isAttributeSelected ? 'brand can re-select' : undefined
             }
             attributeName={attribute.name}
             options={attribute.basis_options ?? []}

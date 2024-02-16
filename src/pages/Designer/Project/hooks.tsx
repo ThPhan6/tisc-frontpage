@@ -17,6 +17,7 @@ import {
 import { confirmDelete } from '@/helper/common';
 
 import {
+  setBrandSpecifiedPartialProductSpecifiedData,
   setPartialProductDetail,
   setPartialProductSpecifiedData,
   setReferToDesignDocument,
@@ -125,6 +126,21 @@ export const onOpenSpecifiyingProductModal = (record: ProjectProductItem) => {
   } else {
     store.dispatch(
       setPartialProductSpecifiedData({
+        ...record.specifiedDetail,
+        specification: {
+          is_refer_document: record.specifiedDetail.specification?.is_refer_document || false,
+          attribute_groups:
+            record.specifiedDetail.specification?.attribute_groups?.map((el) => ({
+              ...el,
+              isChecked: el.isChecked === undefined ? true : el.isChecked,
+            })) || [],
+        },
+      }),
+    );
+
+    /// save group selected for brand user can re-select after modifying
+    store.dispatch(
+      setBrandSpecifiedPartialProductSpecifiedData({
         ...record.specifiedDetail,
         specification: {
           is_refer_document: record.specifiedDetail.specification?.is_refer_document || false,
