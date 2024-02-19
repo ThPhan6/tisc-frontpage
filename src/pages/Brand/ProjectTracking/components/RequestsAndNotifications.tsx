@@ -269,8 +269,9 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
                 variant="primary"
                 properties="rounded"
                 onClick={handleShowProjectProduct}
+                style={{ padding: '0px 16px' }}
               >
-                Request detail
+                Request Detail
               </CustomButton>
             ) : null}
 

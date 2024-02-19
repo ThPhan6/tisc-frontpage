@@ -55,6 +55,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
   activeOnlyGeneral,
 }) => {
   const accessPermission = useAccess();
+
   const history = useHistory();
 
   const ProjectTabs: TabItem[] = [
@@ -80,7 +81,9 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
       tab: 'product specified',
       tabletTabTitle: 'Specified',
       key: ProjectTabKeys.productSpecified,
-      disable: !accessPermission.design_project_product_specified,
+      disable:
+        !accessPermission.design_project_product_specified &&
+        !accessPermission.brand_project_tracking,
     },
   ];
 
