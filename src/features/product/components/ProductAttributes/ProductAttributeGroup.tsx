@@ -158,7 +158,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
     []) as AutoStepOnAttributeGroupResponse[];
 
-  const showTISCAutoSteps = hideAction && isEditable;
+  const showTISCAutoSteps = !hideAction && isEditable;
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -540,8 +540,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
     setAutoStepModal(true);
   };
-
-  console.log('attributeGroup', attributeGroup);
 
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
