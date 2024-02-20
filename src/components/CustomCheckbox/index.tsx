@@ -21,6 +21,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   checkboxClass = '',
   heightItem = '32px',
   chosenItems,
+  additionalSelected,
+  onChangeAdditionalSelected,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -126,6 +128,20 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   onOneChange?.(e);
                 }}
               />
+
+              {additionalSelected && onChangeAdditionalSelected ? (
+                <input
+                  style={{ marginRight: 4 }}
+                  type="checkbox"
+                  id={option.value.toString()}
+                  name="defaultSelect"
+                  value={option.value}
+                  checked={additionalSelected.includes(option.value.toString())}
+                  onChange={() => {
+                    onChangeAdditionalSelected(option.value.toString(), option);
+                  }}
+                />
+              ) : null}
             </label>
           ) : (
             <div

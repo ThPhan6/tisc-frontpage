@@ -104,6 +104,7 @@ const ProductDetailContainer: React.FC = () => {
   const isDesignerUser = currentUser === USER_ROLE.design;
 
   const details = useAppSelector((state) => state.product.details);
+  console.log(details.specification_attribute_groups);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>(
     projectProductId ? 'specification' : 'general',

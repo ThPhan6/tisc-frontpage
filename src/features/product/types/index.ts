@@ -85,6 +85,7 @@ export interface ProductAttributeFormInput {
   isChecked?: boolean; // attribute group checked
   attribute_selected_id?: string;
   type?: SpecificationType; /// on specification tab
+  defaultPreSelect?: any;
 }
 
 export interface ProductAttributeFormInputWhenCreateStep {
