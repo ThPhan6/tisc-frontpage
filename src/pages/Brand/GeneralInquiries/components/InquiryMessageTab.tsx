@@ -27,7 +27,6 @@ export const InquiryMessageTab: FC<{
             href={`${window.location.origin}/brand/product/${product.id}`}
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#000' }}
           >
             {window.location.origin}/brand/product/{product.id}
           </a>

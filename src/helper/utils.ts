@@ -476,3 +476,26 @@ export const sortObjectArray = (items: any[], field: string, order: 'asc' | 'des
 
   return items.sort(compare);
 };
+
+export const getQueryVariableFromOriginURL = (originURL: string): Record<string, string> => {
+  let pairs: string[] = [];
+
+  const vars = originURL.split('&');
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split('?');
+
+    pairs = pairs.concat(pair);
+  }
+
+  const queryPairs = pairs.splice(1, pairs.length - 1);
+
+  let result = {};
+
+  for (const queryPair of queryPairs) {
+    const [key, value] = queryPair.split('=');
+
+    result = { ...result, [key]: value };
+  }
+
+  return result;
+};

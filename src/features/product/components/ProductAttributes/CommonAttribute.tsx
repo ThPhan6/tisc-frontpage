@@ -28,8 +28,7 @@ interface AttributeOptionProps {
   chosenOption?: RadioValue;
   setChosenOptions?: (value: RadioValue) => void;
   clearOnClose?: boolean;
-  isPublicPage: boolean;
-  isOpenOptionModal?: boolean;
+  hideSelect?: boolean;
   labelRowTitle?: string;
 }
 export const AttributeOptionLabel: FC<{
@@ -116,9 +115,8 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   chosenOption,
   setChosenOptions,
   clearOnClose,
-  isPublicPage,
-  isOpenOptionModal,
   labelRowTitle,
+  hideSelect,
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
@@ -131,7 +129,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
       return chosenOption.label;
     }
 
-    if (isPublicPage) {
+    if (hideSelect) {
       return '';
     }
 
@@ -139,7 +137,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   };
 
   const handleOpenOptionModal = () => {
-    if (!isOpenOptionModal) {
+    if (hideSelect) {
       return;
     }
 
@@ -150,25 +148,25 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
     <>
       <div
         className={`${styles.content}  product-attribute-option-wrapper`}
-        style={{ cursor: isPublicPage || !isOpenOptionModal ? 'text' : undefined }}
+        style={{ cursor: hideSelect ? 'text' : undefined }}
         onClick={handleOpenOptionModal}
       >
         <BodyText
           level={6}
           fontFamily="Roboto"
-          customClass={isPublicPage ? styles.content_select : ''}
+          customClass={hideSelect ? styles.content_select : ''}
           color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
           title={labelRowTitle}
         >
           {showChosenOption()}
         </BodyText>
-        {isPublicPage ? null : (
+        {hideSelect ? null : (
           <div style={{ width: 16, height: 16, marginLeft: 8 }}>
             <ActionRightIcon className={styles.singlerRighIcon} />
           </div>
         )}
       </div>
-      {isPublicPage ? null : (
+      {hideSelect ? null : (
         <Popover
           title={title}
           visible={visible}
