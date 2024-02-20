@@ -778,6 +778,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               isSpecifiedModal ? styles.specifying : ''
             }`}
             header={renderCollapseHeader(groupIndex)}
+            collapsible={
+              isBrandSpecified &&
+              attrGroupItem.attributes.every((el) => el.type === 'Options') &&
+              !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)
+                ? 'disabled'
+                : undefined
+            }
           >
             {isEditable && attributes ? (
               <SelectAttributesToGroupRow

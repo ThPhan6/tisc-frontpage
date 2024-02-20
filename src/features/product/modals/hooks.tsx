@@ -100,6 +100,10 @@ export const useAssignProductToSpaceForm = (
           .filter((area) => area.rooms.length)
       : zone.areas;
 
+    if (isBrandUser && !areaList.length) {
+      return null;
+    }
+
     return (
       <CustomCollapse
         key={zone.id}
