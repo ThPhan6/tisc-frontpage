@@ -35,7 +35,7 @@ import { ProjectTrackingTabs } from './Detail';
 import moment from 'moment';
 
 interface RequestsAndNotificationsProps {
-  projectProductId?: string;
+  projectId?: string;
   requestAndNotification: RequestAndNotificationDetail[];
   activeKey: ProjectTrackingTabs;
   setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
@@ -116,14 +116,12 @@ const DetaiItem: FC<DetaiItemProps> = ({
   setData,
   indexItem,
   handleCloseDetailItem,
-  projectProductId,
+  projectId,
 }) => {
-  // const linkText =
-  //   projectProductId && detailItem.requestFor === ProjectTrackingEnum['Assistance request']
-  //     ? `${window.location.origin}/brand/product/${detailItem.product.id}?project_product_id=${projectProductId}?${NEW_TAB_FROM_REQUEST_QUERY}`
-  //     : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
-
-  const linkText = `${window.location.origin}/brand/product/${detailItem.product.id}?project_product_id=1178c26d-6d58-48f5-8b6c-951323437a4e&${NEW_TAB_FROM_REQUEST_QUERY}`;
+  const linkText =
+    projectId && detailItem.requestFor === ProjectTrackingEnum['Assistance request']
+      ? `${window.location.origin}/brand/product/${detailItem.product.id}?project_id=${projectId}?${NEW_TAB_FROM_REQUEST_QUERY}`
+      : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
 
   return (
     <div style={{ overflow: 'auto' }} className={`mainContent ${styles.detailContent}`}>
@@ -214,7 +212,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
   activeKey,
   setData,
-  projectProductId,
+  projectId,
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
@@ -237,18 +235,12 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   };
 
   const handleShowProjectProduct = () => {
-    // if (!projectProductId) {
-    //   message.error('Project not found');
-    //   return;
-    // }
+    if (!projectId) {
+      message.error('Project not found');
+      return;
+    }
 
-    pushTo(
-      PATH.designerUpdateProject.replace(
-        ':id',
-        '38ba3ca1-db51-47c4-8b9f-ef2a1b7aafae',
-        /* projectProductId */
-      ),
-    );
+    pushTo(PATH.designerUpdateProject.replace(':id', projectId));
   };
 
   return (
@@ -264,7 +256,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
       ) : (
         <>
           <DetaiItem
-            projectProductId={projectProductId}
+            projectId={projectId}
             detailItem={detailItem}
             indexItem={indexItem}
             activeKey={activeKey}

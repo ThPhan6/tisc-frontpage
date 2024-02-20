@@ -121,7 +121,7 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
 
             <CustomTabPane active={activeKey === 'request'}>
               <RequestsAndNotifications
-                projectProductId={data.projects.id}
+                projectId={data.projects.id}
                 activeKey={activeKey}
                 setData={setData}
                 requestAndNotification={data.projectRequests.map((el) => ({
