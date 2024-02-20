@@ -35,6 +35,8 @@ interface DropdownCheckboxListProps {
   isSelectAll?: boolean;
   forceEnableCollapse?: boolean;
   showCollapseIcon?: boolean;
+  additionalSelected?: string[];
+  onChangeAdditionalSelected?: (value: string) => void;
 }
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const {
@@ -52,6 +54,8 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     forceEnableCollapse = true,
     isSelectAll,
     showCollapseIcon,
+    additionalSelected,
+    onChangeAdditionalSelected,
   } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
@@ -282,6 +286,8 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
 
               onChange?.([...changedData, ...otherSelected]);
             }}
+            additionalSelected={additionalSelected}
+            onChangeAdditionalSelected={onChangeAdditionalSelected}
           />
         </Collapse.Panel>
       ))}

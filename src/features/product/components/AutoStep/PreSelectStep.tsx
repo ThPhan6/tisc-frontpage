@@ -48,7 +48,8 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   viewStepsDefault,
   quantitiesDefault,
 }) => {
-  const defaultSelectedProductIds = 'AL2404TSAD';
+  // const defaultSelectedProductIds = 'AL2404TSAD';
+
   const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
@@ -70,6 +71,12 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const [leftSelectedOption, setLeftSelectedOption] = useState<any>({});
   // on the right panel
   const { slideBars, slide, firstOptionSelected } = useAppSelector((state) => state.autoStep);
+  const defaultPreSelect =
+    details.specification_attribute_groups.find((item) => item.id === currentSpecAttributeGroupId)
+      ?.defaultPreSelect || [];
+  const defaultSelectedProductIds = defaultPreSelect
+    .map((item: string) => item.split('_')[0])
+    .join(',');
   useEffect(() => {
     const newViewSteps = viewSteps.map((step: any) => {
       return {
@@ -102,19 +109,20 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     });
     let totalQuantityTemp = 0;
 
+    let defaultQuantities: any = {};
     const rightPanelData = uniqBy(addedRealSelectId, 'id').map((item: any) => {
       let quantity = quantities[item.select_id] || 0;
       if (
         selectId &&
-        defaultSelectedProductIds.split(',').includes(item.product_id) &&
+        defaultSelectedProductIds.split(',').includes(item.id) &&
         !appliedDefault[selectId]
       ) {
         setAppliedDefault({ ...appliedDefault, [selectId]: true });
         quantity = 1;
-        setQuantities({
-          ...quantities,
+        defaultQuantities = {
+          ...defaultQuantities,
           [item.select_id]: 1,
-        });
+        };
       }
       totalQuantityTemp += quantity;
       return {
@@ -123,7 +131,10 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
         picked: quantity > 0,
       };
     });
-
+    setQuantities({
+      ...quantities,
+      ...defaultQuantities,
+    });
     setTempRight(rightPanelData);
     totalQuantity.setValue(totalQuantityTemp);
   };
@@ -395,7 +406,12 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
     (option: OptionQuantityProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
+
       const selectId = option.select_id || `${option.pre_option},${option.id}`;
+
+      if (defaultSelectedProductIds.includes(option.id) && quantities[`${selectId}`] === 1) {
+        return;
+      }
       const newQuantity =
         quantities[`${selectId}`] && quantities[`${selectId}`] > 0
           ? quantities[`${selectId}`] - 1

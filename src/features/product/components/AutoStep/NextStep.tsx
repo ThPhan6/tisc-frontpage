@@ -40,6 +40,7 @@ import {
   OptionReplicateResponse,
 } from '../../types/autoStep';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
@@ -59,7 +60,6 @@ interface NextStepProps {
 }
 export const NextStep: FC<NextStepProps> = ({}) => {
   const [forceEnableCollapse, setForceEnableCollapse] = useState<boolean>(false);
-
   // const [allOptionPickedIds, setAllOptionPickedIds] = useState<string[]>([]);
 
   const { slide, slideBars, step, optionsSelected, linkedOptionData, allOptionPickedIds } =
@@ -67,11 +67,15 @@ export const NextStep: FC<NextStepProps> = ({}) => {
 
   let curOrder = slide;
   curOrder += 2;
-
   const pickedData = linkedOptionData?.[slide]?.pickedData ?? [];
   const linkedData = linkedOptionData?.[slide]?.linkedData ?? [];
   const userRole = useGetUserRoleFromPathname();
-
+  const details = useAppSelector((state) => state.product.details);
+  const attributeGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
+  const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
+  const defaultPreSelect =
+    details.specification_attribute_groups.find((item) => item.id === currentSpecAttributeGroupId)
+      ?.defaultPreSelect || [];
   const setDefaultActiveCollapse = () => {
     const curPickedData = linkedOptionData[slide]?.pickedData;
     if (!curPickedData) return [];
@@ -687,7 +691,75 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       }).length ?? 0
     );
   };
+  const handleIncreaseReplicateDetail = (subOpt: LinkedSubOptionProps) => {
+    const newPickedData = cloneDeep(pickedData).map((el) => ({
+      ...el,
+      subs: el.subs.map((sub) => ({
+        ...sub,
+        replicate:
+          sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
+            ? ++sub.replicate
+            : sub.replicate,
+      })),
+    }));
+
+    store.dispatch(
+      setLinkedOptionData({ index: slide, pickedData: newPickedData, linkedData: linkedData }),
+    );
+
+    const newCurOptionSelected = cloneDeep(optionsSelected)[curOrder - 1].options.map((sub) => ({
+      ...sub,
+      replicate:
+        sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
+          ? ++sub.replicate
+          : sub.replicate,
+    }));
+
+    store.dispatch(
+      setOptionsSelected({
+        order: curOrder - 1,
+        options: newCurOptionSelected,
+      }),
+    );
+  };
   //
+  const handleOnChangeDefaultPreSelect = (value: string, option?: any) => {
+    const preOption = pickedSubs.find(
+      (item) =>
+        (item.pre_option ? [item.pre_option, item.id] : [item.id]).join(',') === option.pre_option,
+    );
+    let newDefaultSelected = defaultPreSelect;
+    if (defaultPreSelect.includes(`${value}_${option.pre_option}`)) {
+      newDefaultSelected = newDefaultSelected.filter(
+        (item) => item !== `${value}_${option.pre_option}`,
+      );
+    } else {
+      newDefaultSelected = newDefaultSelected.concat([`${value}_${option.pre_option}`]);
+    }
+    //Set new Replicate if any
+    if (preOption) {
+      const totalDefaultSelected = newDefaultSelected.filter(
+        (item: string) => item.split('_')[1] === option.pre_option,
+      ).length;
+      const currentReplicate = preOption?.replicate || 0;
+      if (totalDefaultSelected > currentReplicate) {
+        //set new replicate
+        handleIncreaseReplicateDetail(preOption);
+      }
+    }
+    store.dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: [...details.specification_attribute_groups].map((el) =>
+          el.id === currentSpecAttributeGroupId
+            ? {
+                ...el,
+                defaultPreSelect: newDefaultSelected,
+              }
+            : el,
+        ),
+      }),
+    );
+  };
   const handleSelectLinkedOption =
     (option: AutoStepLinkedOptionResponse) =>
     (event: CheckboxChangeEvent | { isSelectedAll: boolean; options: CheckBoxOptionProps[] }) => {
@@ -933,6 +1005,18 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       store.dispatch(setPickedOption(newPickedOption));
     };
 
+  const restrictDecreaseByTotalDefaultPreSelect = (option: any) => {
+    const totalDefaultSelected = defaultPreSelect.filter(
+      (item: string) =>
+        item.split('_')[1] ===
+        (!option.pre_option ? option.id : `${option.pre_option},${option.id}`),
+    ).length;
+    const currentReplicate = option?.replicate || 0;
+    if (totalDefaultSelected === currentReplicate) {
+      return true;
+    }
+    return false;
+  };
   const handleDecreaseReplicate =
     (subOpt: LinkedSubOptionProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
@@ -941,7 +1025,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
       if (subOpt.replicate === 1) {
         return;
       }
-
+      if (restrictDecreaseByTotalDefaultPreSelect(subOpt)) return;
       const newPickedData = cloneDeep(pickedData).map((el) => ({
         ...el,
         subs: el.subs.map((sub) => ({
@@ -977,36 +1061,7 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     (subOpt: LinkedSubOptionProps) => (e: React.MouseEvent<SVGSVGElement>) => {
       e.stopPropagation();
       e.preventDefault();
-
-      const newPickedData = cloneDeep(pickedData).map((el) => ({
-        ...el,
-        subs: el.subs.map((sub) => ({
-          ...sub,
-          replicate:
-            sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
-              ? ++sub.replicate
-              : sub.replicate,
-        })),
-      }));
-
-      store.dispatch(
-        setLinkedOptionData({ index: slide, pickedData: newPickedData, linkedData: linkedData }),
-      );
-
-      const newCurOptionSelected = cloneDeep(optionsSelected)[curOrder - 1].options.map((sub) => ({
-        ...sub,
-        replicate:
-          sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
-            ? ++sub.replicate
-            : sub.replicate,
-      }));
-
-      store.dispatch(
-        setOptionsSelected({
-          order: curOrder - 1,
-          options: newCurOptionSelected,
-        }),
-      );
+      handleIncreaseReplicateDetail(subOpt);
     };
 
   const onChangeCurActiveKey = (activeKey: string) => {
@@ -1225,6 +1280,8 @@ export const NextStep: FC<NextStepProps> = ({}) => {
                     combinable
                     canActiveMultiKey
                     customClass="checkbox-item"
+                    additionalSelected={defaultPreSelect.map((item: string) => item.split('_')[0])}
+                    onChangeAdditionalSelected={handleOnChangeDefaultPreSelect}
                   />
                 </div>
               );
