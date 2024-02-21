@@ -115,12 +115,21 @@ const DetaiItem: FC<DetaiItemProps> = ({
   indexItem,
   handleCloseDetailItem,
 }) => {
-  const linkText =
+  const isLinkARNotification = activeKey === 'notification' && detailItem?.projectProductId;
+
+  const isLinkARRequest =
     activeKey === 'request' &&
-    detailItem?.projectProductId &&
-    detailItem.requestFor === ProjectTrackingEnum['Assistance request']
-      ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
-      : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
+    detailItem.projectId &&
+    detailItem.requestFor === ProjectTrackingEnum['Assistance request'];
+
+  const linkText = isLinkARRequest
+    ? `${window.location.origin}${PATH.designerUpdateProject.replace(
+        ':id',
+        detailItem.projectId!,
+      )}?${NEW_TAB_FROM_REQUEST_QUERY}`
+    : isLinkARNotification
+    ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
+    : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
 
   return (
     <div style={{ overflow: 'auto' }} className={`mainContent ${styles.detailContent}`}>
@@ -232,15 +241,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
     });
   };
 
-  const handleShowProjectProduct = () => {
-    if (!detailItem?.projectId) {
-      message.error('Project not found');
-      return;
-    }
-
-    pushTo(PATH.designerUpdateProject.replace(':id', detailItem.projectId));
-  };
-
   return (
     <>
       {detailItem === undefined ? (
@@ -261,19 +261,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             handleCloseDetailItem={handleCloseDetailItem}
           />
           <div className={`footer-button ${styles.cancelButton}`}>
-            {activeKey === 'request' &&
-            detailItem.requestFor === ProjectTrackingEnum['Assistance request'] ? (
-              <CustomButton
-                size="small"
-                variant="primary"
-                properties="rounded"
-                onClick={handleShowProjectProduct}
-                style={{ padding: '0px 16px' }}
-              >
-                Request Detail
-              </CustomButton>
-            ) : null}
-
             <CustomButton
               size="small"
               variant="primary"
