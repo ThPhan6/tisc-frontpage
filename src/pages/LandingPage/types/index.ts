@@ -37,7 +37,7 @@ export type UserInfoDataProp = {
   personal_mobile: string;
   personal_phone_code: string;
   linkedin: string;
-  type: number;
+  type: UserType;
   interested: number[];
   retrieve_favourite: boolean;
 };

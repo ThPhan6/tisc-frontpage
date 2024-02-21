@@ -67,6 +67,11 @@ export interface Project {
   design_due: string;
   construction_start: string;
 }
+
+export enum ProjectTrackingEnum {
+  'Assistance request' = 'Assistance request',
+}
+
 export interface ProjectTrackingDetail {
   projects: Project;
   projectRequests: {
@@ -131,4 +136,10 @@ export interface RequestAndNotificationDetail {
     title: string;
     message: string;
   };
+  requestFor?: string;
+  message?: string;
+  newRequest?: boolean;
+
+  projectProductId?: string; // Project view for brand from link
+  projectId?: string; // Assistance Request - Request Detail
 }

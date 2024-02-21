@@ -2,19 +2,22 @@ import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
 import { PATH } from '@/constants/path';
-import { NEW_TAB_FROM_REQUEST_QUERY, NEW_TAB_QUERY } from '@/constants/util';
+import { NEW_TAB_FROM_REQUEST_QUERY, QUERY_KEY } from '@/constants/util';
 import { message } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
 import { ActionTaskModalParams } from '../../GeneralInquiries/types';
-import { ProjectTrackingDetail, RequestAndNotificationDetail } from '@/types/project-tracking.type';
+import {
+  ProjectTrackingDetail,
+  ProjectTrackingEnum,
+  RequestAndNotificationDetail,
+} from '@/types/project-tracking.type';
 
 import { ActionTaskTable } from '@/components/ActionTask/table';
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
@@ -31,7 +34,6 @@ import { ProjectTrackingTabs } from './Detail';
 import moment from 'moment';
 
 interface RequestsAndNotificationsProps {
-  projectId?: string;
   requestAndNotification: RequestAndNotificationDetail[];
   activeKey: ProjectTrackingTabs;
   setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
@@ -112,13 +114,13 @@ const DetaiItem: FC<DetaiItemProps> = ({
   setData,
   indexItem,
   handleCloseDetailItem,
-  projectId,
 }) => {
-  // const linkText = projectId
-  //   ? `${window.location.origin}/brand/product/${detailItem.product.id}?project_product_id=${projectId}${NEW_TAB_FROM_REQUEST_QUERY}`
-  //   : `${window.location.origin}/brand/product/${detailItem.product.id}${NEW_TAB_FROM_REQUEST_QUERY}`;
-
-  const linkText = `${window.location.origin}/brand/product/${detailItem.product.id}?project_product_id=1178c26d-6d58-48f5-8b6c-951323437a4e&${NEW_TAB_FROM_REQUEST_QUERY}`;
+  const linkText =
+    activeKey === 'request' &&
+    detailItem?.projectProductId &&
+    detailItem.requestFor === ProjectTrackingEnum['Assistance request']
+      ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
+      : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
 
   return (
     <div style={{ overflow: 'auto' }} className={`mainContent ${styles.detailContent}`}>
@@ -209,7 +211,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
   activeKey,
   setData,
-  projectId,
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
@@ -232,18 +233,12 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   };
 
   const handleShowProjectProduct = () => {
-    // if (!projectId) {
-    //   message.error('Project not found');
-    //   return;
-    // }
+    if (!detailItem?.projectId) {
+      message.error('Project not found');
+      return;
+    }
 
-    pushTo(
-      PATH.designerUpdateProject.replace(
-        ':id',
-        '38ba3ca1-db51-47c4-8b9f-ef2a1b7aafae',
-        /* projectId */
-      ),
-    );
+    pushTo(PATH.designerUpdateProject.replace(':id', detailItem.projectId));
   };
 
   return (
@@ -259,7 +254,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
       ) : (
         <>
           <DetaiItem
-            projectId={projectId}
             detailItem={detailItem}
             indexItem={indexItem}
             activeKey={activeKey}
@@ -267,7 +261,8 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             handleCloseDetailItem={handleCloseDetailItem}
           />
           <div className={`footer-button ${styles.cancelButton}`}>
-            {activeKey === 'request' ? (
+            {activeKey === 'request' &&
+            detailItem.requestFor === ProjectTrackingEnum['Assistance request'] ? (
               <CustomButton
                 size="small"
                 variant="primary"

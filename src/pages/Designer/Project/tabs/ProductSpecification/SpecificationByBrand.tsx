@@ -13,11 +13,12 @@ import {
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductsByBrand } from '@/features/project/services';
-import { useCheckPermission } from '@/helper/hook';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
+import { UserType } from '@/pages/LandingPage/types';
+import { useAppSelector } from '@/reducers';
 
 import { AvailabilityModal } from '../../components/AvailabilityModal';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -32,6 +33,9 @@ interface BrandListProps {
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   useAutoExpandNestedTableColumn(1, [2, 3, 4]);
+
+  const { user } = useAppSelector((state) => state.user);
+
   const [visible, setVisible] = useState<boolean>(false);
 
   const tableRef = useRef<any>();
@@ -39,7 +43,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     isSpecified: true,
   });
 
-  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isBrandUser = user?.type === UserType.Brand;
 
   const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
@@ -179,7 +183,15 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         multiSort={{
           brand_order: 'brand_order',
         }}
-        fetchDataFunc={getSpecifiedProductsByBrand}
+        fetchDataFunc={(params, callback) => {
+          getSpecifiedProductsByBrand(
+            {
+              ...params,
+              brand_id: isBrandUser && user.brand?.id ? user.brand.id : undefined,
+            },
+            callback,
+          );
+        }}
         expandable={GetExpandableTableConfig({
           columns: setDefaultWidthForEachColumn(CollectionColumns, 5),
           childrenColumnName: 'products',
