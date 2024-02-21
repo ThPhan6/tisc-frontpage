@@ -2,14 +2,13 @@ import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
 import { PATH } from '@/constants/path';
-import { NEW_TAB_FROM_REQUEST_QUERY, NEW_TAB_QUERY } from '@/constants/util';
+import { NEW_TAB_FROM_REQUEST_QUERY, QUERY_KEY } from '@/constants/util';
 import { message } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
@@ -35,7 +34,6 @@ import { ProjectTrackingTabs } from './Detail';
 import moment from 'moment';
 
 interface RequestsAndNotificationsProps {
-  projectId?: string;
   requestAndNotification: RequestAndNotificationDetail[];
   activeKey: ProjectTrackingTabs;
   setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
@@ -116,11 +114,12 @@ const DetaiItem: FC<DetaiItemProps> = ({
   setData,
   indexItem,
   handleCloseDetailItem,
-  projectId,
 }) => {
   const linkText =
-    projectId && detailItem.requestFor === ProjectTrackingEnum['Assistance request']
-      ? `${window.location.origin}/brand/product/${detailItem.product.id}?project_id=${projectId}?${NEW_TAB_FROM_REQUEST_QUERY}`
+    activeKey === 'request' &&
+    detailItem?.projectProductId &&
+    detailItem.requestFor === ProjectTrackingEnum['Assistance request']
+      ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
       : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
 
   return (
@@ -212,7 +211,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
   activeKey,
   setData,
-  projectId,
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
@@ -235,12 +233,12 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   };
 
   const handleShowProjectProduct = () => {
-    if (!projectId) {
+    if (!detailItem?.projectId) {
       message.error('Project not found');
       return;
     }
 
-    pushTo(PATH.designerUpdateProject.replace(':id', projectId));
+    pushTo(PATH.designerUpdateProject.replace(':id', detailItem.projectId));
   };
 
   return (
@@ -256,7 +254,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
       ) : (
         <>
           <DetaiItem
-            projectId={projectId}
             detailItem={detailItem}
             indexItem={indexItem}
             activeKey={activeKey}

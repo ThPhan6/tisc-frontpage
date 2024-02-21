@@ -139,4 +139,7 @@ export interface RequestAndNotificationDetail {
   requestFor?: string;
   message?: string;
   newRequest?: boolean;
+
+  projectProductId?: string; // Project view for brand from link
+  projectId?: string; // Assistance Request - Request Detail
 }
