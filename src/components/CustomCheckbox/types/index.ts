@@ -25,5 +25,5 @@ export interface CustomCheckboxProps {
   filterBySelected?: boolean;
   chosenItems?: CheckboxValue[];
   additionalSelected?: string[];
-  onChangeAdditionalSelected?: (value: string, option?: any) => void;
+  onChangeAdditionalSelected?: (value: string, option?: any, action?: 'add' | 'remove') => void;
 }
