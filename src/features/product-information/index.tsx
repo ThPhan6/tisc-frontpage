@@ -16,7 +16,7 @@ interface productInformationProps {
   editable: boolean;
   isShow: boolean;
   activeCollapse: string | string[];
-  onChangeCollapse: any;
+  onChangeCollapse: (key: string | string[]) => void;
   collapseStyles: boolean;
   noPadding?: boolean;
 }

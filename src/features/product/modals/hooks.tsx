@@ -25,7 +25,11 @@ export const getSelectedRoomIds = (selectedRooms: RoomsState) => {
   return selectedRoomIds;
 };
 
-export const useAssignProductToSpaceForm = (productId: string, projectId: string) => {
+export const useAssignProductToSpaceForm = (
+  productId: string,
+  projectId: string,
+  isBrandUser?: boolean,
+) => {
   const entireProject = useBoolean();
   const [selectedRooms, setSelectedRooms] = useState<RoomsState>({});
   const expandingZone = useNumber(-1);
@@ -88,6 +92,18 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
   );
 
   const renderCollapseZone = (zone: ProjectSpaceListProps, index: number) => {
+    const areaList = isBrandUser
+      ? zone.areas
+          /// only display room assigned
+          .map((area) => ({ ...area, rooms: area.rooms.filter((room) => room.is_assigned) }))
+          /// ronly display area has room
+          .filter((area) => area.rooms.length)
+      : zone.areas;
+
+    if (isBrandUser && !areaList.length) {
+      return null;
+    }
+
     return (
       <CustomCollapse
         key={zone.id}
@@ -100,7 +116,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
         }
         customHeaderClass="collapse-header"
       >
-        {zone.areas.map((area) => {
+        {areaList.map((area) => {
           return (
             <div key={area.id} style={{ paddingBottom: 8, paddingLeft: 16 }}>
               <BodyText level={5} fontFamily="Roboto" style={{ height: '36px' }}>
@@ -115,6 +131,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
                 selected={selectedRooms[area.id]}
                 onChange={onSelectRooms(area.id)}
                 heightItem={'36px'}
+                disabled={isBrandUser}
               />
             </div>
           );
@@ -165,6 +182,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
           onChange={onChangeEntireProject}
           containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
           noPaddingLeft={noPaddingLeft}
+          disabled={isBrandUser}
         />
       ) : null}
 

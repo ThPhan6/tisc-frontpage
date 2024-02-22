@@ -60,7 +60,12 @@ export const QUERY_KEY = {
   sort_name: 'sort_name',
   search: 'search',
   no_previous_page: 'new_tab',
+  new_tab_from_request: 'new_tab_from_request',
+  project_product_id: 'project_product_id',
 };
+
+export const NEW_TAB_QUERY = '?new_tab=true';
+export const NEW_TAB_FROM_REQUEST_QUERY = 'new_tab_from_request=true';
 
 export const COVERAGE_BEYOND = {
   notAllow: false,
