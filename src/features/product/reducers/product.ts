@@ -22,6 +22,7 @@ interface ProductState {
   brand?: BrandDetail;
   summary?: ProductSummary;
   details: ProductItem & { referToDesignDocument?: boolean };
+  brandSpecifiedDetails: ProductItem['specifiedDetail'] & { referToDesignDocument?: boolean };
   relatedProduct: RelatedCollection[];
   relatedProductOnView?: GeneralData & { relatedProductData?: RelatedCollection[] };
   list: ProductList;
@@ -33,6 +34,30 @@ interface ProductState {
 
 const initialState: ProductState = {
   allPreSelectAttributes: [],
+  brandSpecifiedDetails: {
+    id: '',
+    material_code: '',
+    product_id: '',
+    project_id: '',
+    specification: {
+      is_refer_document: true,
+      attribute_groups: [],
+    },
+    brand_location_id: '',
+    distributor_location_id: '',
+    entire_allocation: true,
+    allocation: [],
+    material_code_id: '',
+    suffix_code: '',
+    description: '',
+    quantity: 0,
+    unit_type_id: '',
+    order_method: OrderMethod['Direct Purchase'],
+    requirement_type_ids: [],
+    instruction_type_ids: [],
+    finish_schedules: [],
+    special_instructions: '',
+  },
   details: {
     id: '',
     name: '',
@@ -53,6 +78,10 @@ const initialState: ProductState = {
     referToDesignDocument: true,
     brand_location_id: '',
     distributor_location_id: '',
+    product_information: {
+      product_id: '',
+      product_name: '',
+    },
     specifiedDetail: {
       id: '',
       material_code: '',
@@ -185,6 +214,19 @@ const productSlice = createSlice({
         };
       }
     },
+
+    /// save group selected for brand user can re-select after modifying
+    setBrandSpecifiedPartialProductSpecifiedData: (
+      state,
+      action: PayloadAction<Partial<SpecifiedDetail>>,
+    ) => {
+      if (state.brandSpecifiedDetails) {
+        state.brandSpecifiedDetails = {
+          ...state.brandSpecifiedDetails,
+          ...action.payload,
+        };
+      }
+    },
     setFinishScheduleData: (state, action: PayloadAction<FinishScheduleResponse[]>) => {
       if (state.details.specifiedDetail) {
         state.details.specifiedDetail.finish_schedules = [...action.payload];
@@ -224,6 +266,7 @@ export const {
   onCheckReferToDesignDocument,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
+  setBrandSpecifiedPartialProductSpecifiedData,
   setFinishScheduleData,
   setCurAttrGroupCollapse,
   closeActiveSpecAttributeGroup,

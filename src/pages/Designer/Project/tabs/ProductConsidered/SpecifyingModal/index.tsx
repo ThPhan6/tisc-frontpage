@@ -12,6 +12,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
+import { useCheckPermission } from '@/helper/hook';
 
 import { FinishScheduleRequestBody } from './types';
 import { productVariantsSelector, resetProductDetailState } from '@/features/product/reducers';
@@ -48,6 +49,12 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   reloadTable,
   isSpecified,
 }) => {
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+
+  const listTab = isBrandUser
+    ? [...ProjectSpecifyTabs].splice(0, ProjectSpecifyTabs.length - 1)
+    : ProjectSpecifyTabs;
+
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
@@ -105,6 +112,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
     product.id,
     projectId,
+    isBrandUser,
   );
   const selectedRoomIds = getSelectedRoomIds(selectedRooms);
 
@@ -213,7 +221,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       />
 
       <CustomTabs
-        listTab={ProjectSpecifyTabs}
+        listTab={listTab}
         centered={true}
         tabPosition="top"
         tabDisplay="space"
@@ -247,13 +255,15 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         </div>
       </CustomTabPane>
 
-      <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
-        <CodeOrderTab
-          projectProductId={product.specifiedDetail?.id ?? ''}
-          roomIds={selectedRoomIds}
-          customProduct={customProduct}
-        />
-      </CustomTabPane>
+      {isBrandUser ? null : (
+        <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
+          <CodeOrderTab
+            projectProductId={product.specifiedDetail?.id ?? ''}
+            roomIds={selectedRoomIds}
+            customProduct={customProduct}
+          />
+        </CustomTabPane>
+      )}
     </CustomModal>
   );
 };

@@ -22,7 +22,10 @@ const ProjectUpdatePage: React.FC = () => {
   const basicInformationTab = accessPermission.design_project_basic_information;
   const zoneAreaRoomTab = accessPermission.design_project_zone_area_zoom;
   const productConsideredTab = accessPermission.design_project_product_considered;
-  const productSpecifiedTab = accessPermission.design_project_product_specified;
+
+  const brandProjectTrackingRequestTab = accessPermission.brand_project_tracking;
+  const productSpecifiedTab =
+    accessPermission.design_project_product_specified || brandProjectTrackingRequestTab;
 
   const getCurrentActiveTab = () => {
     if (basicInformationTab) {

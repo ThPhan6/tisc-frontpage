@@ -1,6 +1,7 @@
 import { FC, memo, useEffect, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
+import { NEW_TAB_QUERY } from '@/constants/util';
 import { useHistory } from 'umi';
 
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/align-left-icon.svg';
@@ -40,7 +41,7 @@ export const ProductCollection: FC = memo(() => {
 
   const userRole = useGetUserRoleFromPathname();
 
-  const signature = `${useHistory().location.search || ''}${'?new_tab=true'}`;
+  const signature = `${useHistory().location.search || ''}${NEW_TAB_QUERY}`;
 
   useEffect(() => {
     if (details?.collections && relatedProduct?.length) {

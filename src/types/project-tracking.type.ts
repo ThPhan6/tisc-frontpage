@@ -57,6 +57,7 @@ export interface DesignerInfo {
 }
 
 export interface Project {
+  id: string;
   created_at: string;
   name: string;
   location: string;
@@ -66,6 +67,11 @@ export interface Project {
   design_due: string;
   construction_start: string;
 }
+
+export enum ProjectTrackingEnum {
+  'Assistance request' = 'Assistance request',
+}
+
 export interface ProjectTrackingDetail {
   projects: Project;
   projectRequests: {
@@ -97,6 +103,7 @@ export interface ProjectTrackingDetail {
 
 export const DEFAULT_PROJECT_TRACKING_DETAIL: ProjectTrackingDetail = {
   projects: {
+    id: '',
     created_at: '',
     name: '',
     location: '',
@@ -129,4 +136,10 @@ export interface RequestAndNotificationDetail {
     title: string;
     message: string;
   };
+  requestFor?: string;
+  message?: string;
+  newRequest?: boolean;
+
+  projectProductId?: string; // Project view for brand from link
+  projectId?: string; // Assistance Request - Request Detail
 }

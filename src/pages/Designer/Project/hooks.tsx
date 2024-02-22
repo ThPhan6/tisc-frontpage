@@ -17,6 +17,7 @@ import {
 import { confirmDelete } from '@/helper/common';
 
 import {
+  setBrandSpecifiedPartialProductSpecifiedData,
   setPartialProductDetail,
   setPartialProductSpecifiedData,
   setReferToDesignDocument,
@@ -136,6 +137,21 @@ export const onOpenSpecifiyingProductModal = (record: ProjectProductItem) => {
         },
       }),
     );
+
+    /// save group selected for brand user can re-select after modifying
+    store.dispatch(
+      setBrandSpecifiedPartialProductSpecifiedData({
+        ...record.specifiedDetail,
+        specification: {
+          is_refer_document: record.specifiedDetail.specification?.is_refer_document || false,
+          attribute_groups:
+            record.specifiedDetail.specification?.attribute_groups?.map((el) => ({
+              ...el,
+              isChecked: el.isChecked === undefined ? true : el.isChecked,
+            })) || [],
+        },
+      }),
+    );
     store.dispatch(
       setPartialProductDetail({
         distributor_location_id: record.specifiedDetail.distributor_location_id,
@@ -153,36 +169,40 @@ export const onOpenSpecifiyingProductModal = (record: ProjectProductItem) => {
 };
 
 export const renderActionCell =
-  (setSpecifyingProduct: (productItem: ProductItem) => void, tableRef: any, checkRoom?: boolean) =>
+  (
+    setSpecifyingProduct: (productItem: ProductItem) => void,
+    tableRef: any,
+    checkRoom?: boolean,
+    isShowDelete: boolean = true,
+  ) =>
   (_value: any, record: any) => {
     if (record.rooms && checkRoom) {
       return null;
     }
-    return (
-      <ActionMenu
-        editActionOnMobile={false}
-        actionItems={[
-          {
-            type: 'updated',
-            label: 'Edit',
-            disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
-            onClick: () => {
-              setSpecifyingProduct(record);
-              onOpenSpecifiyingProductModal(record);
-            },
-          },
-          {
-            type: 'deleted',
-            onClick: () =>
-              confirmDelete(() => {
-                removeProductFromProject(record.specifiedDetail?.id).then((success) =>
-                  success ? tableRef.current.reload() : undefined,
-                );
-              }),
-          },
-        ]}
-      />
-    );
+
+    const updateItem = {
+      type: 'updated',
+      label: 'Edit',
+      disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
+      onClick: () => {
+        setSpecifyingProduct(record);
+        onOpenSpecifiyingProductModal(record);
+      },
+    };
+
+    const deleteItem = {
+      type: 'deleted',
+      onClick: () =>
+        confirmDelete(() => {
+          removeProductFromProject(record.specifiedDetail?.id).then((success) =>
+            success ? tableRef.current.reload() : undefined,
+          );
+        }),
+    };
+
+    const actionItems: any = isShowDelete ? [updateItem, deleteItem] : [updateItem];
+
+    return <ActionMenu editActionOnMobile={false} actionItems={actionItems} />;
   };
 
 export const onCellUnlisted = (data: any) => ({

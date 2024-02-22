@@ -132,6 +132,7 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
                   request: { title: el.title, message: el.message },
                   id: el.id,
                   status: el.status,
+                  projectId: data.projects.id,
                 }))}
               />
             </CustomTabPane>

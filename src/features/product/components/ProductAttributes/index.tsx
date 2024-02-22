@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
+
+import { useGetQueryFromOriginURL } from '@/helper/hook';
 import { getAllAttribute } from '@/services';
 
 import { ProductInfoTab } from './types';
@@ -13,13 +16,6 @@ import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { ProductAttributeContainer } from './ProductAttributeContainer';
 import { ProductVendor } from './ProductVendor';
 import styles from './index.less';
-
-const LIST_TAB: TabItem[] = [
-  { tab: 'GENERAL', key: 'general' },
-  { tab: 'FEATURE', key: 'feature' },
-  { tab: 'SPECIFICATION', tabletTabTitle: 'SPECS', key: 'specification' },
-  { tab: 'VENDOR', key: 'vendor' },
-];
 
 interface ProductAttributeComponentProps {
   activeKey: ProductInfoTab;
@@ -36,6 +32,15 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
     feature: [],
     specification: [],
   });
+
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
+
+  const LIST_TAB: TabItem[] = [
+    { tab: 'GENERAL', key: 'general', disable: !!projectProductId },
+    { tab: 'FEATURE', key: 'feature', disable: !!projectProductId },
+    { tab: 'SPECIFICATION', tabletTabTitle: 'SPECS', key: 'specification' },
+    { tab: 'VENDOR', key: 'vendor', disable: !!projectProductId },
+  ];
 
   useEffect(() => {
     getAllAttribute().then((data) => {

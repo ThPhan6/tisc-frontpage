@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { QUERY_KEY } from '@/constants/util';
+import { useParams } from 'umi';
+
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+import {
+  useBoolean,
+  useCheckPermission,
+  useGetParamId,
+  useGetQueryFromOriginURL,
+  useQuery,
+} from '@/helper/hook';
+import { getQueryVariableFromOriginURL } from '@/helper/utils';
 import { cloneDeep, countBy, isEmpty, uniqueId } from 'lodash';
 
 import {
@@ -190,6 +200,8 @@ export const useProductAttributeForm = (
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
+
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
 
   const [autoStepPopup, setAutoStepPopup] = useState<boolean>(false);
@@ -223,7 +235,7 @@ export const useProductAttributeForm = (
         dispatch(getAllPreSelectAttributes(productSpecifiedData ?? []));
         loaded.setValue(true);
       } else if (props?.isGetProductSpecification && !isEmpty(specification_attribute_groups)) {
-        getSelectedProductSpecification(productId).then((res) => {
+        getSelectedProductSpecification(productId, projectProductId).then((res) => {
           loaded.setValue(true);
           if (res) {
             const newSpecficationAttributeGroups = getSpecificationWithSelectedValue(
