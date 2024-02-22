@@ -38,7 +38,6 @@ import {
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
-  SpecificationType,
 } from '../../types';
 import {
   AutoStepOnAttributeGroupResponse,

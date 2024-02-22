@@ -439,8 +439,6 @@ export async function getSelectedProductSpecification(
     method: 'GET',
   })
     .then((res) => {
-      console.log('getSelectedProductSpecification', url, res);
-
       return res.data;
     })
     .catch((error) => {
