@@ -47,7 +47,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     if (inputValue && !haveOtherInput) {
       newCheckboxValue.push({ label: inputValue, value: 'other' });
     }
-
     if (onChange) {
       onChange(newCheckboxValue);
     }
@@ -124,7 +123,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 onChange={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-
+                  if (additionalSelected && onChangeAdditionalSelected)
+                    onChangeAdditionalSelected(option.value.toString(), option, 'remove');
                   onOneChange?.(e);
                 }}
               />
@@ -132,6 +132,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               {additionalSelected && onChangeAdditionalSelected ? (
                 <input
                   style={{ marginRight: 4 }}
+                  disabled={!selected?.find((item) => item.value === option.value.toString())}
                   type="checkbox"
                   id={option.value.toString()}
                   name="defaultSelect"

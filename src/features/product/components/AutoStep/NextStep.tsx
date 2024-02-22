@@ -723,13 +723,18 @@ export const NextStep: FC<NextStepProps> = ({}) => {
     );
   };
   //
-  const handleOnChangeDefaultPreSelect = (value: string, option?: any) => {
+  const handleOnChangeDefaultPreSelect = (
+    value: string,
+    option?: any,
+    action?: 'add' | 'remove',
+  ) => {
     const preOption = pickedSubs.find(
       (item) =>
         (item.pre_option ? [item.pre_option, item.id] : [item.id]).join(',') === option.pre_option,
     );
     let newDefaultSelected = defaultPreSelect;
-    if (defaultPreSelect.includes(`${value}_${option.pre_option}`)) {
+
+    if (defaultPreSelect.includes(`${value}_${option.pre_option}`) || action === 'remove') {
       newDefaultSelected = newDefaultSelected.filter(
         (item) => item !== `${value}_${option.pre_option}`,
       );
