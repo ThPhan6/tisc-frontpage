@@ -131,7 +131,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
               {additionalSelected && onChangeAdditionalSelected ? (
                 <input
-                  style={{ marginRight: 4 }}
+                  style={{ marginRight: 4, cursor: 'pointer' }}
                   disabled={!selected?.find((item) => item.value === option.value.toString())}
                   type="checkbox"
                   id={option.value.toString()}

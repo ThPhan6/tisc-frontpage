@@ -14,7 +14,7 @@ import {
   useQuery,
 } from '@/helper/hook';
 import { getQueryVariableFromOriginURL } from '@/helper/utils';
-import { cloneDeep, countBy, isEmpty, uniqueId } from 'lodash';
+import { cloneDeep, countBy, forEach, isEmpty, uniqueId } from 'lodash';
 
 import {
   getAllPreSelectAttributes,
@@ -242,6 +242,37 @@ export const useProductAttributeForm = (
               res.specification?.attribute_groups || [],
               attributeGroup,
             );
+
+            /* specification attribute group for brand user views project product specified from assistance request */
+            if (projectProductId) {
+              newSpecficationAttributeGroups.forEach((attrGrp, attrGrpIdx) => {
+                res.specification.attribute_groups.forEach((specAttrGrp) => {
+                  if (attrGrp.id === specAttrGrp.id) {
+                    newSpecficationAttributeGroups[attrGrpIdx] = {
+                      ...newSpecficationAttributeGroups[attrGrpIdx],
+                      isChecked: true,
+                      stepSelection: specAttrGrp.step_selections,
+                      viewSteps: specAttrGrp.viewSteps,
+                    };
+
+                    return;
+                  }
+
+                  newSpecficationAttributeGroups[attrGrpIdx] = {
+                    ...newSpecficationAttributeGroups[attrGrpIdx],
+                    isChecked:
+                      newSpecficationAttributeGroups[attrGrpIdx].type ===
+                        SpecificationType.autoStep &&
+                      newSpecficationAttributeGroups[attrGrpIdx].isChecked
+                        ? false
+                        : newSpecficationAttributeGroups[attrGrpIdx].isChecked,
+                    stepSelection: {},
+                    viewSteps: [],
+                  };
+                });
+              });
+            }
+
             dispatch(
               setPartialProductDetail({
                 specification_attribute_groups: newSpecficationAttributeGroups,
