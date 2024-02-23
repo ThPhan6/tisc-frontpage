@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 
-import { useParams } from 'umi';
+import { useAccess, useParams } from 'umi';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as MaterialIcon } from '@/assets/icons/material-product-icon.svg';
@@ -25,6 +25,9 @@ type viewBy = 'brand' | 'material' | 'space' | 'pdf';
 
 const ProductSpecification: FC = () => {
   const isMobile = useScreen().isMobile;
+
+  const accessPermission = useAccess();
+  const brandProjectTrackingRequestTab = accessPermission.brand_project_tracking;
 
   const [viewBy, setViewBy] = useState<viewBy>('brand');
   const params = useParams<{ id: string }>();
@@ -53,34 +56,41 @@ const ProductSpecification: FC = () => {
             className={styles.customActionButton}
             short={isMobile}
           />
-          <ActionButton
-            active={viewBy === 'material'}
-            icon={<MaterialIcon style={{ width: 16, height: 16 }} />}
-            onClick={() => setViewBy('material')}
-            title="Material"
-            className={styles.customActionButton}
-            short={isMobile}
-          />
-          <ActionButton
-            active={viewBy === 'space'}
-            icon={<SpaceIcon style={{ width: 16, height: 16 }} />}
-            onClick={() => setViewBy('space')}
-            title="Space"
-            className={styles.customActionButton}
-            short={isMobile}
-          />
+          {brandProjectTrackingRequestTab ? null : (
+            <ActionButton
+              active={viewBy === 'material'}
+              icon={<MaterialIcon style={{ width: 16, height: 16 }} />}
+              onClick={() => setViewBy('material')}
+              title="Material"
+              className={styles.customActionButton}
+              short={isMobile}
+            />
+          )}
+          {brandProjectTrackingRequestTab ? null : (
+            <ActionButton
+              active={viewBy === 'space'}
+              icon={<SpaceIcon style={{ width: 16, height: 16 }} />}
+              onClick={() => setViewBy('space')}
+              title="Space"
+              className={styles.customActionButton}
+              short={isMobile}
+            />
+          )}
         </div>
-        <CustomButton
-          properties="rounded"
-          size="small"
-          variant="secondary"
-          buttonClass={styles.button}
-          onClick={() => setViewBy('pdf')}
-          active={viewBy === 'pdf'}
-        >
-          <PrintIcon />
-          PDF
-        </CustomButton>
+
+        {brandProjectTrackingRequestTab ? null : (
+          <CustomButton
+            properties="rounded"
+            size="small"
+            variant="secondary"
+            buttonClass={styles.button}
+            onClick={() => setViewBy('pdf')}
+            active={viewBy === 'pdf'}
+          >
+            <PrintIcon />
+            PDF
+          </CustomButton>
+        )}
       </ProjectTabContentHeader>
 
       <CustomTabPane active={viewBy === 'brand'} lazyLoad forceReload>
@@ -95,9 +105,11 @@ const ProductSpecification: FC = () => {
         <SpecificationBySpace projectId={params.id} />
       </CustomTabPane>
 
-      <CustomTabPane active={viewBy === 'pdf'}>
-        <ProductSpecifyToPDF projectId={params.id} />
-      </CustomTabPane>
+      {brandProjectTrackingRequestTab ? null : (
+        <CustomTabPane active={viewBy === 'pdf'}>
+          <ProductSpecifyToPDF projectId={params.id} />
+        </CustomTabPane>
+      )}
     </div>
   );
 };

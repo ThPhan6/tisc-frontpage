@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { COMMON_TYPES } from '@/constants/util';
+import { COMMON_TYPES, QUERY_KEY } from '@/constants/util';
 import { message } from 'antd';
 // import { TablePaginationConfig } from 'antd/es/table/interface';
 import { request } from 'umi';
@@ -427,13 +427,17 @@ export const useSelectProductSpecification = () => {
   return debounceSelectProductSpecification;
 };
 
-export async function getSelectedProductSpecification(productId: string) {
-  return request<{ data: SelectSpecificationBodyRequest }>(
-    `/api/product/${productId}/select-specification/get-list`,
-    {
-      method: 'GET',
-    },
-  )
+export async function getSelectedProductSpecification(
+  productId: string,
+  projectProductId?: string,
+) {
+  const url = projectProductId
+    ? `/api/product/${productId}/select-specification/get-list?${QUERY_KEY.project_product_id}=${projectProductId}`
+    : `/api/product/${productId}/select-specification/get-list`;
+
+  return request<{ data: SelectSpecificationBodyRequest }>(url, {
+    method: 'GET',
+  })
     .then((res) => {
       return res.data;
     })

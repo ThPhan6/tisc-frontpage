@@ -5,6 +5,7 @@ import { Tooltip } from 'antd';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { getProductById } from '@/features/product/services';
+import { useCheckBrandSpecified } from '@/helper/hook';
 import { getOneCustomProduct } from '@/pages/Designer/Products/CustomLibrary/services';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -44,6 +45,8 @@ const SpecifiedSpecificationTab: FC<{
   customProduct?: boolean;
   isSpecified?: boolean;
 }> = ({ productId, customProduct, referToDesignDocument, isSpecified }) => {
+  const isBrandSpecified = useCheckBrandSpecified(!!isSpecified);
+
   const checkReferToDesignDocument = () => {
     if (customProduct) {
       store.dispatch(onCheckCustomProductReferToDocument());
@@ -77,6 +80,7 @@ const SpecifiedSpecificationTab: FC<{
         onChange={checkReferToDesignDocument}
         containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
         noPaddingLeft
+        disabled={isBrandSpecified}
       />
 
       {customProduct ? (

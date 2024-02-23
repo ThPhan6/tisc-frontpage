@@ -93,7 +93,9 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       isAccessableForDesigner('project', 'basic information') ||
       isAccessableForDesigner('project', 'zone/area/room') ||
       isAccessableForDesigner('project', 'product considered') ||
-      isAccessableForDesigner('project', 'product specified'),
+      isAccessableForDesigner('project', 'product specified') ||
+      isAccessableForBrand('project tracking'),
+
     // project tabs
     design_project_basic_information: isAccessableForDesigner('project', 'basic information'),
     design_project_zone_area_zoom: isAccessableForDesigner('project', 'zone/area/room'),

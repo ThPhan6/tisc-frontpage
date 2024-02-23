@@ -1,15 +1,23 @@
 import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
+import { PATH } from '@/constants/path';
+import { NEW_TAB_FROM_REQUEST_QUERY, QUERY_KEY } from '@/constants/util';
+import { message } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
+import { pushTo } from '@/helper/history';
 import { getFullName } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
 import { ActionTaskModalParams } from '../../GeneralInquiries/types';
-import { ProjectTrackingDetail, RequestAndNotificationDetail } from '@/types/project-tracking.type';
+import {
+  ProjectTrackingDetail,
+  ProjectTrackingEnum,
+  RequestAndNotificationDetail,
+} from '@/types/project-tracking.type';
 
 import { ActionTaskTable } from '@/components/ActionTask/table';
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
@@ -107,6 +115,22 @@ const DetaiItem: FC<DetaiItemProps> = ({
   indexItem,
   handleCloseDetailItem,
 }) => {
+  const isLinkARNotification = activeKey === 'notification' && detailItem?.projectProductId;
+
+  const isLinkARRequest =
+    activeKey === 'request' &&
+    detailItem.projectId &&
+    detailItem.requestFor === ProjectTrackingEnum['Assistance request'];
+
+  const linkText = isLinkARRequest
+    ? `${window.location.origin}${PATH.designerUpdateProject.replace(
+        ':id',
+        detailItem.projectId!,
+      )}?${NEW_TAB_FROM_REQUEST_QUERY}`
+    : isLinkARNotification
+    ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
+    : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
+
   return (
     <div style={{ overflow: 'auto' }} className={`mainContent ${styles.detailContent}`}>
       <TableHeader
@@ -130,13 +154,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
         text_1={detailItem.product.collection_name}
         text_2={detailItem.product.description}
         text_3={
-          <a
-            href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: '#000' }}
-          >
-            {window.location.origin}/brand/product/{detailItem.product.id}
+          <a href={linkText} target="_blank" rel="noreferrer" title={linkText}>
+            {linkText}
           </a>
         }
         customClass={styles.brandProduct}

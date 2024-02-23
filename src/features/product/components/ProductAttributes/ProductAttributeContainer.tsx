@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
@@ -67,6 +67,20 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     isGetProductSpecification: true, // except specifying modal
     isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
   });
+
+  const brandSpecifiedDetails = useAppSelector((state) => state.product.brandSpecifiedDetails);
+  const { specification } = brandSpecifiedDetails;
+
+  /// save group selected for brand user can re-select after modifying
+  const prevAttributeGroupSelectedIds = useMemo(() => {
+    const prevGroupAttrSelected: string[] = [];
+
+    specification.attribute_groups.forEach((el) => {
+      prevGroupAttrSelected.push(el.id);
+    });
+
+    return prevGroupAttrSelected;
+  }, [JSON.stringify(specification)]);
 
   const dimensionWightActiveCollapseKey = useAppSelector((state) => state.active.dimensionWeight);
   const productInformationActiveCollapseKey = useAppSelector(
@@ -152,6 +166,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
                     activeKey={activeKey}
                     attributeGroup={attributeGroup}
                     attrGroupItem={attrGroupItem}
+                    prevAttributeGroupSelectedIds={prevAttributeGroupSelectedIds}
                     groupIndex={groupIndex}
                     attributes={attributes}
                     // specifying={specifying}

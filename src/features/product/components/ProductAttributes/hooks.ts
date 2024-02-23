@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { QUERY_KEY } from '@/constants/util';
+import { useParams } from 'umi';
+
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep, countBy, isEmpty, uniqueId } from 'lodash';
+import {
+  useBoolean,
+  useCheckPermission,
+  useGetParamId,
+  useGetQueryFromOriginURL,
+  useQuery,
+} from '@/helper/hook';
+import { getQueryVariableFromOriginURL } from '@/helper/utils';
+import { cloneDeep, countBy, forEach, isEmpty, uniqueId } from 'lodash';
 
 import {
   getAllPreSelectAttributes,
@@ -190,6 +200,8 @@ export const useProductAttributeForm = (
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
+
   const { data: dwData } = useGetDimensionWeight(props?.isGetDimensionWeight);
 
   const [autoStepPopup, setAutoStepPopup] = useState<boolean>(false);
@@ -223,13 +235,44 @@ export const useProductAttributeForm = (
         dispatch(getAllPreSelectAttributes(productSpecifiedData ?? []));
         loaded.setValue(true);
       } else if (props?.isGetProductSpecification && !isEmpty(specification_attribute_groups)) {
-        getSelectedProductSpecification(productId).then((res) => {
+        getSelectedProductSpecification(productId, projectProductId).then((res) => {
           loaded.setValue(true);
           if (res) {
             const newSpecficationAttributeGroups = getSpecificationWithSelectedValue(
               res.specification?.attribute_groups || [],
               attributeGroup,
             );
+
+            /* specification attribute group for brand user views project product specified from assistance request */
+            if (projectProductId) {
+              newSpecficationAttributeGroups.forEach((attrGrp, attrGrpIdx) => {
+                res.specification.attribute_groups.forEach((specAttrGrp) => {
+                  if (attrGrp.id === specAttrGrp.id) {
+                    newSpecficationAttributeGroups[attrGrpIdx] = {
+                      ...newSpecficationAttributeGroups[attrGrpIdx],
+                      isChecked: true,
+                      stepSelection: specAttrGrp.step_selections,
+                      viewSteps: specAttrGrp.viewSteps,
+                    };
+
+                    return;
+                  }
+
+                  newSpecficationAttributeGroups[attrGrpIdx] = {
+                    ...newSpecficationAttributeGroups[attrGrpIdx],
+                    isChecked:
+                      newSpecficationAttributeGroups[attrGrpIdx].type ===
+                        SpecificationType.autoStep &&
+                      newSpecficationAttributeGroups[attrGrpIdx].isChecked
+                        ? false
+                        : newSpecficationAttributeGroups[attrGrpIdx].isChecked,
+                    stepSelection: {},
+                    viewSteps: [],
+                  };
+                });
+              });
+            }
+
             dispatch(
               setPartialProductDetail({
                 specification_attribute_groups: newSpecficationAttributeGroups,

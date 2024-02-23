@@ -21,6 +21,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   checkboxClass = '',
   heightItem = '32px',
   chosenItems,
+  additionalSelected,
+  onChangeAdditionalSelected,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -45,7 +47,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     if (inputValue && !haveOtherInput) {
       newCheckboxValue.push({ label: inputValue, value: 'other' });
     }
-
     if (onChange) {
       onChange(newCheckboxValue);
     }
@@ -122,10 +123,26 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 onChange={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-
+                  if (additionalSelected && onChangeAdditionalSelected)
+                    onChangeAdditionalSelected(option.value.toString(), option, 'remove');
                   onOneChange?.(e);
                 }}
               />
+
+              {additionalSelected && onChangeAdditionalSelected ? (
+                <input
+                  style={{ marginRight: 4, cursor: 'pointer' }}
+                  disabled={!selected?.find((item) => item.value === option.value.toString())}
+                  type="checkbox"
+                  id={option.value.toString()}
+                  name="defaultSelect"
+                  value={option.value}
+                  checked={additionalSelected.includes(option.value.toString())}
+                  onChange={() => {
+                    onChangeAdditionalSelected(option.value.toString(), option);
+                  }}
+                />
+              ) : null}
             </label>
           ) : (
             <div
