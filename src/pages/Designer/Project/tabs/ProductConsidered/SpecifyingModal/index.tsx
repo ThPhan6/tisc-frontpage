@@ -62,6 +62,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const customProduct = product.specifiedDetail?.custom_product ? true : false;
 
   const productId = useAppSelector(productVariantsSelector);
+  const isDisableDone = isBrandUser && productId.trim().split(' - ').includes('X');
 
   const productDetail = useAppSelector((state) => state.product.details);
   const customProductDetail = useAppSelector((state) => state.customProduct.details);
@@ -170,6 +171,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           suffix_code: specifiedDetail.suffix_code,
           unit_type_id: specifiedDetail.unit_type_id,
           custom_product: customProduct,
+          is_done_assistance_request: true,
         },
         () => {
           reloadTable();
@@ -200,6 +202,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       width={576}
       footer={
         <CustomButton
+          disabled={isDisableDone}
           size="small"
           variant="primary"
           properties="rounded"
