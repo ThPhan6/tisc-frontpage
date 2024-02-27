@@ -246,7 +246,7 @@ export const useProductAttributeForm = (
                   if (attrGrp.id === specAttrGrp.id) {
                     newSpecficationAttributeGroups[attrGrpIdx] = {
                       ...newSpecficationAttributeGroups[attrGrpIdx],
-                      isChecked: false,
+                      isChecked: true,
                       stepSelection: specAttrGrp.step_selections,
                       viewSteps: specAttrGrp.viewSteps,
                     };
@@ -256,13 +256,12 @@ export const useProductAttributeForm = (
 
                   newSpecficationAttributeGroups[attrGrpIdx] = {
                     ...newSpecficationAttributeGroups[attrGrpIdx],
-                    isChecked: false,
-                    // isChecked:
-                    //   newSpecficationAttributeGroups[attrGrpIdx].type ===
-                    //     SpecificationType.autoStep &&
-                    //   newSpecficationAttributeGroups[attrGrpIdx].isChecked
-                    //     ? false
-                    //     : newSpecficationAttributeGroups[attrGrpIdx].isChecked,
+                    isChecked:
+                      newSpecficationAttributeGroups[attrGrpIdx].type ===
+                        SpecificationType.autoStep &&
+                      newSpecficationAttributeGroups[attrGrpIdx].isChecked
+                        ? false
+                        : newSpecficationAttributeGroups[attrGrpIdx].isChecked,
                     stepSelection: {},
                     viewSteps: [],
                   };
