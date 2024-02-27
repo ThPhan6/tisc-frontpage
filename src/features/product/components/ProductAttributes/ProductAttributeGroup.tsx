@@ -1004,7 +1004,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             quantitiesDefault={
               !attrGroupItem.isChecked
                 ? {}
-                : isSpecifiedModal
+                : isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider
                 ? specifiedQuantity
                 : attrGroupItem.stepSelection?.quantities
             }
