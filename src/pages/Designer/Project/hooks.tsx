@@ -181,7 +181,7 @@ export const renderActionCell =
       return null;
     }
     const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
-    const isXProductId = record.product_id.split(' - ').includes('X');
+    const isXProductId = record.product_id?.split(' - ').includes('X');
     const updateItem = {
       type: 'updated',
       label: 'Edit',
