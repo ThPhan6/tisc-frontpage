@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ProjectStatuses } from '../../constants/filter';
 import { DefaultProjectRequest } from '../../constants/form';
 import { PATH } from '@/constants/path';
-import { Row } from 'antd';
+import { Row, message } from 'antd';
 import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
@@ -20,7 +20,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
 import { EntryForm } from './EntryForm';
-import { showPageLoading } from '@/features/loading/loading';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;
@@ -37,6 +37,10 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
 
   const handleSubmitForm = () => {
     showPageLoading();
+    if (data.construction_start <= data.design_due) {
+      hidePageLoading();
+      return message.error('Construction Start date should be after the Design Due');
+    }
     if (projectId) {
       /// update project
       updateProject(projectId, data).then((isSuccess) => {

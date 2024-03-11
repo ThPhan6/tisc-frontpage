@@ -2,19 +2,11 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { QUERY_KEY } from '@/constants/util';
-import { useParams } from 'umi';
 
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
-import {
-  useBoolean,
-  useCheckPermission,
-  useGetParamId,
-  useGetQueryFromOriginURL,
-  useQuery,
-} from '@/helper/hook';
-import { getQueryVariableFromOriginURL } from '@/helper/utils';
-import { cloneDeep, countBy, forEach, isEmpty, uniqueId } from 'lodash';
+import { useBoolean, useCheckPermission, useGetQueryFromOriginURL } from '@/helper/hook';
+import { cloneDeep, countBy, isEmpty, uniqueId } from 'lodash';
 
 import {
   getAllPreSelectAttributes,
@@ -156,7 +148,11 @@ export const getSpecificationWithSelectedValue = (
       return;
     }
     const optionIds = gr.attributes?.map((e) => e.basis_option_id);
-    checkedSpecGroup[selectedGroup].isChecked = true;
+    checkedSpecGroup[selectedGroup].isChecked =
+      checkedSpecGroup[selectedGroup].type === SpecificationType.attribute
+        ? true
+        : checkedSpecGroup[selectedGroup].isChecked;
+
     checkedSpecGroup[selectedGroup].attributes = checkedSpecGroup[selectedGroup].attributes.map(
       (attr) => ({
         ...attr,

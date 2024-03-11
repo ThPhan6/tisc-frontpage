@@ -301,6 +301,7 @@ export const productSpecificationSelector = (state: RootState) => {
           });
           return {
             ...attributeGroup,
+            isChecked: true,
             attributes: newAttributes,
             stepSelection: attributeGroup.step_selections,
           };
@@ -348,7 +349,6 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
         return false;
       });
     });
-
     const viewStepAllOptions = el.viewSteps?.reduce((pre: any, cur: any) => {
       return pre.concat(
         cur.options.map((item: any, index: number) => ({

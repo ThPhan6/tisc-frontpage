@@ -15,6 +15,7 @@ import {
   updateProductSpecifiedStatus,
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
+import { useCheckPermission } from '@/helper/hook';
 
 import {
   setBrandSpecifiedPartialProductSpecifiedData,
@@ -179,11 +180,14 @@ export const renderActionCell =
     if (record.rooms && checkRoom) {
       return null;
     }
-
+    const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
+    const isXProductId = record.product_id?.split(' - ').includes('X');
     const updateItem = {
       type: 'updated',
       label: 'Edit',
-      disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
+      disabled:
+        record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled ||
+        (isDesign && isXProductId),
       onClick: () => {
         setSpecifyingProduct(record);
         onOpenSpecifiyingProductModal(record);

@@ -53,6 +53,7 @@ export type SpecifyingProductRequestBody = {
   entire_allocation: boolean;
   allocation: string[];
   custom_product?: boolean;
+  is_done_assistance_request?: boolean;
 } & CodeOrderRequestParams;
 
 export type OnChangeSpecifyingProductFnc = (
