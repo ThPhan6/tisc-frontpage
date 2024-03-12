@@ -54,7 +54,13 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     const [cursor, setCursor] = useState<number | null>(null);
     const defaultRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
-      defaultRef.current?.setSelectionRange(cursor, cursor);
+      if (
+        defaultRef.current &&
+        defaultRef.current.tagName === 'INPUT' &&
+        'setSelectionRange' in defaultRef.current
+      ) {
+        defaultRef.current.setSelectionRange(cursor, cursor);
+      }
     }, [defaultRef, cursor, props.value]);
     const getDisabledTheme = () => {
       if (props.disabled) {
