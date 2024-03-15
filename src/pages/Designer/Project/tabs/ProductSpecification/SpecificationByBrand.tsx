@@ -55,7 +55,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
-      title: '', // image
+      title: 'Image', // image
       render: () => <div style={{ width: 24 }} />,
     },
     {
@@ -106,7 +106,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     },
     /// image
     {
-      title: '',
+      title: 'Image',
       dataIndex: 'image',
       noBoxShadow: true,
       render: (_v, record) => {

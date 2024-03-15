@@ -20,6 +20,7 @@ export interface DistributorsProp {
 export interface DistributorForm {
   brand_id: string;
   name: string;
+  website: string;
   country_id: string;
   state_id: string;
   city_id: string;
@@ -29,6 +30,7 @@ export interface DistributorForm {
   first_name: string;
   last_name: string;
   gender: boolean;
+  position: string;
   email: string;
   phone: string;
   mobile: string;

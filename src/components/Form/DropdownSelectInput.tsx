@@ -1,8 +1,9 @@
-import { CSSProperties, FC } from 'react';
+import { CSSProperties, FC, useState } from 'react';
 
 import { DropdownProps } from 'antd/es/dropdown';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { checkBrowser } from '@/helper/utils';
 
@@ -34,6 +35,7 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   offsetAlign,
   ...props
 }) => {
+  const [isDown, setIsDown] = useState(true);
   return (
     <CustomDropDown
       placement={placement}
@@ -52,9 +54,12 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
       className={styles.selectDropdown}
       autoHeight={false}
       showCloseFooter={showCloseFooter}
+      handleChangeDropDownIcon={(isOpenItems: boolean) => {
+        setIsDown(!isOpenItems);
+      }}
     >
       <CustomInput borderBottomColor="light" {...props} value={value || ''} />
-      <DropdownIcon className="ic-select" />
+      {isDown ? <DropdownIcon className="ic-select" /> : <DropupIcon className="ic-select" />}
     </CustomDropDown>
   );
 };
