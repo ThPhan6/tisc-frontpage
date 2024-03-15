@@ -217,6 +217,7 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   nestedMenu?: boolean;
   borderFirstItem?: boolean;
   showCloseFooter?: boolean;
+  handleChangeDropDownIcon: any;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -233,6 +234,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   nestedMenu,
   borderFirstItem,
   showCloseFooter,
+  handleChangeDropDownIcon,
   ...props
 }) => {
   const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
@@ -316,6 +318,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         {...props}
         visible={dropdownVisible.value && isMobile === false}
         onVisibleChange={(visible) => {
+          if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
           dropdownVisible.setValue(visible);
         }}
         overlayClassName={`${viewAllTop ? styles.viewAllTop : ''}`}

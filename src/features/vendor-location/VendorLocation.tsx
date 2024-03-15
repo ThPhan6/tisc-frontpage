@@ -1,8 +1,5 @@
 import { FC, useEffect, useState } from 'react';
 
-import { MESSAGE_ERROR } from '@/constants/message';
-import { message } from 'antd';
-
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
@@ -10,7 +7,6 @@ import { selectProductSpecification } from '../product/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
 import { getCustomDistributorByCompany } from '@/pages/Designer/Products/CustomLibrary/services';
-import { isEmpty } from 'lodash';
 
 import { BrandDetail } from '../user-group/types';
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -386,9 +382,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader('Distributor Address', chosenDistributorCountry, () => {
-                if (isEmpty(distributorAddresses) && isSpecifying) {
-                  return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
-                }
+                // if (isEmpty(distributorAddresses) && isSpecifying) {
+                //   return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
+                // }
                 setLocationPopup('distributor');
                 handleCollapse('distributor', activeKey);
                 return true;
