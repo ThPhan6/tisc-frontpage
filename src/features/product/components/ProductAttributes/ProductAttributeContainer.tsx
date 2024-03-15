@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
@@ -67,7 +67,6 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     isGetProductSpecification: true, // except specifying modal
     isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
   });
-
   const brandSpecifiedDetails = useAppSelector((state) => state.product.brandSpecifiedDetails);
   const { specification } = brandSpecifiedDetails;
 

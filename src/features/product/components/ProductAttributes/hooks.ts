@@ -25,7 +25,6 @@ import {
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import {
-  ProjectProductStatus,
   SelectedSpecAttributte,
   SpecificationAttributeGroup,
   SpecificationPreSelectStep,
@@ -33,6 +32,8 @@ import {
 import { useAppSelector } from '@/reducers';
 
 import { getNewDataAfterReordering } from '@/components/Drag';
+
+import { current } from 'immer';
 
 export const getStepSelected = (steps?: AutoStepPreSelectOnAttributeGroupResponse[]) => {
   if (!steps?.length) {
@@ -141,6 +142,8 @@ export const getSpecificationWithSelectedValue = (
   specGroup: SpecificationAttributeGroup[],
   specState: ProductAttributeFormInput[],
 ) => {
+  console.log(current(specGroup));
+  console.log(current(specState));
   const checkedSpecGroup = cloneDeep(specState);
   specGroup.forEach((gr) => {
     const selectedGroup = checkedSpecGroup.findIndex((el) => el.id === gr.id);
@@ -149,10 +152,8 @@ export const getSpecificationWithSelectedValue = (
     }
     const optionIds = gr.attributes?.map((e) => e.basis_option_id);
     checkedSpecGroup[selectedGroup].isChecked =
-      checkedSpecGroup[selectedGroup].type === SpecificationType.attribute
-        ? true
-        : checkedSpecGroup[selectedGroup].isChecked;
-
+      checkedSpecGroup[selectedGroup].type === SpecificationType.attribute ? true : gr.isChecked;
+    checkedSpecGroup[selectedGroup].stepSelection = gr.step_selections;
     checkedSpecGroup[selectedGroup].attributes = checkedSpecGroup[selectedGroup].attributes.map(
       (attr) => ({
         ...attr,
@@ -163,6 +164,7 @@ export const getSpecificationWithSelectedValue = (
       }),
     );
   });
+  console.log(checkedSpecGroup);
   return checkedSpecGroup;
 };
 
@@ -204,13 +206,23 @@ export const useProductAttributeForm = (
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
-  const attributeGroup =
+  let attributeGroup =
     attributeType === 'general'
       ? general_attribute_groups
       : attributeType === 'feature'
       ? feature_attribute_groups
       : specification_attribute_groups;
-
+  if (props?.isSpecifiedModal && attributeType === 'specification') {
+    attributeGroup = attributeGroup.map((item) => {
+      const found = specifiedDetail?.specification.attribute_groups.find(
+        (group) => group.id === item.id,
+      );
+      return {
+        ...item,
+        isChecked: found?.isChecked,
+      };
+    });
+  }
   const attributeGroupKey: AttributeGroupKey =
     attributeType === 'general'
       ? 'general_attribute_groups'
@@ -225,7 +237,7 @@ export const useProductAttributeForm = (
       productId &&
       isTiscAdmin === false
     ) {
-      if (props?.isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider) {
+      if (props?.isSpecifiedModal) {
         dispatch(setDefaultSelectionFromSpecifiedData());
         /// get all attributes selected
         dispatch(getAllPreSelectAttributes(productSpecifiedData ?? []));
@@ -533,7 +545,7 @@ export const useProductAttributeForm = (
       }),
     );
 
-    if (props?.isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider) {
+    if (props?.isSpecifiedModal) {
       const foundId = newState[groupIndex].id;
       const foundGroup = specifiedDetail?.specification.attribute_groups.find(
         (item) => item.id === foundId,
@@ -659,7 +671,7 @@ export const useProductAttributeForm = (
         specification_attribute_groups: newState,
       }),
     );
-    if (props?.isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider) {
+    if (props?.isSpecifiedModal) {
       const foundId = newState[groupIndex].id;
       dispatch(
         setPartialProductSpecifiedData({
