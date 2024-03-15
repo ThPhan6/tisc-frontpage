@@ -225,6 +225,22 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
             />
             <InputGroup
+              label="Website"
+              fontLevel={3}
+              onChange={(e) => {
+                onChangeData('website', e.target.value);
+              }}
+              onDelete={() => onChangeData('website', '')}
+              deleteIcon
+              value={data.website}
+              hasBoxShadow
+              placeholder="Website"
+              hasHeight
+              hasPadding
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <InputGroup
               label="Country"
               required
               fontLevel={3}
@@ -345,6 +361,20 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                 onChange={(radioValue) => onChangeData('gender', radioValue.value)}
               />
             </FormGroup>
+            <InputGroup
+              label="Title/Position"
+              fontLevel={3}
+              placeholder="Title/Position"
+              onChange={(e) => onChangeData('position', e.target.value)}
+              value={data.position}
+              hasBoxShadow
+              hasPadding
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onDelete={() => onChangeData('position', '')}
+              deleteIcon
+            />
             <InputGroup
               label="Work Email"
               required
