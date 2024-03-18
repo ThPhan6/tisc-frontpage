@@ -137,6 +137,10 @@ const syncColWidthFollowingTheDeepestDataRow = (
   curCellStyle: Element,
   excludedColumns: number[],
 ) => {
+  const headers = document.querySelectorAll('thead tr th') as any;
+  headers.forEach((item: any) => {
+    item.style.width = 'auto';
+  });
   const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
 
   const nestedSubRows = document.querySelectorAll(
@@ -150,20 +154,26 @@ const syncColWidthFollowingTheDeepestDataRow = (
   const lastRowSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
+  // console.log(lastRowSubColumns);
   setTimeout(() => {
     let temp: number[] = [];
-    firstRowSubColumns?.forEach((item) => {
+    lastRowSubColumns?.forEach((item) => {
       temp.push(item.clientWidth);
     });
     temp = temp.filter((item) => item !== 0);
     // console.log(temp);
-    const headers = document.querySelectorAll('thead tr th') as any;
+
     // console.log(headers);
     temp.forEach((item, index) => {
       const headerEl = headers[index];
       headerEl.style.width = `${item}px`;
     });
-  }, 500);
+    if (temp.length === 0) {
+      headers.forEach((item: any) => {
+        item.style.width = 'auto';
+      });
+    }
+  }, 100);
 
   if (!firstRowSubColumns || !lastRowSubColumns || !expandedColumns || expandedColumns.length < 4) {
     return;
