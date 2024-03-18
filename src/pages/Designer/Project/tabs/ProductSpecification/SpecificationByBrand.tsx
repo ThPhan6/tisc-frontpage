@@ -122,7 +122,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      render: (_value, record) => <span>{record.collection?.name}</span>,
+      // render: (_value, record) => <span>{record.collection?.name}</span>,
     },
     {
       title: 'Product',
