@@ -161,8 +161,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Description is required');
       return;
     }
-    if (!brandLocationId) {
-      message.error('Brand location is required');
+    if (!brandLocationId && !distributorLocationId) {
+      message.error('Brand or Distributor is required');
       return;
     }
     if (product.specifiedDetail?.id) {
