@@ -142,16 +142,28 @@ const syncColWidthFollowingTheDeepestDataRow = (
   const nestedSubRows = document.querySelectorAll(
     `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"])`,
   );
-
   // First row will work for case with Entire Project row (table with multiple level of nesting)
   const firstRowSubColumns = nestedSubRows[0]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
-
   // Last row will work most time
   const lastRowSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
+  setTimeout(() => {
+    let temp: number[] = [];
+    firstRowSubColumns?.forEach((item) => {
+      temp.push(item.clientWidth);
+    });
+    temp = temp.filter((item) => item !== 0);
+    // console.log(temp);
+    const headers = document.querySelectorAll('thead tr th') as any;
+    // console.log(headers);
+    temp.forEach((item, index) => {
+      const headerEl = headers[index];
+      headerEl.style.width = `${item}px`;
+    });
+  }, 500);
 
   if (!firstRowSubColumns || !lastRowSubColumns || !expandedColumns || expandedColumns.length < 4) {
     return;
