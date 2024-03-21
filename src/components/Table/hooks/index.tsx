@@ -139,7 +139,7 @@ const syncColWidthFollowingTheDeepestDataRow = (
 ) => {
   const headers = document.querySelectorAll('thead tr th') as any;
   headers.forEach((item: any) => {
-    item.style.width = 'auto';
+    item.style.width = '';
   });
   const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
 
@@ -170,7 +170,7 @@ const syncColWidthFollowingTheDeepestDataRow = (
     });
     if (temp.length === 0) {
       headers.forEach((item: any) => {
-        item.style.width = 'auto';
+        item.style.width = '';
       });
     }
   }, 100);
