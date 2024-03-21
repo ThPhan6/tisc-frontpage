@@ -137,21 +137,43 @@ const syncColWidthFollowingTheDeepestDataRow = (
   curCellStyle: Element,
   excludedColumns: number[],
 ) => {
+  const headers = document.querySelectorAll('thead tr th') as any;
+  headers.forEach((item: any) => {
+    item.style.width = '';
+  });
   const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
 
   const nestedSubRows = document.querySelectorAll(
     `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"])`,
   );
-
   // First row will work for case with Entire Project row (table with multiple level of nesting)
   const firstRowSubColumns = nestedSubRows[0]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
-
   // Last row will work most time
   const lastRowSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
+  // console.log(lastRowSubColumns);
+  setTimeout(() => {
+    let temp: number[] = [];
+    lastRowSubColumns?.forEach((item) => {
+      temp.push(item.clientWidth);
+    });
+    temp = temp.filter((item) => item !== 0);
+    // console.log(temp);
+
+    // console.log(headers);
+    temp.forEach((item, index) => {
+      const headerEl = headers[index];
+      headerEl.style.width = `${item}px`;
+    });
+    if (temp.length === 0) {
+      headers.forEach((item: any) => {
+        item.style.width = '';
+      });
+    }
+  }, 100);
 
   if (!firstRowSubColumns || !lastRowSubColumns || !expandedColumns || expandedColumns.length < 4) {
     return;

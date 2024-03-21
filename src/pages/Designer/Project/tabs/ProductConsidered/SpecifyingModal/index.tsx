@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
@@ -11,7 +11,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
-import { updateProductSpecifying } from '@/features/project/services';
+import { getUsedMaterialCodes, updateProductSpecifying } from '@/features/project/services';
 import { useCheckPermission } from '@/helper/hook';
 
 import { FinishScheduleRequestBody } from './types';
@@ -40,6 +40,10 @@ interface SpecifyingModalProps {
   reloadTable: () => void;
   isSpecified?: boolean;
 }
+type UsedMaterialCode = {
+  material_code_id: string;
+  suffix_code: string;
+};
 
 export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   visible,
@@ -58,7 +62,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-
+  const [usedMaterialCodes, setUsedMaterialCodes] = useState<UsedMaterialCode[]>([]);
   const customProduct = product.specifiedDetail?.custom_product ? true : false;
 
   const productId = useAppSelector(productVariantsSelector);
@@ -69,7 +73,13 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const curProduct = customProduct ? customProductDetail : productDetail;
 
   const specifiedDetail = curProduct.specifiedDetail;
-
+  const fetchMaterialCodes = async () => {
+    const res = await getUsedMaterialCodes(specifiedDetail?.id || '');
+    setUsedMaterialCodes(res.data);
+  };
+  useEffect(() => {
+    fetchMaterialCodes();
+  }, []);
   const referToDesignDocument: boolean = customProduct
     ? specifiedDetail?.specification.is_refer_document
     : (curProduct as any).referToDesignDocument;
@@ -137,15 +147,24 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Suffix Code is required');
       return;
     }
+
+    const duplicatedMaterialCode = usedMaterialCodes.find(
+      (item) =>
+        item.material_code_id === specifiedDetail.material_code_id &&
+        item.suffix_code === specifiedDetail.suffix_code,
+    );
+    if (duplicatedMaterialCode) {
+      message.error('Duplicated Material Code and Suffix Code.');
+      return;
+    }
     if (!specifiedDetail.description) {
       message.error('Description is required');
       return;
     }
-    if (!brandLocationId) {
-      message.error('Brand location is required');
+    if (!brandLocationId && !distributorLocationId) {
+      message.error('Brand or Distributor is required');
       return;
     }
-
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
