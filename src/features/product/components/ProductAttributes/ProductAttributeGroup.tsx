@@ -46,7 +46,6 @@ import {
   OptionQuantityProps,
 } from '../../types/autoStep';
 import { ActiveKeyType } from './types';
-import { ProjectProductStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import {
   closeDimensionWeightGroup,
@@ -206,10 +205,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       return;
     }
 
-    const quantities =
-      isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider
-        ? specifiedQuantity
-        : attrGroupItem.stepSelection?.quantities;
+    const quantities = isSpecifiedModal
+      ? specifiedQuantity
+      : attrGroupItem.stepSelection?.quantities;
     const autoStepImages = () => {
       const quantityKeys = Object.keys(quantities || {});
       return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
@@ -1004,7 +1002,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             quantitiesDefault={
               !attrGroupItem.isChecked
                 ? {}
-                : isSpecifiedModal && specifiedDetail?.status !== ProjectProductStatus.consider
+                : isSpecifiedModal
                 ? specifiedQuantity
                 : attrGroupItem.stepSelection?.quantities
             }
