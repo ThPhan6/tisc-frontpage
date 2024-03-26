@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 
 import { message } from 'antd';
 
+import { getProductById } from '../services';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from './hooks';
 import { assignProductToProject, getAllProjects } from '@/features/project/services';
 import { useScreen } from '@/helper/common';
@@ -52,6 +53,10 @@ const AssignProductModal: FC = () => {
       project_id: String(selectedProject?.value),
       allocation: selectedRoomIds,
       custom_product: isCustomProduct,
+    }).then((response) => {
+      if (response) {
+        getProductById(productId);
+      }
     });
   };
 

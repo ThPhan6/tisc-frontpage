@@ -33,8 +33,6 @@ import { useAppSelector } from '@/reducers';
 
 import { getNewDataAfterReordering } from '@/components/Drag';
 
-import { current } from 'immer';
-
 export const getStepSelected = (steps?: AutoStepPreSelectOnAttributeGroupResponse[]) => {
   if (!steps?.length) {
     return [];
@@ -141,9 +139,8 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
 export const getSpecificationWithSelectedValue = (
   specGroup: SpecificationAttributeGroup[],
   specState: ProductAttributeFormInput[],
+  isSpecifiedModal?: boolean,
 ) => {
-  console.log(current(specGroup));
-  console.log(current(specState));
   const checkedSpecGroup = cloneDeep(specState);
   specGroup.forEach((gr) => {
     const selectedGroup = checkedSpecGroup.findIndex((el) => el.id === gr.id);
@@ -151,9 +148,16 @@ export const getSpecificationWithSelectedValue = (
       return;
     }
     const optionIds = gr.attributes?.map((e) => e.basis_option_id);
-    checkedSpecGroup[selectedGroup].isChecked =
-      checkedSpecGroup[selectedGroup].type === SpecificationType.attribute ? true : gr.isChecked;
-    checkedSpecGroup[selectedGroup].stepSelection = gr.step_selections;
+    if (isSpecifiedModal) {
+      checkedSpecGroup[selectedGroup].isChecked =
+        checkedSpecGroup[selectedGroup].type === SpecificationType.attribute ? true : gr.isChecked;
+      checkedSpecGroup[selectedGroup].stepSelection = gr.step_selections;
+    } else {
+      checkedSpecGroup[selectedGroup].isChecked =
+        checkedSpecGroup[selectedGroup].type === SpecificationType.attribute
+          ? true
+          : checkedSpecGroup[selectedGroup].isChecked;
+    }
     checkedSpecGroup[selectedGroup].attributes = checkedSpecGroup[selectedGroup].attributes.map(
       (attr) => ({
         ...attr,
@@ -164,7 +168,6 @@ export const getSpecificationWithSelectedValue = (
       }),
     );
   });
-  console.log(checkedSpecGroup);
   return checkedSpecGroup;
 };
 

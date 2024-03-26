@@ -201,6 +201,7 @@ const productSlice = createSlice({
         state.details.specification_attribute_groups = getSpecificationWithSelectedValue(
           specifiedDetail.specification?.attribute_groups ?? [],
           state.details.specification_attribute_groups,
+          true,
         );
         state.details.brand_location_id = specifiedDetail.brand_location_id;
         state.details.distributor_location_id = specifiedDetail.distributor_location_id;
