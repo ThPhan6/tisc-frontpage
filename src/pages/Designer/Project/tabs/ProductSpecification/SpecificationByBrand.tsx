@@ -55,7 +55,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
-      title: '', // image
+      title: 'Image', // image
       render: () => <div style={{ width: 24 }} />,
     },
     {
@@ -106,7 +106,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     },
     /// image
     {
-      title: '',
+      title: 'Image',
       dataIndex: 'image',
       noBoxShadow: true,
       render: (_v, record) => {
@@ -122,7 +122,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      render: (_value, record) => <span>{record.collection?.name}</span>,
+      // render: (_value, record) => <span>{record.collection?.name}</span>,
     },
     {
       title: 'Product',

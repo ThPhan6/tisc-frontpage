@@ -15,7 +15,6 @@ import {
   useLandingPageStyles,
 } from '@/pages/LandingPage/components/hook';
 import { checkEmailAlreadyUsed, signUpDesigner } from '@/pages/LandingPage/services/api';
-import { debounce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
@@ -62,9 +61,9 @@ export const SignupModal = () => {
     }
   }, [formInput.email]);
 
-  const handleOnChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
-  }, 300);
+  };
 
   const handleAgreeTisc = () => {
     setAgreeTisc(!agreeTisc);
