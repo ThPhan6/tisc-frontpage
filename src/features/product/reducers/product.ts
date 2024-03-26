@@ -201,6 +201,7 @@ const productSlice = createSlice({
         state.details.specification_attribute_groups = getSpecificationWithSelectedValue(
           specifiedDetail.specification?.attribute_groups ?? [],
           state.details.specification_attribute_groups,
+          true,
         );
         state.details.brand_location_id = specifiedDetail.brand_location_id;
         state.details.distributor_location_id = specifiedDetail.distributor_location_id;
@@ -299,11 +300,15 @@ export const productSpecificationSelector = (state: RootState) => {
               ),
             };
           });
+          const found = state.product.details.specification_attribute_groups.find(
+            (item) => item.id === attributeGroup.id,
+          );
           return {
             ...attributeGroup,
             isChecked: true,
             attributes: newAttributes,
             stepSelection: attributeGroup.step_selections,
+            viewSteps: found?.viewSteps,
           };
         },
       )
@@ -365,7 +370,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     const combinedQuantities = combineQuantityForStepSelection(
       el?.stepSelection?.quantities || [],
     ).map((item: any) => {
-      const found = viewStepAllOptions.find(
+      const found = viewStepAllOptions?.find(
         (viewStepOption: any) =>
           viewStepOption.id === item.id && specificationAllOptions.includes(item.id),
       );
