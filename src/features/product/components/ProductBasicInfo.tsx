@@ -225,6 +225,7 @@ export const ProductBasicInfo: React.FC = () => {
           // formClass="mb-16"
           labelFontSize={4}
           noColon
+          labelWidth={75}
         >
           <CustomTextArea
             maxWords={50}
@@ -258,7 +259,6 @@ export const ProductBasicInfo: React.FC = () => {
             horizontal
             fontLevel={4}
             containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
-            hasPadding
             label="Selection ID"
             readOnly={true}
             noWrap
