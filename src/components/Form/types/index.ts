@@ -36,6 +36,7 @@ export interface FormGroupProps {
     | 'rightBottom';
   style?: CSSProperties;
   noColon?: boolean;
+  labelWidth?: any;
 }
 
 export interface TextFormProps extends FormGroupProps {
