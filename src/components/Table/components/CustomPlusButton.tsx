@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 
@@ -12,6 +12,7 @@ interface CustomPlusButtonProps {
   label?: string;
   customClass?: string;
   position?: 'start' | 'between' | 'center' | 'end';
+  style?: CSSProperties;
 }
 
 const CustomPlusButton: FC<CustomPlusButtonProps> = ({
@@ -21,14 +22,16 @@ const CustomPlusButton: FC<CustomPlusButtonProps> = ({
   label,
   customClass = '',
   position = 'end',
+  style,
 }) => {
   return (
-    <div className={`flex-${position} ${customClass}`}>
+    <div className={`flex-${position} ${customClass}`} style={style}>
       <div
         onClick={onClick}
         className={`${styles.customContent} ${
           disabled ? styles.customContentDisable : styles.customContent
-        }`}>
+        }`}
+      >
         {label ? (
           <MainTitle level={4} customClass="label">
             {label}
@@ -43,7 +46,8 @@ const CustomPlusButton: FC<CustomPlusButtonProps> = ({
                   height: size,
                 }
               : undefined
-          }>
+          }
+        >
           <PlusIcon />
         </div>
       </div>

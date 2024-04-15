@@ -267,6 +267,7 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
                     </div>
                   ) : (
                     <img
+                      key={index}
                       src={showImageUrl(subItemOption.image)}
                       style={{
                         width: 64,

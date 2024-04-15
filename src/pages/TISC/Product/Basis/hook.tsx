@@ -39,6 +39,7 @@ import {
 import { ConversionItem } from './Conversion/components/ConversionItem';
 import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
 import { MainOptionItem } from './Option/components/OptionItem';
+import { PresetHeader } from './Preset/components/PresetHeader';
 import { PresetItem } from './Preset/components/PresetItem';
 import { DragEndResultProps } from '@/components/Drag';
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -671,10 +672,19 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     );
   };
 
+  const renderHeader = () => {
+    if (type === 'presets') {
+      return <PresetHeader />;
+    }
+
+    return <TableHeader title={`${type}`} rightAction={<CustomPlusButton disabled />} />;
+  };
+
   const renderProductBasicEntryForm = useCallback(() => {
     return (
       <div>
-        <TableHeader title={`${type}`} rightAction={<CustomPlusButton disabled />} />
+        {renderHeader()}
+
         <EntryFormWrapper
           handleSubmit={onHandleSubmit}
           handleCancel={history.goBack}
@@ -684,6 +694,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           lg={type === 'options' ? 24 : 12}
           span={24}
           contentClass={type === 'options' ? styles.mainOptionContent : ''}
+          contentStyles={{
+            height:
+              type === 'presets'
+                ? 'calc(var(--vh) * 100 - 289px)'
+                : 'calc(var(--vh) * 100 - 250px)',
+          }}
         >
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
             {type === 'options' ? (
