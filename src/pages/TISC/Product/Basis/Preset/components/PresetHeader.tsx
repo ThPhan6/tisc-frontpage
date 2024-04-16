@@ -59,10 +59,10 @@ export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
   useImperativeHandle(ref, () => ({ tab: selectedTab }), [selectedTab]);
 
   const handleChangeTab = (activeKey: string) => {
-    setSelectedTab(activeKey as PresetTabKey);
-
     location.hash = '#' + activeKey;
     history.push(location);
+
+    setSelectedTab(activeKey as PresetTabKey);
   };
 
   const handlePushTo = () => {

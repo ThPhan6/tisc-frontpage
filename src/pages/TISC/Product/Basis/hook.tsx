@@ -28,6 +28,7 @@ import { cloneDeep, isNull, isUndefined, lowerCase, merge, uniqueId } from 'loda
 import {
   BasisOptionForm,
   BasisOptionSubForm,
+  BasisPresetType,
   ConversionSubValueProps,
   MainBasisOptionSubForm,
   PresetItemValueProp,
@@ -38,7 +39,7 @@ import {
 import { ConversionItem } from './Conversion/components/ConversionItem';
 import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
 import { MainOptionItem } from './Option/components/OptionItem';
-import { PresetHeader } from './Preset/components/PresetHeader';
+import { PresetHeader, PresetTabKey } from './Preset/components/PresetHeader';
 import { DragEndResultProps } from '@/components/Drag';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
@@ -152,6 +153,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const hasMainSubOption =
     type === ProductBasisFormType.options || type === ProductBasisFormType.presets;
 
+  const location = useLocation();
+  const tabActive = location.hash.split('#')[1] as PresetTabKey;
+
   const idBasis = useGetParamId();
 
   const submitButtonStatus = useBoolean(false);
@@ -235,7 +239,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
     if (defaultId) {
       newSubs[index].id = `new-${defaultId}`;
-      delete newSubs?.sub_group_id;
     }
     newSubs[index] = value;
     setData((prevState) => ({ ...prevState, subs: newSubs }));
@@ -628,11 +631,25 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     const handleSubmit = idBasis ? handleUpdate : handleCreate;
 
     if (hasMainSubOption) {
-      handleSubmit({
+      let result: any = {
         name: data.name.trim(),
         count: data.count,
         subs: newSubs,
-      });
+      };
+
+      if (type === ProductBasisFormType.presets) {
+        result = {
+          name: data.name.trim(),
+          count: data.count,
+          subs: newSubs,
+          additional_type:
+            tabActive === PresetTabKey.generalPresets
+              ? BasisPresetType.general
+              : BasisPresetType.feature,
+        };
+      }
+
+      handleSubmit(result);
 
       return;
     }

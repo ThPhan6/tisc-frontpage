@@ -34,9 +34,15 @@ export interface MainBasisPresetSubForm {
   count: number;
 }
 
+export enum BasisPresetType {
+  general,
+  feature,
+}
+
 export interface PresetsValueProp {
   name: string;
   subs: PresetItemValueProp[];
+  additional_type: BasisPresetType;
 }
 
 export interface PresetElementInputProp {
@@ -50,6 +56,7 @@ export type PresetItemValueProp = {
   count: number;
   name: string;
   subs: SubBasisPreset[];
+  sub_group_id?: string;
 };
 
 export const presetsValueDefault = {

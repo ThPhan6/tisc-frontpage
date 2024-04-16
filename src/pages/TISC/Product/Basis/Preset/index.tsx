@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useHistory, useLocation } from 'umi';
+import { useLocation } from 'umi';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deletePresetMiddleware, getProductBasisPresetPagination } from '@/services';
+import { isUndefined } from 'lodash';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import type { BasisPresetListResponse, SubBasisPreset } from '@/types';
@@ -35,6 +36,9 @@ const colsDataIndex = {
 
 const BasisPresetList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [5]);
+
+  const location = useLocation();
+
   const tableRef = useRef<any>();
   const tabRef = useRef<any>();
 
@@ -42,8 +46,14 @@ const BasisPresetList: React.FC = () => {
 
   /// watch tab selected changed
   useEffect(() => {
-    setSelectedTab(tabRef.current.tab);
-  }, [tabRef.current]);
+    setSelectedTab(location.hash.split('#')[1] as PresetTabKey);
+  }, [location.hash]);
+
+  useEffect(() => {
+    if (selectedTab) {
+      tableRef.current.reload();
+    }
+  }, [selectedTab]);
 
   const handleUpdatePreset = (id: string) => {
     pushTo(PATH.updatePresets.replace(':id', id) + `#${selectedTab}`);
@@ -120,7 +130,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
     },
     {
       title: colTitle.sub,
@@ -128,7 +138,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {
@@ -254,10 +264,15 @@ const BasisPresetList: React.FC = () => {
       columns={setDefaultWidthForEachColumn(MainColumns, 6)}
       ref={tableRef}
       fetchDataFunc={getProductBasisPresetPagination}
+      autoLoad={false}
       multiSort={{
         name: 'group_order',
         main_group: 'sub_group_order',
         preset_name: 'preset_order',
+      }}
+      extraParams={{
+        /// first loading selectedTab is undefined
+        is_general: selectedTab === PresetTabKey.generalPresets || isUndefined(selectedTab),
       }}
       expandable={GetExpandableTableConfig({
         columns: setDefaultWidthForEachColumn(MainSubColumns, 6),

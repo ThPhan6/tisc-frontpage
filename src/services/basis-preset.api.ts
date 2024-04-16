@@ -104,11 +104,15 @@ export async function getOnePresetMiddleware(id: string) {
       const newSubs = response.data.subs.map((el) => {
         /// change default sub preset id
         if (el.id === DEFAULT_SUB_PRESET_ID) {
+          const newEl = { ...el };
+          delete newEl?.sub_group_id;
+
           return {
-            ...el,
+            ...newEl,
             id: `new-${DEFAULT_SUB_PRESET_ID}`,
           };
         }
+
         return el;
       });
 
