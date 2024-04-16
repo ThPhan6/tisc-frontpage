@@ -28,7 +28,8 @@ const dataIndexDefault = 'name';
 
 const colsDataIndex = {
   group: 'preset_group',
-  main: 'sub_group',
+  // main: 'sub_group',
+  main: 'main_group',
   sub: 'preset_name',
 };
 
@@ -104,7 +105,7 @@ const BasisPresetList: React.FC = () => {
   const MainColumns: TableColumnItem<BasisPresetListResponse>[] = [
     {
       title: colTitle.group,
-      dataIndex: 'name',
+      dataIndex: dataIndexDefault,
       sorter: {
         multiple: 1,
       },
@@ -119,7 +120,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
-      // defaultSortOrder: 'ascend',
+      defaultSortOrder: 'ascend',
     },
     {
       title: colTitle.sub,
@@ -127,7 +128,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
-      // defaultSortOrder: 'ascend',
+      defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {
@@ -255,7 +256,7 @@ const BasisPresetList: React.FC = () => {
       fetchDataFunc={getProductBasisPresetPagination}
       multiSort={{
         name: 'group_order',
-        sub_group: 'sub_group_order',
+        main_group: 'sub_group_order',
         preset_name: 'preset_order',
       }}
       expandable={GetExpandableTableConfig({

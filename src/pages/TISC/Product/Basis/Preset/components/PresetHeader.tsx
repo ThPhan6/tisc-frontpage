@@ -82,7 +82,7 @@ export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
 
   return (
     <div>
-      <TableHeader title="PRESET" />
+      <TableHeader title="PRESET" customClass={styles.presetHeader} />
 
       <CustomTabs
         listTab={listTab}

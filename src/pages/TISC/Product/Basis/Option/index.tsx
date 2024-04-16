@@ -99,7 +99,7 @@ const BasisOptionList: React.FC = () => {
   const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: colTitle.group,
-      dataIndex: 'name', // key in data
+      dataIndex: dataIndexDefault, // key in data
       sorter: {
         multiple: 1,
       },

@@ -7,9 +7,14 @@ import { Col, Collapse, Row, Upload, message } from 'antd';
 
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove.svg';
 import DefaultImage from '@/assets/icons/default-option-icon.png';
-import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
+import { ReactComponent as DragIcon } from '@/assets/icons/drag-icon.svg';
+import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
-import { FormOptionGroupContext, FormOptionGroupHeaderContext } from '../../hook';
+import {
+  FormGroupContext,
+  FormOptionGroupHeaderContext,
+  useCheckBasicOptionForm,
+} from '../../hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import { cloneDeep, uniqueId } from 'lodash';
 
@@ -69,6 +74,8 @@ interface SubItemOptionProps {
 }
 
 const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
+  const isBasicOption = useCheckBasicOptionForm();
+
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...subItemOption,
@@ -84,22 +91,91 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
     });
   };
 
+  if (isBasicOption) {
+    return (
+      <div className={styles.element}>
+        <ImageUpload
+          onFileChange={handleChangeFileImage}
+          image={subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image)}
+          style={{
+            border: subItemOption.isBase64 ? 'unset' : '0.5px solid #e4e4e4',
+            width: 64,
+            height: 64,
+          }}
+        />
+
+        <Row className={styles.form_sub__input} gutter={16}>
+          {[1, 2].map((order) => (
+            <Col className={styles.form_input} key={order} span={12}>
+              <BodyText level={3}>O{order}:</BodyText>
+              <CustomInput
+                placeholder="value"
+                name={`value_${order}`}
+                size="small"
+                autoWidth
+                defaultWidth={40}
+                containerClass={styles.form_input__formula}
+                onChange={handleChangeInput}
+                value={subItemOption[`value_${order}`]}
+              />
+              <CustomInput
+                placeholder="unit"
+                name={`unit_${order}`}
+                size="small"
+                autoWidth
+                defaultWidth={30}
+                containerClass={styles.form_input__unit}
+                onChange={handleChangeInput}
+                value={subItemOption[`unit_${order}`]}
+              />
+            </Col>
+          ))}
+          <Col span={12}>
+            <div
+              style={{
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <span className="product-id-label">Product ID:</span>
+              <CustomInput
+                placeholder="type here"
+                className="product-id-input"
+                name="product_id"
+                onChange={handleChangeInput}
+                value={subItemOption.product_id}
+              />
+            </div>
+          </Col>
+          <Col span={12} className="flex-start">
+            <div
+              style={{
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <span className="product-id-label">Paired:</span>
+
+              <BodyText fontFamily="Roboto" level={5} style={{ paddingLeft: 12 }}>
+                {subItemOption.paired}
+              </BodyText>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.element}>
-      <ImageUpload
-        onFileChange={handleChangeFileImage}
-        image={subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image)}
-        style={{
-          border: subItemOption.isBase64 ? 'unset' : '0.5px solid #e4e4e4',
-          width: 64,
-          height: 64,
-        }}
-      />
-
       <Row className={styles.form_sub__input} gutter={16}>
         {[1, 2].map((order) => (
           <Col className={styles.form_input} key={order} span={12}>
-            <BodyText level={3}>O{order}:</BodyText>
+            <BodyText level={3}>P{order}:</BodyText>
             <CustomInput
               placeholder="value"
               name={`value_${order}`}
@@ -122,41 +198,6 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
             />
           </Col>
         ))}
-        <Col span={12}>
-          <div
-            style={{
-              height: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <span className="product-id-label">Product ID:</span>
-            <CustomInput
-              placeholder="type here"
-              className="product-id-input"
-              name="product_id"
-              onChange={handleChangeInput}
-              value={subItemOption.product_id}
-            />
-          </div>
-        </Col>
-        <Col span={12} className="flex-start">
-          <div
-            style={{
-              height: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <span className="product-id-label">Paired:</span>
-
-            <BodyText fontFamily="Roboto" level={5} style={{ paddingLeft: 12 }}>
-              {subItemOption.paired}
-            </BodyText>
-          </div>
-        </Col>
       </Row>
     </div>
   );
@@ -166,11 +207,11 @@ interface SubOptionItemProps {
   subOption: BasisOptionSubForm;
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
-  handleCopySubOtionItem: () => void;
+  handleCopySubOtionItem?: () => void;
   dragIcon: JSX.Element;
 }
 
-const SubOptionItem: FC<SubOptionItemProps> = (props) => {
+export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
   const {
     subOption,
     handleChangeSubItem,
@@ -179,9 +220,11 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     handleCopySubOtionItem,
   } = props;
 
+  const isBasicOption = useCheckBasicOptionForm();
+
   const { mode } = useContext(FormOptionGroupHeaderContext);
 
-  const { collapse, setCollapse } = useContext(FormOptionGroupContext);
+  const { collapse, setCollapse } = useContext(FormGroupContext);
 
   const handleDeleteSubItem =
     (index: number) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
@@ -244,8 +287,11 @@ const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           key={subOption.id}
           showArrow={false}
         >
-          <div className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}>
-            {!subOption.subs.length ? (
+          <div
+            className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}
+            style={{ paddingLeft: isBasicOption ? 16 : 48 }}
+          >
+            {!subOption.subs?.length ? (
               <EmptyOne />
             ) : (
               subOption.subs.map(
@@ -303,7 +349,7 @@ interface MainOptionItemProps {
   mainOptionIndex: number;
   handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
   handleDeleteMainSubOption: () => void;
-  handleCopyMainOption: (mainOption: MainBasisOptionSubForm) => void;
+  handleCopyMainOption?: (mainOption: MainBasisOptionSubForm) => void;
 }
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
@@ -315,7 +361,9 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
     handleCopyMainOption,
   } = props;
 
-  const { collapse, setCollapse } = useContext(FormOptionGroupContext);
+  const isBasicOption = useCheckBasicOptionForm();
+
+  const { collapse, setCollapse } = useContext(FormGroupContext);
 
   const handleDeleteSubOption = (index: number) => {
     const newSubItems = [...mainOption.subs];
@@ -435,7 +483,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                                       }}
                                       className="drag-icon flex-start"
                                     >
-                                      <DragIcon />
+                                      {isBasicOption ? <ScrollIcon /> : <DragIcon />}
                                     </div>
                                   }
                                 />

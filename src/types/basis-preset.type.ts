@@ -14,9 +14,24 @@ export interface BasisPresetListResponse {
     id: string;
     name: string;
     count: number;
-    subs: SubBasisPreset[];
+    subs: BasisPresetSubForm[];
   }[];
   created_at: string;
+}
+
+export interface BasisPresetSubForm {
+  id: string;
+  name: string;
+  subs: SubBasisPreset[];
+  count: number;
+  main_id: string;
+}
+
+export interface MainBasisPresetSubForm {
+  id: string;
+  name: string;
+  subs: BasisPresetSubForm[];
+  count: number;
 }
 
 export interface PresetsValueProp {
@@ -24,29 +39,17 @@ export interface PresetsValueProp {
   subs: PresetItemValueProp[];
 }
 
-export interface PresetItemProps {
-  value: PresetItemValueProp;
-  onChangeValue: (value: PresetItemValueProp) => void;
-  handleOnClickDelete: () => void;
-}
-
 export interface PresetElementInputProp {
   order: number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: SubPresetValueProp;
+  value: SubBasisPreset;
 }
 
 export type PresetItemValueProp = {
+  id: string;
+  count: number;
   name: string;
-  collapse: string; /// UI
-  subs: SubPresetValueProp[];
-};
-
-export type SubPresetValueProp = {
-  value_1: string;
-  value_2: string;
-  unit_1: string;
-  unit_2: string;
+  subs: SubBasisPreset[];
 };
 
 export const presetsValueDefault = {
