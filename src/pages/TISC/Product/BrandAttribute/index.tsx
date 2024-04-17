@@ -39,7 +39,10 @@ const BrandAttributeList: React.FC = () => {
     },
     {
       title: 'Main Category',
-      dataIndex: 'categories',
+      dataIndex: 'main_categories',
+      render: (value) => {
+        return <span className="text-capitalize">{value.join(', ')}</span>;
+      },
     },
 
     {
@@ -85,7 +88,7 @@ const BrandAttributeList: React.FC = () => {
         fetchDataFunc={getBrandPagination}
         dynamicPageSize
         hasPagination
-        // hasSummary
+        hasSummary
         onRow={(rowRecord) => ({
           onClick: () => {
             message.info('comming soon');

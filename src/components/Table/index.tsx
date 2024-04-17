@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { Table } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
@@ -11,7 +11,7 @@ import type {
 
 import { useCustomTable } from './hooks';
 import { useScreen } from '@/helper/common';
-import { isArray, isEmpty, isNumber, reverse, uniqBy } from 'lodash';
+import { isArray, isEmpty, isNumber, isUndefined, reverse, uniqBy } from 'lodash';
 
 import type {
   DataTableResponse,
@@ -159,6 +159,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     total: 0,
   });
 
+  const tableSummaryRef = useRef<any>(null);
+  const [tableSummaryWidth, setTableSummaryWidth] = useState<number>();
   const { isMobile } = useScreen();
 
   const { columns, expanded } = useCustomTable(props.columns);
@@ -223,7 +225,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       });
     } else {
       // Multiple sort for the first one but it is an object, not array
-      if (isNumber(sorter?.column?.sorter?.multiple) && sorter?.field && multiSort) {
+      if (isNumber((sorter as any)?.column?.sorter?.multiple) && sorter?.field && multiSort) {
         paginationParams[multiSort[sorter.field.toString()]] = converseOrder(sorter?.order);
       } else {
         // Normal sort
@@ -247,6 +249,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       }
     });
   };
+
+  useEffect(() => {
+    if (!isUndefined(tableSummaryRef.current?.getTableSummaryWidth)) {
+      setTableSummaryWidth(tableSummaryRef.current.getTableSummaryWidth());
+    }
+  }, [tableSummaryRef]);
 
   useEffect(() => {
     if (autoLoad) {
@@ -375,10 +383,18 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
             sorter={currentSorter}
             dataLength={data.length ?? 0}
             customClass={footerClass}
-            style={{ width: 'calc(100% - 320px', zIndex: 1 }}
+            style={{
+              width: `calc(100% - ${(tableSummaryWidth ? tableSummaryWidth : 252) - 48}px`,
+              zIndex: 1,
+            }}
           />
 
-          <TableSummary summary={summary} customClass={footerClass} />
+          <TableSummary
+            ref={tableSummaryRef}
+            summary={summary}
+            customClass={footerClass}
+            style={{ width: 'fit-content' }}
+          />
         </div>
       ) : null}
     </div>
