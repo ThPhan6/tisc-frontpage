@@ -58,6 +58,7 @@ export const PATH = {
   updateOptions: '/tisc/products/basis/options/:id',
   LinkageDataSet: '/tisc/products/basis/options/:id/linkage',
   // attribute general
+  brandAttributes: '/tisc/products/brandAttributes',
   attribute: '/tisc/products/attributes',
   attributeGeneral: '/tisc/products/attributes/general',
   attributeGeneralCreate: '/tisc/products/attributes/general/create',

@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 import { TablePaginationConfig } from 'antd';
 import { SorterResult } from 'antd/lib/table/interface';
 
@@ -16,10 +18,11 @@ export interface CustomPaginatorProps {
   dataLength: number;
   sorter: SorterResult<any> | SorterResult<any>[];
   customClass?: string;
+  style?: CSSProperties;
 }
 
 const CustomPaginator = (props: CustomPaginatorProps) => {
-  const { fetchData, pagination, dataLength, sorter, customClass = '' } = props;
+  const { fetchData, pagination, dataLength, sorter, style, customClass = '' } = props;
   const currentPage = pagination.current ?? 1;
   const currentPageSize = pagination.pageSize ?? 1;
   const currentTotal = pagination.total ?? 0;
@@ -76,6 +79,7 @@ const CustomPaginator = (props: CustomPaginatorProps) => {
       className={`pagination-layout ${styles.customPaginator} ${customClass} ${
         isMobile ? styles.mobilePagination : ''
       } ${pagination ? styles.paginationFixed : ''}`}
+      style={style}
     >
       {renderLeftPaginator()}
       <div>

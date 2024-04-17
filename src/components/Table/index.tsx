@@ -122,6 +122,7 @@ export interface CustomTableProps {
   onRow?: GetComponentProps<any>;
   isActiveOnRow?: boolean;
   dynamicPageSize?: boolean;
+  hasSummary?: boolean;
 }
 
 /// update order compared to BE
@@ -146,6 +147,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     autoLoad = true,
     onFilterLoad = true,
     dynamicPageSize,
+    hasSummary,
   } = props;
 
   const DEFAULT_TABLE_ROW = 44;
@@ -173,29 +175,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const headerLayout = document.querySelector('.ant-layout-header');
     const headerHeight = headerLayout?.clientHeight || 48;
 
-    // console.log('headerLayout', headerLayout);
-    // console.log('headerHeight', headerHeight);
-
-    // const ttable = document.querySelector('.ttable-layout');
-    // const ttableHeight = ttable?.getBoundingClientRect() || { top: 156 };
-
-    // console.log('ttable', ttable);
-    // console.log('ttableHeight --->>>', ttableHeight);
-
     const paginationLayout = document.querySelector('.pagination-layout');
     const paginationHeight = paginationLayout?.clientHeight || 40;
-
-    // console.log('paginationLayout', paginationLayout);
-    // console.log('paginationHeight', paginationHeight);
-
-    // const tableBody = document.querySelector('.tbodyLayout');
-    // const clientBouding = tableBody?.getBoundingClientRect() || { top: 200 };
-
-    // console.log('tableBody', tableBody);
-    // console.log('clientBouding', clientBouding);
-    // console.log('divRef', divRef.current?.getBoundingClientRect());
-
-    // const a = divRef.current?.getBoundingClientRect().top + 48 + 36;
 
     const marginSpace = isMobile ? 12 : 24;
     const tableHeaderHeight = 48;
@@ -203,11 +184,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const paddingBottom = 40;
     const totalHeight = tableHeaderHeight + tableThreadHeight + marginSpace + headerHeight;
 
-    // console.log('totalHeight', totalHeight);
-
     const tableTBodyHeight = window.innerHeight - totalHeight - paddingBottom - paginationHeight;
-
-    // console.log('tableTBodyHeight', tableTBodyHeight);
 
     return Number((tableTBodyHeight / DEFAULT_TABLE_ROW || DEFAULT_PAGESIZE).toFixed(0));
   };
@@ -377,7 +354,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         }}
       />
 
-      {hasPagination && pagination ? (
+      {hasPagination && pagination && !hasSummary ? (
         <CustomPaginator
           fetchData={fetchData}
           pagination={pagination}
@@ -387,6 +364,22 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         />
       ) : !isEmpty(summary) ? (
         <TableSummary summary={summary} customClass={footerClass} />
+      ) : null}
+
+      {/* show both pagination and summary */}
+      {hasPagination && pagination && hasSummary && !isEmpty(summary) ? (
+        <div>
+          <CustomPaginator
+            fetchData={fetchData}
+            pagination={pagination}
+            sorter={currentSorter}
+            dataLength={data.length ?? 0}
+            customClass={footerClass}
+            style={{ width: 'calc(100% - 320px', zIndex: 1 }}
+          />
+
+          <TableSummary summary={summary} customClass={footerClass} />
+        </div>
       ) : null}
     </div>
   );
