@@ -13,8 +13,9 @@ import type { TableColumnItem } from '@/components/Table/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
+
+import { BranchHeader } from '../BrandAttribute/BranchHeader';
 
 const AttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(1, [3]);
@@ -145,28 +146,26 @@ const AttributeList: React.FC = () => {
     },
   ];
   return (
-    <>
-      <CustomTable
-        rightAction={<CustomPlusButton onClick={() => pushTo(`${activePath}/create`)} />}
-        title={attributeLocation.NAME}
-        columns={setDefaultWidthForEachColumn(MainColumns, 3)}
-        ref={tableRef}
-        fetchDataFunc={getProductAttributePagination}
-        extraParams={{
-          type: attributeLocation.TYPE,
-        }}
-        multiSort={{
-          name: 'group_order',
-          attribute_name: 'attribute_order',
-          content_type: 'content_type_order',
-        }}
-        expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(SubColumns, 3),
-          childrenColumnName: 'subs',
-          level: 2,
-        })}
-      />
-    </>
+    <CustomTable
+      header={<BranchHeader brandName={'brand name'} />}
+      title={attributeLocation.NAME}
+      columns={setDefaultWidthForEachColumn(MainColumns, 3)}
+      ref={tableRef}
+      fetchDataFunc={getProductAttributePagination}
+      extraParams={{
+        type: attributeLocation.TYPE,
+      }}
+      multiSort={{
+        name: 'group_order',
+        attribute_name: 'attribute_order',
+        content_type: 'content_type_order',
+      }}
+      expandable={GetExpandableTableConfig({
+        columns: setDefaultWidthForEachColumn(SubColumns, 3),
+        childrenColumnName: 'subs',
+        level: 2,
+      })}
+    />
   );
 };
 

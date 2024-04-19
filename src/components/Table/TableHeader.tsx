@@ -19,7 +19,7 @@ export const TableHeader: FC<TableHeaderProps> = ({ title, rightAction, customCl
         {title}
       </Title>
       <div
-        className={styles.tableHeader__iconWrapper}
+        className={`${styles.tableHeader__iconWrapper} rightAction`}
         style={{ width: isMobile && title === ' ' ? '100%' : '' }}
       >
         {rightAction}

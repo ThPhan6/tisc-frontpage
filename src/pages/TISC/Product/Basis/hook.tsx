@@ -6,6 +6,7 @@ import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history } from 'umi';
 
+import { useCheckBrandAttributePath } from '../BrandAttribute/hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { checkNil } from '@/helper/utils';
@@ -46,6 +47,7 @@ import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { BranchHeader } from '../BrandAttribute/BranchHeader';
 import styles from './index.less';
 import { getNewDataAfterDragging } from './util';
 
@@ -71,37 +73,17 @@ const optionValueDefault: BasisOptionSubForm = {
   subs: [],
 };
 
-type ProductBasisFormType = 'conversions' | 'presets' | 'options';
+export enum ProductBasisFormType {
+  conversions = 'conversions',
+  presets = 'presets',
+  options = 'options',
+}
 
 const getEntryFormTitle = (type: ProductBasisFormType) => {
   if (type === 'conversions') {
     return 'Conversion Group';
   }
   return type === 'presets' ? 'Preset Group' : 'Option Group';
-};
-
-const FORM_CONFIG = {
-  conversions: {
-    getOneFunction: getOneConversionMiddleware,
-    createFunction: createConversionMiddleware,
-    updateFunction: updateConversionMiddleware,
-    newSubs: conversionValueDefault,
-    path: PATH.conversions,
-  },
-  presets: {
-    getOneFunction: getOnePresetMiddleware,
-    createFunction: createPresetMiddleware,
-    updateFunction: updatePresetMiddleware,
-    newSubs: presetsValueDefault,
-    path: PATH.presets,
-  },
-  options: {
-    getOneFunction: getOneBasisOption,
-    createFunction: createOptionMiddleWare,
-    updateFunction: updateBasisOption,
-    newSubs: optionValueDefault,
-    path: PATH.options,
-  },
 };
 
 const getSubItemValue = (valueItem: SubPresetValueProp | SubBasisOption) => ({
@@ -136,6 +118,8 @@ export const FormOptionGroupContext = createContext<{
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const idBasis = useGetParamId();
 
+  const { componentPath } = useCheckBrandAttributePath();
+
   const submitButtonStatus = useBoolean(false);
 
   /// to set action handle(create, copy) for list and card mode
@@ -148,6 +132,30 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     name: '',
     subs: [],
   });
+
+  const FORM_CONFIG = {
+    conversions: {
+      getOneFunction: getOneConversionMiddleware,
+      createFunction: createConversionMiddleware,
+      updateFunction: updateConversionMiddleware,
+      newSubs: conversionValueDefault,
+      path: PATH.conversions,
+    },
+    presets: {
+      getOneFunction: getOnePresetMiddleware,
+      createFunction: createPresetMiddleware,
+      updateFunction: updatePresetMiddleware,
+      newSubs: presetsValueDefault,
+      path: PATH.presets,
+    },
+    options: {
+      getOneFunction: getOneBasisOption,
+      createFunction: createOptionMiddleWare,
+      updateFunction: updateBasisOption,
+      newSubs: optionValueDefault,
+      path: componentPath,
+    },
+  };
 
   useEffect(() => {
     if (idBasis) {
@@ -343,7 +351,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const handleDeleteBasisOption = () => {
     deleteBasisOption(idBasis).then((isSuccess) => {
       if (isSuccess) {
-        pushTo(PATH.options);
+        pushTo(componentPath);
       }
     });
   };
@@ -671,10 +679,23 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     );
   };
 
+  const renderHeader = () => {
+    // if (type === ProductBasisFormType.presets) {
+    //   return <PresetHeader />;
+    // }
+
+    if (type === ProductBasisFormType.options) {
+      return <BranchHeader brandName="Brand name" />;
+    }
+
+    return <TableHeader title={`${type}`} rightAction={<CustomPlusButton disabled />} />;
+  };
+
   const renderProductBasicEntryForm = useCallback(() => {
     return (
       <div>
-        <TableHeader title={`${type}`} rightAction={<CustomPlusButton disabled />} />
+        {renderHeader()}
+
         <EntryFormWrapper
           handleSubmit={onHandleSubmit}
           handleCancel={history.goBack}
@@ -684,6 +705,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           lg={type === 'options' ? 24 : 12}
           span={24}
           contentClass={type === 'options' ? styles.mainOptionContent : ''}
+          contentStyles={{
+            height:
+              type === ProductBasisFormType.presets || type === ProductBasisFormType.options
+                ? 'calc(var(--vh) * 100 - 289px)'
+                : 'calc(var(--vh) * 100 - 250px)',
+          }}
         >
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
             {type === 'options' ? (

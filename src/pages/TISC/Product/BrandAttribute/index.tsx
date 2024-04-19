@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 
-import { message } from 'antd';
+import { PATH } from '@/constants/path';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getBrandPagination } from '@/features/user-group/services';
+import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -18,8 +19,8 @@ const BrandAttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, [2]);
   const tableRef = useRef<any>();
 
-  const handleCompose = (id: string) => {
-    message.info('comming soon');
+  const handleCompose = (brandId: string) => {
+    pushTo(PATH.options.replace(':brandId', brandId));
   };
 
   const MainColumns: TableColumnItem<BrandListItem>[] = [
@@ -80,22 +81,20 @@ const BrandAttributeList: React.FC = () => {
   ];
 
   return (
-    <>
-      <CustomTable
-        title="Brand Attributes"
-        columns={setDefaultWidthForEachColumn(MainColumns, 2)}
-        ref={tableRef}
-        fetchDataFunc={getBrandPagination}
-        dynamicPageSize
-        hasPagination
-        hasSummary
-        onRow={(rowRecord) => ({
-          onClick: () => {
-            message.info('comming soon');
-          },
-        })}
-      />
-    </>
+    <CustomTable
+      title="Brand Attributes"
+      columns={setDefaultWidthForEachColumn(MainColumns, 2)}
+      ref={tableRef}
+      fetchDataFunc={getBrandPagination}
+      dynamicPageSize
+      hasPagination
+      hasSummary
+      onRow={(rowRecord: BrandListItem) => ({
+        onClick: () => {
+          handleCompose(rowRecord.id);
+        },
+      })}
+    />
   );
 };
 
