@@ -193,16 +193,13 @@ export const ContentOptionTypeDetail: FC<{
 
     const currentOption = options.find((el) => el.id === currentKey);
 
-    currentOption?.subs?.forEach((sub: any) => {
-      if (currentOptionKey) {
-        return;
-      }
-
-      const subSelected = sub?.subs?.find((s: any) => s.id === subItemSelected);
-
-      if (subSelected) {
+    currentOption?.subs?.some((sub) => {
+      if (sub?.subs?.find((s) => s.id === subItemSelected)) {
         currentOptionKey = sub.id;
+        return true;
       }
+
+      return false;
     });
 
     setOptionKey(currentOptionKey ?? '');
