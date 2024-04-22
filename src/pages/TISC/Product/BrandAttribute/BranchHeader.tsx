@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { useLocation, useParams } from 'umi';
@@ -25,9 +25,13 @@ export enum BranchTabKey {
   specification = 'specification',
 }
 
-interface PresetHeaderProps {}
+interface PresetHeaderProps {
+  containerStyle?: CSSProperties;
+}
 
 export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
+  const { containerStyle } = props;
+
   const location = useLocation();
 
   const param = useParams<BrandAttributeParamProps>();
@@ -147,7 +151,7 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
   };
 
   return (
-    <div>
+    <div style={containerStyle}>
       <TableHeader
         title={param.brandName}
         customClass={styles.branchHeader}
