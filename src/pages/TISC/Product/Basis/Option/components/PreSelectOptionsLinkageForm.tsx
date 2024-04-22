@@ -1,7 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history } from 'umi';
 

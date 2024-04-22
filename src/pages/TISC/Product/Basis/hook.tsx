@@ -351,7 +351,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const handleDeleteBasisOption = () => {
     deleteBasisOption(idBasis).then((isSuccess) => {
       if (isSuccess) {
-        pushTo(componentPath);
+        pushTo(PATH.options);
       }
     });
   };
@@ -685,7 +685,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     // }
 
     if (type === ProductBasisFormType.options) {
-      return <BranchHeader brandName="Brand name" />;
+      return <BranchHeader />;
     }
 
     return <TableHeader title={`${type}`} rightAction={<CustomPlusButton disabled />} />;

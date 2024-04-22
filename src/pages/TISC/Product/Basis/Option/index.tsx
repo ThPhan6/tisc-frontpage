@@ -1,7 +1,5 @@
 import React, { useRef } from 'react';
 
-import { PATH } from '@/constants/path';
-
 import { useCheckBrandAttributePath } from '../../BrandAttribute/hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
@@ -34,6 +32,7 @@ const colsDataIndex = {
 
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [8]);
+
   const tableRef = useRef<any>();
 
   const { componentUpdatePath, linkagePath } = useCheckBrandAttributePath();
@@ -244,7 +243,7 @@ const BasisOptionList: React.FC = () => {
 
   return (
     <CustomTable
-      header={<BranchHeader brandName={'brand name'} />}
+      header={<BranchHeader />}
       title="OPTIONS"
       columns={setDefaultWidthForEachColumn(MainColumns, 8)}
       ref={tableRef}

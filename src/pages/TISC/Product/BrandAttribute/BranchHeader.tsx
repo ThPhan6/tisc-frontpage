@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useLocation } from 'umi';
+import { useLocation, useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
@@ -9,6 +9,7 @@ import { useAttributeLocation } from '../Attribute/hooks/location';
 import { useCheckBranchAttributeTab, useCheckBrandAttributePath } from './hook';
 import { pushTo } from '@/helper/history';
 
+import { BrandAttributeParamProps } from './types';
 import { TabItem } from '@/components/Tabs/types';
 
 import { TableHeader } from '@/components/Table/TableHeader';
@@ -24,14 +25,12 @@ export enum BranchTabKey {
   specification = 'specification',
 }
 
-interface PresetHeaderProps {
-  brandName: string;
-}
+interface PresetHeaderProps {}
 
 export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
-  const { brandName = '' } = props;
-
   const location = useLocation();
+
+  const param = useParams<BrandAttributeParamProps>();
 
   const { activePath, attributeLocation } = useAttributeLocation();
 
@@ -101,21 +100,25 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
   const handleChangePath = (activeKey: BranchTabKey) => {
     if (activeKey === BranchTabKey.component) {
       pushTo(componentPath);
+
       return;
     }
 
     if (activeKey === BranchTabKey.general) {
       pushTo(generalAttributePath);
+
       return;
     }
 
     if (activeKey === BranchTabKey.feature) {
       pushTo(featureAttributePath);
+
       return;
     }
 
     if (activeKey === BranchTabKey.specification) {
       pushTo(specificationAttributePath);
+
       return;
     }
   };
@@ -146,7 +149,7 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
   return (
     <div>
       <TableHeader
-        title={brandName}
+        title={param.brandName}
         customClass={styles.branchHeader}
         rightAction={
           <CloseIcon

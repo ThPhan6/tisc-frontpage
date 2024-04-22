@@ -53,28 +53,29 @@ export const PATH = {
   updateConversions: '/tisc/products/basis/conversions/:id',
 
   // component
-  options: '/tisc/products/basis/:brandId/component',
-  createOptions: '/tisc/products/basis/:brandId/component/create',
-  updateOptions: '/tisc/products/basis/:brandId/component/:id',
-  LinkageDataSet: '/tisc/products/basis/:brandId/component/:id/linkage',
+  options: '/tisc/products/basis/:brandName/:brandId/component',
+  createOptions: '/tisc/products/basis/:brandName/:brandId/component/create',
+  updateOptions: '/tisc/products/basis/:brandName/:brandId/component/:id',
+  LinkageDataSet: '/tisc/products/basis/:brandName/:brandId/component/:id/linkage',
 
   // brand attributes
   attribute: '/tisc/products/attributes',
 
   // attribute general
-  attributeGeneral: '/tisc/products/attributes/:brandId/general',
-  attributeGeneralCreate: '/tisc/products/attributes/:brandId/general/create',
-  attributeGeneralUpdate: '/tisc/products/attributes/:brandId/general/:id',
+  attributeGeneral: '/tisc/products/attributes/:brandName/:brandId/general',
+  attributeGeneralCreate: '/tisc/products/attributes/:brandName/:brandId/general/create',
+  attributeGeneralUpdate: '/tisc/products/attributes/:brandName/:brandId/general/:id',
 
   // attribute feature
-  attributeFeature: '/tisc/products/attributes/:brandId/feature',
-  attributeFeatureCreate: '/tisc/products/attributes/:brandId/feature/create',
-  attributeFeatureUpdate: '/tisc/products/attributes/:brandId/feature/:id',
+  attributeFeature: '/tisc/products/attributes/:brandName/:brandId/feature',
+  attributeFeatureCreate: '/tisc/products/attributes/:brandName/:brandId/feature/create',
+  attributeFeatureUpdate: '/tisc/products/attributes/:brandName/:brandId/feature/:id',
 
   // attribute specification
-  attributeSpecification: '/tisc/products/attributes/:brandId/specification',
-  attributeSpecificationCreate: '/tisc/products/attributes/:brandId/specification/create',
-  attributeSpecificationUpdate: '/tisc/products/attributes/:brandId/specification/:id',
+  attributeSpecification: '/tisc/products/attributes/:brandName/:brandId/specification',
+  attributeSpecificationCreate:
+    '/tisc/products/attributes/:brandName/:brandId/specification/create',
+  attributeSpecificationUpdate: '/tisc/products/attributes/:brandName/:brandId/specification/:id',
 
   //tisc adminstration
   tiscAdministration: '/tisc/adminstration',

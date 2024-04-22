@@ -15,12 +15,14 @@ import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
+import { replaceBrandAttributeBrandId } from './util';
+
 const BrandAttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, [2]);
   const tableRef = useRef<any>();
 
-  const handleCompose = (brandId: string) => {
-    pushTo(PATH.options.replace(':brandId', brandId));
+  const handleCompose = (brandItem: BrandListItem) => {
+    pushTo(replaceBrandAttributeBrandId(PATH.options, brandItem.id, brandItem.name));
   };
 
   const MainColumns: TableColumnItem<BrandListItem>[] = [
@@ -71,7 +73,7 @@ const BrandAttributeList: React.FC = () => {
             actionItems={[
               {
                 type: 'compose',
-                onClick: () => handleCompose(record.id),
+                onClick: () => handleCompose(record),
               },
             ]}
           />
@@ -91,7 +93,7 @@ const BrandAttributeList: React.FC = () => {
       hasSummary
       onRow={(rowRecord: BrandListItem) => ({
         onClick: () => {
-          handleCompose(rowRecord.id);
+          handleCompose(rowRecord);
         },
       })}
     />

@@ -147,7 +147,7 @@ const AttributeList: React.FC = () => {
   ];
   return (
     <CustomTable
-      header={<BranchHeader brandName={'brand name'} />}
+      header={<BranchHeader />}
       title={attributeLocation.NAME}
       columns={setDefaultWidthForEachColumn(MainColumns, 3)}
       ref={tableRef}
