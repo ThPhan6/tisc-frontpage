@@ -4,9 +4,9 @@ import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
-import { lowerCase } from 'lodash';
+import { lowerCase, startCase } from 'lodash';
 
-import type { AttributeSubForm } from '@/types';
+import { type AttributeSubForm, EAttributeContentType } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -47,7 +47,15 @@ export const AttributeItem: FC<AttributeItemProps> = ({
             <BodyText level={4}>Content Type :</BodyText>
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
               {item.content_type ? (
-                <span className="basis-conversion-group">{item.content_type}</span>
+                <span className="basis-conversion-group text-capitalize">
+                  {startCase(
+                    item.content_type === EAttributeContentType.texts
+                      ? 'text'
+                      : item.content_type === EAttributeContentType.presets
+                      ? 'general preset'
+                      : item.content_type,
+                  )}
+                </span>
               ) : (
                 'select from the list'
               )}

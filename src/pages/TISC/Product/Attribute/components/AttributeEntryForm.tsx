@@ -51,6 +51,7 @@ const AttributeEntryForm = () => {
     options: [],
     presets: [],
     texts: [],
+    feature_presets: [],
   });
   // selected content types
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
