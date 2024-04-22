@@ -99,7 +99,7 @@ const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
       <Row className={styles.form_sub__input} gutter={16}>
         {[1, 2].map((order) => (
           <Col className={styles.form_input} key={order} span={12}>
-            <BodyText level={3}>O{order}:</BodyText>
+            <BodyText level={3}>S{order}:</BodyText>
             <CustomInput
               placeholder="value"
               name={`value_${order}`}

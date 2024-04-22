@@ -37,6 +37,7 @@ export interface FormNameInputProps {
   onChangeInput?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputValue?: string;
   customClass?: string;
+  hideTitleInput?: boolean;
 }
 
 export interface MainContentProps {

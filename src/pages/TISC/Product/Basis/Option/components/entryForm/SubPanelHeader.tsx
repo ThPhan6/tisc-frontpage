@@ -5,7 +5,11 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
-import { FormOptionGroupContext, FormOptionGroupHeaderContext } from '../../../hook';
+import {
+  FormOptionGroupContext,
+  FormOptionGroupHeaderContext,
+  useCheckBasicOptionForm,
+} from '../../../hook';
 import { cloneDeep } from 'lodash';
 
 import { BasisOptionSubForm, SubBasisOption } from '@/types';
@@ -35,6 +39,10 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
   handleCopySubOtionItem,
   handleDeleteSubOption,
 }) => {
+  const isBasicOption = useCheckBasicOptionForm();
+  const placeholder = isBasicOption ? 'type sub classification name' : 'sub preset name';
+  const defaultWidth = subOption.name ? 30 : isBasicOption ? placeholder.length * 6.5 : 106;
+
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormOptionGroupContext);
 
@@ -87,7 +95,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
           >
             {dragIcon}
             <CustomInput
-              placeholder="sub option name"
+              placeholder={placeholder}
               name="name"
               containerClass="sub-option-input"
               onChange={handleChangeSubOptionName}
@@ -95,7 +103,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
                 e.stopPropagation();
               }}
               value={subOption.name}
-              defaultWidth={subOption.name ? 30 : 106}
+              defaultWidth={defaultWidth}
               {...inputProps}
             />
           </div>
