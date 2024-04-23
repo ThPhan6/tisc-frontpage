@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
+import { useAttributeLocation } from '../hooks/location';
+import { getProductAttributeContentType } from '@/services';
 import { isEmpty, isUndefined, lowerCase } from 'lodash';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -29,8 +31,8 @@ import { ContentOptionTypeDetail, ContentTypeDetail, formatBasisText } from './u
 interface ContentTypeOptionProps {
   data: BasisConvention[] | BasisPresetOption[] | BasisText[];
   type: EAttributeContentType;
-  selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
-  setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+  selectedOption: AttributeSubForm;
+  setSelectedOption: (selected: AttributeSubForm) => void;
   // index: number;
 }
 
@@ -57,11 +59,13 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
         return item.id === basisId;
       });
       if (selected) {
+        console.log('selected', selected);
+
         setSelectedOption({
           basis_id: basisId,
           content_type: type,
           description: selected.name,
-        });
+        } as any);
       }
     };
 
@@ -85,30 +89,31 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
       });
       if (selected) {
         setSelectedOption({
+          ...selected,
           basis_id: basisId,
           content_type: type,
           description_1: selected.name_1,
           description_2: selected.name_2,
-        });
+        } as any);
       }
     });
   };
 
-  const onChangePreset = (basisId: string) => {
-    const presetData = [...data] as BasisPresetOption[];
-    presetData.forEach((preset) => {
-      const selected = preset.subs?.find((sub) => {
-        return sub.id === basisId;
-      });
-      if (selected) {
-        setSelectedOption({
-          basis_id: basisId,
-          content_type: type,
-          description: selected.name,
-        });
-      }
-    });
-  };
+  // const onChangePreset = (basisId: string) => {
+  //   const presetData = [...data] as BasisPresetOption[];
+  //   presetData.forEach((preset) => {
+  //     const selected = preset.subs?.find((sub) => {
+  //       return sub.id === basisId;
+  //     });
+  //     if (selected) {
+  //       setSelectedOption({
+  //         basis_id: basisId,
+  //         content_type: type,
+  //         description: selected.name,
+  //       });
+  //     }
+  //   });
+  // };
 
   const onChangeOption = (basisId: string) => {
     const optionData = [...data] as BasisPresetOption[];
@@ -119,6 +124,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
         });
         if (selected) {
           setSelectedOption({
+            ...selected,
             basis_id: basisId,
             content_type: type,
             description: selected.name,
@@ -170,18 +176,20 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     />
   );
 };
+interface ContentTypeModalProps {}
 
-interface ContentTypeModalProps {
-  visible: boolean;
-  setVisible: (value: boolean) => void;
-  contentType: AttributeContentType | undefined;
-  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
-  type: number;
-}
 const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
-  const { visible, setVisible, contentType, onSubmit, type } = props;
+  const {} = props;
 
-  const { contentTypeSelected: subAttribute } = useContext(AttributeEntryFormContext);
+  const { attributeLocation } = useAttributeLocation();
+  const type = attributeLocation.TYPE;
+
+  const {
+    openContentTypeModal: visible,
+    setOpenContentTypeModal: setVisible,
+    setContentTypeSelected,
+    contentTypeSelected: subAttribute,
+  } = useContext(AttributeEntryFormContext);
 
   const listTab: TabItem[] = [
     /// key of contentType
@@ -201,9 +209,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   ];
 
   /// default selected option
-  const [selectedOption, setSelectedOption] = useState<Omit<AttributeSubForm, 'id' | 'name'>>({
-    basis_id: subAttribute.basis_id,
-  });
+  const [selectedOption, setSelectedOption] = useState<AttributeSubForm>(subAttribute);
   /// set active tab
   let selectedTab = listTab[0];
 
@@ -211,9 +217,26 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
     selectedTab.key as EAttributeContentType,
   );
 
+  // for content type data
+  const [contentType, setContentType] = useState<AttributeContentType>({
+    conversions: [],
+    options: [],
+    presets: [],
+    texts: [],
+    feature_presets: [],
+  });
+
+  // load data content type
   useEffect(() => {
-    /// update option selected
-    setSelectedOption({ basis_id: subAttribute.basis_id });
+    getProductAttributeContentType().then((contentTypeData) => {
+      if (contentTypeData) {
+        setContentType(contentTypeData);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    setSelectedOption(subAttribute);
 
     if (!isUndefined(subAttribute.content_type)) {
       const selected = listTab.find((item) => {
@@ -235,6 +258,12 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
     setActiveTab(selectedTab.key as EAttributeContentType);
   }, [subAttribute]);
 
+  const handleSubmit = () => {
+    setContentTypeSelected({ ...subAttribute, ...selectedOption });
+    // close modal
+    setVisible(false);
+  };
+
   return (
     <CustomModal
       title="SELECT CONTENT TYPE"
@@ -251,7 +280,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
           <CustomButton
             size="small"
             buttonClass={styles.contentTypeSubmitBtn}
-            onClick={() => onSubmit(selectedOption)}
+            onClick={handleSubmit}
             properties="rounded"
           >
             Done

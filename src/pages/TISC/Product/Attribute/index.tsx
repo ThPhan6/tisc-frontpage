@@ -1,22 +1,28 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
+import { message } from 'antd';
 import { useParams } from 'umi';
 
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import { useAttributeLocation } from './hooks/location';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { copyAttributeToBrand, getBrandPagination } from '@/features/user-group/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
 
 import { BrandAttributeParamProps } from '../BrandAttribute/types';
+import { RadioValue } from '@/components/CustomRadio/types';
 import type { TableColumnItem } from '@/components/Table/types';
+import { BrandListItem } from '@/features/user-group/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
 
+import Popover from '@/components/Modal/Popover';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
+import { BodyText } from '@/components/Typography';
 
 import { BranchHeader } from '../BrandAttribute/BranchHeader';
 
@@ -40,6 +46,29 @@ const AttributeList: React.FC = () => {
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 
+  const [brands, setBrands] = useState<BrandListItem[]>([]);
+  const [attrSelected, setAttrSelected] = useState<string>();
+
+  const [visible, setVisible] = useState<boolean>(false);
+  /// set to call api one time
+  const [dirty, setDirty] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!dirty) {
+      return;
+    }
+
+    getBrandPagination(
+      {
+        page: 1,
+        pageSize: 99999999,
+      },
+      (data) => {
+        setBrands(data.data);
+      },
+    );
+  }, [dirty]);
+
   const handleUpdateAttribute = (id: string) => {
     pushTo(`${activePath}/${id}`);
   };
@@ -51,6 +80,25 @@ const AttributeList: React.FC = () => {
         }
       });
     });
+  };
+
+  const handleSelectAttribute = (id: string) => {
+    setAttrSelected(id);
+    setVisible(true);
+
+    ///
+    setDirty(true);
+  };
+
+  const handleCopyAttribute = async (brandChosen: RadioValue) => {
+    if (!brandChosen?.value || !attrSelected) {
+      message.error('Brand or Attribute not found');
+      return;
+    }
+
+    await copyAttributeToBrand(attrSelected, brandChosen.value as string);
+
+    setVisible(false);
   };
 
   const getSameColumns = (noBoxShadow?: boolean) => {
@@ -135,6 +183,11 @@ const AttributeList: React.FC = () => {
                 onClick: () => handleUpdateAttribute(record.id),
               },
               {
+                type: 'copy',
+                label: 'Copy to',
+                onClick: () => handleSelectAttribute(record.id),
+              },
+              {
                 type: 'deleted',
                 onClick: () => handleDeleteAttribute(record.id),
               },
@@ -200,32 +253,62 @@ const AttributeList: React.FC = () => {
   ];
 
   return (
-    <CustomTable
-      header={<BranchHeader />}
-      title={attributeLocation.NAME}
-      columns={setDefaultWidthForEachColumn(MainColumns, 4)}
-      ref={tableRef}
-      fetchDataFunc={getProductAttributePagination}
-      extraParams={{
-        type: attributeLocation.TYPE,
-        // filter: { brand_id: param.brandId },
-      }}
-      multiSort={{
-        name: 'group_order',
-        attribute_name: 'attribute_order',
-        content_type: 'content_type_order',
-      }}
-      expandable={GetExpandableTableConfig({
-        columns: setDefaultWidthForEachColumn(MainSubColumns, 4),
-        childrenColumnName: 'subs',
-        level: 2,
-        expandable: GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(SubColumns, 4),
+    <>
+      <CustomTable
+        header={<BranchHeader />}
+        title={attributeLocation.NAME}
+        columns={setDefaultWidthForEachColumn(MainColumns, 4)}
+        ref={tableRef}
+        fetchDataFunc={getProductAttributePagination}
+        extraParams={{
+          type: attributeLocation.TYPE,
+          filter: { brand_id: param.brandId },
+        }}
+        multiSort={{
+          name: 'group_order',
+          attribute_name: 'attribute_order',
+          content_type: 'content_type_order',
+        }}
+        expandable={GetExpandableTableConfig({
+          columns: setDefaultWidthForEachColumn(MainSubColumns, 4),
           childrenColumnName: 'subs',
-          level: 3,
-        }),
-      })}
-    />
+          level: 2,
+          expandable: GetExpandableTableConfig({
+            columns: setDefaultWidthForEachColumn(SubColumns, 4),
+            childrenColumnName: 'subs',
+            level: 3,
+          }),
+        })}
+      />
+
+      <Popover
+        title="COPY DATASET TO"
+        cancelSaveFooter
+        clearOnClose
+        visible={visible}
+        setVisible={setVisible}
+        onFormSubmit={handleCopyAttribute}
+        groupRadioList={[
+          {
+            options: brands.map((brand) => {
+              return {
+                value: brand.id,
+                label: (
+                  <div className="flex-start" style={{ gap: 24 }}>
+                    <BodyText fontFamily="Roboto" level={5}>
+                      {brand.name}
+                    </BodyText>
+                    <BodyText fontFamily="Roboto" level={5} color="mono-color-medium">
+                      {brand.origin}
+                    </BodyText>
+                  </div>
+                ),
+              };
+            }),
+          },
+        ]}
+      />
+    </>
   );
 };
 

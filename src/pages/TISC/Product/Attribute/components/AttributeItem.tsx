@@ -15,25 +15,18 @@ import { AttributeEntryFormContext } from './AttributeEntryForm';
 
 interface AttributeItemProps {
   item: AttributeSubForm;
-  handleOnClickDelete?: () => void;
   onChangeItemName?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AttributeItem: FC<AttributeItemProps> = ({
-  item,
-  onChangeItemName,
-  handleOnClickDelete,
-}) => {
+export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }) => {
   const { contentTypeSelected, setContentTypeSelected, setOpenContentTypeModal } =
     useContext(AttributeEntryFormContext);
 
-  const handleSelectContentType = () => {
-    setContentTypeSelected?.({
-      name: item.name,
-      basis_id: item.basis_id,
-    });
+  console.log('contentTypeSelected', contentTypeSelected);
 
-    setOpenContentTypeModal?.(true);
+  const handleSelectContentType = () => {
+    setContentTypeSelected(item);
+    setOpenContentTypeModal(true);
   };
 
   const renderContentType = () => {

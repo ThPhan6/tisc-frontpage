@@ -28,7 +28,7 @@ export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...subItemOption,
-      [e.target.name]: e.target.value.trim(),
+      [e.target.name]: e.target.value,
     });
   };
 

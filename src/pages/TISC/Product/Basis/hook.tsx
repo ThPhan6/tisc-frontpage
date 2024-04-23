@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { getDefaultIDOfBasic } from './Option/components/constant';
@@ -32,7 +32,6 @@ import { cloneDeep, isNull, isUndefined, lowerCase, merge, uniqueId } from 'loda
 import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import {
   AttributeForm,
-  AttributeSubForm,
   BasisOptionForm,
   BasisOptionSubForm,
   BasisPresetType,
@@ -43,6 +42,7 @@ import {
   SubBasisPreset,
 } from '@/types';
 
+import { AttributeEntryFormContext } from '../Attribute/components/AttributeEntryForm';
 import { ConversionItem } from './Conversion/components/ConversionItem';
 import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
 import { MainOptionItem } from './Option/components/OptionItem';
@@ -172,6 +172,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   const hideDrag = type === ProductBasisFormType.attributes;
 
+  const { contentTypeSelected } = useContext(AttributeEntryFormContext);
+
+  console.log('contentTypeSelected', contentTypeSelected);
+
   const location = useLocation();
   const tabActive = location.hash.split('#')[1] as PresetTabKey;
 
@@ -242,6 +246,15 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       });
     }
   }, []);
+
+  // useEffect(() => {
+  //   if (!attributes) {
+  //     return
+  //   }
+
+  //   setData(attributes)
+
+  // }, [JSON.stringify(attributes)])
 
   const handleChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => ({ ...prevState, name: e.target.value }));
