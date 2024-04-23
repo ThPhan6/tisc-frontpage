@@ -4,7 +4,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { DEFAULT_MAIN_OPTION_ID } from './Option/components/constant';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
-import { history } from 'umi';
+import { history, useLocation, useParams } from 'umi';
 
 import { useCheckBrandAttributePath } from '../BrandAttribute/hook';
 import { pushTo } from '@/helper/history';
@@ -26,6 +26,7 @@ import {
 } from '@/services';
 import { cloneDeep, isNull, isUndefined, lowerCase, merge, uniqueId } from 'lodash';
 
+import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import {
   BasisOptionForm,
   BasisOptionSubForm,
@@ -48,6 +49,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { BranchHeader } from '../BrandAttribute/BranchHeader';
+import { replaceBrandAttributeBrandId } from '../BrandAttribute/util';
 import styles from './index.less';
 import { getNewDataAfterDragging } from './util';
 
@@ -83,7 +85,7 @@ const getEntryFormTitle = (type: ProductBasisFormType) => {
   if (type === 'conversions') {
     return 'Conversion Group';
   }
-  return type === 'presets' ? 'Preset Group' : 'Option Group';
+  return type === 'presets' ? 'Preset Group' : 'Component Configuration';
 };
 
 const getSubItemValue = (valueItem: SubPresetValueProp | SubBasisOption) => ({
@@ -114,6 +116,23 @@ export const FormOptionGroupContext = createContext<{
   collapse: {},
   setCollapse: ({}) => null,
 });
+
+export const useCheckBasicOptionForm = () => {
+  const location = useLocation();
+  const param = useParams<BrandAttributeParamProps>();
+  const isBasicOption =
+    location.pathname.indexOf(
+      replaceBrandAttributeBrandId(PATH.options, param.brandId, param.brandName),
+    ) !== -1 ||
+    location.pathname.indexOf(
+      replaceBrandAttributeBrandId(PATH.createOptions, param.brandId, param.brandName),
+    ) !== -1 ||
+    location.pathname.indexOf(
+      replaceBrandAttributeBrandId(PATH.updateOptions, param.brandId, param.brandName),
+    ) !== -1;
+
+  return isBasicOption;
+};
 
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const idBasis = useGetParamId();
@@ -702,9 +721,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           handleDelete={getDeleteFuntional}
           submitButtonStatus={submitButtonStatus.value}
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
-          lg={type === 'options' ? 24 : 12}
+          lg={type === ProductBasisFormType.options ? 24 : 12}
           span={24}
-          contentClass={type === 'options' ? styles.mainOptionContent : ''}
+          contentClass={type === ProductBasisFormType.options ? styles.mainOptionContent : ''}
           contentStyles={{
             height:
               type === ProductBasisFormType.presets || type === ProductBasisFormType.options
@@ -713,9 +732,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           }}
         >
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
-            {type === 'options' ? (
+            {type === ProductBasisFormType.options ? (
               <FormOptionNameInput
-                placeholder="type group name"
+                hideTitleInput
                 title={getEntryFormTitle(type)}
                 onChangeInput={handleChangeGroupName}
                 handleOnClickAddIcon={handleOnClickAddIcon}
