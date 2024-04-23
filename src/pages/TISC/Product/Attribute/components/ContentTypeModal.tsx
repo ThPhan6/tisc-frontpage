@@ -13,9 +13,11 @@ import type {
   BasisPresetOption,
   BasisText,
 } from '@/types';
+import { EAttributeContentType } from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomRadio } from '@/components/CustomRadio';
+import { EmptyOne } from '@/components/Empty';
 import { CustomModal } from '@/components/Modal';
 import { CustomTabs } from '@/components/Tabs';
 
@@ -24,24 +26,31 @@ import { SPECIFICATION_TYPE } from '../utils';
 import { SelectedItem } from './AttributeEntryForm';
 import { ContentOptionTypeDetail, ContentTypeDetail, formatBasisText } from './util';
 
-type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
-
 interface ContentTypeOptionProps {
   data: BasisConvention[] | BasisPresetOption[] | BasisText[];
-  type: ACTIVE_TAB;
+  type: EAttributeContentType;
   selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
   setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
   // index: number;
 }
 
 const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
-  data,
+  data = [],
   type,
   selectedOption,
   setSelectedOption,
 }) => {
+  const optionType =
+    type === EAttributeContentType.options ||
+    type === EAttributeContentType.presets ||
+    type === EAttributeContentType.feature_presets;
+
+  if (!data.length) {
+    return <EmptyOne isCenter />;
+  }
+
   /// basis TEXT
-  if (type === 'text') {
+  if (type === 'texts') {
     const onChangeBasisText = (basisId: string) => {
       const basistexts = [...data] as BasisText[];
       const selected = basistexts.find((item) => {
@@ -120,17 +129,17 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
   };
 
   const onChange = (radioValue: RadioValue) => {
-    if (type === 'conversions') {
+    if (type === EAttributeContentType.conversions) {
       onChangeConversion(String(radioValue.value));
       return;
     }
 
-    if (type === 'presets') {
-      onChangePreset(String(radioValue.value));
-      return;
-    }
+    // if (type === 'presets' || type === 'feature_presets') {
+    //   onChangePreset(String(radioValue.value));
+    //   return;
+    // }
 
-    if (type === 'options') {
+    if (optionType) {
       onChangeOption(String(radioValue.value));
       return;
     }
@@ -140,7 +149,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
 
   const newData = [...data].filter((item: any) => !isEmpty(item.subs));
 
-  if (type === 'options') {
+  if (optionType) {
     return (
       <ContentOptionTypeDetail
         onChange={onChange}
@@ -174,24 +183,23 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   const { visible, setVisible, contentType, selectedItem, onSubmit, type } = props;
 
   const { subAttribute } = selectedItem;
-  let listTab: TabItem[] = [
-    { tab: 'TEXT', key: 'text' },
-    { tab: 'CONVERSIONS', key: 'conversions' },
-    { tab: 'PRESETS', key: 'presets' },
-    { tab: 'OPTIONS', key: 'options' },
+
+  const listTab: TabItem[] = [
+    /// key of contentType
+    { tab: 'TEXT', key: EAttributeContentType.texts },
+    { tab: 'CONVERSIONS', key: EAttributeContentType.conversions },
+    {
+      tab: 'GENERAL PRESETS',
+      key: EAttributeContentType.presets,
+      disable: type === SPECIFICATION_TYPE,
+    },
+    {
+      tab: 'FEATURE PRESETS',
+      key: EAttributeContentType.feature_presets,
+      disable: type === SPECIFICATION_TYPE,
+    },
+    { tab: 'COMPONENS', key: EAttributeContentType.options, disable: type !== SPECIFICATION_TYPE },
   ];
-  listTab = listTab.map((itemTab) => {
-    if (type === SPECIFICATION_TYPE) {
-      if (itemTab.key == 'presets') {
-        itemTab.disable = true;
-      }
-    } else {
-      if (itemTab.key == 'options') {
-        itemTab.disable = true;
-      }
-    }
-    return itemTab;
-  });
 
   /// default selected option
   const [selectedOption, setSelectedOption] = useState<Omit<AttributeSubForm, 'id' | 'name'>>({
@@ -200,9 +208,9 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   /// set active tab
   let selectedTab = listTab[0];
 
-  const [activeTab, setActiveTab] = useState<ACTIVE_TAB>(selectedTab.key as ACTIVE_TAB);
-
-  const tab = activeTab === 'text' ? 'texts' : activeTab;
+  const [activeTab, setActiveTab] = useState<EAttributeContentType>(
+    selectedTab.key as EAttributeContentType,
+  );
 
   useEffect(() => {
     /// update option selected
@@ -210,6 +218,13 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
 
     if (!isUndefined(subAttribute.content_type)) {
       const selected = listTab.find((item) => {
+        if (subAttribute.content_type === 'Presets') {
+          return (item.key =
+            subAttribute.additional_type?.toLocaleLowerCase() === 'general presets'
+              ? EAttributeContentType.presets
+              : EAttributeContentType.feature_presets);
+        }
+
         return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
       });
 
@@ -218,59 +233,63 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
       }
     }
 
-    setActiveTab(selectedTab.key as ACTIVE_TAB);
+    setActiveTab(selectedTab.key as EAttributeContentType);
   }, [subAttribute]);
 
   return (
-    <>
-      <CustomModal
-        title="SELECT CONTENT TYPE"
-        centered
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        secondaryModal
-        noHeaderBorder={false}
-        width={576}
-        className={styles.contentTypeModalWrapper}
-        closeIcon={<CloseIcon />}
-        footer={
-          <div className={styles.contentTypeFooter}>
-            <CustomButton
-              size="small"
-              buttonClass={styles.contentTypeSubmitBtn}
-              onClick={() => onSubmit(selectedOption)}
-              properties="rounded"
-            >
-              Done
-            </CustomButton>
-          </div>
-        }
-      >
-        <div>
-          <CustomTabs
-            listTab={listTab}
-            tabPosition="top"
-            tabDisplay="space"
-            onChange={(tabActived) => {
-              setActiveTab(tabActived as ACTIVE_TAB);
-            }}
-            activeKey={activeTab}
-          />
-          <div
-            className={`${styles.contentTypeModalBody} ${
-              activeTab === 'text' ? styles.contentTypeText : ''
-            } ${activeTab === 'options' ? styles.contentTypeOption : ''}`}
+    <CustomModal
+      title="SELECT CONTENT TYPE"
+      centered
+      visible={visible}
+      onCancel={() => setVisible(false)}
+      secondaryModal
+      noHeaderBorder={false}
+      width={'60%'}
+      className={styles.contentTypeModalWrapper}
+      closeIcon={<CloseIcon />}
+      footer={
+        <div className={styles.contentTypeFooter}>
+          <CustomButton
+            size="small"
+            buttonClass={styles.contentTypeSubmitBtn}
+            onClick={() => onSubmit(selectedOption)}
+            properties="rounded"
           >
-            <ContentTypeOption
-              type={activeTab as ACTIVE_TAB}
-              data={contentType ? contentType[tab] : []}
-              selectedOption={selectedOption}
-              setSelectedOption={setSelectedOption}
-            />
-          </div>
+            Done
+          </CustomButton>
         </div>
-      </CustomModal>
-    </>
+      }
+    >
+      <div>
+        <CustomTabs
+          listTab={listTab}
+          tabPosition="top"
+          tabDisplay="space"
+          onChange={(tabActived) => {
+            setActiveTab(tabActived as EAttributeContentType);
+          }}
+          activeKey={activeTab}
+        />
+        <div
+          className={`${styles.contentTypeModalBody} ${
+            activeTab === EAttributeContentType.texts ? styles.contentTypeText : ''
+          } ${
+            activeTab === EAttributeContentType.options ||
+            activeTab === EAttributeContentType.presets ||
+            activeTab === EAttributeContentType.feature_presets
+              ? styles.contentTypeOption
+              : ''
+          }`}
+        >
+          <ContentTypeOption
+            type={activeTab}
+            data={contentType ? contentType[activeTab] : []}
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+          />
+        </div>
+      </div>
+    </CustomModal>
   );
 };
 

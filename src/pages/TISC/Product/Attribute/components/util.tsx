@@ -6,7 +6,12 @@ import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useCollapseGroupActiveCheck } from '@/reducers/active';
-import { BasisConventionOption, BasisPresetOption, BasisText } from '@/types';
+import {
+  BasisConventionOption,
+  BasisPresetOption,
+  BasisText,
+  EAttributeContentType,
+} from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CollapseLevel1Props } from '@/components/Collapse/Expand';
@@ -54,7 +59,7 @@ export const formatConversionGroup = (items: BasisConventionOption[]): RadioValu
 //
 
 export const ContentTypeDetail: FC<{
-  type: 'conversions' | 'presets';
+  type: EAttributeContentType;
   options: any[];
   onChange: (radioValue: RadioValue) => void;
   value: any;
@@ -92,11 +97,11 @@ export const ContentTypeDetail: FC<{
   };
 
   const renderOptions = (option: any) => {
-    if (type === 'presets') {
+    if (type === EAttributeContentType.presets || type === EAttributeContentType.feature_presets) {
       return formatPresetGroup(option);
     }
 
-    if (type === 'conversions') {
+    if (type === EAttributeContentType.conversions) {
       return formatConversionGroup(option);
     }
 
@@ -141,7 +146,9 @@ export const ContentOptionTypeDetail: FC<{
 }> = ({ options, onChange, value }) => {
   const [mainOptionKey, setMainOptionKey] = useState<string>('');
   const [optionKey, setOptionKey] = useState<string>('');
+  const [subItemSelected, setSubItemSelected] = useState<string>('');
 
+  /// auto open collapse
   useEffect(() => {
     let mainOptionKeyCollapse = '';
     let optionKeyCollapse = '';
@@ -173,27 +180,50 @@ export const ContentOptionTypeDetail: FC<{
     setOptionKey(optionKeyCollapse);
   }, [options]);
 
+  /// find item selected
+  useEffect(() => {
+    setSubItemSelected(value);
+  }, [value]);
+
   useEffect(() => {
     return () => {
       setMainOptionKey('');
       setOptionKey('');
+      setSubItemSelected('');
     };
   }, []);
 
   const handleCollapseMainOption = (key: string | string[]) => {
-    if (typeof key === 'string') {
-      setMainOptionKey(key);
-    } else {
-      setMainOptionKey(key?.[0]);
-    }
+    const currentKey = typeof key === 'string' ? key : key?.[0] ?? '';
+    let currentOptionKey: string | undefined;
+
+    /// find item chosen to auto open its collapse
+    const currentOption = options.find((el) => el.id === currentKey);
+
+    currentOption?.subs?.some((sub) => {
+      if (sub?.subs?.find((s) => s.id === subItemSelected)) {
+        currentOptionKey = sub.id;
+        return true;
+      }
+
+      return false;
+    });
+
+    setOptionKey(currentOptionKey ?? '');
+
+    setTimeout(() => {
+      setMainOptionKey(currentKey);
+    }, 0);
   };
 
   const handleCollapseOption = (key: string | string[]) => {
-    if (typeof key === 'string') {
-      setOptionKey(key);
-    } else {
-      setOptionKey(key?.[0]);
-    }
+    const currentKey = typeof key === 'string' ? key : key?.[0] ?? '';
+    setOptionKey(currentKey);
+  };
+
+  const handleSelectSubItem = (radioValue: RadioValue) => {
+    setSubItemSelected(radioValue.value as string);
+    onChange(radioValue);
   };
 
   return (
@@ -209,7 +239,12 @@ export const ContentOptionTypeDetail: FC<{
           collapsible={item.count === 0 ? 'disabled' : undefined}
           header={
             <div className="flex-center">
-              <span className="text-uppercase">{item.name}</span>
+              <span
+                className="text-uppercase"
+                style={{ fontWeight: mainOptionKey === item.id ? '400' : '300' }}
+              >
+                {item.name}
+              </span>
               <span style={{ marginLeft: 8 }}>({item.count})</span>
             </div>
           }
@@ -226,7 +261,12 @@ export const ContentOptionTypeDetail: FC<{
                 collapsible={opt.count === 0 ? 'disabled' : undefined}
                 header={
                   <div className="flex-center">
-                    <span className="text-uppercase">{opt.name}</span>
+                    <span
+                      className="text-uppercase"
+                      style={{ fontWeight: optionKey === opt.id ? '400' : '300' }}
+                    >
+                      {opt.name}
+                    </span>
                     <span style={{ marginLeft: 8 }}>({opt.count})</span>
                   </div>
                 }
@@ -239,7 +279,7 @@ export const ContentOptionTypeDetail: FC<{
                     })) ?? []
                   }
                   value={value}
-                  onChange={onChange}
+                  onChange={handleSelectSubItem}
                   isRadioList
                 />
               </Collapse.Panel>
