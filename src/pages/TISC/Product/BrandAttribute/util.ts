@@ -1,2 +1,9 @@
-export const replaceBrandAttributeBrandId = (path: string, id: string, name: string) =>
-  path.replace(':brandId', id).replace(':brandName', name);
+export const replaceBrandAttributeBrandId = (
+  path: string,
+  brandId: string,
+  name: string,
+  id?: string,
+) =>
+  id
+    ? path.replace(':brandId', brandId).replace(':brandName', name).replace(':id', id)
+    : path.replace(':brandId', brandId).replace(':brandName', name);

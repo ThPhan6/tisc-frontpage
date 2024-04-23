@@ -20,11 +20,12 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   onChangeInput,
   inputValue,
   customClass = '',
-  hideTitleInput,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
 
-  const { setMode, mode } = useContext(FormOptionGroupHeaderContext);
+  const { setMode, mode, hideTitleAddIcon, hideTitleInput } = useContext(
+    FormOptionGroupHeaderContext,
+  );
 
   return (
     <div className={`${styles.option_form_container} ${customClass}`}>
@@ -42,12 +43,14 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
         )}
 
         <div className="flex-end">
-          <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
+          {hideTitleAddIcon ? null : (
+            <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
+          )}
           {isBasicOption ? (
             <ListIcon
               className={`${styles.header__icon} ${mode === 'list' ? 'list-icon' : ''}`}
               onClick={() => {
-                setMode('list');
+                setMode?.('list');
               }}
             />
           ) : null}
@@ -56,7 +59,7 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
             <CardImageIcon
               className={`${styles.header__icon} ${mode === 'card' ? 'card-icon' : ''}`}
               onClick={() => {
-                setMode('card');
+                setMode?.('card');
               }}
             />
           ) : null}

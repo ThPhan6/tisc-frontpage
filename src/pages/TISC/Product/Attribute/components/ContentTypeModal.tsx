@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
@@ -23,7 +23,7 @@ import { CustomTabs } from '@/components/Tabs';
 
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
-import { SelectedItem } from './AttributeEntryForm';
+import { AttributeEntryFormContext } from './AttributeEntryForm';
 import { ContentOptionTypeDetail, ContentTypeDetail, formatBasisText } from './util';
 
 interface ContentTypeOptionProps {
@@ -175,14 +175,13 @@ interface ContentTypeModalProps {
   visible: boolean;
   setVisible: (value: boolean) => void;
   contentType: AttributeContentType | undefined;
-  selectedItem: SelectedItem;
   onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
   type: number;
 }
 const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
-  const { visible, setVisible, contentType, selectedItem, onSubmit, type } = props;
+  const { visible, setVisible, contentType, onSubmit, type } = props;
 
-  const { subAttribute } = selectedItem;
+  const { contentTypeSelected: subAttribute } = useContext(AttributeEntryFormContext);
 
   const listTab: TabItem[] = [
     /// key of contentType

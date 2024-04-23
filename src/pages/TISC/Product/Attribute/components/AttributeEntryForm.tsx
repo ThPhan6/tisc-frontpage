@@ -1,7 +1,16 @@
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
+import { message } from 'antd';
 import { useHistory } from 'umi';
 
+import {
+  DynamicObjectProps,
+  FormGroupContext,
+  FormOptionGroupHeaderContext,
+  ProductBasisFormType,
+  useProductBasicEntryForm,
+} from '../../Basis/hook';
 import { useAttributeLocation } from '../hooks/location';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
@@ -12,31 +21,37 @@ import {
   getProductAttributeContentType,
   updateAttribute,
 } from '@/services';
+import { isNull, isUndefined, uniqueId } from 'lodash';
 
 import type { AttributeContentType, AttributeForm, AttributeSubForm } from '@/types';
 
+import { FormOptionNameInput } from '../../Basis/Option/components/FormOptionNameInput';
+import { MainOptionItem } from '../../Basis/Option/components/OptionItem';
+import { DragEndResultProps } from '@/components/Drag';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { getNewDataAfterDragging } from '../../Basis/util';
+import styles from './AttributeEntryForm.less';
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
 
-export interface SelectedItem {
-  subAttribute: AttributeSubForm;
-  index: number;
-}
-
-const DEFAULT_SUB_ATTRIBUTE: AttributeSubForm = {
-  name: '',
-  basis_id: '',
-};
-const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
-  index: 0,
-  subAttribute: DEFAULT_SUB_ATTRIBUTE,
-};
-
+export const AttributeEntryFormContext = createContext<{
+  openContentTypeModal: boolean;
+  setOpenContentTypeModal: (openContentTypeModal: boolean) => void;
+  contentTypeSelected: AttributeSubForm;
+  setContentTypeSelected: (contentType: AttributeSubForm) => void;
+}>({
+  openContentTypeModal: false,
+  setOpenContentTypeModal: () => null,
+  contentTypeSelected: {
+    basis_id: '',
+    name: '',
+  },
+  setContentTypeSelected: () => null,
+});
 const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
   subs: [],
@@ -44,8 +59,9 @@ const DEFAULT_ATTRIBUTE: AttributeForm = {
 };
 
 const AttributeEntryForm = () => {
+  const { renderProductBasicEntryForm } = useProductBasicEntryForm(ProductBasisFormType.attributes);
+
   // for content type modal
-  const [visible, setVisible] = useState(false);
   // for content type data
   const [contentType, setContentType] = useState<AttributeContentType>({
     conversions: [],
@@ -55,7 +71,14 @@ const AttributeEntryForm = () => {
     feature_presets: [],
   });
   // selected content types
-  const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
+  // const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
+
+  const [contentTypeSelected, setContentTypeSelected] = useState<AttributeSubForm>({
+    basis_id: '',
+    name: '',
+  });
+
+  const [openContentTypeModal, setOpenContentTypeModal] = useState<boolean>(false);
 
   const history = useHistory();
   const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
@@ -81,9 +104,9 @@ const AttributeEntryForm = () => {
         setContentType(contentTypeData);
       }
     });
-    if (idAttribute) {
-      getAttributeData();
-    }
+    // if (idAttribute) {
+    //   getAttributeData();
+    // }
   }, []);
 
   const handleOnChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,40 +139,33 @@ const AttributeEntryForm = () => {
     });
   };
 
-  const addSubAttribute = () => {
-    setData({
-      ...data,
-      subs: [...data.subs, DEFAULT_SUB_ATTRIBUTE],
-    });
-  };
-
   const onContentTypeSubmit = (changedSub: Omit<AttributeSubForm, 'id' | 'name'>) => {
-    if (selectedItem) {
-      const newSubs = [...data.subs];
-      /// overwrite new subs
-      newSubs[selectedItem.index] = {
-        ...newSubs[selectedItem.index],
-        ...changedSub,
-      };
-      /// overwrite data
-      setData({
-        ...data,
-        subs: newSubs,
-      });
-    }
-    // reset selected item
-    setSelectedItem(DEFAULT_SELECTED_ATTRIBUTE);
-    // close modal
-    setVisible(false);
+    // if (selectedItem) {
+    //   const newSubs = [...data.subs];
+    //   /// overwrite new subs
+    //   newSubs[selectedItem.index] = {
+    //     ...newSubs[selectedItem.index],
+    //     ...changedSub,
+    //   };
+    //   /// overwrite data
+    //   setData({
+    //     ...data,
+    //     subs: newSubs,
+    //   });
+    // }
+    // // reset selected item
+    // setSelectedItem(DEFAULT_SELECTED_ATTRIBUTE);
+    // // close modal
+    // setVisible(false);
   };
 
-  const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
-    setSelectedItem({
-      subAttribute,
-      index,
-    });
-    setVisible(true);
-  };
+  // const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
+  //   setSelectedItem({
+  //     subAttribute,
+  //     index,
+  //   });
+  //   setVisible(true);
+  // };
 
   const handleCreateData = (submitData: AttributeForm) => {
     isLoading.setValue(true);
@@ -207,44 +223,24 @@ const AttributeEntryForm = () => {
   };
 
   return (
-    <div>
-      <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
-      <EntryFormWrapper
-        handleSubmit={onHandleSubmit}
-        handleCancel={history.goBack}
-        submitButtonStatus={submitButtonStatus.value}
-        handleDelete={handleDeleteAttribute}
-        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
-      >
-        <FormNameInput
-          placeholder="type group name"
-          title="Attribute Group"
-          onChangeInput={handleOnChangeGroupName}
-          handleOnClickAddIcon={addSubAttribute}
-          inputValue={data.name}
-        />
-        <div>
-          {data.subs.map((subAttribute, index) => (
-            <AttributeItem
-              key={index}
-              item={subAttribute}
-              onChangeItemName={(e) => handleOnChangeName(e, index)}
-              handleSelectContentType={() => handleSelectContentType(subAttribute, index)}
-              handleOnClickDelete={() => handleOnClickDelete(index)}
-            />
-          ))}
-        </div>
-      </EntryFormWrapper>
+    <AttributeEntryFormContext.Provider
+      value={{
+        contentTypeSelected,
+        openContentTypeModal,
+        setOpenContentTypeModal,
+        setContentTypeSelected,
+      }}
+    >
+      {renderProductBasicEntryForm()}
 
       <ContentTypeModal
-        visible={visible}
-        setVisible={setVisible}
-        selectedItem={selectedItem}
+        visible={openContentTypeModal}
+        setVisible={setOpenContentTypeModal}
         contentType={contentType}
         onSubmit={onContentTypeSubmit}
         type={attributeLocation.TYPE}
       />
-    </div>
+    </AttributeEntryFormContext.Provider>
   );
 };
 

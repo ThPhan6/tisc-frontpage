@@ -10,6 +10,7 @@ import {
   FormOptionGroupHeaderContext,
   useCheckBasicOptionForm,
 } from '../../../hook';
+import { useCheckAttributeForm } from '@/pages/TISC/Product/Attribute/components/hook';
 import { cloneDeep } from 'lodash';
 
 import { BasisOptionSubForm, SubBasisOption } from '@/types';
@@ -29,7 +30,7 @@ interface SubPanelHeaderProps {
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
   handleCopySubOtionItem?: () => void;
-  dragIcon: JSX.Element;
+  dragIcon?: JSX.Element;
 }
 
 export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
@@ -40,8 +41,20 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
   handleDeleteSubOption,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
-  const placeholder = isBasicOption ? 'type sub classification name' : 'sub preset name';
-  const defaultWidth = subOption.name ? 30 : isBasicOption ? placeholder.length * 6.5 : 106;
+  const { isAttribute } = useCheckAttributeForm();
+
+  const placeholder = isAttribute
+    ? 'type sub attribute name'
+    : isBasicOption
+    ? 'type sub classification name'
+    : 'sub preset name';
+  const defaultWidth = subOption.name
+    ? 30
+    : isAttribute
+    ? placeholder.length * 6.5
+    : isBasicOption
+    ? placeholder.length * 6.5
+    : 106;
 
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormGroupContext);
@@ -58,14 +71,29 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
 
     /// default open option item list when add new
     /// add new sub option item
-    const newSubOptionItem: Partial<SubBasisOption> = {
+    let newSubOptionItem: any = {
       value_1: '',
       value_2: '',
       unit_2: '',
       unit_1: '',
-      product_id: '',
-      paired: 0,
     };
+
+    if (isAttribute) {
+      newSubOptionItem = {
+        name: '',
+        description: '',
+        content_type: '',
+      };
+    } else if (isBasicOption) {
+      newSubOptionItem = {
+        value_1: '',
+        value_2: '',
+        unit_2: '',
+        unit_1: '',
+        product_id: '',
+        paired: 0,
+      };
+    }
 
     handleChangeSubItem({
       ...subOption,

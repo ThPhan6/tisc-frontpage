@@ -1,6 +1,5 @@
-import type { FC } from 'react';
+import { type FC, useContext } from 'react';
 
-import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
@@ -9,23 +8,34 @@ import { lowerCase, startCase } from 'lodash';
 import { type AttributeSubForm, EAttributeContentType } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { BodyText } from '@/components/Typography';
 
 import styles from '../styles/attributeItem.less';
+import { AttributeEntryFormContext } from './AttributeEntryForm';
 
 interface AttributeItemProps {
   item: AttributeSubForm;
-  handleOnClickDelete: () => void;
-  handleSelectContentType: () => void;
-  onChangeItemName: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnClickDelete?: () => void;
+  onChangeItemName?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const AttributeItem: FC<AttributeItemProps> = ({
   item,
   onChangeItemName,
   handleOnClickDelete,
-  handleSelectContentType,
 }) => {
+  const { contentTypeSelected, setContentTypeSelected, setOpenContentTypeModal } =
+    useContext(AttributeEntryFormContext);
+
+  const handleSelectContentType = () => {
+    setContentTypeSelected?.({
+      name: item.name,
+      basis_id: item.basis_id,
+    });
+
+    setOpenContentTypeModal?.(true);
+  };
+
   const renderContentType = () => {
     if (item.content_type === EAttributeContentType.texts) {
       return startCase('text');
@@ -40,24 +50,29 @@ export const AttributeItem: FC<AttributeItemProps> = ({
 
   return (
     <div className={styles.attribute_container}>
-      <div className={styles.form_input}>
-        <MainTitle level={3}>Attribute Name :</MainTitle>
+      <div className={`${styles.form_input} flex-start`}>
         <div className={styles.form_input__element}>
           <CustomInput
             placeholder="type attribute name"
             value={item.name}
+            name="name"
             className="attribute-input"
             onChange={onChangeItemName}
           />
-          <ActionDeleteIcon className={styles.delete_icon} onClick={handleOnClickDelete} />
         </div>
         <div
           className={`${styles.form_input__element} ${styles.form_input__cursor}`}
           onClick={handleSelectContentType}
         >
           <div className="group-content-type">
-            <BodyText level={4}>Content Type :</BodyText>
-            <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
+            <BodyText level={4}>Content Type </BodyText>
+            <SingleRightFormIcon style={{ margin: '0 8px' }} />
+
+            <BodyText
+              level={5}
+              fontFamily="Roboto"
+              color={item.content_type ? 'mono-color' : 'mono-color-medium'}
+            >
               {item.content_type ? (
                 <span className="basis-conversion-group text-capitalize">
                   {renderContentType()}
@@ -67,7 +82,6 @@ export const AttributeItem: FC<AttributeItemProps> = ({
               )}
             </BodyText>
           </div>
-          <SingleRightFormIcon />
         </div>
         <div className={styles.form_input__element}>
           <div className="group-content-type">

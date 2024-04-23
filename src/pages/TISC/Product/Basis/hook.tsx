@@ -11,15 +11,18 @@ import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { checkNil } from '@/helper/utils';
 import {
+  createAttribute,
   createConversionMiddleware,
   createOptionMiddleWare,
   createPresetMiddleware,
   deleteBasisOption,
   deleteConversionMiddleware,
   deletePresetMiddleware,
+  getOneAttribute,
   getOneBasisOption,
   getOneConversionMiddleware,
   getOnePresetMiddleware,
+  updateAttribute,
   updateBasisOption,
   updateConversionMiddleware,
   updatePresetMiddleware,
@@ -28,6 +31,8 @@ import { cloneDeep, isNull, isUndefined, lowerCase, merge, uniqueId } from 'loda
 
 import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import {
+  AttributeForm,
+  AttributeSubForm,
   BasisOptionForm,
   BasisOptionSubForm,
   BasisPresetType,
@@ -76,10 +81,18 @@ const optionValueDefault: BasisOptionSubForm = {
   subs: [],
 };
 
+const attributeValueDefault: AttributeForm = {
+  id: '',
+  name: '',
+  count: 0,
+  subs: [],
+};
+
 export enum ProductBasisFormType {
   conversions = 'conversions',
   presets = 'presets',
   options = 'options',
+  attributes = 'attributes',
 }
 
 const getEntryFormTitle = (type: ProductBasisFormType) => {
@@ -87,7 +100,11 @@ const getEntryFormTitle = (type: ProductBasisFormType) => {
     return 'Conversion Group';
   }
 
-  return type === ProductBasisFormType.presets ? 'Preset Group' : 'Option Group';
+  if (type === ProductBasisFormType.attributes) {
+    return 'Attribute Configuration';
+  }
+
+  return type === ProductBasisFormType.presets ? 'Preset Group' : 'Components Configuration ';
 };
 
 const getSubItemValue = (valueItem: SubBasisPreset | SubBasisOption) => ({
@@ -100,18 +117,22 @@ const getSubItemValue = (valueItem: SubBasisPreset | SubBasisOption) => ({
 export type formOptionMode = 'list' | 'card';
 
 export const FormOptionGroupHeaderContext = createContext<{
-  mode: formOptionMode;
-  setMode: (mode: formOptionMode) => void;
+  hideTitleAddIcon?: boolean;
+  hideTitleInput?: boolean;
+  mode?: formOptionMode;
+  setMode?: (mode: formOptionMode) => void;
 }>({
   mode: 'list',
   setMode: (_mode) => null,
 });
 
-interface DynamicObjectProps {
+export interface DynamicObjectProps {
   [key: string]: boolean;
 }
 
 export const FormGroupContext = createContext<{
+  hideDelete?: boolean;
+  hideDrag?: boolean;
   collapse: DynamicObjectProps;
   setCollapse: (props: DynamicObjectProps) => void;
 }>({
@@ -138,7 +159,18 @@ export const useCheckBasicOptionForm = () => {
 
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const hasMainSubOption =
-    type === ProductBasisFormType.options || type === ProductBasisFormType.presets;
+    type === ProductBasisFormType.options ||
+    type === ProductBasisFormType.presets ||
+    type === ProductBasisFormType.attributes;
+
+  const hideTitleInput =
+    type === ProductBasisFormType.options || type === ProductBasisFormType.attributes;
+
+  const hideTitleAddIcon = type === ProductBasisFormType.attributes;
+
+  const hideDelete = type === ProductBasisFormType.attributes;
+
+  const hideDrag = type === ProductBasisFormType.attributes;
 
   const location = useLocation();
   const tabActive = location.hash.split('#')[1] as PresetTabKey;
@@ -182,6 +214,13 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       newSubs: optionValueDefault,
       path: componentPath,
     },
+    attributes: {
+      getOneFunction: getOneAttribute,
+      createFunction: createAttribute,
+      updateFunction: updateAttribute,
+      newSubs: attributeValueDefault,
+      path: componentPath,
+    },
   };
 
   useEffect(() => {
@@ -189,7 +228,16 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       const getOneFunction = FORM_CONFIG[type].getOneFunction;
       getOneFunction(idBasis).then((res) => {
         if (res) {
-          setData(res);
+          let newData: any = res;
+          if (type === ProductBasisFormType.attributes) {
+            newData = {
+              id: 'mainId',
+              name: 'main name',
+              subs: [res],
+            };
+          }
+
+          setData(newData);
         }
       });
     }
@@ -687,38 +735,15 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       );
     }
 
-    if (type === ProductBasisFormType.presets) {
-      return (
-        <FormGroupContext.Provider value={{ collapse, setCollapse }}>
-          <Droppable droppableId={item.id}>
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {/* <PresetItem
-                  key={index}
-                  mainOptionIndex={index}
-                  mainOption={item}
-                  handleOnClickDelete={() => handleOnClickDelete(index)}
-                  onChangeValue={(value) => {
-                    handleOnChangeValue(value, index);
-                  }}
-                /> */}
-
-                <MainOptionItem
-                  key={index}
-                  mainOptionIndex={index}
-                  mainOption={item}
-                  handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
-                  handleDeleteMainSubOption={() => handleOnClickDelete(index)}
-                />
-              </div>
-            )}
-          </Droppable>
-        </FormGroupContext.Provider>
-      );
-    }
-
     return (
-      <FormGroupContext.Provider value={{ collapse, setCollapse }}>
+      <FormGroupContext.Provider
+        value={{
+          collapse,
+          setCollapse,
+          hideDelete,
+          hideDrag,
+        }}
+      >
         <Droppable droppableId={item.id}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -770,10 +795,17 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
               : 'calc(var(--vh) * 100 - 250px)',
           }}
         >
-          <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
+          <FormOptionGroupHeaderContext.Provider
+            value={{
+              mode,
+              setMode,
+              hideTitleInput,
+              hideTitleAddIcon,
+            }}
+          >
             {hasMainSubOption ? (
               <FormOptionNameInput
-                hideTitleInput
+                placeholder="type group name"
                 title={getEntryFormTitle(type)}
                 onChangeInput={handleChangeGroupName}
                 handleOnClickAddIcon={handleOnClickAddIcon}

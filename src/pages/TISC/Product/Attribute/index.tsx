@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 
+import { useParams } from 'umi';
+
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import { useAttributeLocation } from './hooks/location';
@@ -9,6 +11,7 @@ import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
 
+import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
 
@@ -33,6 +36,7 @@ const colsDataIndex = {
 
 const AttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [4]);
+  const param = useParams<BrandAttributeParamProps>();
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 
@@ -204,6 +208,7 @@ const AttributeList: React.FC = () => {
       fetchDataFunc={getProductAttributePagination}
       extraParams={{
         type: attributeLocation.TYPE,
+        // filter: { brand_id: param.brandId },
       }}
       multiSort={{
         name: 'group_order',

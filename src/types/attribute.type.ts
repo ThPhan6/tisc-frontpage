@@ -67,6 +67,7 @@ export interface AttributeSubForm {
   content_type?: string;
   activeKey?: string;
   additional_type?: string;
+  sub_group_id?: string;
 }
 export interface AttributeForm {
   id?: string;
