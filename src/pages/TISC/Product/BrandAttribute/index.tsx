@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 
-import { message } from 'antd';
+import { PATH } from '@/constants/path';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getBrandPagination } from '@/features/user-group/services';
+import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -14,12 +15,14 @@ import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
+import { replaceBrandAttributeBrandId } from './util';
+
 const BrandAttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, [2]);
   const tableRef = useRef<any>();
 
-  const handleCompose = (id: string) => {
-    message.info('comming soon');
+  const handleCompose = (brandItem: BrandListItem) => {
+    pushTo(replaceBrandAttributeBrandId(PATH.options, brandItem.id, brandItem.name));
   };
 
   const MainColumns: TableColumnItem<BrandListItem>[] = [
@@ -70,7 +73,7 @@ const BrandAttributeList: React.FC = () => {
             actionItems={[
               {
                 type: 'compose',
-                onClick: () => handleCompose(record.id),
+                onClick: () => handleCompose(record),
               },
             ]}
           />
@@ -80,22 +83,20 @@ const BrandAttributeList: React.FC = () => {
   ];
 
   return (
-    <>
-      <CustomTable
-        title="Brand Attributes"
-        columns={setDefaultWidthForEachColumn(MainColumns, 2)}
-        ref={tableRef}
-        fetchDataFunc={getBrandPagination}
-        dynamicPageSize
-        hasPagination
-        hasSummary
-        onRow={(rowRecord) => ({
-          onClick: () => {
-            message.info('comming soon');
-          },
-        })}
-      />
-    </>
+    <CustomTable
+      title="Brand Attributes"
+      columns={setDefaultWidthForEachColumn(MainColumns, 2)}
+      ref={tableRef}
+      fetchDataFunc={getBrandPagination}
+      dynamicPageSize
+      hasPagination
+      hasSummary
+      onRow={(rowRecord: BrandListItem) => ({
+        onClick: () => {
+          handleCompose(rowRecord);
+        },
+      })}
+    />
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 
-import { PATH } from '@/constants/path';
-
+import { useCheckBrandAttributePath } from '../../BrandAttribute/hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -13,13 +12,14 @@ import type { BasisOptionListResponse, SubBasisOption } from '@/types';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
+
+import { BranchHeader } from '../../BrandAttribute/BranchHeader';
 
 const colTitle = {
   group: 'Group Name',
-  main: 'Main Options',
-  sub: 'Sub Options',
+  main: 'Main Classification',
+  sub: 'Sub Classification',
 };
 
 const dataIndexDefault = 'name';
@@ -32,13 +32,16 @@ const colsDataIndex = {
 
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [8]);
+
   const tableRef = useRef<any>();
 
+  const { componentUpdatePath, linkagePath } = useCheckBrandAttributePath();
+
   const handleUpdateBasisOption = (id: string) => {
-    pushTo(PATH.updateOptions.replace(':id', id));
+    pushTo(componentUpdatePath.replace(':id', id));
   };
   const handleLinkageBasisOption = (id: string) => {
-    pushTo(PATH.LinkageDataSet.replace(':id', id));
+    pushTo(linkagePath.replace(':id', id));
   };
   const handleDeleteBasisOption = (id: string) => {
     confirmDelete(() => {
@@ -239,36 +242,34 @@ const BasisOptionList: React.FC = () => {
   ];
 
   return (
-    <>
-      <CustomTable
-        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
-        title="OPTIONS"
-        columns={setDefaultWidthForEachColumn(MainColumns, 8)}
-        ref={tableRef}
-        fetchDataFunc={getProductBasisOptionPagination}
-        multiSort={{
-          // colsDataIndex is sort keys
-          name: 'group_order',
-          main_group: 'main_order',
-          sub_group: 'option_order',
-        }}
-        expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
+    <CustomTable
+      header={<BranchHeader />}
+      title="OPTIONS"
+      columns={setDefaultWidthForEachColumn(MainColumns, 8)}
+      ref={tableRef}
+      fetchDataFunc={getProductBasisOptionPagination}
+      multiSort={{
+        // colsDataIndex is sort keys
+        name: 'group_order',
+        main_group: 'main_order',
+        sub_group: 'option_order',
+      }}
+      expandable={GetExpandableTableConfig({
+        columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
+        childrenColumnName: 'subs',
+        level: 2,
+        expandable: GetExpandableTableConfig({
+          columns: setDefaultWidthForEachColumn(SubColumns, 8),
           childrenColumnName: 'subs',
-          level: 2,
+          level: 3,
           expandable: GetExpandableTableConfig({
-            columns: setDefaultWidthForEachColumn(SubColumns, 8),
+            columns: setDefaultWidthForEachColumn(ChildColumns, 8),
             childrenColumnName: 'subs',
-            level: 3,
-            expandable: GetExpandableTableConfig({
-              columns: setDefaultWidthForEachColumn(ChildColumns, 8),
-              childrenColumnName: 'subs',
-              level: 4,
-            }),
+            level: 4,
           }),
-        })}
-      />
-    </>
+        }),
+      })}
+    />
   );
 };
 
