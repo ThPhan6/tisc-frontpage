@@ -1,10 +1,10 @@
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history } from 'umi';
 
+import { useCheckBrandAttributePath } from '../../../BrandAttribute/hook';
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { getOneBasisOption } from '@/services';
@@ -24,6 +24,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
   const dispatch = useDispatch();
   const optionId = useGetParamId();
 
+  const { componentPath } = useCheckBrandAttributePath();
   const { isTablet } = useScreen();
 
   const options = useAppSelector((state) => state.linkage.options);
@@ -56,7 +57,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
   }, [optionId]);
 
   const handleCancel = () => {
-    history.push(PATH.options);
+    history.push(componentPath);
   };
 
   const handleSubmit = () => {

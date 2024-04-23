@@ -39,7 +39,8 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
 
-  const placeholder = isBasicOption ? 'main option name' : 'type sub-group name';
+  const placeholder = isBasicOption ? 'type main classification name' : 'type sub-group name';
+  const defaultWidth = mainOption.name ? 30 : placeholder.length * (isBasicOption ? 6.5 : 8);
 
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormGroupContext);
@@ -100,7 +101,7 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
             containerClass="main-option-input"
             onChange={handleChangeMainOptionName}
             value={mainOption.name}
-            defaultWidth={mainOption.name ? 30 : placeholder.length * 8}
+            defaultWidth={defaultWidth}
             {...inputProps}
           />
         </div>

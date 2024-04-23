@@ -4,8 +4,9 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { getDefaultIDOfBasic } from './Option/components/constant';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
-import { history, useLocation } from 'umi';
+import { history, useLocation, useParams } from 'umi';
 
+import { useCheckBrandAttributePath } from '../BrandAttribute/hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { checkNil } from '@/helper/utils';
@@ -25,6 +26,7 @@ import {
 } from '@/services';
 import { cloneDeep, isNull, isUndefined, lowerCase, merge, uniqueId } from 'lodash';
 
+import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import {
   BasisOptionForm,
   BasisOptionSubForm,
@@ -46,6 +48,8 @@ import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { BranchHeader } from '../BrandAttribute/BranchHeader';
+import { replaceBrandAttributeBrandId } from '../BrandAttribute/util';
 import styles from './index.less';
 import { getNewDataAfterDragging } from './util';
 
@@ -86,30 +90,6 @@ const getEntryFormTitle = (type: ProductBasisFormType) => {
   return type === ProductBasisFormType.presets ? 'Preset Group' : 'Option Group';
 };
 
-const FORM_CONFIG = {
-  conversions: {
-    getOneFunction: getOneConversionMiddleware,
-    createFunction: createConversionMiddleware,
-    updateFunction: updateConversionMiddleware,
-    newSubs: conversionValueDefault,
-    path: PATH.conversions,
-  },
-  presets: {
-    getOneFunction: getOnePresetMiddleware,
-    createFunction: createPresetMiddleware,
-    updateFunction: updatePresetMiddleware,
-    newSubs: presetsValueDefault,
-    path: PATH.presets,
-  },
-  options: {
-    getOneFunction: getOneBasisOption,
-    createFunction: createOptionMiddleWare,
-    updateFunction: updateBasisOption,
-    newSubs: optionValueDefault,
-    path: PATH.options,
-  },
-};
-
 const getSubItemValue = (valueItem: SubBasisPreset | SubBasisOption) => ({
   value_1: valueItem.value_1.trim(),
   value_2: valueItem.value_2.trim(),
@@ -141,10 +121,17 @@ export const FormGroupContext = createContext<{
 
 export const useCheckBasicOptionForm = () => {
   const location = useLocation();
+  const param = useParams<BrandAttributeParamProps>();
   const isBasicOption =
-    location.pathname.indexOf(PATH.options) !== -1 ||
-    location.pathname.indexOf(PATH.createOptions) !== -1 ||
-    location.pathname.indexOf(PATH.updateOptions) !== -1;
+    location.pathname.indexOf(
+      replaceBrandAttributeBrandId(PATH.options, param.brandId, param.brandName),
+    ) !== -1 ||
+    location.pathname.indexOf(
+      replaceBrandAttributeBrandId(PATH.createOptions, param.brandId, param.brandName),
+    ) !== -1 ||
+    location.pathname.indexOf(
+      replaceBrandAttributeBrandId(PATH.updateOptions, param.brandId, param.brandName),
+    ) !== -1;
 
   return isBasicOption;
 };
@@ -158,6 +145,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   const idBasis = useGetParamId();
 
+  const { componentPath } = useCheckBrandAttributePath();
+
   const submitButtonStatus = useBoolean(false);
 
   /// to set action handle(create, copy) for list and card mode
@@ -170,6 +159,30 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     name: '',
     subs: [],
   });
+
+  const FORM_CONFIG = {
+    conversions: {
+      getOneFunction: getOneConversionMiddleware,
+      createFunction: createConversionMiddleware,
+      updateFunction: updateConversionMiddleware,
+      newSubs: conversionValueDefault,
+      path: PATH.conversions,
+    },
+    presets: {
+      getOneFunction: getOnePresetMiddleware,
+      createFunction: createPresetMiddleware,
+      updateFunction: updatePresetMiddleware,
+      newSubs: presetsValueDefault,
+      path: PATH.presets,
+    },
+    options: {
+      getOneFunction: getOneBasisOption,
+      createFunction: createOptionMiddleWare,
+      updateFunction: updateBasisOption,
+      newSubs: optionValueDefault,
+      path: componentPath,
+    },
+  };
 
   useEffect(() => {
     if (idBasis) {
@@ -730,6 +743,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       return <PresetHeader />;
     }
 
+    if (type === ProductBasisFormType.options) {
+      return <BranchHeader />;
+    }
+
     return <TableHeader title={`${type}`} rightAction={<CustomPlusButton disabled />} />;
   };
 
@@ -744,12 +761,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           handleDelete={getDeleteFuntional}
           submitButtonStatus={submitButtonStatus.value}
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
-          lg={hasMainSubOption ? 24 : 12}
+          lg={type === ProductBasisFormType.options ? 24 : 12}
           span={24}
-          contentClass={hasMainSubOption ? styles.mainOptionContent : ''}
+          contentClass={type === ProductBasisFormType.options ? styles.mainOptionContent : ''}
           contentStyles={{
             height:
-              type === ProductBasisFormType.presets
+              type === ProductBasisFormType.presets || type === ProductBasisFormType.options
                 ? 'calc(var(--vh) * 100 - 289px)'
                 : 'calc(var(--vh) * 100 - 250px)',
           }}
@@ -757,7 +774,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
             {type === ProductBasisFormType.options || type === ProductBasisFormType.presets ? (
               <FormOptionNameInput
-                placeholder="type group name"
+                hideTitleInput
                 title={getEntryFormTitle(type)}
                 onChangeInput={handleChangeGroupName}
                 handleOnClickAddIcon={handleOnClickAddIcon}

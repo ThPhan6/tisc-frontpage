@@ -40,7 +40,9 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
   handleDeleteSubOption,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
-  const placeholder = isBasicOption ? 'sub option name' : 'sub preset name';
+  const placeholder = isBasicOption ? 'type sub classification name' : 'sub preset name';
+  const defaultWidth = subOption.name ? 30 : isBasicOption ? placeholder.length * 6.5 : 106;
+
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormGroupContext);
 
@@ -101,7 +103,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
                 e.stopPropagation();
               }}
               value={subOption.name}
-              defaultWidth={subOption.name ? 30 : placeholder.length * 8}
+              defaultWidth={defaultWidth}
               {...inputProps}
             />
           </div>
