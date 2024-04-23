@@ -57,9 +57,9 @@ export const LinkageSummary = () => {
   };
 
   return (
-    <div className={style.borderBottom}>
+    <div className={style.borderBottom} style={{ overflow: 'auto hidden' }}>
       <div className={style.topHeader}>
-        <div className="flex-start">
+        <div className="flex-start" style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           <MainTitle level={3} customClass="text-uppercase">
             Group Name :
           </MainTitle>
@@ -71,7 +71,7 @@ export const LinkageSummary = () => {
             {groupName || (linkageOptionState as any)?.groupName}
           </BodyText>
         </div>
-        <div className="flex-start">
+        <div className="flex-start" style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {summary.map((el, index) => {
             const key = Object.keys(el)[0];
             const value = Object.values(el)[0];
