@@ -20,6 +20,7 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   onChangeInput,
   inputValue,
   customClass = '',
+  hideTitleInput,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
 
@@ -31,12 +32,14 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
         <MainTitle customClass={styles.header__title} level={3}>
           {title}
         </MainTitle>
-        <CustomInput
-          placeholder={placeholder}
-          containerClass={styles.input}
-          onChange={onChangeInput}
-          value={inputValue}
-        />
+        {hideTitleInput ? null : (
+          <CustomInput
+            placeholder={placeholder}
+            containerClass={styles.input}
+            onChange={onChangeInput}
+            value={inputValue}
+          />
+        )}
 
         <div className="flex-end">
           <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
