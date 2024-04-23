@@ -5,7 +5,11 @@ import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
-import { FormOptionGroupContext, FormOptionGroupHeaderContext } from '../../../hook';
+import {
+  FormOptionGroupContext,
+  FormOptionGroupHeaderContext,
+  useCheckBasicOptionForm,
+} from '../../../hook';
 import { cloneDeep, uniqueId } from 'lodash';
 
 import { BasisOptionSubForm, MainBasisOptionSubForm } from '@/types';
@@ -33,6 +37,11 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
   handleCopyMainOption,
   handleDeleteMainSubOption,
 }) => {
+  const isBasicOption = useCheckBasicOptionForm();
+
+  const placeholder = isBasicOption ? 'type main classification name' : 'type sub-group name';
+  const defaultWidth = mainOption.name ? 30 : placeholder.length * (isBasicOption ? 6.5 : 8);
+
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormOptionGroupContext);
 
@@ -87,12 +96,12 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
           style={{ cursor: 'default' }}
         >
           <CustomInput
-            placeholder="main option name"
+            placeholder={placeholder}
             name="name"
             containerClass="main-option-input"
             onChange={handleChangeMainOptionName}
             value={mainOption.name}
-            defaultWidth={mainOption.name ? 30 : 114}
+            defaultWidth={defaultWidth}
             {...inputProps}
           />
         </div>
