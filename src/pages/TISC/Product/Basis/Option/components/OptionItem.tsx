@@ -8,7 +8,6 @@ import { Col, Collapse, Row, Upload, message } from 'antd';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove.svg';
 import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { ReactComponent as DragIcon } from '@/assets/icons/drag-icon.svg';
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
 import {
   FormGroupContext,
@@ -287,17 +286,18 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           key={subOption.id}
           showArrow={false}
         >
-          <div
-            className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}
-            style={{ paddingLeft: isBasicOption ? 16 : 48 }}
-          >
+          <div className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}>
             {!subOption.subs?.length ? (
               <EmptyOne />
             ) : (
               subOption.subs.map(
                 (subItemOption, index) =>
                   mode === 'list' ? (
-                    <div key={index} className={styles.optionItemGroup}>
+                    <div
+                      key={index}
+                      className={styles.optionItemGroup}
+                      style={{ paddingTop: index == 0 ? 0 : 16 }}
+                    >
                       <SubItemOption
                         subItemOption={subItemOption}
                         onChange={(changedOptionItem) =>
@@ -483,7 +483,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                                       }}
                                       className="drag-icon flex-start"
                                     >
-                                      {isBasicOption ? <ScrollIcon /> : <DragIcon />}
+                                      {<DragIcon />}
                                     </div>
                                   }
                                 />

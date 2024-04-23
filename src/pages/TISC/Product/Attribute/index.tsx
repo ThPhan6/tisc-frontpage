@@ -17,8 +17,22 @@ import { ActionMenu } from '@/components/TableAction';
 
 import { BranchHeader } from '../BrandAttribute/BranchHeader';
 
+const colTitle = {
+  group: 'Main Attribute',
+  main: 'Sub Attribute',
+  sub: 'Attribute Name',
+};
+
+const dataIndexDefault = 'name';
+
+const colsDataIndex = {
+  group: 'attribute_group',
+  main: 'name 1',
+  sub: 'attribute_name',
+};
+
 const AttributeList: React.FC = () => {
-  useAutoExpandNestedTableColumn(1, [3]);
+  useAutoExpandNestedTableColumn(3, [4]);
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 
@@ -35,10 +49,46 @@ const AttributeList: React.FC = () => {
     });
   };
 
+  const getSameColumns = (noBoxShadow?: boolean) => {
+    const SameColumns: TableColumnItem<any>[] = [
+      {
+        title: 'Content Type',
+        dataIndex: 'content_type',
+        noBoxShadow: noBoxShadow,
+        sorter: true,
+      },
+      {
+        title: 'Description',
+        dataIndex: 'description',
+        noBoxShadow: noBoxShadow,
+        render: (value, record) => {
+          if (record.description_1) {
+            return (
+              <span className="basis-conversion-group">
+                {record.description_1}
+                <SwapIcon />
+                {record.description_2}
+              </span>
+            );
+          }
+          return value;
+        },
+      },
+      {
+        title: 'Count',
+        dataIndex: 'count',
+        width: '5%',
+        align: 'center',
+        noBoxShadow: noBoxShadow,
+      },
+    ];
+    return SameColumns;
+  };
+
   const MainColumns: TableColumnItem<AttributeListResponse>[] = [
     {
-      title: 'Attribute Group',
-      dataIndex: 'name',
+      title: colTitle.group,
+      dataIndex: dataIndexDefault,
       sorter: {
         multiple: 1,
       },
@@ -48,26 +98,22 @@ const AttributeList: React.FC = () => {
       },
     },
     {
-      title: 'Attribute Name',
-      dataIndex: 'attribute_name',
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
       sorter: {
         multiple: 2,
       },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
     },
     {
-      title: 'Content Type',
-      dataIndex: 'content_type',
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
       sorter: {
-        multiple: 2,
+        multiple: 3,
       },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
     },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    ...getSameColumns(false),
     {
       title: 'Action',
       dataIndex: 'action',
@@ -94,62 +140,66 @@ const AttributeList: React.FC = () => {
       },
     },
   ];
-  const SubColumns: TableColumnItem<SubAttribute>[] = [
+
+  const MainSubColumns: TableColumnItem<any>[] = [
     {
-      title: 'Attribute Group',
-      dataIndex: 'attribute_group',
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
       noBoxShadow: true,
     },
     {
-      title: 'Attribute Name',
-      dataIndex: 'name',
-      noBoxShadow: true,
+      title: colTitle.main,
+      dataIndex: dataIndexDefault,
+      isExpandable: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: colsDataIndex.sub,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
       },
     },
-    {
-      title: 'Content Type',
-      dataIndex: 'content_type',
-      noBoxShadow: true,
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      noBoxShadow: true,
-      render: (value, record) => {
-        if (record.description_1) {
-          return (
-            <span className="basis-conversion-group">
-              {record.description_1}
-              <SwapIcon />
-              {record.description_2}
-            </span>
-          );
-        }
-        return value;
-      },
-    },
-    {
-      title: 'Count',
-      dataIndex: 'count',
-      width: '5%',
-      align: 'center',
-      noBoxShadow: true,
-    },
+    ...getSameColumns(false),
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      noBoxShadow: true,
     },
   ];
+
+  const SubColumns: TableColumnItem<SubAttribute>[] = [
+    {
+      title: colTitle.group,
+      dataIndex: colsDataIndex.group,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.main,
+      dataIndex: colsDataIndex.main,
+      noBoxShadow: true,
+    },
+    {
+      title: colTitle.sub,
+      dataIndex: dataIndexDefault,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
+    },
+    ...getSameColumns(false),
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      align: 'center',
+      width: '5%',
+    },
+  ];
+
   return (
     <CustomTable
       header={<BranchHeader />}
       title={attributeLocation.NAME}
-      columns={setDefaultWidthForEachColumn(MainColumns, 3)}
+      columns={setDefaultWidthForEachColumn(MainColumns, 4)}
       ref={tableRef}
       fetchDataFunc={getProductAttributePagination}
       extraParams={{
@@ -161,9 +211,14 @@ const AttributeList: React.FC = () => {
         content_type: 'content_type_order',
       }}
       expandable={GetExpandableTableConfig({
-        columns: setDefaultWidthForEachColumn(SubColumns, 3),
+        columns: setDefaultWidthForEachColumn(MainSubColumns, 4),
         childrenColumnName: 'subs',
         level: 2,
+        expandable: GetExpandableTableConfig({
+          columns: setDefaultWidthForEachColumn(SubColumns, 4),
+          childrenColumnName: 'subs',
+          level: 3,
+        }),
       })}
     />
   );
