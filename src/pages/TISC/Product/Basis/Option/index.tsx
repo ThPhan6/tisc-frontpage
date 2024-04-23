@@ -99,7 +99,7 @@ const BasisOptionList: React.FC = () => {
   const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: colTitle.group,
-      dataIndex: 'name', // key in data
+      dataIndex: dataIndexDefault, // key in data
       sorter: {
         multiple: 1,
       },
@@ -114,7 +114,7 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
-      defaultSortOrder: 'descend',
+      // defaultSortOrder: 'descend',
     },
     {
       title: colTitle.sub,
@@ -122,7 +122,7 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {
@@ -239,36 +239,34 @@ const BasisOptionList: React.FC = () => {
   ];
 
   return (
-    <>
-      <CustomTable
-        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
-        title="OPTIONS"
-        columns={setDefaultWidthForEachColumn(MainColumns, 8)}
-        ref={tableRef}
-        fetchDataFunc={getProductBasisOptionPagination}
-        multiSort={{
-          // colsDataIndex is sort keys
-          name: 'group_order',
-          main_group: 'main_order',
-          sub_group: 'option_order',
-        }}
-        expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
+    <CustomTable
+      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
+      title="OPTIONS"
+      columns={setDefaultWidthForEachColumn(MainColumns, 8)}
+      ref={tableRef}
+      fetchDataFunc={getProductBasisOptionPagination}
+      multiSort={{
+        // colsDataIndex is sort keys
+        name: 'group_order',
+        main_group: 'main_order',
+        sub_group: 'option_order',
+      }}
+      expandable={GetExpandableTableConfig({
+        columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
+        childrenColumnName: 'subs',
+        level: 2,
+        expandable: GetExpandableTableConfig({
+          columns: setDefaultWidthForEachColumn(SubColumns, 8),
           childrenColumnName: 'subs',
-          level: 2,
+          level: 3,
           expandable: GetExpandableTableConfig({
-            columns: setDefaultWidthForEachColumn(SubColumns, 8),
+            columns: setDefaultWidthForEachColumn(ChildColumns, 8),
             childrenColumnName: 'subs',
-            level: 3,
-            expandable: GetExpandableTableConfig({
-              columns: setDefaultWidthForEachColumn(ChildColumns, 8),
-              childrenColumnName: 'subs',
-              level: 4,
-            }),
+            level: 4,
           }),
-        })}
-      />
-    </>
+        }),
+      })}
+    />
   );
 };
 

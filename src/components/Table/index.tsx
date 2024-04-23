@@ -106,6 +106,7 @@ export interface CustomTableProps {
     callback: (data: DataTableResponse) => void,
   ) => void;
   title?: string;
+  header?: ReactNode | string;
   multiSort?: {
     [key: string]: any;
   };
@@ -133,6 +134,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     expandable,
     fetchDataFunc,
     title,
+    header,
     rightAction,
     multiSort,
     hasPagination,
@@ -226,6 +228,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       pageSize: params.pagination.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
     };
+
     /// if enable filter
     if (filter) {
       paginationParams.filter = filter;
@@ -337,15 +340,25 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     [pagination.pageSize, extraParams],
   );
 
+  const renderHeaderTable = () => {
+    if (header) {
+      return header;
+    }
+
+    if (title) {
+      return <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />;
+    }
+
+    return null;
+  };
+
   return (
     <div
       className={`ttable-layout ${styles.customTable} ${
         customExpandable ? styles['sub-grid'] : ''
       }`}
     >
-      {title ? (
-        <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />
-      ) : null}
+      {renderHeaderTable()}
 
       <Table
         className={tableClass}

@@ -5,7 +5,11 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
-import { FormOptionGroupContext, FormOptionGroupHeaderContext } from '../../../hook';
+import {
+  FormGroupContext,
+  FormOptionGroupHeaderContext,
+  useCheckBasicOptionForm,
+} from '../../../hook';
 import { cloneDeep } from 'lodash';
 
 import { BasisOptionSubForm, SubBasisOption } from '@/types';
@@ -24,7 +28,7 @@ interface SubPanelHeaderProps {
   subOption: BasisOptionSubForm;
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
-  handleCopySubOtionItem: () => void;
+  handleCopySubOtionItem?: () => void;
   dragIcon: JSX.Element;
 }
 
@@ -35,8 +39,10 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
   handleCopySubOtionItem,
   handleDeleteSubOption,
 }) => {
+  const isBasicOption = useCheckBasicOptionForm();
+  const placeholder = isBasicOption ? 'sub option name' : 'sub preset name';
   const { mode } = useContext(FormOptionGroupHeaderContext);
-  const { collapse, setCollapse } = useContext(FormOptionGroupContext);
+  const { collapse, setCollapse } = useContext(FormGroupContext);
 
   const addNewSubOptionItem = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     e.stopPropagation();
@@ -87,7 +93,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
           >
             {dragIcon}
             <CustomInput
-              placeholder="sub option name"
+              placeholder={placeholder}
               name="name"
               containerClass="sub-option-input"
               onChange={handleChangeSubOptionName}
@@ -95,7 +101,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
                 e.stopPropagation();
               }}
               value={subOption.name}
-              defaultWidth={subOption.name ? 30 : 106}
+              defaultWidth={subOption.name ? 30 : placeholder.length * 8}
               {...inputProps}
             />
           </div>
@@ -116,10 +122,12 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
         >
           <div className="flex-start icons">
             <PlusIcon className={styles.panel_header__field_add} onClick={addNewSubOptionItem} />
-            <CopyIcon
-              className={styles.panel_header__field_add}
-              onClick={mode === 'list' ? handleCopySubOtionItem : undefined}
-            />
+            {isBasicOption ? (
+              <CopyIcon
+                className={styles.panel_header__field_add}
+                onClick={mode === 'list' ? handleCopySubOtionItem : undefined}
+              />
+            ) : null}
           </div>
           <ActionDeleteIcon
             className={styles.panel_header__input_delete_icon}
