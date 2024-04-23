@@ -7,7 +7,11 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { deletePresetMiddleware, getProductBasisPresetPagination } from '@/services';
+import {
+  copyPresetMiddleware,
+  deletePresetMiddleware,
+  getProductBasisPresetPagination,
+} from '@/services';
 import { isUndefined } from 'lodash';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -75,7 +79,9 @@ const BasisPresetList: React.FC = () => {
     });
   };
 
-  const handleCopyPreset = (id: string) => {};
+  const handleCopyPreset = (id: string) => {
+    copyPresetMiddleware(id);
+  };
 
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColumns: TableColumnItem<any>[] = [

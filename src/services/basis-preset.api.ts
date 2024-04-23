@@ -127,3 +127,18 @@ export async function getOnePresetMiddleware(id: string) {
       return {} as PresetsValueProp;
     });
 }
+
+export async function copyPresetMiddleware(id: string) {
+  // showPageLoading();
+
+  request<{ data: any }>(`/api/basis-preset/copy/${id}`, { method: 'POST' })
+    .then((response) => {
+      // hidePageLoading();
+
+      message.success(MESSAGE_NOTIFICATION.COPY_ONE_PRESET_SUCCESS);
+    })
+    .catch((err) => {
+      // hidePageLoading();
+      message.error(err?.data?.message ?? MESSAGE_NOTIFICATION.COPY_ONE_PRESET_ERROR);
+    });
+}

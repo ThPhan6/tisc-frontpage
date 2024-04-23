@@ -136,6 +136,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_SUCCESS: 'Update preset successfully',
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
+  COPY_ONE_PRESET_SUCCESS: 'Copy preset successfully',
+  COPY_ONE_PRESET_ERROR: 'Copy preset error',
 
   /// general inquiry
   GET_GENERAL_INQUIRY_SUMMARY_ERROR: 'Failed to get general inquiry summary',
