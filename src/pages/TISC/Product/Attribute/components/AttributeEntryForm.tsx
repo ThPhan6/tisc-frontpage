@@ -40,6 +40,7 @@ const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
 const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
   subs: [],
+  count: 0,
 };
 
 const AttributeEntryForm = () => {
@@ -51,6 +52,7 @@ const AttributeEntryForm = () => {
     options: [],
     presets: [],
     texts: [],
+    feature_presets: [],
   });
   // selected content types
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
@@ -164,15 +166,15 @@ const AttributeEntryForm = () => {
 
   const handleUpdateData = (submitData: AttributeForm) => {
     isLoading.setValue(true);
-    updateAttribute(idAttribute, submitData).then((isSuccess) => {
+    updateAttribute(idAttribute, submitData).then((res) => {
       isLoading.setValue(false);
       submitButtonStatus.setValue(true);
       setTimeout(() => {
         submitButtonStatus.setValue(false);
-      }, 2000);
-      if (isSuccess) {
-        return getAttributeData();
-      }
+      }, 1000);
+
+      setData(res);
+      // return getAttributeData();
     });
   };
 

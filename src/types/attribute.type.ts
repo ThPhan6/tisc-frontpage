@@ -45,7 +45,16 @@ export interface AttributeContentType {
   texts: BasisText[];
   conversions: BasisConvention[];
   presets: BasisPresetOption[];
+  feature_presets: BasisPresetOption[];
   options: BasisPresetOption[];
+}
+
+export enum EAttributeContentType {
+  texts = 'texts',
+  conversions = 'conversions',
+  presets = 'presets',
+  feature_presets = 'feature_presets',
+  options = 'options',
 }
 
 export interface AttributeSubForm {
@@ -57,11 +66,13 @@ export interface AttributeSubForm {
   description_2?: string;
   content_type?: string;
   activeKey?: string;
+  additional_type?: string;
 }
 export interface AttributeForm {
   id?: string;
   type?: number;
   name: string;
+  count: number;
   subs: AttributeSubForm[];
 }
 
