@@ -89,17 +89,17 @@ export async function getOneAttribute(id: string) {
     });
 }
 export async function updateAttribute(id: string, data: AttributeForm) {
-  return request<boolean>(`/api/attribute/update/${id}`, {
+  return request<{ data: AttributeForm }>(`/api/attribute/update/${id}`, {
     method: 'PUT',
     data,
   })
-    .then(() => {
+    .then((res) => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_SUCCESS);
-      return true;
+      return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_ERROR);
-      return false;
+      return {} as AttributeForm;
     });
 }
 export async function deleteAttribute(id: string) {

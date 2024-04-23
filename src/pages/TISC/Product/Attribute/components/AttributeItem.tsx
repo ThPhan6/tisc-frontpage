@@ -26,6 +26,18 @@ export const AttributeItem: FC<AttributeItemProps> = ({
   handleOnClickDelete,
   handleSelectContentType,
 }) => {
+  const renderContentType = () => {
+    if (item.content_type === EAttributeContentType.texts) {
+      return startCase('text');
+    }
+
+    if (item.content_type?.toLocaleLowerCase() === EAttributeContentType.presets) {
+      return startCase(item.additional_type);
+    }
+
+    return startCase(item.content_type);
+  };
+
   return (
     <div className={styles.attribute_container}>
       <div className={styles.form_input}>
@@ -48,13 +60,7 @@ export const AttributeItem: FC<AttributeItemProps> = ({
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
               {item.content_type ? (
                 <span className="basis-conversion-group text-capitalize">
-                  {startCase(
-                    item.content_type === EAttributeContentType.texts
-                      ? 'text'
-                      : item.content_type === EAttributeContentType.presets
-                      ? 'general preset'
-                      : item.content_type,
-                  )}
+                  {renderContentType()}
                 </span>
               ) : (
                 'select from the list'

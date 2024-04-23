@@ -148,6 +148,7 @@ export const ContentOptionTypeDetail: FC<{
   const [optionKey, setOptionKey] = useState<string>('');
   const [subItemSelected, setSubItemSelected] = useState<string>('');
 
+  /// auto open collapse
   useEffect(() => {
     let mainOptionKeyCollapse = '';
     let optionKeyCollapse = '';
@@ -179,6 +180,11 @@ export const ContentOptionTypeDetail: FC<{
     setOptionKey(optionKeyCollapse);
   }, [options]);
 
+  /// find item selected
+  useEffect(() => {
+    setSubItemSelected(value);
+  }, [value]);
+
   useEffect(() => {
     return () => {
       setMainOptionKey('');
@@ -191,6 +197,7 @@ export const ContentOptionTypeDetail: FC<{
     const currentKey = typeof key === 'string' ? key : key?.[0] ?? '';
     let currentOptionKey: string | undefined;
 
+    /// find item chosen to auto open its collapse
     const currentOption = options.find((el) => el.id === currentKey);
 
     currentOption?.subs?.some((sub) => {

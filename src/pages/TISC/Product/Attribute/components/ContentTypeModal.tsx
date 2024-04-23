@@ -40,6 +40,11 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
   selectedOption,
   setSelectedOption,
 }) => {
+  const optionType =
+    type === EAttributeContentType.options ||
+    type === EAttributeContentType.presets ||
+    type === EAttributeContentType.feature_presets;
+
   if (!data.length) {
     return <EmptyOne isCenter />;
   }
@@ -124,7 +129,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
   };
 
   const onChange = (radioValue: RadioValue) => {
-    if (type === 'conversions') {
+    if (type === EAttributeContentType.conversions) {
       onChangeConversion(String(radioValue.value));
       return;
     }
@@ -134,7 +139,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     //   return;
     // }
 
-    if (type === 'options' || type === 'presets' || type === 'feature_presets') {
+    if (optionType) {
       onChangeOption(String(radioValue.value));
       return;
     }
@@ -144,7 +149,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
 
   const newData = [...data].filter((item: any) => !isEmpty(item.subs));
 
-  if (type === 'options' || type === 'feature_presets' || type === 'presets') {
+  if (optionType) {
     return (
       <ContentOptionTypeDetail
         onChange={onChange}
@@ -213,6 +218,13 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
 
     if (!isUndefined(subAttribute.content_type)) {
       const selected = listTab.find((item) => {
+        if (subAttribute.content_type === 'Presets') {
+          return (item.key =
+            subAttribute.additional_type?.toLocaleLowerCase() === 'general presets'
+              ? EAttributeContentType.presets
+              : EAttributeContentType.feature_presets);
+        }
+
         return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
       });
 
@@ -260,9 +272,11 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
         />
         <div
           className={`${styles.contentTypeModalBody} ${
-            activeTab === 'texts' ? styles.contentTypeText : ''
+            activeTab === EAttributeContentType.texts ? styles.contentTypeText : ''
           } ${
-            activeTab === 'options' || activeTab === 'presets' || activeTab === 'feature_presets'
+            activeTab === EAttributeContentType.options ||
+            activeTab === EAttributeContentType.presets ||
+            activeTab === EAttributeContentType.feature_presets
               ? styles.contentTypeOption
               : ''
           }`}

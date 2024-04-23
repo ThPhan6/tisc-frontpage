@@ -66,11 +66,13 @@ export interface AttributeSubForm {
   description_2?: string;
   content_type?: string;
   activeKey?: string;
+  additional_type?: string;
 }
 export interface AttributeForm {
   id?: string;
   type?: number;
   name: string;
+  count: number;
   subs: AttributeSubForm[];
 }
 
