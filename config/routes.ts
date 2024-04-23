@@ -242,6 +242,13 @@ const routes = [
         ],
       },
       {
+        path: PATH.brandAttributes,
+        name: 'Brand Attributes',
+        icon: 'attributes-icon.svg',
+        access: 'tisc_product_attribute',
+        component: './TISC/Product/BrandAttribute',
+      },
+      {
         path: PATH.attribute,
         name: 'attribute',
         icon: 'attributes-icon.svg',

@@ -7,6 +7,7 @@ import { getResponseMessage } from '@/helper/common';
 import {
   BrandAlphabet,
   BrandAssignTeamForm,
+  BrandAttributeSummary,
   BrandCard,
   BrandDesignProfile,
   BrandDetail,
@@ -18,6 +19,7 @@ import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import { KeyValueData } from '@/types';
 
@@ -26,6 +28,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 interface BrandListResponse {
   brands: BrandListItem[];
   pagination: PaginationResponse;
+  summary: SummaryResponse[];
 }
 
 export async function getBrandPagination(
@@ -37,7 +40,7 @@ export async function getBrandPagination(
     params,
   })
     .then((response: { data: BrandListResponse }) => {
-      const { brands, pagination } = response.data;
+      const { brands, pagination, summary } = response.data;
       callback({
         data: brands,
         pagination: {
@@ -45,6 +48,7 @@ export async function getBrandPagination(
           pageSize: pagination.page_size,
           total: pagination.total,
         },
+        summary,
       });
     })
     .catch((error) => {

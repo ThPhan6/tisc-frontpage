@@ -32,6 +32,12 @@ export interface BrandListItem {
   teams: number;
 }
 
+export interface BrandAttributeSummary {
+  Brand: number;
+  Origin: Number;
+  Category: Number;
+}
+
 export interface BrandDetail {
   id: string;
   location_ids: any;
