@@ -7,10 +7,10 @@ import { message } from 'antd';
 import { history, useLocation, useParams } from 'umi';
 
 import { useAttributeLocation } from '../Attribute/hooks/location';
-import { useCheckBrandAttributePath } from '../BrandAttribute/hook';
+import { useCheckBranchAttributeTab } from '../BrandAttribute/hook';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
-import { checkNil } from '@/helper/utils';
+import { useBoolean } from '@/helper/hook';
+import { checkNil, findDuplicateBy, uniqueArrayBy } from '@/helper/utils';
 import {
   createAttribute,
   createConversionMiddleware,
@@ -28,7 +28,7 @@ import {
   updateConversionMiddleware,
   updatePresetMiddleware,
 } from '@/services';
-import { cloneDeep, isNull, isUndefined, lowerCase, merge, uniqueId } from 'lodash';
+import { cloneDeep, flatMap, isNull, isUndefined, lowerCase, merge, uniqueId } from 'lodash';
 
 import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import {
@@ -155,13 +155,13 @@ export const useCheckBasicOptionForm = () => {
   const param = useParams<BrandAttributeParamProps>();
   const isBasicOption =
     location.pathname.indexOf(
-      replaceBrandAttributeBrandId(PATH.options, param.brandId, param.brandName),
+      replaceBrandAttributeBrandId(PATH.options, param.brandId, param.brandName, param?.id),
     ) !== -1 ||
     location.pathname.indexOf(
-      replaceBrandAttributeBrandId(PATH.createOptions, param.brandId, param.brandName),
+      replaceBrandAttributeBrandId(PATH.createOptions, param.brandId, param.brandName, param?.id),
     ) !== -1 ||
     location.pathname.indexOf(
-      replaceBrandAttributeBrandId(PATH.updateOptions, param.brandId, param.brandName),
+      replaceBrandAttributeBrandId(PATH.updateOptions, param.brandId, param.brandName, param?.id),
     ) !== -1;
 
   return isBasicOption;
@@ -190,7 +190,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   const brandId = params.brandId;
   const idBasis = params.id;
 
-  const { componentPath } = useCheckBrandAttributePath();
+  const { activePath } = useCheckBranchAttributeTab();
   const { attributeLocation } = useAttributeLocation();
 
   const submitButtonStatus = useBoolean(false);
@@ -226,14 +226,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       createFunction: createOptionMiddleWare,
       updateFunction: updateBasisOption,
       newSubs: optionValueDefault,
-      path: componentPath,
+      path: activePath,
     },
     attributes: {
       getOneFunction: getOneAttribute,
       createFunction: createAttribute,
       updateFunction: updateAttribute,
       newSubs: attributeValueDefault,
-      path: componentPath,
+      path: activePath,
     },
   };
 
@@ -528,14 +528,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     const sub = data.subs[0] as unknown as AttributeForm;
 
     if (!sub.name) {
-      message.error('Main attribute name is required');
+      message.error('Main attribute name is uniqued and required');
       return;
     }
 
     const inValidSubAttributeName = sub.subs.some((el) => !el.name);
 
     if (inValidSubAttributeName) {
-      message.error('Sub attribute name is required');
+      message.error('Sub attribute name is uniqued and required');
       return;
     }
 
@@ -544,7 +544,24 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       sub.subs.some((el) => el.subs.some((s) => !s.name || !s.content_type));
 
     if (inValidAttribute) {
-      message.error('Attribute item is required');
+      message.error('Attribute item is is uniqued and required');
+      return;
+    }
+
+    const duplicateSub = findDuplicateBy(sub.subs, ['name']);
+
+    if (duplicateSub.length >= 1) {
+      message.error('Sub attribute name is uniqued and required');
+      return;
+    }
+
+    const duplicateAttributeItem = findDuplicateBy(flatMap(sub.subs.map((el) => el.subs)), [
+      'name',
+      'basis_id',
+    ]);
+
+    if (duplicateAttributeItem.length >= 1) {
+      message.error('Attribute item duplicated by its name and content type');
       return;
     }
 
@@ -889,7 +906,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       return <PresetHeader />;
     }
 
-    if (type === ProductBasisFormType.options) {
+    if (type === ProductBasisFormType.options || type === ProductBasisFormType.attributes) {
       return <BranchHeader />;
     }
 
@@ -911,12 +928,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
           span={24}
           contentClass={hasMainSubOption ? styles.mainOptionContent : ''}
           contentStyles={{
-            height:
-              type === ProductBasisFormType.attributes
-                ? 'calc(var(--vh) * 100 - 250px)'
-                : hasMainSubOption
-                ? 'calc(var(--vh) * 100 - 289px)'
-                : 'calc(var(--vh) * 100 - 250px)',
+            height: hasMainSubOption
+              ? 'calc(var(--vh) * 100 - 289px)'
+              : 'calc(var(--vh) * 100 - 250px)',
           }}
         >
           <FormOptionGroupHeaderContext.Provider

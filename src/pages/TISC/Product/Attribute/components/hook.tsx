@@ -11,14 +11,19 @@ export const useCheckAttributeForm = () => {
 
   const isAttributeGeneral =
     location.pathname.indexOf(
-      replaceBrandAttributeBrandId(PATH.attributeGeneral, param.brandId, param.brandName, param.id),
+      replaceBrandAttributeBrandId(
+        PATH.attributeGeneral,
+        param.brandId,
+        param.brandName,
+        param?.id,
+      ),
     ) !== -1 ||
     location.pathname.indexOf(
       replaceBrandAttributeBrandId(
         PATH.attributeGeneralCreate,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1 ||
     location.pathname.indexOf(
@@ -26,20 +31,25 @@ export const useCheckAttributeForm = () => {
         PATH.attributeGeneralUpdate,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1;
 
   const isAttributeFeature =
     location.pathname.indexOf(
-      replaceBrandAttributeBrandId(PATH.attributeFeature, param.brandId, param.brandName, param.id),
+      replaceBrandAttributeBrandId(
+        PATH.attributeFeature,
+        param.brandId,
+        param.brandName,
+        param?.id,
+      ),
     ) !== -1 ||
     location.pathname.indexOf(
       replaceBrandAttributeBrandId(
         PATH.attributeFeatureCreate,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1 ||
     location.pathname.indexOf(
@@ -47,7 +57,7 @@ export const useCheckAttributeForm = () => {
         PATH.attributeFeatureUpdate,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1;
 
@@ -57,7 +67,7 @@ export const useCheckAttributeForm = () => {
         PATH.attributeSpecification,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1 ||
     location.pathname.indexOf(
@@ -65,7 +75,7 @@ export const useCheckAttributeForm = () => {
         PATH.attributeSpecificationCreate,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1 ||
     location.pathname.indexOf(
@@ -73,7 +83,7 @@ export const useCheckAttributeForm = () => {
         PATH.attributeSpecificationUpdate,
         param.brandId,
         param.brandName,
-        param.id,
+        param?.id,
       ),
     ) !== -1;
 
