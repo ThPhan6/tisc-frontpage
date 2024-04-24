@@ -213,33 +213,6 @@ const routes = [
               },
             ],
           },
-          {
-            path: PATH.options,
-            name: 'component',
-            hideInMenu: true,
-            routes: [
-              {
-                path: PATH.options,
-                component: './TISC/Product/Basis/Option',
-                hideInMenu: true,
-              },
-              {
-                path: PATH.createOptions,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
-              },
-              {
-                path: PATH.updateOptions,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
-              },
-              {
-                path: PATH.LinkageDataSet,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/LinkagePage.tsx',
-              },
-            ],
-          },
         ],
       },
 
@@ -317,6 +290,33 @@ const routes = [
                 path: PATH.attributeSpecificationUpdate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/components/AttributeEntryForm',
+              },
+            ],
+          },
+          {
+            path: PATH.options,
+            name: 'component',
+            hideInMenu: true,
+            routes: [
+              {
+                path: PATH.options,
+                component: './TISC/Product/Basis/Option',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.createOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
+              },
+              {
+                path: PATH.updateOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
+              },
+              {
+                path: PATH.LinkageDataSet,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/LinkagePage.tsx',
               },
             ],
           },
