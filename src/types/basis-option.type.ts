@@ -25,6 +25,17 @@ export interface BasisOptionListResponse {
   created_at: string;
 }
 
+export interface BasisOptionListResponseForTable {
+  group_id: string;
+  group_name: string;
+  group_count: number;
+  master: boolean;
+  id: string;
+  name: string;
+  count: number;
+  subs: SubBasisOption[];
+}
+
 export interface BasisOptionSubForm {
   id: string;
   name: string;

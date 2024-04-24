@@ -405,16 +405,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    if (
-      (!idBasis && type !== ProductBasisFormType.options) ||
-      (!params.groupdId && type === ProductBasisFormType.options)
-    ) {
+    if (!idBasis) {
       message.error('Cannot update, something went wrong');
       return;
     }
 
     const updateFunction = FORM_CONFIG[type].updateFunction;
-    updateFunction((idBasis ?? params.groupdId) as string, dataSubmit).then((res: any) => {
+    const updateFunctionExcute =
+      type === ProductBasisFormType.options
+        ? updateFunction(idBasis, dataSubmit, idBasis ? 'update' : 'create')
+        : updateFunction(idBasis as string, dataSubmit);
+
+    updateFunctionExcute.then((res: any) => {
       if (hasMainSubOption) {
         if (res?.id) {
           const oldDdata = cloneDeep(data);

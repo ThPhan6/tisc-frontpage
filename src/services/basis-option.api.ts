@@ -3,6 +3,8 @@ import { DEFAULT_MAIN_OPTION_ID } from '@/pages/TISC/Product/Basis/Option/compon
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { flatMap } from 'lodash';
+
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -13,6 +15,7 @@ import store from '@/reducers';
 import type {
   BasisOptionForm,
   BasisOptionListResponse,
+  BasisOptionListResponseForTable,
   ConnectionListResponse,
   LinkageUpsertBody,
   MainBasisOptionSubForm,
@@ -41,6 +44,42 @@ export async function getProductBasisOptionPagination(
       const { basis_options, pagination, summary } = response.data;
       callback({
         data: basis_options,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+        summary,
+      });
+    })
+    .catch((error) => {
+      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.GETLIST_OPTION_ERROR);
+      hidePageLoading();
+    });
+}
+
+export async function getProductBasisOptionPaginationForTable(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse<BasisOptionListResponseForTable[]>) => void,
+) {
+  request(`/api/basis-option/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response: CategoryPaginationResponse) => {
+      const { basis_options, pagination, summary } = response.data;
+      callback({
+        data: flatMap(
+          basis_options.map((grp) =>
+            grp.subs.map((sub) => ({
+              ...sub,
+              group_id: grp.id,
+              group_name: grp.name,
+              group_count: grp.count,
+              master: !!grp?.master,
+            })),
+          ),
+        ),
         pagination: {
           current: pagination.page,
           pageSize: pagination.page_size,
@@ -114,19 +153,39 @@ export async function getOneBasisOption(id: string) {
     });
 }
 
-export async function updateBasisOption(id: string, data: BasisOptionForm) {
+export async function updateBasisOption(
+  id: string,
+  data: BasisOptionForm,
+  type: 'create' | 'update' | 'delete' = 'update',
+) {
   showPageLoading();
   return request<{ data: MainBasisOptionSubForm }>(`/api/basis-option/update/${id}`, {
     method: 'PUT',
     data,
   })
     .then((res) => {
-      message.success(MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      message.success(
+        type === 'update'
+          ? MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS
+          : type === 'create'
+          ? MESSAGE_NOTIFICATION.CREATE_OPTION_SUCCESS
+          : type === 'delete'
+          ? MESSAGE_NOTIFICATION.DELETE_OPTION_SUCCESS
+          : 'Successfully',
+      );
       hidePageLoading();
       return res.data;
     })
     .catch((error) => {
-      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_ERROR);
+      message.error(
+        error?.data?.message || type === 'update'
+          ? MESSAGE_NOTIFICATION.UPDATE_OPTION_ERROR
+            ? type === 'create'
+            : MESSAGE_NOTIFICATION.CREATE_OPTION_ERROR
+          : type === 'delete'
+          ? MESSAGE_NOTIFICATION.DELETE_OPTION_ERROR
+          : 'Error',
+      );
       hidePageLoading();
       return {} as MainBasisOptionSubForm;
     });

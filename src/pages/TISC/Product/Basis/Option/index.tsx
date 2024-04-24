@@ -7,11 +7,16 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { deleteBasisOption, getProductBasisOptionPagination, updateBasisOption } from '@/services';
+import { getProductBasisOptionPaginationForTable, updateBasisOption } from '@/services';
 
 import { BrandAttributeParamProps } from '../../BrandAttribute/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import type { BasisOptionForm, BasisOptionListResponse, SubBasisOption } from '@/types';
+import type {
+  BasisOptionForm,
+  BasisOptionListResponse,
+  BasisOptionListResponseForTable,
+  SubBasisOption,
+} from '@/types';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
@@ -34,7 +39,7 @@ const colsDataIndex = {
 };
 
 const BasisOptionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(3, [7]);
+  useAutoExpandNestedTableColumn(2, [7]);
 
   const param = useParams<BrandAttributeParamProps>();
 
@@ -48,7 +53,7 @@ const BasisOptionList: React.FC = () => {
   const handleLinkageBasisOption = (id: string) => {
     pushTo(linkagePath.replace(':id', id));
   };
-  const handleDeleteBasisOption = (option: SubBasisOption) => {
+  const handleDeleteBasisOption = (group: BasisOptionListResponseForTable) => {
     confirmDelete(() => {
       // deleteBasisOption(id).then((isSuccess) => {
       //   if (isSuccess) {
@@ -56,13 +61,18 @@ const BasisOptionList: React.FC = () => {
       //   }
       // });
 
-      updateBasisOption(option.id, { ...option, subs: [] } as unknown as BasisOptionForm).then(
-        (isSuccess) => {
-          if (isSuccess) {
-            tableRef.current.reload();
-          }
-        },
-      );
+      const payload: BasisOptionForm = {
+        id: group.group_id,
+        name: group.name,
+        count: group.count,
+        subs: [],
+      };
+
+      updateBasisOption(payload.id, payload, 'delete').then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
+      });
     });
   };
   const getSameColumns = (noBoxShadow?: boolean) => {
@@ -112,34 +122,27 @@ const BasisOptionList: React.FC = () => {
     return SameColumn;
   };
 
-  const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
+  const MainSubColumns: TableColumnItem<BasisOptionListResponseForTable>[] = [
     {
-      title: colTitle.group,
-      dataIndex: dataIndexDefault, // key in data
+      title: colTitle.main,
+      dataIndex: dataIndexDefault,
+      isExpandable: true,
       sorter: {
         multiple: 1,
       },
-      isExpandable: true,
       render: (value) => {
-        return <span className="text-uppercase">{value}</span>;
+        return <span className="text-capitalize">{value}</span>;
       },
-      hidden: true,
-    },
-    {
-      title: colTitle.main,
-      dataIndex: colsDataIndex.main,
-      sorter: {
-        multiple: 2,
-      },
-      // defaultSortOrder: 'descend',
     },
     {
       title: colTitle.sub,
       dataIndex: colsDataIndex.sub,
-      sorter: {
-        multiple: 3,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
       },
-      // defaultSortOrder: 'ascend',
+      sorter: {
+        multiple: 2,
+      },
     },
     ...getSameColumns(false),
     {
@@ -147,7 +150,7 @@ const BasisOptionList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: (_value: any, record: any) => {
+      render: (_value: any, record: BasisOptionListResponseForTable) => {
         if (record.master) {
           return null;
         }
@@ -156,11 +159,11 @@ const BasisOptionList: React.FC = () => {
             actionItems={[
               {
                 type: 'updated',
-                onClick: () => handleUpdateBasisOption(record.id),
+                onClick: () => handleUpdateBasisOption(record.group_id),
               },
               {
                 type: 'linkage',
-                onClick: () => handleLinkageBasisOption(record.id),
+                onClick: () => handleLinkageBasisOption(record.group_id),
               },
               {
                 type: 'deleted',
@@ -173,45 +176,11 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const MainSubColumns: TableColumnItem<SubBasisOption>[] = [
-    {
-      title: colTitle.group,
-      dataIndex: colsDataIndex.group,
-      noBoxShadow: true,
-      hidden: true,
-    },
-    {
-      title: colTitle.main,
-      dataIndex: dataIndexDefault,
-      isExpandable: true,
-    },
-    {
-      title: colTitle.sub,
-      dataIndex: colsDataIndex.sub,
-      render: (value) => {
-        return <span className="text-capitalize">{value}</span>;
-      },
-    },
-    ...getSameColumns(false),
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-    },
-  ];
-
   const SubColumns: TableColumnItem<SubBasisOption>[] = [
-    {
-      title: colTitle.group,
-      dataIndex: colsDataIndex.group,
-      noBoxShadow: true,
-      hidden: true,
-    },
     {
       title: colTitle.main,
       dataIndex: colsDataIndex.main,
-      isExpandable: true,
+      // isExpandable: true,
       noBoxShadow: true,
     },
     {
@@ -232,12 +201,6 @@ const BasisOptionList: React.FC = () => {
   ];
 
   const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = [
-    {
-      title: colTitle.group,
-      dataIndex: colsDataIndex.group,
-      noBoxShadow: true,
-      hidden: true,
-    },
     {
       title: colTitle.main,
       dataIndex: colsDataIndex.main,
@@ -262,9 +225,9 @@ const BasisOptionList: React.FC = () => {
     <CustomTable
       header={<BranchHeader />}
       title="OPTIONS"
-      columns={setDefaultWidthForEachColumn(MainColumns, 7)}
+      columns={setDefaultWidthForEachColumn(MainSubColumns, 7)}
       ref={tableRef}
-      fetchDataFunc={getProductBasisOptionPagination}
+      fetchDataFunc={getProductBasisOptionPaginationForTable}
       multiSort={{
         // colsDataIndex is sort keys
         name: 'group_order',
@@ -275,18 +238,13 @@ const BasisOptionList: React.FC = () => {
         filter: { brand_id: param.brandId },
       }}
       expandable={GetExpandableTableConfig({
-        columns: setDefaultWidthForEachColumn(MainSubColumns, 7),
+        columns: setDefaultWidthForEachColumn(SubColumns, 7),
         childrenColumnName: 'subs',
         level: 2,
         expandable: GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(SubColumns, 7),
+          columns: setDefaultWidthForEachColumn(ChildColumns, 7),
           childrenColumnName: 'subs',
           level: 3,
-          expandable: GetExpandableTableConfig({
-            columns: setDefaultWidthForEachColumn(ChildColumns, 7),
-            childrenColumnName: 'subs',
-            level: 4,
-          }),
         }),
       })}
     />
