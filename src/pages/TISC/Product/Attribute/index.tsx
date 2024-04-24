@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 
+import { useParams } from 'umi';
+
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import { useAttributeLocation } from './hooks/location';
@@ -9,6 +11,7 @@ import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
 
+import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
 

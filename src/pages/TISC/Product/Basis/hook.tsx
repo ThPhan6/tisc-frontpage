@@ -87,7 +87,7 @@ const getEntryFormTitle = (type: ProductBasisFormType) => {
     return 'Conversion Group';
   }
 
-  return type === ProductBasisFormType.presets ? 'Preset Group' : 'Option Group';
+  return type === ProductBasisFormType.presets ? 'Group Name' : 'Component Configuration';
 };
 
 const getSubItemValue = (valueItem: SubBasisPreset | SubBasisOption) => ({
@@ -143,7 +143,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const location = useLocation();
   const tabActive = location.hash.split('#')[1] as PresetTabKey;
 
-  const idBasis = useGetParamId();
+  // const idBasis = useGetParamId();
+  const params = useParams<BrandAttributeParamProps>();
+  const brandId = params.brandId;
+  const idBasis = params.id;
 
   const { componentPath } = useCheckBrandAttributePath();
 
@@ -314,6 +317,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleUpdate = (dataSubmit: any) => {
+    if (!idBasis) {
+      message.error('Cannot update, something went wrong');
+      return;
+    }
+
     const updateFunction = FORM_CONFIG[type].updateFunction;
     updateFunction(idBasis, dataSubmit).then((res: any) => {
       if (hasMainSubOption) {
@@ -371,6 +379,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleDeleteConversion = () => {
+    if (!idBasis) {
+      message.error('Conversion not found');
+      return;
+    }
+
     deleteConversionMiddleware(idBasis).then((isSuccess) => {
       if (isSuccess) {
         pushTo(PATH.conversions);
@@ -379,6 +392,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleDeleteBasisOption = () => {
+    if (!idBasis) {
+      message.error('Option not found');
+      return;
+    }
+
     deleteBasisOption(idBasis).then((isSuccess) => {
       if (isSuccess) {
         pushTo(PATH.options);
@@ -387,6 +405,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleDeletePreset = () => {
+    if (!idBasis) {
+      message.error('Preset not found');
+      return;
+    }
+
     deletePresetMiddleware(idBasis).then((isSuccess) => {
       if (isSuccess) {
         pushTo(PATH.presets);
@@ -417,7 +440,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     let hasSubOptions = true;
     let hasSubItems = true;
 
-    if (!data.name) {
+    if (!data.name && type !== ProductBasisFormType.options) {
       message.error('Group name is required');
       return;
     }
@@ -662,6 +685,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         };
       }
 
+      if (type === ProductBasisFormType.options && !idBasis) {
+        result = { ...result, brand_id: brandId };
+      }
+
       handleSubmit(result);
 
       return;
@@ -773,7 +800,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
             {hasMainSubOption ? (
               <FormOptionNameInput
-                hideTitleInput
+                // hideTitleInput={!!idBasis}
+                placeholder="type group name"
                 title={getEntryFormTitle(type)}
                 onChangeInput={handleChangeGroupName}
                 handleOnClickAddIcon={handleOnClickAddIcon}
