@@ -5,7 +5,6 @@ import { Collapse } from 'antd';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import { RadioValue } from '@/components/CustomRadio/types';
-import { useCollapseGroupActiveCheck } from '@/reducers/active';
 import {
   BasisConventionOption,
   BasisPresetOption,
@@ -13,7 +12,6 @@ import {
   EAttributeContentType,
 } from '@/types';
 
-import CustomCollapse from '@/components/Collapse';
 import { CollapseLevel1Props } from '@/components/Collapse/Expand';
 import { CustomRadio } from '@/components/CustomRadio';
 

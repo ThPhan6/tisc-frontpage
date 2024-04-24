@@ -11,9 +11,9 @@ import {
   useCheckBasicOptionForm,
 } from '../../../hook';
 import { useCheckAttributeForm } from '@/pages/TISC/Product/Attribute/components/hook';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash';
 
-import { BasisOptionSubForm, SubBasisOption } from '@/types';
+import { BasisOptionSubForm } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 
@@ -56,6 +56,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
     ? placeholder.length * 6.5
     : 106;
 
+  const newId = uniqueId();
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormGroupContext);
 
@@ -80,6 +81,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
 
     if (isAttribute) {
       newSubOptionItem = {
+        id: `new-${newId}`,
         name: '',
         description: '',
         content_type: '',
@@ -119,7 +121,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
             onClick={(e) => {
               e.stopPropagation();
             }}
-            style={{ cursor: 'default' }}
+            style={{ cursor: 'default', paddingLeft: isAttribute ? 32 : 0 }}
           >
             {dragIcon}
             <CustomInput

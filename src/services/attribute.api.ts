@@ -12,6 +12,8 @@ import type {
   AttributeContentType,
   AttributeForm,
   AttributeListResponse,
+  ICreateAttributeRequest,
+  IUpdateAttributeRequest,
   ProductAttributeByType,
 } from '@/types';
 
@@ -63,7 +65,7 @@ export async function getProductAttributeContentType() {
     });
 }
 
-export async function createAttribute(data: AttributeForm) {
+export async function createAttribute(data: ICreateAttributeRequest) {
   return request<boolean>(`/api/attribute/create`, {
     method: 'POST',
     data,
@@ -88,7 +90,7 @@ export async function getOneAttribute(id: string) {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_ATTRIBUTE_ERROR);
     });
 }
-export async function updateAttribute(id: string, data: AttributeForm) {
+export async function updateAttribute(id: string, data: IUpdateAttributeRequest) {
   return request<{ data: AttributeForm }>(`/api/attribute/update/${id}`, {
     method: 'PUT',
     data,

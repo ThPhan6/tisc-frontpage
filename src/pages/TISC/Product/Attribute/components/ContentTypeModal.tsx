@@ -15,7 +15,7 @@ import type {
   BasisPresetOption,
   BasisText,
 } from '@/types';
-import { EAttributeContentType } from '@/types';
+import { BasisPresetTypeString, EAttributeContentType } from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -59,8 +59,6 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
         return item.id === basisId;
       });
       if (selected) {
-        console.log('selected', selected);
-
         setSelectedOption({
           basis_id: basisId,
           content_type: type,
@@ -89,7 +87,6 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
       });
       if (selected) {
         setSelectedOption({
-          ...selected,
           basis_id: basisId,
           content_type: type,
           description_1: selected.name_1,
@@ -99,22 +96,6 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     });
   };
 
-  // const onChangePreset = (basisId: string) => {
-  //   const presetData = [...data] as BasisPresetOption[];
-  //   presetData.forEach((preset) => {
-  //     const selected = preset.subs?.find((sub) => {
-  //       return sub.id === basisId;
-  //     });
-  //     if (selected) {
-  //       setSelectedOption({
-  //         basis_id: basisId,
-  //         content_type: type,
-  //         description: selected.name,
-  //       });
-  //     }
-  //   });
-  // };
-
   const onChangeOption = (basisId: string) => {
     const optionData = [...data] as BasisPresetOption[];
     optionData.forEach((option) => {
@@ -122,13 +103,39 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
         const selected = subItem.subs?.find((sub) => {
           return sub.id === basisId;
         });
-        if (selected) {
+
+        if (!selected) {
+          return;
+        }
+
+        if (type === EAttributeContentType.options) {
           setSelectedOption({
-            ...selected,
             basis_id: basisId,
             content_type: type,
             description: selected.name,
-          });
+          } as any);
+
+          return;
+        }
+
+        /// type for check tab active
+        if (
+          type === EAttributeContentType.presets ||
+          type === EAttributeContentType.feature_presets
+        ) {
+          setSelectedOption({
+            basis_id: basisId,
+            /// content_type is always <preset>
+            content_type: EAttributeContentType.presets,
+            description: selected.name,
+            /// add additional type to differentiate preset
+            additional_type:
+              type === EAttributeContentType.presets
+                ? BasisPresetTypeString.general
+                : BasisPresetTypeString.feature,
+          } as any);
+
+          return;
         }
       });
     });
@@ -139,11 +146,6 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
       onChangeConversion(String(radioValue.value));
       return;
     }
-
-    // if (type === 'presets' || type === 'feature_presets') {
-    //   onChangePreset(String(radioValue.value));
-    //   return;
-    // }
 
     if (optionType) {
       onChangeOption(String(radioValue.value));
@@ -165,7 +167,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     );
   }
 
-  /// type conversion or preset
+  /// type conversions
   return (
     <ContentTypeDetail
       onChange={onChange}
@@ -176,6 +178,13 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
     />
   );
 };
+
+const DEFAULT_CONTENT_TYPE: AttributeSubForm = {
+  basis_id: '',
+  name: '',
+  description: '',
+};
+
 interface ContentTypeModalProps {}
 
 const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
@@ -189,6 +198,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
     setOpenContentTypeModal: setVisible,
     setContentTypeSelected,
     contentTypeSelected: subAttribute,
+    setAttributeSelected,
   } = useContext(AttributeEntryFormContext);
 
   const listTab: TabItem[] = [
@@ -205,11 +215,13 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
       key: EAttributeContentType.feature_presets,
       disable: type === SPECIFICATION_TYPE,
     },
-    { tab: 'COMPONENS', key: EAttributeContentType.options, disable: type !== SPECIFICATION_TYPE },
+    { tab: 'COMPONENTS', key: EAttributeContentType.options, disable: type !== SPECIFICATION_TYPE },
   ];
 
   /// default selected option
-  const [selectedOption, setSelectedOption] = useState<AttributeSubForm>(subAttribute);
+  const [selectedOption, setSelectedOption] = useState<AttributeSubForm>(
+    subAttribute ?? DEFAULT_CONTENT_TYPE,
+  );
   /// set active tab
   let selectedTab = listTab[0];
 
@@ -236,13 +248,13 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    setSelectedOption(subAttribute);
+    setSelectedOption(subAttribute ?? DEFAULT_CONTENT_TYPE);
 
-    if (!isUndefined(subAttribute.content_type)) {
+    if (!isUndefined(subAttribute?.content_type)) {
       const selected = listTab.find((item) => {
-        if (subAttribute.content_type === 'Presets') {
+        if (subAttribute.content_type?.toLowerCase() === 'presets') {
           return (item.key =
-            subAttribute.additional_type?.toLocaleLowerCase() === 'general presets'
+            subAttribute.additional_type?.toLowerCase() === 'general presets'
               ? EAttributeContentType.presets
               : EAttributeContentType.feature_presets);
         }
@@ -259,7 +271,19 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   }, [subAttribute]);
 
   const handleSubmit = () => {
-    setContentTypeSelected({ ...subAttribute, ...selectedOption });
+    if (!subAttribute || !selectedOption) {
+      /// reset content type selected
+      setContentTypeSelected?.(DEFAULT_CONTENT_TYPE);
+      // close modal
+      setVisible(false);
+      return;
+    }
+
+    /// save attribute selected to update data on form
+    setAttributeSelected?.({ ...subAttribute, ...selectedOption });
+
+    /// reset content type selected
+    setContentTypeSelected?.(DEFAULT_CONTENT_TYPE);
     // close modal
     setVisible(false);
   };

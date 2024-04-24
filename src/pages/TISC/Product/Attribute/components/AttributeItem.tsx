@@ -19,22 +19,23 @@ interface AttributeItemProps {
 }
 
 export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }) => {
-  const { contentTypeSelected, setContentTypeSelected, setOpenContentTypeModal } =
-    useContext(AttributeEntryFormContext);
-
-  console.log('contentTypeSelected', contentTypeSelected);
+  const { setContentTypeSelected, setOpenContentTypeModal } = useContext(AttributeEntryFormContext);
 
   const handleSelectContentType = () => {
-    setContentTypeSelected(item);
+    setContentTypeSelected?.(item);
     setOpenContentTypeModal(true);
   };
 
   const renderContentType = () => {
-    if (item.content_type === EAttributeContentType.texts) {
+    if (item.content_type?.toLowerCase() === EAttributeContentType.texts) {
       return startCase('text');
     }
 
-    if (item.content_type?.toLocaleLowerCase() === EAttributeContentType.presets) {
+    if (item.content_type?.toLowerCase() === EAttributeContentType.options) {
+      return startCase('component');
+    }
+
+    if (item.content_type?.toLowerCase() === EAttributeContentType.presets) {
       return startCase(item.additional_type);
     }
 
@@ -43,7 +44,7 @@ export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }
 
   return (
     <div className={styles.attribute_container}>
-      <div className={`${styles.form_input} flex-start`}>
+      <div className={`flex-start`}>
         <div className={styles.form_input__element}>
           <CustomInput
             placeholder="type attribute name"
@@ -53,45 +54,48 @@ export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }
             onChange={onChangeItemName}
           />
         </div>
-        <div
-          className={`${styles.form_input__element} ${styles.form_input__cursor}`}
-          onClick={handleSelectContentType}
-        >
-          <div className="group-content-type">
-            <BodyText level={4}>Content Type </BodyText>
-            <SingleRightFormIcon style={{ margin: '0 8px' }} />
 
-            <BodyText
-              level={5}
-              fontFamily="Roboto"
-              color={item.content_type ? 'mono-color' : 'mono-color-medium'}
-            >
-              {item.content_type ? (
-                <span className="basis-conversion-group text-capitalize">
-                  {renderContentType()}
-                </span>
-              ) : (
-                'select from the list'
-              )}
-            </BodyText>
+        <div className="flex-start flex-grow">
+          <div
+            className={`${styles.form_input__element} ${styles.form_input__cursor}`}
+            onClick={handleSelectContentType}
+          >
+            <div className="group-content-type">
+              <BodyText level={4}>Content Type </BodyText>
+              <SingleRightFormIcon style={{ margin: '0 8px' }} />
+
+              <BodyText
+                level={5}
+                fontFamily="Roboto"
+                color={item.content_type ? 'mono-color' : 'mono-color-medium'}
+              >
+                {item.content_type ? (
+                  <span className="basis-conversion-group text-capitalize">
+                    {renderContentType()}
+                  </span>
+                ) : (
+                  'select from the list'
+                )}
+              </BodyText>
+            </div>
           </div>
-        </div>
-        <div className={styles.form_input__element}>
-          <div className="group-content-type">
-            <BodyText level={4} style={{ whiteSpace: 'nowrap' }}>
-              Description :
-            </BodyText>
-            <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
-              {lowerCase(item.content_type!).indexOf('conversion') >= 0 ? (
-                <span className="basis-conversion-group">
-                  {item.description_1}
-                  <SwapIcon />
-                  {item.description_2}
-                </span>
-              ) : (
-                <span className="basis-conversion-group">{item.description}</span>
-              )}
-            </BodyText>
+          <div className={styles.form_input__element}>
+            <div className="group-content-type">
+              <BodyText level={4} style={{ whiteSpace: 'nowrap' }}>
+                Description :
+              </BodyText>
+              <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
+                {lowerCase(item.content_type!).indexOf('conversion') >= 0 ? (
+                  <span className="basis-conversion-group">
+                    {item.description_1}
+                    <SwapIcon />
+                    {item.description_2}
+                  </span>
+                ) : (
+                  <span className="basis-conversion-group">{item.description}</span>
+                )}
+              </BodyText>
+            </div>
           </div>
         </div>
       </div>

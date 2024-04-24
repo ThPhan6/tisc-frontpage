@@ -6,35 +6,41 @@ import type { AttributeSubForm } from '@/types';
 
 import ContentTypeModal from './ContentTypeModal';
 
-const DEFAULT_CONTENT_TYPE: AttributeSubForm = {
-  basis_id: '',
-  name: '',
-  description: '',
-};
-
 export const AttributeEntryFormContext = createContext<{
   openContentTypeModal: boolean;
   setOpenContentTypeModal: (openContentTypeModal: boolean) => void;
-  contentTypeSelected: AttributeSubForm;
-  setContentTypeSelected: (contentType: AttributeSubForm) => void;
+
+  /// for save data from attribute to inside modal
+  contentTypeSelected?: AttributeSubForm;
+  setContentTypeSelected?: (contentType: AttributeSubForm) => void;
+
+  /// for save data inside modal to attribute(save after submit)
+  attributeSelected?: AttributeSubForm;
+  setAttributeSelected?: (attributeSelected: AttributeSubForm) => void;
 }>({
   openContentTypeModal: false,
   setOpenContentTypeModal: () => null,
-  contentTypeSelected: DEFAULT_CONTENT_TYPE,
   setContentTypeSelected: () => null,
 });
 
 const AttributeEntryForm = () => {
-  const { renderProductBasicEntryForm } = useProductBasicEntryForm(ProductBasisFormType.attributes);
-
-  const [contentTypeSelected, setContentTypeSelected] =
-    useState<AttributeSubForm>(DEFAULT_CONTENT_TYPE);
+  const [contentTypeSelected, setContentTypeSelected] = useState<AttributeSubForm>();
+  const [attributeSelected, setAttributeSelected] = useState<AttributeSubForm>();
 
   const [openContentTypeModal, setOpenContentTypeModal] = useState<boolean>(false);
+
+  const { renderProductBasicEntryForm } = useProductBasicEntryForm(
+    ProductBasisFormType.attributes,
+
+    /// attribute selected after submit from select content type
+    attributeSelected,
+  );
 
   return (
     <AttributeEntryFormContext.Provider
       value={{
+        attributeSelected,
+        setAttributeSelected,
         contentTypeSelected,
         openContentTypeModal,
         setOpenContentTypeModal,

@@ -167,8 +167,10 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
                       <div className="flex-center">
                         {isAttribute ? (
                           <DeleteIcon
-                            className="delete_sub_icon"
+                            // className="delete_sub_icon"
                             onClick={handleDeleteSubItem(index)}
+                            color="#000"
+                            style={{ cursor: 'pointer' }}
                           />
                         ) : (
                           <RemoveIcon
@@ -229,6 +231,8 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   } = props;
 
   const { collapse, setCollapse, hideDrag } = useContext(FormGroupContext);
+
+  const { isAttribute } = useCheckAttributeForm();
 
   const handleDeleteSubOption = (index: number) => {
     const newSubItems = [...mainOption.subs];
@@ -313,7 +317,10 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                     key={mainOption.id}
                     showArrow={false}
                   >
-                    <div className={styles.main_option}>
+                    <div
+                      className={styles.main_option}
+                      // style={{ paddingLeft: isAttribute ? 16 : 0 }}
+                    >
                       {!mainOption.subs.length ? (
                         <EmptyOne />
                       ) : (
