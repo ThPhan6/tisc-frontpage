@@ -1,7 +1,7 @@
-import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { CSSProperties, forwardRef, useImperativeHandle } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useLocation, useParams } from 'umi';
+import { useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
@@ -32,39 +32,35 @@ interface PresetHeaderProps {
 export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
   const { containerStyle } = props;
 
-  const location = useLocation();
-
   const param = useParams<BrandAttributeParamProps>();
 
-  const { activePath, attributeLocation } = useAttributeLocation();
+  const { activePath } = useAttributeLocation();
 
-  const activeTab = useCheckBranchAttributeTab();
+  const { activeTab, currentTab } = useCheckBranchAttributeTab();
 
   const {
     componentPath,
     componentCreatePath,
-    featureAttributePath,
     generalAttributePath,
+    featureAttributePath,
     specificationAttributePath,
   } = useCheckBrandAttributePath();
 
-  const [selectedTab, setSelectedTab] = useState<BranchTabKey>();
-
   const listTab: TabItem[] = [
     {
-      tab: 'Component',
+      tab: 'Components',
       tabletTabTitle: 'Component',
       key: BranchTabKey.component,
       disable: !activeTab,
     },
     {
-      tab: 'Genernal Attribute',
+      tab: 'Genernal Attributes',
       tabletTabTitle: 'Genernal Attribute',
       key: BranchTabKey.general,
       disable: !activeTab,
     },
     {
-      tab: 'Feature Attribute',
+      tab: 'Feature Attributes',
       tabletTabTitle: 'Feature Attribute',
       key: BranchTabKey.feature,
       disable: !activeTab,
@@ -77,29 +73,7 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
     },
   ];
 
-  useEffect(() => {
-    if (location.pathname === componentPath) {
-      setSelectedTab(BranchTabKey.component);
-      return;
-    }
-
-    if (location.pathname === generalAttributePath) {
-      setSelectedTab(BranchTabKey.general);
-      return;
-    }
-
-    if (location.pathname === featureAttributePath) {
-      setSelectedTab(BranchTabKey.feature);
-      return;
-    }
-
-    if (location.pathname === specificationAttributePath) {
-      setSelectedTab(BranchTabKey.specification);
-      return;
-    }
-  }, [location.pathname]);
-
-  useImperativeHandle(ref, () => ({ tab: selectedTab }), [selectedTab]);
+  useImperativeHandle(ref, () => ({ tab: currentTab }), [currentTab]);
 
   const handleChangePath = (activeKey: BranchTabKey) => {
     if (activeKey === BranchTabKey.component) {
@@ -129,12 +103,10 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
 
   const handleChangeTab = (activeKey: string) => {
     handleChangePath(activeKey as BranchTabKey);
-
-    setSelectedTab(activeKey as BranchTabKey);
   };
 
   const handlePushTo = () => {
-    if (selectedTab === BranchTabKey.component) {
+    if (currentTab === BranchTabKey.component) {
       pushTo(componentCreatePath);
       return;
     }
@@ -172,7 +144,7 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
         widthItem="auto"
         className={`${styles.branchHeaderTab} ${!activeTab ? styles.branchHeaderTabDisabled : ''}`}
         onChange={handleChangeTab}
-        activeKey={selectedTab}
+        activeKey={currentTab}
       />
 
       <CustomPlusButton

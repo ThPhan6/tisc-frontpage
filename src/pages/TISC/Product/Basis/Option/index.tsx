@@ -36,8 +36,9 @@ const colsDataIndex = {
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [8]);
 
-  const tableRef = useRef<any>();
   const param = useParams<BrandAttributeParamProps>();
+
+  const tableRef = useRef<any>();
 
   const { componentUpdatePath, linkagePath } = useCheckBrandAttributePath();
 
