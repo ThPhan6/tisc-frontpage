@@ -53,10 +53,10 @@ export const PATH = {
   updateConversions: '/tisc/products/basis/conversions/:id',
 
   // component
-  options: '/tisc/products/basis/:brandName/:brandId/component',
-  createOptions: '/tisc/products/basis/:brandName/:brandId/component/create',
-  updateOptions: '/tisc/products/basis/:brandName/:brandId/component/:id',
-  LinkageDataSet: '/tisc/products/basis/:brandName/:brandId/component/:id/linkage',
+  options: '/tisc/products/attributes/:brandName/:brandId/component',
+  createOptions: '/tisc/products/attributes/:brandName/:brandId/component/create',
+  updateOptions: '/tisc/products/attributes/:brandName/:brandId/component/:id',
+  LinkageDataSet: '/tisc/products/attributes/:brandName/:brandId/component/:id/linkage',
 
   // brand attributes
   attribute: '/tisc/products/attributes',
