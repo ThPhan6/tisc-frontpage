@@ -31,6 +31,7 @@ import styles from './styles/Popover.less';
 
 export interface PopoverProps {
   title: string;
+  titlePosition?: 'left' | 'center';
   visible: boolean;
   setVisible?: (visible: boolean) => void;
   /// dropdown radio list
@@ -88,6 +89,7 @@ export interface PopoverProps {
 
 const Popover: FC<PopoverProps> = ({
   title,
+  titlePosition = 'left',
   visible,
   setVisible,
   dropdownRadioList,
@@ -340,7 +342,7 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%' }}
+            style={{ maxWidth: '95%', textAlign: titlePosition === 'center' ? 'center' : 'left' }}
           >
             {title}
           </MainTitle>

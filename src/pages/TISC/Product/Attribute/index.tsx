@@ -25,6 +25,7 @@ import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
 import { BranchHeader } from '../BrandAttribute/BranchHeader';
+import styles from './styles/index.less';
 
 const colTitle = {
   group: 'Main Attribute',
@@ -283,6 +284,8 @@ const AttributeList: React.FC = () => {
 
       <Popover
         title="COPY DATASET TO"
+        titlePosition="center"
+        className={styles.popover}
         cancelSaveFooter
         clearOnClose
         visible={visible}
