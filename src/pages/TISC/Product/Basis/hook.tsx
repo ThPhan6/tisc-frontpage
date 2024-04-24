@@ -544,21 +544,32 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       sub.subs.some((el) => el.subs.some((s) => !s.name || !s.content_type));
 
     if (inValidAttribute) {
-      message.error('Attribute item is is uniqued and required');
+      message.error('Attribute item is uniqued and required');
       return;
     }
 
-    const duplicateSub = findDuplicateBy(sub.subs, ['name']);
+    const duplicateSub = findDuplicateBy(
+      sub.subs.map((el) => ({ ...el, name: el.name.toLowerCase() })),
+      ['name'],
+    );
 
     if (duplicateSub.length >= 1) {
       message.error('Sub attribute name is uniqued and required');
       return;
     }
 
-    const duplicateAttributeItem = findDuplicateBy(flatMap(sub.subs.map((el) => el.subs)), [
-      'name',
-      'basis_id',
-    ]);
+    const duplicateAttributeItem = findDuplicateBy(
+      flatMap(
+        sub.subs.map((el) =>
+          el.subs.map((s) => ({
+            ...s,
+            name: s.name.toLowerCase(),
+            content_type: s.content_type?.toLowerCase(),
+          })),
+        ),
+      ),
+      ['name', 'basis_id'],
+    );
 
     if (duplicateAttributeItem.length >= 1) {
       message.error('Attribute item duplicated by its name and content type');
