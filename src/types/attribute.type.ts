@@ -1,5 +1,5 @@
 import { ProductAttributeType } from '@/features/product/types';
-import { SubBasisConversion, SubBasisPreset } from '@/types';
+import { BasisPresetTypeString, SubBasisConversion, SubBasisPreset } from '@/types';
 
 export interface SubAttribute {
   id: string;
@@ -66,14 +66,48 @@ export interface AttributeSubForm {
   description_2?: string;
   content_type?: string;
   activeKey?: string;
-  additional_type?: string;
+  additional_type?: BasisPresetTypeString;
+  sub_group_id?: string;
 }
 export interface AttributeForm {
   id?: string;
   type?: number;
   name: string;
   count: number;
-  subs: AttributeSubForm[];
+  subs: {
+    id?: string;
+    name: string;
+    count: number;
+    subs: AttributeSubForm[];
+  }[];
+}
+
+export interface ICreateAttributeRequest {
+  brand_id: string;
+  name: string;
+  type: number;
+  subs: {
+    name: string;
+    subs: {
+      name: string;
+      basis_id: string;
+      description: string;
+    }[];
+  }[];
+}
+
+export interface IUpdateAttributeRequest {
+  name: string;
+  subs: {
+    id?: string;
+    name: string;
+    subs: {
+      id?: string;
+      name: string;
+      basis_id: string;
+      description: string;
+    }[];
+  }[];
 }
 
 export interface ProductSubAttributes extends SubAttribute {

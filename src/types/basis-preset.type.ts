@@ -39,6 +39,11 @@ export enum BasisPresetType {
   feature,
 }
 
+export enum BasisPresetTypeString {
+  general = 'General Presets',
+  feature = 'Feature Presets',
+}
+
 export interface PresetsValueProp {
   name: string;
   subs: PresetItemValueProp[];

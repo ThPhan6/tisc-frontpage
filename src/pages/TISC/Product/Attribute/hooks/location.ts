@@ -17,18 +17,23 @@ export const useAttributeLocation = () => {
 
   const location = useLocation();
   const ATTRIBUTE_PATHS = [GENERAL_URL_PATH, FEATURE_URL_PATH, SPECIFICATION_URL_PATH].map((el) =>
-    replaceBrandAttributeBrandId(el, param.brandId, param.brandName),
+    replaceBrandAttributeBrandId(el, param.brandId, param.brandName, param?.id),
   );
   const ACTIVE_PATH = ATTRIBUTE_PATHS.find(
     (path) =>
-      replaceBrandAttributeBrandId(location.pathname, param.brandId, param.brandName).indexOf(
-        path,
-      ) >= 0,
+      replaceBrandAttributeBrandId(
+        location.pathname,
+        param.brandId,
+        param.brandName,
+        param?.id,
+      ).indexOf(path) >= 0,
   ) as string;
 
   const attributePathToType = {};
   const _ = map(ATTRIBUTE_PATH_TO_TYPE, (value, key) => {
-    attributePathToType[replaceBrandAttributeBrandId(key, param.brandId, param.brandName)] = value;
+    attributePathToType[
+      replaceBrandAttributeBrandId(key, param.brandId, param.brandName, param?.id)
+    ] = value;
   });
 
   return {
