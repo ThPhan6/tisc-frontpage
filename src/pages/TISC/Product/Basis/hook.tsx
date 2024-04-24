@@ -761,18 +761,17 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           handleDelete={getDeleteFuntional}
           submitButtonStatus={submitButtonStatus.value}
           entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
-          lg={type === ProductBasisFormType.options ? 24 : 12}
+          lg={hasMainSubOption ? 24 : 12}
           span={24}
-          contentClass={type === ProductBasisFormType.options ? styles.mainOptionContent : ''}
+          contentClass={hasMainSubOption ? styles.mainOptionContent : ''}
           contentStyles={{
-            height:
-              type === ProductBasisFormType.presets || type === ProductBasisFormType.options
-                ? 'calc(var(--vh) * 100 - 289px)'
-                : 'calc(var(--vh) * 100 - 250px)',
+            height: hasMainSubOption
+              ? 'calc(var(--vh) * 100 - 289px)'
+              : 'calc(var(--vh) * 100 - 250px)',
           }}
         >
           <FormOptionGroupHeaderContext.Provider value={{ mode, setMode }}>
-            {type === ProductBasisFormType.options || type === ProductBasisFormType.presets ? (
+            {hasMainSubOption ? (
               <FormOptionNameInput
                 hideTitleInput
                 title={getEntryFormTitle(type)}
