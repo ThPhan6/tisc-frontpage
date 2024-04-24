@@ -182,7 +182,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   const tabActive = location.hash.split('#')[1] as PresetTabKey;
 
   // const idBasis = useGetParamId();
-  const params = useParams<BrandAttributeParamProps>();
+  const params = useParams<BrandAttributeParamProps & { groupdId?: string }>();
+  const brandName = params.brandName;
   const brandId = params.brandId;
   const idBasis = params.id;
 
@@ -404,13 +405,16 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    if (!idBasis) {
+    if (
+      (!idBasis && type !== ProductBasisFormType.options) ||
+      (!params.groupdId && type === ProductBasisFormType.options)
+    ) {
       message.error('Cannot update, something went wrong');
       return;
     }
 
     const updateFunction = FORM_CONFIG[type].updateFunction;
-    updateFunction(idBasis, dataSubmit).then((res: any) => {
+    updateFunction((idBasis ?? params.groupdId) as string, dataSubmit).then((res: any) => {
       if (hasMainSubOption) {
         if (res?.id) {
           const oldDdata = cloneDeep(data);
@@ -825,7 +829,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       }
     }
 
-    const handleSubmit = idBasis ? handleUpdate : handleCreate;
+    const handleSubmit =
+      idBasis || type === ProductBasisFormType.options ? handleUpdate : handleCreate;
 
     if (hasMainSubOption) {
       let result: any = {
@@ -846,8 +851,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         };
       }
 
+      /// create option(component)
       if (type === ProductBasisFormType.options && !idBasis) {
-        result = { ...result, brand_id: brandId };
+        result = { ...result, brand_id: brandId, name: '' };
       }
 
       handleSubmit(result);

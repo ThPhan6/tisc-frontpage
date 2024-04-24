@@ -7,11 +7,11 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
+import { deleteBasisOption, getProductBasisOptionPagination, updateBasisOption } from '@/services';
 
 import { BrandAttributeParamProps } from '../../BrandAttribute/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import type { BasisOptionListResponse, SubBasisOption } from '@/types';
+import type { BasisOptionForm, BasisOptionListResponse, SubBasisOption } from '@/types';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
@@ -34,7 +34,7 @@ const colsDataIndex = {
 };
 
 const BasisOptionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(3, [8]);
+  useAutoExpandNestedTableColumn(3, [7]);
 
   const param = useParams<BrandAttributeParamProps>();
 
@@ -48,13 +48,21 @@ const BasisOptionList: React.FC = () => {
   const handleLinkageBasisOption = (id: string) => {
     pushTo(linkagePath.replace(':id', id));
   };
-  const handleDeleteBasisOption = (id: string) => {
+  const handleDeleteBasisOption = (option: SubBasisOption) => {
     confirmDelete(() => {
-      deleteBasisOption(id).then((isSuccess) => {
-        if (isSuccess) {
-          tableRef.current.reload();
-        }
-      });
+      // deleteBasisOption(id).then((isSuccess) => {
+      //   if (isSuccess) {
+      //     tableRef.current.reload();
+      //   }
+      // });
+
+      updateBasisOption(option.id, { ...option, subs: [] } as unknown as BasisOptionForm).then(
+        (isSuccess) => {
+          if (isSuccess) {
+            tableRef.current.reload();
+          }
+        },
+      );
     });
   };
   const getSameColumns = (noBoxShadow?: boolean) => {
@@ -115,6 +123,7 @@ const BasisOptionList: React.FC = () => {
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
       },
+      hidden: true,
     },
     {
       title: colTitle.main,
@@ -155,7 +164,7 @@ const BasisOptionList: React.FC = () => {
               },
               {
                 type: 'deleted',
-                onClick: () => handleDeleteBasisOption(record.id),
+                onClick: () => handleDeleteBasisOption(record),
               },
             ]}
           />
@@ -169,6 +178,7 @@ const BasisOptionList: React.FC = () => {
       title: colTitle.group,
       dataIndex: colsDataIndex.group,
       noBoxShadow: true,
+      hidden: true,
     },
     {
       title: colTitle.main,
@@ -196,6 +206,7 @@ const BasisOptionList: React.FC = () => {
       title: colTitle.group,
       dataIndex: colsDataIndex.group,
       noBoxShadow: true,
+      hidden: true,
     },
     {
       title: colTitle.main,
@@ -225,6 +236,7 @@ const BasisOptionList: React.FC = () => {
       title: colTitle.group,
       dataIndex: colsDataIndex.group,
       noBoxShadow: true,
+      hidden: true,
     },
     {
       title: colTitle.main,
@@ -250,7 +262,7 @@ const BasisOptionList: React.FC = () => {
     <CustomTable
       header={<BranchHeader />}
       title="OPTIONS"
-      columns={setDefaultWidthForEachColumn(MainColumns, 8)}
+      columns={setDefaultWidthForEachColumn(MainColumns, 7)}
       ref={tableRef}
       fetchDataFunc={getProductBasisOptionPagination}
       multiSort={{
@@ -263,15 +275,15 @@ const BasisOptionList: React.FC = () => {
         filter: { brand_id: param.brandId },
       }}
       expandable={GetExpandableTableConfig({
-        columns: setDefaultWidthForEachColumn(MainSubColumns, 8),
+        columns: setDefaultWidthForEachColumn(MainSubColumns, 7),
         childrenColumnName: 'subs',
         level: 2,
         expandable: GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(SubColumns, 8),
+          columns: setDefaultWidthForEachColumn(SubColumns, 7),
           childrenColumnName: 'subs',
           level: 3,
           expandable: GetExpandableTableConfig({
-            columns: setDefaultWidthForEachColumn(ChildColumns, 8),
+            columns: setDefaultWidthForEachColumn(ChildColumns, 7),
             childrenColumnName: 'subs',
             level: 4,
           }),
