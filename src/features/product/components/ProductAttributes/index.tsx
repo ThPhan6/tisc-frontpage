@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { QUERY_KEY } from '@/constants/util';
-import { useParams } from 'umi';
 
 import { useGetQueryFromOriginURL } from '@/helper/hook';
 import { getAllAttribute } from '@/services';
@@ -50,7 +49,7 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
       return;
     }
 
-    getAllAttribute(brandId).then((data) => {
+    getAllAttribute().then((data) => {
       setAttribute(data);
       setTimeout(() => {
         setIsReady(true);

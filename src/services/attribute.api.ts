@@ -118,8 +118,10 @@ export async function deleteAttribute(id: string) {
     });
 }
 
-export async function getAllAttribute() {
-  return request<{ data: ProductAttributeByType }>(`/api/attribute/get-all`, {})
+export async function getAllAttribute(brandId?: string) {
+  const url = brandId ? `/api/attribute/get-all?brand_id=${brandId}` : `/api/attribute/get-all`;
+
+  return request<{ data: ProductAttributeByType }>(url)
     .then((response) => {
       return response.data;
     })

@@ -45,6 +45,9 @@ export interface PopoverProps {
   /// group checkbox list
   groupCheckboxList?: CheckboxValue[];
 
+  /// Currently, only implemented for dropdown checkbox list
+  collapseLevel?: '1' | '2';
+
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];
   dropdownCheckboxTitle?: (data: DropdownCheckboxItem) => string | number | ReactNode;
@@ -118,6 +121,7 @@ const Popover: FC<PopoverProps> = ({
   maskClosable,
   width,
   cancelSaveFooter,
+  collapseLevel,
 }) => {
   const { isMobile } = useScreen();
 
@@ -176,7 +180,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
           combinable={combinableCheckbox}
-          collapseLevel="2"
+          collapseLevel={collapseLevel}
         />
       );
     }

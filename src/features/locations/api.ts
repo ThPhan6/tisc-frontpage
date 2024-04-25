@@ -260,7 +260,6 @@ export async function getRegions() {
 }
 
 export async function getDistributorLocation(productId: string, project_id?: string) {
-  console.log(project_id);
   return request<{ data: DistributorProductMarket[] }>(`/api/distributor/market/${productId}`, {
     method: 'GET',
     // params: { project_id },
