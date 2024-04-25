@@ -29,6 +29,7 @@ export interface BasisOptionListResponseForTable {
   group_id: string;
   group_name: string;
   group_count: number;
+  group_created_at: string;
   master: boolean;
   id: string;
   name: string;
@@ -51,7 +52,12 @@ export interface MainBasisOptionSubForm {
   count: number;
 }
 
-export interface BasisOptionForm extends MainBasisOptionSubForm {}
+export interface BasisOptionForm {
+  id: string;
+  name: string;
+  subs: MainBasisOptionSubForm[];
+  count: number;
+}
 
 export interface ConnectionListResponse {
   from: string;

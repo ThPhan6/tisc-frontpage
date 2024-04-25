@@ -54,8 +54,9 @@ export const PATH = {
 
   // component
   options: '/tisc/products/attributes/:brandName/:brandId/component',
-  createOptions: '/tisc/products/attributes/:brandName/:brandId/component/create',
-  updateOptions: '/tisc/products/attributes/:brandName/:brandId/component/:id',
+  createOptions:
+    '/tisc/products/attributes/:brandName/:brandId/component/create/:groupName/:groupId',
+  updateOptions: '/tisc/products/attributes/:brandName/:brandId/component/:id/sub/:subId',
   LinkageDataSet: '/tisc/products/attributes/:brandName/:brandId/component/:id/linkage',
 
   // brand attributes

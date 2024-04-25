@@ -70,7 +70,7 @@ export async function getProductBasisOptionPaginationForTable(
     .then((response: CategoryPaginationResponse) => {
       const { basis_options, pagination, summary } = response.data;
 
-      const groupBasisOptions = flatMap(
+      const groupBasisOptions: BasisOptionListResponseForTable[] = flatMap(
         basis_options.map((grp) =>
           grp.subs.map((sub) => ({
             ...sub,
@@ -78,6 +78,7 @@ export async function getProductBasisOptionPaginationForTable(
             group_name: grp.name,
             group_count: grp.count,
             master: !!grp?.master,
+            group_created_at: grp.created_at,
           })),
         ),
       );
@@ -183,15 +184,17 @@ export async function updateBasisOption(
       return res.data;
     })
     .catch((error) => {
-      message.error(
-        error?.data?.message || type === 'update'
+      console.log('error', error);
+
+      message.error(error?.data?.message ?? error?.message);
+
+      /*  ?? type === 'update'
           ? MESSAGE_NOTIFICATION.UPDATE_OPTION_ERROR
             ? type === 'create'
             : MESSAGE_NOTIFICATION.CREATE_OPTION_ERROR
           : type === 'delete'
           ? MESSAGE_NOTIFICATION.DELETE_OPTION_ERROR
-          : 'Error',
-      );
+          : 'Error', */
       hidePageLoading();
       return {} as MainBasisOptionSubForm;
     });

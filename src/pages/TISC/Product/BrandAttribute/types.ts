@@ -4,4 +4,5 @@ export interface BrandAttributeParamProps {
   id?: string;
   groupId?: string;
   groupName?: string;
+  subId?: string;
 }
