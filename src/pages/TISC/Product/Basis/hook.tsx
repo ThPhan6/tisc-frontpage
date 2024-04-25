@@ -102,6 +102,13 @@ const getAttributeValueDefault = (subs: AttributeForm[]) => {
   };
 };
 
+const removeOtherSubOptions = (data: BasisOptionForm, id: string) => {
+  return {
+    ...data,
+    subs: [data.subs.find((el) => el.id === id)],
+  };
+};
+
 export enum ProductBasisFormType {
   conversions = 'conversions',
   presets = 'presets',
@@ -274,6 +281,13 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
           let newData: any = res;
           if (type === ProductBasisFormType.attributes) {
             newData = getAttributeValueDefault([res as AttributeForm]);
+          }
+
+          /// cut other subs
+          if (type === ProductBasisFormType.options) {
+            setComponentData(res as any);
+
+            newData = removeOtherSubOptions(res as unknown as BasisOptionForm, subId as string);
           }
 
           setData(newData);
@@ -490,14 +504,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
             newData = getAttributeValueDefault([res as AttributeForm]);
           }
 
-          if (isCreateComponent) {
-            submitButtonStatus.setValue(true);
-            setTimeout(() => {
-              submitButtonStatus.setValue(false);
-              pushTo(FORM_CONFIG[type].path);
-            }, 1000);
+          if (type === ProductBasisFormType.options) {
+            if (isCreateComponent) {
+              submitButtonStatus.setValue(true);
+              setTimeout(() => {
+                submitButtonStatus.setValue(false);
+                pushTo(FORM_CONFIG[type].path);
+              }, 1000);
 
-            return;
+              return;
+            }
+
+            newData = removeOtherSubOptions(newData, subId as string);
           }
 
           setData(newData);
@@ -887,12 +905,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         };
       }
 
-      console.log('result', result);
-
       if (type === ProductBasisFormType.options) {
         if (isCreateComponent) {
-          const newCompSubs = subComponentData.concat(result.subs);
-          const subDup = findDuplicateBy(newCompSubs, ['name']);
+          const newResultSubs = subComponentData.concat(result.subs);
+          const subDup = findDuplicateBy(newResultSubs, ['name']);
 
           if (subDup.length >= 1) {
             message.error('Group Name existed');
@@ -904,9 +920,28 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
             brand_id: brandId,
             name: groupName,
             id: groupId,
-            subs: newCompSubs,
+            subs: newResultSubs,
           };
         } else {
+          const resultSubIds = result.subs.map((el: any) => el?.id).filter(Boolean);
+
+          const subIdx = subComponentData.findIndex((el) => resultSubIds.includes(el.id));
+
+          const newCompSubs = [...subComponentData];
+          newCompSubs.splice(subIdx, 1);
+          const newResultSubs = newCompSubs.concat(result.subs);
+
+          const subDup = findDuplicateBy(newResultSubs, ['name']);
+
+          if (subDup.length >= 1) {
+            message.error('Group Name existed');
+            return;
+          }
+
+          result = {
+            ...result,
+            subs: newResultSubs,
+          };
         }
       }
 
