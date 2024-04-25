@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { QUERY_KEY } from '@/constants/util';
+import { useParams } from 'umi';
 
 import { useGetQueryFromOriginURL } from '@/helper/hook';
 import { getAllAttribute } from '@/services';
 
 import { ProductInfoTab } from './types';
 import { TabItem } from '@/components/Tabs/types';
-import store from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 import { closeProductFooterTab } from '@/reducers/active';
 import { ProductAttributeByType } from '@/types';
 
@@ -35,6 +36,8 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
 
   const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
 
+  const { brand_id: brandId } = useAppSelector((s) => s.product.details);
+
   const LIST_TAB: TabItem[] = [
     { tab: 'GENERAL', key: 'general', disable: !!projectProductId },
     { tab: 'FEATURE', key: 'feature', disable: !!projectProductId },
@@ -43,13 +46,17 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
   ];
 
   useEffect(() => {
-    getAllAttribute().then((data) => {
+    if (!brandId) {
+      return;
+    }
+
+    getAllAttribute(brandId).then((data) => {
       setAttribute(data);
       setTimeout(() => {
         setIsReady(true);
       }, 200);
     });
-  }, []);
+  }, [brandId]);
 
   if (!isReady) {
     return null;

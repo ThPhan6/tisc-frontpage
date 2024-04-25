@@ -22,6 +22,7 @@ import type {
 } from '@/types';
 
 import { LinkedOption } from './../pages/TISC/Product/Basis/Option/store';
+import { setComponentData } from '@/pages/TISC/Product/Basis/Option/componentReducer';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -68,18 +69,23 @@ export async function getProductBasisOptionPaginationForTable(
   })
     .then((response: CategoryPaginationResponse) => {
       const { basis_options, pagination, summary } = response.data;
-      callback({
-        data: flatMap(
-          basis_options.map((grp) =>
-            grp.subs.map((sub) => ({
-              ...sub,
-              group_id: grp.id,
-              group_name: grp.name,
-              group_count: grp.count,
-              master: !!grp?.master,
-            })),
-          ),
+
+      const groupBasisOptions = flatMap(
+        basis_options.map((grp) =>
+          grp.subs.map((sub) => ({
+            ...sub,
+            group_id: grp.id,
+            group_name: grp.name,
+            group_count: grp.count,
+            master: !!grp?.master,
+          })),
         ),
+      );
+
+      store.dispatch(setComponentData(basis_options));
+
+      callback({
+        data: groupBasisOptions,
         pagination: {
           current: pagination.page,
           pageSize: pagination.page_size,

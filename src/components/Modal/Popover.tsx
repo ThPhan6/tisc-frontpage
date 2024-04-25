@@ -176,6 +176,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
           combinable={combinableCheckbox}
+          collapseLevel="2"
         />
       );
     }
