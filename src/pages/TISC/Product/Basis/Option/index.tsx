@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { useParams } from 'umi';
 
@@ -10,11 +10,16 @@ import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { getProductBasisOptionPaginationForTable, updateBasisOption } from '@/services';
 
 import { BrandAttributeParamProps } from '../../BrandAttribute/types';
-import type { TableColumnItem } from '@/components/Table/types';
+import type {
+  DataTableResponse,
+  PaginationRequestParams,
+  TableColumnItem,
+} from '@/components/Table/types';
 import type {
   BasisOptionForm,
   BasisOptionListResponse,
   BasisOptionListResponseForTable,
+  MainBasisOptionSubForm,
   SubBasisOption,
 } from '@/types';
 
@@ -45,27 +50,43 @@ const BasisOptionList: React.FC = () => {
 
   const tableRef = useRef<any>();
 
+  const [data, setData] = useState<BasisOptionListResponseForTable[]>([]);
+  const subs = data.map((el) => ({
+    id: el.id,
+    name: el.name,
+    count: el.count,
+    subs: el.subs,
+  })) as unknown as MainBasisOptionSubForm[];
+
   const { componentUpdatePath, linkagePath } = useCheckBrandAttributePath();
 
-  const handleUpdateBasisOption = (id: string) => {
-    pushTo(componentUpdatePath.replace(':id', id));
+  const handleGetData = (
+    params: PaginationRequestParams,
+    callback: (newData: DataTableResponse<BasisOptionListResponseForTable[]>) => void,
+  ) => {
+    getProductBasisOptionPaginationForTable(params, (res) => {
+      setData(res.data);
+      callback(res);
+    });
+  };
+
+  const handleUpdateBasisOption = (group: BasisOptionListResponseForTable) => {
+    pushTo(componentUpdatePath.replace(':id', group.group_id).replace(':subId', group.id));
   };
   const handleLinkageBasisOption = (id: string) => {
     pushTo(linkagePath.replace(':id', id));
   };
   const handleDeleteBasisOption = (group: BasisOptionListResponseForTable) => {
     confirmDelete(() => {
-      // deleteBasisOption(id).then((isSuccess) => {
-      //   if (isSuccess) {
-      //     tableRef.current.reload();
-      //   }
-      // });
+      const subIdx = subs.findIndex((el) => el.id === group.id);
+      const newSubs = [...subs];
+      newSubs.splice(subIdx, 1);
 
       const payload: BasisOptionForm = {
         id: group.group_id,
-        name: group.name,
-        count: group.count,
-        subs: [],
+        name: group.group_name,
+        count: newSubs.length,
+        subs: newSubs,
       };
 
       updateBasisOption(payload.id, payload, 'delete').then((isSuccess) => {
@@ -159,7 +180,7 @@ const BasisOptionList: React.FC = () => {
             actionItems={[
               {
                 type: 'updated',
-                onClick: () => handleUpdateBasisOption(record.group_id),
+                onClick: () => handleUpdateBasisOption(record),
               },
               {
                 type: 'linkage',
@@ -223,11 +244,11 @@ const BasisOptionList: React.FC = () => {
 
   return (
     <CustomTable
-      header={<BranchHeader />}
+      header={<BranchHeader groupId={data?.[0]?.group_id} groupName={data?.[0]?.group_name} />}
       title="OPTIONS"
       columns={setDefaultWidthForEachColumn(MainSubColumns, 7)}
       ref={tableRef}
-      fetchDataFunc={getProductBasisOptionPaginationForTable}
+      fetchDataFunc={handleGetData}
       multiSort={{
         // colsDataIndex is sort keys
         name: 'group_order',
