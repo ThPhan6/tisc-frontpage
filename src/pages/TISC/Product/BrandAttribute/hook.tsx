@@ -185,3 +185,48 @@ export const useCheckBranchAttributeTab = () => {
 
   return { activeTab, activePath, currentTab };
 };
+
+export const useCheckAttributeForm = () => {
+  const location = useLocation();
+  const param = useParams<BrandAttributeParamProps>();
+  const pathName = replaceBrandAttributeBrandId(
+    location.pathname,
+    param.brandId,
+    param.brandName,
+    param?.id,
+  );
+
+  const {
+    ///
+    generalAttributePath,
+    generalAttributeCreatePath,
+    generalAttributeUpdatePath,
+    ///
+    featureAttributePath,
+    featureAttributeCreatePath,
+    featureAttributeUpdatePath,
+    ///
+    specificationAttributePath,
+    specificationAttributeCreatePath,
+    specificationAttributeUpdatePath,
+  } = useCheckBrandAttributePath();
+
+  const isAttributeGeneral =
+    pathName === generalAttributePath ||
+    pathName === generalAttributeCreatePath ||
+    pathName === generalAttributeUpdatePath;
+
+  const isAttributeFeature =
+    pathName === featureAttributePath ||
+    pathName === featureAttributeCreatePath ||
+    pathName === featureAttributeUpdatePath;
+
+  const isAttributeSpecification =
+    pathName === specificationAttributePath ||
+    pathName === specificationAttributeCreatePath ||
+    pathName === specificationAttributeUpdatePath;
+
+  const isAttribute = isAttributeGeneral || isAttributeFeature || isAttributeSpecification;
+
+  return { isAttributeGeneral, isAttributeFeature, isAttributeSpecification, isAttribute };
+};

@@ -10,7 +10,7 @@ import {
   FormOptionGroupHeaderContext,
   useCheckBasicOptionForm,
 } from '../../../hook';
-import { useCheckAttributeForm } from '@/pages/TISC/Product/Attribute/components/hook';
+import { useCheckAttributeForm } from '@/pages/TISC/Product/BrandAttribute/hook';
 import { cloneDeep, uniqueId } from 'lodash';
 
 import { BasisOptionSubForm } from '@/types';

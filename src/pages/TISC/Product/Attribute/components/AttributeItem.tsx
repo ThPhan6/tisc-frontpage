@@ -3,6 +3,7 @@ import { FC, useContext } from 'react';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
+import { useCheckBranchAttributeTab } from '../../BrandAttribute/hook';
 import { lowerCase, startCase } from 'lodash';
 
 import { AttributeSubForm, EAttributeContentType } from '@/types';
@@ -10,6 +11,7 @@ import { AttributeSubForm, EAttributeContentType } from '@/types';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
+import { BranchTabKey } from '../../BrandAttribute/BranchHeader';
 import styles from '../styles/attributeItem.less';
 import { AttributeEntryFormContext } from './AttributeEntryForm';
 
@@ -20,6 +22,8 @@ interface AttributeItemProps {
 
 export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }) => {
   const { setContentTypeSelected, setOpenContentTypeModal } = useContext(AttributeEntryFormContext);
+
+  const { currentTab } = useCheckBranchAttributeTab();
 
   const handleSelectContentType = () => {
     setContentTypeSelected?.(item);
@@ -36,7 +40,11 @@ export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }
     }
 
     if (item.content_type?.toLowerCase() === EAttributeContentType.presets) {
-      return startCase(item.additional_type);
+      if (currentTab === BranchTabKey.general) {
+        return startCase('General Presets');
+      }
+
+      return startCase('Feature Presets');
     }
 
     return startCase(item.content_type);

@@ -10,7 +10,7 @@ import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove.svg';
 import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { ReactComponent as DragIcon } from '@/assets/icons/drag-icon.svg';
 
-import { useCheckAttributeForm } from '../../../Attribute/components/hook';
+import { useCheckAttributeForm } from '../../../BrandAttribute/hook';
 import { FormGroupContext, FormOptionGroupHeaderContext } from '../../hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import { cloneDeep, uniqueId } from 'lodash';
