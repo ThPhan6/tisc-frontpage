@@ -9,6 +9,7 @@ import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.sv
 
 import { confirmModal } from '@/helper/common';
 import { sortObjectArray } from '@/helper/utils';
+import { flatMap } from 'lodash';
 
 import {
   resetAutoStepState,
@@ -41,8 +42,10 @@ export const AutoStep: FC<AutoStepProps> = ({
   visible,
   setVisible,
   attributeGroup,
-  attributes,
+  attributes: SubAttributes,
 }) => {
+  const attributes = flatMap(SubAttributes.map((el) => el.subs));
+
   const [disabledCreateStep, setDisabledCreateStep] = useState<boolean>(false);
 
   const linkedOptionData = useAppSelector((state) => state.autoStep.linkedOptionData);
@@ -80,6 +83,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       }
 
       el.subs.forEach((sub) => {
+        if (!sub?.basis) {
+          console.log(sub);
+          return;
+        }
+
         if (
           currentActiveSpecAttributeGroupId &&
           sub.id === subOptionSelected?.[currentActiveSpecAttributeGroupId] &&
@@ -259,7 +267,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     >
       {step === 'pre' ? (
         <FirstStep
-          data={attributes}
+          data={SubAttributes}
           selected={
             subOptionSelected?.[currentActiveSpecAttributeGroupId || ''] ||
             defaultSelected?.id ||

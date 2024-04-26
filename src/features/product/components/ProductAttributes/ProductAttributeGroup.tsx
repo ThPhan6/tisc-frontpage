@@ -45,13 +45,13 @@ import {
   LinkedOptionProps,
   OptionQuantityProps,
 } from '../../types/autoStep';
-import { ActiveKeyType } from './types';
 import store, { useAppSelector } from '@/reducers';
 import {
   closeDimensionWeightGroup,
   closeProductFooterTab,
   closeProductInformationGroup,
 } from '@/reducers/active';
+import { ActiveKeyType } from '@/types';
 import { SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';

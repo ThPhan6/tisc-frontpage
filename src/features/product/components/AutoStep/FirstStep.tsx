@@ -5,9 +5,11 @@ import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-
 import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
 import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
+import { flatMap } from 'lodash';
+
 import { setSubOptionSelected } from '../../reducers';
 import store, { useAppSelector } from '@/reducers';
-import { ProductAttributes } from '@/types';
+import { ProductAttributes, ProductMainSubAttributes } from '@/types';
 
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import { BodyText } from '@/components/Typography';
@@ -66,25 +68,30 @@ export const FirstStep: FC<FirstStepProps> = ({ data, selected }) => {
             select option dataset
           </BodyText>
           <DropdownRadioList
-            data={data?.map((el) => ({
-              label: el.name,
-              options: el.subs.map((item) => ({
-                label: (
-                  <div className="flex-start">
-                    <BodyText level={5} fontFamily="Roboto">
-                      {item.name}
-                    </BodyText>
-                    <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: 12 }}>
-                      {`${item.basis.name} (${item.basis.subs?.length ?? 0})`}
-                    </BodyText>
-                  </div>
+            data={data?.map((item) => ({
+              label: item.name,
+              options: flatMap(
+                item.subs.map((sub) =>
+                  sub.subs.map((el) => ({
+                    label: (
+                      <div className="flex-start">
+                        <BodyText level={5} fontFamily="Roboto">
+                          {el.name}
+                        </BodyText>
+                        <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: 12 }}>
+                          {`${el.basis.name} (${el.basis.subs?.length ?? 0})`}
+                        </BodyText>
+                      </div>
+                    ),
+                    value: item.id,
+                  })),
                 ),
-                value: item.id,
-              })),
+              ),
             }))}
             renderTitle={(el) => el.label}
             selected={{ label: '', value: selected }}
             chosenItem={{ label: '', value: selected }}
+            collapseLevel="2"
             onChange={(optSelected) => {
               if (currentActiveSpecAttributeGroupId) {
                 store.dispatch(

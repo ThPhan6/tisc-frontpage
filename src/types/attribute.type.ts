@@ -9,6 +9,7 @@ export interface SubAttribute {
   description_1: string;
   description_2: string;
   content_type: string;
+  sub_group_id: string;
 }
 
 export interface AttributeListResponse {

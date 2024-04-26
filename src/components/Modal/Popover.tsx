@@ -10,6 +10,7 @@ import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
+import { DropdownRadioItem } from '../CustomRadio/types';
 import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -18,7 +19,6 @@ import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
-import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 import { MainTitle } from '@/components/Typography';
@@ -44,6 +44,9 @@ export interface PopoverProps {
 
   /// group checkbox list
   groupCheckboxList?: CheckboxValue[];
+
+  /// Currently, only implemented for dropdown checkbox list and drop down radio list
+  collapseLevel?: '1' | '2';
 
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];
@@ -151,6 +154,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropDownRadioTitle}
           onChange={setCurrentValue}
           radioDisabled={disabledDropDownRadio}
+          collapseLevel={collapseLevel}
         />
       );
     }

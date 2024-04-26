@@ -5,7 +5,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
-import { cloneDeep, upperCase } from 'lodash';
+import { cloneDeep, flatMap, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
@@ -36,7 +36,9 @@ interface SelectAttributesToGroupRowProps {
 }
 
 export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = memo(
-  ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
+  ({ activeKey, groupItem, attributes: subAttributes, groupIndex, productId }) => {
+    const attributes = flatMap(subAttributes.map((el) => el.subs));
+
     const [visible, setVisible] = useState(false);
 
     // attributes
@@ -227,7 +229,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
         {groupItem.type === SpecificationType.autoStep ? (
           <AutoStep
             attributeGroup={attributeGroup}
-            attributes={attributes}
+            attributes={subAttributes}
             visible={visible}
             setVisible={setVisible}
           />
@@ -238,9 +240,22 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             setVisible={setVisible}
             dropdownCheckboxList={attributes.map((item) => ({
               name: item.name,
-              options: item.subs.map((sub) => ({
-                label: renderCheckBoxLabel(sub),
-                value: sub.id,
+              count: item.subs.length,
+              options: flatMap(
+                item.subs.map((sub) =>
+                  sub.subs.map((el) => ({
+                    label: renderCheckBoxLabel(el),
+                    value: el.id,
+                  })),
+                ),
+              ),
+              subs: item.subs.map((el) => ({
+                name: el.name,
+                count: el.subs.length,
+                options: el.subs.map((sub) => ({
+                  label: renderCheckBoxLabel(sub),
+                  value: sub.id,
+                })),
               })),
             }))}
             dropdownCheckboxTitle={(data) => data.name}
