@@ -27,3 +27,28 @@ export interface CustomCheckboxProps {
   additionalSelected?: string[];
   onChangeAdditionalSelected?: (value: string, option?: any, action?: 'add' | 'remove') => void;
 }
+
+export interface DropdownCheckboxItem {
+  [key: string]: any;
+  margin?: 8 | 12;
+  options: CheckboxValue[];
+}
+export interface DropdownCheckboxListProps {
+  selected?: CheckboxValue[];
+  chosenItem?: CheckboxValue[];
+  data: DropdownCheckboxItem[];
+  renderTitle?: (data: DropdownCheckboxItem) => string | number | React.ReactNode;
+  onChange?: (value: CheckboxValue[]) => void;
+  onOneChange?: (e: any | { isSelectedAll: boolean; optionIds: string[] }) => void;
+  noCollapse?: boolean;
+  combinable?: boolean;
+  showCount?: boolean;
+  customClass?: string;
+  canActiveMultiKey?: boolean;
+  isSelectAll?: boolean;
+  forceEnableCollapse?: boolean;
+  showCollapseIcon?: boolean;
+  additionalSelected?: string[];
+  onChangeAdditionalSelected?: (value: string) => void;
+  collapseLevel?: '1' | '2';
+}

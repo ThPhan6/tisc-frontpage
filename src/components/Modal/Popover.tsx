@@ -9,16 +9,15 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
-import { CheckboxValue } from '../CustomCheckbox/types';
+import { CheckboxValue, DropdownCheckboxItem } from '../CustomCheckbox/types';
+import { DropdownRadioItem } from '../CustomRadio/types';
 import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
-import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
-import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 import { MainTitle } from '@/components/Typography';
@@ -45,7 +44,7 @@ export interface PopoverProps {
   /// group checkbox list
   groupCheckboxList?: CheckboxValue[];
 
-  /// Currently, only implemented for dropdown checkbox list
+  /// Currently, only implemented for dropdown checkbox list and drop down radio list
   collapseLevel?: '1' | '2';
 
   /// dropdown checkbox list
@@ -144,7 +143,7 @@ const Popover: FC<PopoverProps> = ({
   const renderChildren = () => {
     /// for dropdown radio list
     if (dropdownRadioList) {
-      if (dropdownRadioList.length == 1 && isEmpty(dropdownRadioList[0].options)) {
+      if (dropdownRadioList.length <= 1 && isEmpty(dropdownRadioList?.[0]?.options)) {
         return renderEmptyData();
       }
       return (
@@ -155,6 +154,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropDownRadioTitle}
           onChange={setCurrentValue}
           radioDisabled={disabledDropDownRadio}
+          collapseLevel={collapseLevel}
         />
       );
     }
@@ -169,7 +169,7 @@ const Popover: FC<PopoverProps> = ({
     }
     /// drodown checkbox list
     if (dropdownCheckboxList) {
-      if (dropdownCheckboxList.length == 1 && isEmpty(dropdownCheckboxList[0].options)) {
+      if (dropdownCheckboxList.length <= 1 && isEmpty(dropdownCheckboxList?.[0]?.options)) {
         return renderEmptyData();
       }
       return (

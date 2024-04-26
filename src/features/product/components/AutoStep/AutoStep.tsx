@@ -80,6 +80,11 @@ export const AutoStep: FC<AutoStepProps> = ({
       }
 
       el.subs.forEach((sub) => {
+        if (!sub?.basis) {
+          console.log(sub);
+          return;
+        }
+
         if (
           currentActiveSpecAttributeGroupId &&
           sub.id === subOptionSelected?.[currentActiveSpecAttributeGroupId] &&
@@ -197,7 +202,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     <CustomModal
       title={
         <MainTitle level={3} style={{ textTransform: 'uppercase' }}>
-          Auto-Steps
+          Create Steps
         </MainTitle>
       }
       secondaryModal
@@ -259,7 +264,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     >
       {step === 'pre' ? (
         <FirstStep
-          data={attributes}
+          attributeGroup={attributeGroup}
           selected={
             subOptionSelected?.[currentActiveSpecAttributeGroupId || ''] ||
             defaultSelected?.id ||

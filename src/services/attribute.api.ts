@@ -8,6 +8,8 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import { setActualAttributeList } from '@/features/product/reducers';
+import store from '@/reducers';
 import type {
   AttributeContentType,
   AttributeForm,
@@ -15,7 +17,9 @@ import type {
   ICreateAttributeRequest,
   IUpdateAttributeRequest,
   ProductAttributeByType,
+  ProductAttributeWithSubAdditionByType,
 } from '@/types';
+import { EGetAllAttributeType } from '@/types';
 
 import { hidePageLoading } from '@/features/loading/loading';
 
@@ -118,11 +122,19 @@ export async function deleteAttribute(id: string) {
     });
 }
 
-export async function getAllAttribute(brandId?: string) {
-  const url = brandId ? `/api/attribute/get-all?brand_id=${brandId}` : `/api/attribute/get-all`;
+export async function getAllAttribute(type: EGetAllAttributeType, brandId?: string) {
+  const url = brandId
+    ? `/api/attribute/get-all?brand_id=${brandId}&add_sub=${type === EGetAllAttributeType.ADD_SUB}`
+    : `/api/attribute/get-all?add_sub=${type === EGetAllAttributeType.ADD_SUB}`;
 
-  return request<{ data: ProductAttributeByType }>(url)
+  return request<{ data: ProductAttributeWithSubAdditionByType | ProductAttributeByType }>(url)
     .then((response) => {
+      if (brandId) {
+        store.dispatch(
+          setActualAttributeList(response.data as ProductAttributeWithSubAdditionByType),
+        );
+      }
+
       return response.data;
     })
     .catch((error) => {
@@ -131,6 +143,6 @@ export async function getAllAttribute(brandId?: string) {
         general: [],
         feature: [],
         specification: [],
-      } as ProductAttributeByType;
+      } as ProductAttributeWithSubAdditionByType;
     });
 }
