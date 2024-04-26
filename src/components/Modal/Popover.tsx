@@ -45,6 +45,9 @@ export interface PopoverProps {
   /// group checkbox list
   groupCheckboxList?: CheckboxValue[];
 
+  /// Currently, only implemented for dropdown checkbox list
+  collapseLevel?: '1' | '2';
+
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];
   dropdownCheckboxTitle?: (data: DropdownCheckboxItem) => string | number | ReactNode;
@@ -118,6 +121,7 @@ const Popover: FC<PopoverProps> = ({
   maskClosable,
   width,
   cancelSaveFooter,
+  collapseLevel,
 }) => {
   const { isMobile } = useScreen();
 
@@ -176,6 +180,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
           combinable={combinableCheckbox}
+          collapseLevel={collapseLevel}
         />
       );
     }
@@ -342,7 +347,7 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%', textAlign: titlePosition === 'center' ? 'center' : 'left' }}
+            style={{ maxWidth: '95%' }}
           >
             {title}
           </MainTitle>
@@ -354,7 +359,9 @@ const Popover: FC<PopoverProps> = ({
         width={width ? width : 576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
-        className={`${styles.customPopover} ${className ?? ''}`}
+        className={`${styles.customPopover} ${className ?? ''} ${
+          titlePosition === 'center' ? styles.titlePositionCenter : ''
+        }`}
       >
         {extraTopAction}
         {renderChildren()}

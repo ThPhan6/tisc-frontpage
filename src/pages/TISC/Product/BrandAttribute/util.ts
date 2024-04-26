@@ -3,7 +3,17 @@ export const replaceBrandAttributeBrandId = (
   brandId: string,
   name: string,
   id?: string,
-) =>
-  id
-    ? path.replace(':brandId', brandId).replace(':brandName', name).replace(':id', id)
-    : path.replace(':brandId', brandId).replace(':brandName', name);
+  groupId?: string,
+  groupName?: string,
+  subId?: string,
+) => {
+  const url = path.replace(':brandId', brandId).replace(':brandName', name);
+
+  return subId
+    ? url.replace(':subId', subId)
+    : groupId && groupName
+    ? url.replace(':groupName', groupName).replace(':groupId', groupId)
+    : id
+    ? url.replace(':id', id)
+    : url;
+};

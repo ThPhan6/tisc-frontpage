@@ -13,6 +13,7 @@ import { linkageReducer } from './../pages/TISC/Product/Basis/Option/store';
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 import { quotationReducer } from '@/pages/LandingPage/quotionReducer';
+import { componentReducer } from '@/pages/TISC/Product/Basis/Option/componentReducer';
 
 import { activeReducer } from './active';
 import { modalReducer } from './modal';
@@ -37,6 +38,7 @@ const reducers = combineReducers({
   quotation: quotationReducer,
   linkage: linkageReducer,
   autoStep: autoStepReducer,
+  component: componentReducer,
 });
 
 const persistConfig = {

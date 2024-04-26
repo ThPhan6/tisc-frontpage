@@ -7,10 +7,14 @@ import { message } from 'antd';
 import { history, useLocation, useParams } from 'umi';
 
 import { useAttributeLocation } from '../Attribute/hooks/location';
-import { useCheckBranchAttributeTab } from '../BrandAttribute/hook';
+import {
+  useBrandAttributeParam,
+  useCheckBranchAttributeTab,
+  useCheckBrandAttributePath,
+} from '../BrandAttribute/hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { checkNil, findDuplicateBy, uniqueArrayBy } from '@/helper/utils';
+import { checkNil, findDuplicateBy } from '@/helper/utils';
 import {
   createAttribute,
   createConversionMiddleware,
@@ -98,6 +102,13 @@ const getAttributeValueDefault = (subs: AttributeForm[]) => {
   };
 };
 
+const removeOtherSubOptions = (data: BasisOptionForm, id: string) => {
+  return {
+    ...data,
+    subs: [data.subs.find((el) => el.id === id)],
+  };
+};
+
 export enum ProductBasisFormType {
   conversions = 'conversions',
   presets = 'presets',
@@ -110,11 +121,7 @@ const getEntryFormTitle = (type: ProductBasisFormType) => {
     return 'Conversion Group';
   }
 
-  if (type === ProductBasisFormType.attributes) {
-    return 'Attribute Configuration';
-  }
-
-  return type === ProductBasisFormType.presets ? 'Preset Group' : 'Components Configuration ';
+  return type === ProductBasisFormType.presets ? 'Group Name' : 'Components Configuration';
 };
 
 const getSubItemValue = (valueItem: SubBasisPreset | SubBasisOption) => ({
@@ -185,13 +192,13 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   const location = useLocation();
   const tabActive = location.hash.split('#')[1] as PresetTabKey;
 
-  // const idBasis = useGetParamId();
-  const params = useParams<BrandAttributeParamProps>();
-  const brandId = params.brandId;
-  const idBasis = params.id;
+  const { brandName, brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
 
   const { activePath } = useCheckBranchAttributeTab();
   const { attributeLocation } = useAttributeLocation();
+  const { componentCreatePath } = useCheckBrandAttributePath();
+
+  const isCreateComponent = location.pathname === componentCreatePath && !idBasis;
 
   const submitButtonStatus = useBoolean(false);
 
@@ -200,6 +207,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
   /// to set collapse for main, sub option content
   const [collapse, setCollapse] = useState<DynamicObjectProps>({});
+
+  const [componentData, setComponentData] = useState<BasisOptionForm>();
+  const subComponentData = componentData?.subs ?? [];
 
   const [data, setData] = useState<{ name: string; count?: number; subs: any[] }>({
     name: '',
@@ -273,6 +283,13 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
             newData = getAttributeValueDefault([res as AttributeForm]);
           }
 
+          /// cut other subs
+          if (type === ProductBasisFormType.options) {
+            setComponentData(res as any);
+
+            newData = removeOtherSubOptions(res as unknown as BasisOptionForm, subId as string);
+          }
+
           setData(newData);
         }
       });
@@ -283,8 +300,22 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     /// auto create 1 main sub attribute
     if (type === ProductBasisFormType.attributes) {
       handleOnClickAddIcon();
+      return;
     }
-  }, []);
+
+    if (isCreateComponent) {
+      if (!groupId) {
+        message.error('Group not found');
+        return;
+      }
+
+      FORM_CONFIG[type].getOneFunction(groupId).then((res) => {
+        setComponentData(res as any);
+      });
+
+      return;
+    }
+  }, [idBasis]);
 
   /// update data when select content type of attribute configuration
   useEffect(() => {
@@ -408,13 +439,22 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    if (!idBasis) {
+    if ((!idBasis && !isCreateComponent) || (isCreateComponent && !groupId)) {
       message.error('Cannot update, something went wrong');
       return;
     }
 
     const updateFunction = FORM_CONFIG[type].updateFunction;
-    updateFunction(idBasis, dataSubmit).then((res: any) => {
+    const updateFunctionExcute =
+      type === ProductBasisFormType.options
+        ? updateFunction(
+            idBasis ? idBasis : (groupId as string),
+            dataSubmit,
+            idBasis ? 'update' : 'create',
+          )
+        : updateFunction(idBasis as string, dataSubmit);
+
+    updateFunctionExcute.then((res: any) => {
       if (hasMainSubOption) {
         if (res?.id) {
           const oldDdata = cloneDeep(data);
@@ -462,6 +502,20 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
           let newData = res;
           if (type === ProductBasisFormType.attributes) {
             newData = getAttributeValueDefault([res as AttributeForm]);
+          }
+
+          if (type === ProductBasisFormType.options) {
+            if (isCreateComponent) {
+              submitButtonStatus.setValue(true);
+              setTimeout(() => {
+                submitButtonStatus.setValue(false);
+                pushTo(FORM_CONFIG[type].path);
+              }, 1000);
+
+              return;
+            }
+
+            newData = removeOtherSubOptions(newData, subId as string);
           }
 
           setData(newData);
@@ -628,7 +682,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     let hasSubOptions = true;
     let hasSubItems = true;
 
-    if (!data.name) {
+    if (!data.name && type !== ProductBasisFormType.options) {
       message.error('Group name is required');
       return;
     }
@@ -829,7 +883,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       }
     }
 
-    const handleSubmit = idBasis ? handleUpdate : handleCreate;
+    const handleSubmit =
+      idBasis || type === ProductBasisFormType.options ? handleUpdate : handleCreate;
 
     if (hasMainSubOption) {
       let result: any = {
@@ -848,6 +903,46 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
               ? BasisPresetType.general
               : BasisPresetType.feature,
         };
+      }
+
+      if (type === ProductBasisFormType.options) {
+        if (isCreateComponent) {
+          const newResultSubs = subComponentData.concat(result.subs);
+          const subDup = findDuplicateBy(newResultSubs, ['name']);
+
+          if (subDup.length >= 1) {
+            message.error('Group Name existed');
+            return;
+          }
+
+          result = {
+            ...result,
+            brand_id: brandId,
+            name: groupName,
+            id: groupId,
+            subs: newResultSubs,
+          };
+        } else {
+          const resultSubIds = result.subs.map((el: any) => el?.id).filter(Boolean);
+
+          const subIdx = subComponentData.findIndex((el) => resultSubIds.includes(el.id));
+
+          const newCompSubs = [...subComponentData];
+          newCompSubs.splice(subIdx, 1);
+          const newResultSubs = newCompSubs.concat(result.subs);
+
+          const subDup = findDuplicateBy(newResultSubs, ['name']);
+
+          if (subDup.length >= 1) {
+            message.error('Group Name existed');
+            return;
+          }
+
+          result = {
+            ...result,
+            subs: newResultSubs,
+          };
+        }
       }
 
       handleSubmit(result);

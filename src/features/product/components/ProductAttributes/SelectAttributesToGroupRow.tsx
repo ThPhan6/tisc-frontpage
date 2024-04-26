@@ -5,7 +5,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
-import { cloneDeep, upperCase } from 'lodash';
+import { cloneDeep, flatMap, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
@@ -36,7 +36,8 @@ interface SelectAttributesToGroupRowProps {
 }
 
 export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = memo(
-  ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
+  ({ activeKey, groupItem, attributes: SubAttributes, groupIndex, productId }) => {
+    const attributes = flatMap(SubAttributes.map((el) => el.subs));
     const [visible, setVisible] = useState(false);
 
     // attributes
@@ -236,17 +237,30 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             title={upperCase(POPOVER_TITLE[activeKey])}
             visible={visible}
             setVisible={setVisible}
-            dropdownCheckboxList={attributes.map((item) => ({
+            dropdownCheckboxList={SubAttributes.map((item) => ({
               name: item.name,
-              options: item.subs.map((sub) => ({
-                label: renderCheckBoxLabel(sub),
-                value: sub.id,
+              options: flatMap(
+                item.subs.map((sub) =>
+                  sub.subs.map((el) => ({
+                    label: renderCheckBoxLabel(el),
+                    value: el.id,
+                  })),
+                ),
+              ),
+              subs: item.subs.map((el) => ({
+                name: el.name,
+                count: item.subs.length,
+                options: el.subs.map((sub) => ({
+                  label: renderCheckBoxLabel(sub),
+                  value: sub.id,
+                })),
               })),
             }))}
             dropdownCheckboxTitle={(data) => data.name}
             chosenValue={selected}
             onFormSubmit={onSelectValue}
             secondaryModal
+            collapseLevel="2"
           />
         )}
       </>
