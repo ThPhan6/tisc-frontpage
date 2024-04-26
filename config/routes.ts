@@ -213,43 +213,24 @@ const routes = [
               },
             ],
           },
-          {
-            path: PATH.options,
-            name: 'option',
-            routes: [
-              {
-                path: PATH.options,
-                component: './TISC/Product/Basis/Option',
-                hideInMenu: true,
-              },
-              {
-                path: PATH.createOptions,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
-              },
-              {
-                path: PATH.updateOptions,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
-              },
-              {
-                path: PATH.LinkageDataSet,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/LinkagePage.tsx',
-              },
-            ],
-          },
         ],
       },
+
       {
         path: PATH.attribute,
-        name: 'attribute',
+        name: 'Brand Attributes',
         icon: 'attributes-icon.svg',
         access: 'tisc_product_attribute',
         routes: [
           {
+            path: PATH.attribute,
+            component: './TISC/Product/BrandAttribute',
+            hideInMenu: true,
+          },
+          {
             path: PATH.attributeGeneral,
             name: 'general',
+            hideInMenu: true,
             routes: [
               {
                 path: PATH.attributeGeneral,
@@ -271,6 +252,7 @@ const routes = [
           {
             path: PATH.attributeFeature,
             name: 'feature',
+            hideInMenu: true,
             routes: [
               {
                 path: PATH.attributeFeature,
@@ -292,6 +274,7 @@ const routes = [
           {
             path: PATH.attributeSpecification,
             name: 'specification',
+            hideInMenu: true,
             routes: [
               {
                 path: PATH.attributeSpecification,
@@ -307,6 +290,33 @@ const routes = [
                 path: PATH.attributeSpecificationUpdate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/components/AttributeEntryForm',
+              },
+            ],
+          },
+          {
+            path: PATH.options,
+            name: 'component',
+            hideInMenu: true,
+            routes: [
+              {
+                path: PATH.options,
+                component: './TISC/Product/Basis/Option',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.createOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
+              },
+              {
+                path: PATH.updateOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
+              },
+              {
+                path: PATH.LinkageDataSet,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/LinkagePage.tsx',
               },
             ],
           },

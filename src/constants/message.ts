@@ -136,6 +136,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_SUCCESS: 'Update preset successfully',
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
+  COPY_ONE_PRESET_SUCCESS: 'Copy preset successfully',
+  COPY_ONE_PRESET_ERROR: 'Copy preset error',
 
   /// general inquiry
   GET_GENERAL_INQUIRY_SUMMARY_ERROR: 'Failed to get general inquiry summary',
@@ -160,6 +162,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_LIST_ASSIGN_TEAM_SUCCESS: 'Update list assign team successfully',
   UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
   UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
+  COPY_TO_BRAND_SUCCESS: 'Copy to brand successfully',
+  COPY_TO_BRAND_ERROR: 'Failed to copy to brand',
 
   //user-group / design firms
   GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',

@@ -13,6 +13,7 @@ import { capitalize, flatMap, isEmpty, upperCase } from 'lodash';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { CategoryNestedList } from '@/features/categories/types';
 import { useAppSelector } from '@/reducers';
+import { ActiveKeyType } from '@/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 
@@ -23,7 +24,6 @@ interface DropdownCategoryListProps {
   chosenItem?: CheckboxValue[];
   onChange: (value: CheckboxValue[]) => void;
 }
-type ActiveKeyType = string | number | (string | number)[];
 type CheckedCategories = { [key: string]: CheckboxValue[] };
 
 export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {

@@ -8,12 +8,18 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import { setActualAttributeList } from '@/features/product/reducers';
+import store from '@/reducers';
 import type {
   AttributeContentType,
   AttributeForm,
   AttributeListResponse,
+  ICreateAttributeRequest,
+  IUpdateAttributeRequest,
   ProductAttributeByType,
+  ProductAttributeWithSubAdditionByType,
 } from '@/types';
+import { EGetAllAttributeType } from '@/types';
 
 import { hidePageLoading } from '@/features/loading/loading';
 
@@ -63,7 +69,7 @@ export async function getProductAttributeContentType() {
     });
 }
 
-export async function createAttribute(data: AttributeForm) {
+export async function createAttribute(data: ICreateAttributeRequest) {
   return request<boolean>(`/api/attribute/create`, {
     method: 'POST',
     data,
@@ -88,18 +94,18 @@ export async function getOneAttribute(id: string) {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_ATTRIBUTE_ERROR);
     });
 }
-export async function updateAttribute(id: string, data: AttributeForm) {
-  return request<boolean>(`/api/attribute/update/${id}`, {
+export async function updateAttribute(id: string, data: IUpdateAttributeRequest) {
+  return request<{ data: AttributeForm }>(`/api/attribute/update/${id}`, {
     method: 'PUT',
     data,
   })
-    .then(() => {
+    .then((res) => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_SUCCESS);
-      return true;
+      return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_ERROR);
-      return false;
+      return {} as AttributeForm;
     });
 }
 export async function deleteAttribute(id: string) {
@@ -116,9 +122,19 @@ export async function deleteAttribute(id: string) {
     });
 }
 
-export async function getAllAttribute() {
-  return request<{ data: ProductAttributeByType }>(`/api/attribute/get-all`, {})
+export async function getAllAttribute(type: EGetAllAttributeType, brandId?: string) {
+  const url = brandId
+    ? `/api/attribute/get-all?brand_id=${brandId}&add_sub=${type === EGetAllAttributeType.ADD_SUB}`
+    : `/api/attribute/get-all?add_sub=${type === EGetAllAttributeType.ADD_SUB}`;
+
+  return request<{ data: ProductAttributeWithSubAdditionByType | ProductAttributeByType }>(url)
     .then((response) => {
+      if (brandId) {
+        store.dispatch(
+          setActualAttributeList(response.data as ProductAttributeWithSubAdditionByType),
+        );
+      }
+
       return response.data;
     })
     .catch((error) => {
@@ -127,6 +143,6 @@ export async function getAllAttribute() {
         general: [],
         feature: [],
         specification: [],
-      } as ProductAttributeByType;
+      } as ProductAttributeWithSubAdditionByType;
     });
 }

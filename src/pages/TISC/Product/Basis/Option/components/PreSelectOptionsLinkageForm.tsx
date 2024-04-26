@@ -1,10 +1,10 @@
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history } from 'umi';
 
+import { useCheckBrandAttributePath } from '../../../BrandAttribute/hook';
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { getOneBasisOption } from '@/services';
@@ -15,6 +15,7 @@ import { BasisOptionForm } from '@/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
 
+import { BranchHeader } from '../../../BrandAttribute/BranchHeader';
 import { setLinkageState } from '../store';
 import style from './Linkage.less';
 import { LinkageOptionDataset } from './linkage/LinkageOptionDataset';
@@ -24,6 +25,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
   const dispatch = useDispatch();
   const optionId = useGetParamId();
 
+  const { componentPath } = useCheckBrandAttributePath();
   const { isTablet } = useScreen();
 
   const options = useAppSelector((state) => state.linkage.options);
@@ -56,7 +58,7 @@ export const PreSelectOptionsLinkageForm: FC = () => {
   }, [optionId]);
 
   const handleCancel = () => {
-    history.push(PATH.options);
+    history.push(componentPath);
   };
 
   const handleSubmit = () => {
@@ -71,50 +73,54 @@ export const PreSelectOptionsLinkageForm: FC = () => {
   };
 
   return (
-    <EntryFormWrapper
-      title="DATASET LINKAGE"
-      customClass={style.formContainer}
-      handleCancel={handleCancel}
-      handleSubmit={handleSubmit}
-      submitLabel="Next"
-      lg={24}
-      span={24}
-      contentStyles={{
-        height: isTablet ? 'calc(var(--vh) * 100 - 168px)' : 'calc(var(--vh) * 100 - 192px)',
-        padding: 0,
-        overflow: 'auto',
-      }}
-      customStyles={{ margin: 0 }}
-    >
-      <LinkageSummary />
+    <>
+      <BranchHeader containerStyle={{ marginBottom: 8 }} />
 
-      <div className={style.contentWrapper}>
-        <div style={{ width: '100%', overflow: 'auto' }}>
-          <div
-            className={style.content}
-            style={{
-              width: '100%',
-              display: 'flex',
-            }}
-          >
-            <div className={style.main}>
-              <div
-                style={{
-                  paddingRight: 16,
-                  paddingBottom: 16,
-                  width: 'fit-content',
-                  height: 'fit-content',
-                  display: 'flex',
-                }}
-              >
-                {options.map((mainOpt, mainOptIdx) => (
-                  <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
-                ))}
+      <EntryFormWrapper
+        title="COMPONENT LINKAGE"
+        customClass={style.formContainer}
+        handleCancel={handleCancel}
+        handleSubmit={handleSubmit}
+        submitLabel="Next"
+        lg={24}
+        span={24}
+        contentStyles={{
+          height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          padding: 0,
+          overflow: 'auto hidden',
+        }}
+        customStyles={{ margin: 0 }}
+      >
+        <LinkageSummary />
+
+        <div className={style.contentWrapper}>
+          <div style={{ width: '100%', overflow: 'auto' }}>
+            <div
+              className={style.content}
+              style={{
+                width: '100%',
+                display: 'flex',
+              }}
+            >
+              <div className={style.main}>
+                <div
+                  style={{
+                    paddingRight: 16,
+                    paddingBottom: 16,
+                    width: 'fit-content',
+                    height: 'fit-content',
+                    display: 'flex',
+                  }}
+                >
+                  {options.map((mainOpt, mainOptIdx) => (
+                    <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </EntryFormWrapper>
+      </EntryFormWrapper>
+    </>
   );
 };

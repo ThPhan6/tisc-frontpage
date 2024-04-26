@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { Table } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
@@ -11,7 +11,7 @@ import type {
 
 import { useCustomTable } from './hooks';
 import { useScreen } from '@/helper/common';
-import { isArray, isEmpty, isNumber, reverse, uniqBy } from 'lodash';
+import { isArray, isEmpty, isNumber, isUndefined, reverse, uniqBy } from 'lodash';
 
 import type {
   DataTableResponse,
@@ -106,6 +106,7 @@ export interface CustomTableProps {
     callback: (data: DataTableResponse) => void,
   ) => void;
   title?: string;
+  header?: ReactNode | string;
   multiSort?: {
     [key: string]: any;
   };
@@ -122,6 +123,7 @@ export interface CustomTableProps {
   onRow?: GetComponentProps<any>;
   isActiveOnRow?: boolean;
   dynamicPageSize?: boolean;
+  hasSummary?: boolean;
 }
 
 /// update order compared to BE
@@ -133,6 +135,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     expandable,
     fetchDataFunc,
     title,
+    header,
     rightAction,
     multiSort,
     hasPagination,
@@ -146,6 +149,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     autoLoad = true,
     onFilterLoad = true,
     dynamicPageSize,
+    hasSummary,
   } = props;
 
   const DEFAULT_TABLE_ROW = 44;
@@ -157,6 +161,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     total: 0,
   });
 
+  const tableSummaryRef = useRef<any>(null);
+  const [tableSummaryWidth, setTableSummaryWidth] = useState<number>();
   const { isMobile } = useScreen();
 
   const { columns, expanded } = useCustomTable(props.columns);
@@ -173,29 +179,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const headerLayout = document.querySelector('.ant-layout-header');
     const headerHeight = headerLayout?.clientHeight || 48;
 
-    // console.log('headerLayout', headerLayout);
-    // console.log('headerHeight', headerHeight);
-
-    // const ttable = document.querySelector('.ttable-layout');
-    // const ttableHeight = ttable?.getBoundingClientRect() || { top: 156 };
-
-    // console.log('ttable', ttable);
-    // console.log('ttableHeight --->>>', ttableHeight);
-
     const paginationLayout = document.querySelector('.pagination-layout');
     const paginationHeight = paginationLayout?.clientHeight || 40;
-
-    // console.log('paginationLayout', paginationLayout);
-    // console.log('paginationHeight', paginationHeight);
-
-    // const tableBody = document.querySelector('.tbodyLayout');
-    // const clientBouding = tableBody?.getBoundingClientRect() || { top: 200 };
-
-    // console.log('tableBody', tableBody);
-    // console.log('clientBouding', clientBouding);
-    // console.log('divRef', divRef.current?.getBoundingClientRect());
-
-    // const a = divRef.current?.getBoundingClientRect().top + 48 + 36;
 
     const marginSpace = isMobile ? 12 : 24;
     const tableHeaderHeight = 48;
@@ -203,11 +188,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const paddingBottom = 40;
     const totalHeight = tableHeaderHeight + tableThreadHeight + marginSpace + headerHeight;
 
-    // console.log('totalHeight', totalHeight);
-
     const tableTBodyHeight = window.innerHeight - totalHeight - paddingBottom - paginationHeight;
-
-    // console.log('tableTBodyHeight', tableTBodyHeight);
 
     return Number((tableTBodyHeight / DEFAULT_TABLE_ROW || DEFAULT_PAGESIZE).toFixed(0));
   };
@@ -226,6 +207,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       pageSize: params.pagination.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
     };
+
     /// if enable filter
     if (filter) {
       paginationParams.filter = filter;
@@ -246,7 +228,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       });
     } else {
       // Multiple sort for the first one but it is an object, not array
-      if (isNumber(sorter?.column?.sorter?.multiple) && sorter?.field && multiSort) {
+      if (isNumber((sorter as any)?.column?.sorter?.multiple) && sorter?.field && multiSort) {
         paginationParams[multiSort[sorter.field.toString()]] = converseOrder(sorter?.order);
       } else {
         // Normal sort
@@ -270,6 +252,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       }
     });
   };
+
+  useEffect(() => {
+    if (!isUndefined(tableSummaryRef.current?.getTableSummaryWidth)) {
+      setTableSummaryWidth(tableSummaryRef.current.getTableSummaryWidth());
+    }
+  }, [tableSummaryRef]);
 
   useEffect(() => {
     if (autoLoad) {
@@ -337,15 +325,25 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     [pagination.pageSize, extraParams],
   );
 
+  const renderHeaderTable = () => {
+    if (header) {
+      return header;
+    }
+
+    if (title) {
+      return <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />;
+    }
+
+    return null;
+  };
+
   return (
     <div
       className={`ttable-layout ${styles.customTable} ${
         customExpandable ? styles['sub-grid'] : ''
       }`}
     >
-      {title ? (
-        <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />
-      ) : null}
+      {renderHeaderTable()}
 
       <Table
         className={tableClass}
@@ -377,7 +375,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         }}
       />
 
-      {hasPagination && pagination ? (
+      {hasPagination && pagination && !hasSummary ? (
         <CustomPaginator
           fetchData={fetchData}
           pagination={pagination}
@@ -387,6 +385,30 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         />
       ) : !isEmpty(summary) ? (
         <TableSummary summary={summary} customClass={footerClass} />
+      ) : null}
+
+      {/* show both pagination and summary */}
+      {hasPagination && pagination && hasSummary && !isEmpty(summary) ? (
+        <div>
+          <CustomPaginator
+            fetchData={fetchData}
+            pagination={pagination}
+            sorter={currentSorter}
+            dataLength={data.length ?? 0}
+            customClass={footerClass}
+            style={{
+              width: `calc(100% - ${(tableSummaryWidth ? tableSummaryWidth : 252) - 48}px`,
+              zIndex: 1,
+            }}
+          />
+
+          <TableSummary
+            ref={tableSummaryRef}
+            summary={summary}
+            customClass={footerClass}
+            style={{ width: 'fit-content' }}
+          />
+        </div>
       ) : null}
     </div>
   );
