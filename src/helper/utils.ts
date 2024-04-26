@@ -457,6 +457,23 @@ export const uniqueArrayBy = (arr: any[], uniqKeys: string[]) => {
   });
 };
 
+export const findDuplicateBy = (arr: any[], uniqKeys: string[]): any[] => {
+  const dup: any = [];
+  const seen = {};
+
+  arr.forEach((item) => {
+    const key = uniqKeys.map((k) => item[k]).join('|');
+
+    if (seen[key]) {
+      dup.push(item);
+    } else {
+      seen[key] = true;
+    }
+  });
+
+  return dup;
+};
+
 export const sortObjectArray = (items: any[], field: string, order: 'asc' | 'desc' = 'asc') => {
   const compare = (value1: any, value2: any) => {
     const item1 = typeof value1[field] === 'string' ? value1[field].toLowerCase() : value1[field];

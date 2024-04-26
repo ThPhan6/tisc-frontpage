@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 
+import { useParams } from 'umi';
+
 import { useCheckBrandAttributePath } from '../../BrandAttribute/hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
@@ -7,6 +9,7 @@ import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
 
+import { BrandAttributeParamProps } from '../../BrandAttribute/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { BasisOptionListResponse, SubBasisOption } from '@/types';
 
@@ -32,6 +35,8 @@ const colsDataIndex = {
 
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [8]);
+
+  const param = useParams<BrandAttributeParamProps>();
 
   const tableRef = useRef<any>();
 
@@ -102,7 +107,7 @@ const BasisOptionList: React.FC = () => {
   const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: colTitle.group,
-      dataIndex: 'name', // key in data
+      dataIndex: dataIndexDefault, // key in data
       sorter: {
         multiple: 1,
       },
@@ -117,7 +122,7 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
-      defaultSortOrder: 'descend',
+      // defaultSortOrder: 'descend',
     },
     {
       title: colTitle.sub,
@@ -125,7 +130,7 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {
@@ -253,6 +258,9 @@ const BasisOptionList: React.FC = () => {
         name: 'group_order',
         main_group: 'main_order',
         sub_group: 'option_order',
+      }}
+      extraParams={{
+        filter: { brand_id: param.brandId },
       }}
       expandable={GetExpandableTableConfig({
         columns: setDefaultWidthForEachColumn(MainSubColumns, 8),

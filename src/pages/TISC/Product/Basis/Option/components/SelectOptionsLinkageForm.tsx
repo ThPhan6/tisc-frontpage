@@ -66,7 +66,7 @@ export const SelectOptionsLinkageForm: FC = () => {
 
   return (
     <EntryFormWrapper
-      title="DATASET LINKAGE"
+      title="COMPONENT LINKAGE"
       customClass={style.formContainer}
       cancelLabel="Prev"
       handleCancel={handleCancel}

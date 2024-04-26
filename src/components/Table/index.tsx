@@ -207,6 +207,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       pageSize: params.pagination.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
     };
+
     /// if enable filter
     if (filter) {
       paginationParams.filter = filter;

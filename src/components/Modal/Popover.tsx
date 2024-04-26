@@ -31,6 +31,7 @@ import styles from './styles/Popover.less';
 
 export interface PopoverProps {
   title: string;
+  titlePosition?: 'left' | 'center';
   visible: boolean;
   setVisible?: (visible: boolean) => void;
   /// dropdown radio list
@@ -61,6 +62,7 @@ export interface PopoverProps {
   // extra top action
   extraTopAction?: ReactNode;
   noFooter?: boolean;
+  cancelSaveFooter?: boolean;
 
   className?: string;
 
@@ -87,6 +89,7 @@ export interface PopoverProps {
 
 const Popover: FC<PopoverProps> = ({
   title,
+  titlePosition = 'left',
   visible,
   setVisible,
   dropdownRadioList,
@@ -114,6 +117,7 @@ const Popover: FC<PopoverProps> = ({
   secondaryModal,
   maskClosable,
   width,
+  cancelSaveFooter,
 }) => {
   const { isMobile } = useScreen();
 
@@ -128,7 +132,7 @@ const Popover: FC<PopoverProps> = ({
   const renderEmptyData = () => {
     return (
       <div className={styles.popoverEmptyData}>
-        <EmptyOne />
+        <EmptyOne isCenter />
       </div>
     );
   };
@@ -220,19 +224,31 @@ const Popover: FC<PopoverProps> = ({
   const onClose = () => {
     setVisible?.(false);
     closeModal();
+
+    if (clearOnClose) {
+      setChosenValue?.(undefined);
+    }
   };
 
   const onCancel = () => {
-    if (clearOnClose) {
-      setChosenValue?.(undefined);
-    } else {
-      // reset current value
-      setCurrentValue(chosenValue);
-      // onchange selected Value
-      if (setChosenValue) {
-        setChosenValue(chosenValue);
-      }
+    // if (clearOnClose) {
+    //   setChosenValue?.(undefined);
+    // } else {
+    //   // reset current value
+    //   setCurrentValue(chosenValue);
+    //   // onchange selected Value
+    //   if (setChosenValue) {
+    //     setChosenValue(chosenValue);
+    //   }
+    // }
+
+    // reset current value
+    setCurrentValue(chosenValue);
+    // onchange selected Value
+    if (setChosenValue) {
+      setChosenValue(chosenValue);
     }
+
     // hide popup
     onClose();
   };
@@ -251,7 +267,7 @@ const Popover: FC<PopoverProps> = ({
     onClose();
   };
 
-  const renderButtonFooter = () => {
+  const renderDoneFooter = (label: string = 'Done') => {
     return submitButtonStatus ? (
       <CustomButton
         size="small"
@@ -269,9 +285,32 @@ const Popover: FC<PopoverProps> = ({
         disabled={disabledSubmit}
         onClick={handleDone}
       >
-        Done
+        {label}
       </CustomButton>
     );
+  };
+
+  const renderButtonFooter = () => {
+    if (cancelSaveFooter) {
+      return (
+        <div className="flex-end" style={{ gap: 16 }}>
+          <CustomButton
+            size="small"
+            variant="primary"
+            properties="rounded"
+            buttonClass="done-btn"
+            disabled={disabledSubmit}
+            onClick={onCancel}
+          >
+            Cancel
+          </CustomButton>
+
+          {renderDoneFooter('Save')}
+        </div>
+      );
+    }
+
+    return renderDoneFooter();
   };
 
   const renderMobileContent = () => (
@@ -303,7 +342,7 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%' }}
+            style={{ maxWidth: '95%', textAlign: titlePosition === 'center' ? 'center' : 'left' }}
           >
             {title}
           </MainTitle>

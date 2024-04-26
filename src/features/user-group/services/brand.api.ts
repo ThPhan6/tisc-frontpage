@@ -175,3 +175,21 @@ export async function createBrand(data: TISCUserGroupBrandForm) {
       return undefined;
     });
 }
+
+export async function copyAttributeToBrand(id: string, brandId: string) {
+  showPageLoading();
+
+  return request<{ data: BrandDetail }>(`/api/attribute/copy/${id}/brand/${brandId}`, {
+    method: 'POST',
+  })
+    .then((res) => {
+      message.success(MESSAGE_NOTIFICATION.COPY_TO_BRAND_SUCCESS);
+      hidePageLoading();
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.COPY_TO_BRAND_ERROR);
+      hidePageLoading();
+      return undefined;
+    });
+}

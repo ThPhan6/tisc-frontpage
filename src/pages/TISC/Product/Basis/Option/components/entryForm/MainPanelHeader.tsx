@@ -6,10 +6,11 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
 import {
-  FormOptionGroupContext,
+  FormGroupContext,
   FormOptionGroupHeaderContext,
   useCheckBasicOptionForm,
 } from '../../../hook';
+import { useCheckAttributeForm } from '@/pages/TISC/Product/Attribute/components/hook';
 import { cloneDeep, uniqueId } from 'lodash';
 
 import { BasisOptionSubForm, MainBasisOptionSubForm } from '@/types';
@@ -28,7 +29,7 @@ interface MainPanelHeaderProps {
   mainOption: MainBasisOptionSubForm;
   handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
   handleDeleteMainSubOption: () => void;
-  handleCopyMainOption: (mainOption: MainBasisOptionSubForm) => void;
+  handleCopyMainOption?: (mainOption: MainBasisOptionSubForm) => void;
 }
 
 export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
@@ -38,12 +39,19 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
   handleDeleteMainSubOption,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
+  const { isAttribute } = useCheckAttributeForm();
 
-  const placeholder = isBasicOption ? 'type main classification name' : 'type sub-group name';
-  const defaultWidth = mainOption.name ? 30 : placeholder.length * (isBasicOption ? 6.5 : 8);
+  const placeholder = isAttribute
+    ? 'type main attribute name'
+    : isBasicOption
+    ? 'type main classification name'
+    : 'type sub-group name';
+  const defaultWidth = mainOption.name
+    ? 30
+    : placeholder.length * (isBasicOption || isAttribute ? 6.5 : 8);
 
   const { mode } = useContext(FormOptionGroupHeaderContext);
-  const { collapse, setCollapse } = useContext(FormOptionGroupContext);
+  const { collapse, setCollapse, hideDelete, hideDrag } = useContext(FormGroupContext);
 
   const handleChangeMainOptionName = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
@@ -79,7 +87,7 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
 
   const copyMainOption = () => {
     if (mode === 'list') {
-      handleCopyMainOption({
+      handleCopyMainOption?.({
         ...mainOption,
         name: `${mainOption.name} copy`,
       });
@@ -127,12 +135,16 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
             className={styles.main_panel_header__icon_add}
             onClick={mode === 'list' ? addNewMainOptionItem : undefined}
           />
-          <CopyIcon className={styles.main_panel_header__icon_add} onClick={copyMainOption} />
+          {isBasicOption && copyMainOption ? (
+            <CopyIcon className={styles.main_panel_header__icon_add} onClick={copyMainOption} />
+          ) : null}
         </div>
-        <ActionDeleteIcon
-          className={styles.main_panel_header__icon_delete}
-          onClick={handleDeleteMainSubOption}
-        />
+        {hideDelete ? null : (
+          <ActionDeleteIcon
+            className={styles.main_panel_header__icon_delete}
+            onClick={handleDeleteMainSubOption}
+          />
+        )}
       </div>
     </div>
   );

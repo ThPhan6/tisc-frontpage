@@ -6,13 +6,14 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon-18.svg';
 
 import {
-  FormOptionGroupContext,
+  FormGroupContext,
   FormOptionGroupHeaderContext,
   useCheckBasicOptionForm,
 } from '../../../hook';
-import { cloneDeep } from 'lodash';
+import { useCheckAttributeForm } from '@/pages/TISC/Product/Attribute/components/hook';
+import { cloneDeep, uniqueId } from 'lodash';
 
-import { BasisOptionSubForm, SubBasisOption } from '@/types';
+import { BasisOptionSubForm } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 
@@ -28,8 +29,8 @@ interface SubPanelHeaderProps {
   subOption: BasisOptionSubForm;
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
-  handleCopySubOtionItem: () => void;
-  dragIcon: JSX.Element;
+  handleCopySubOtionItem?: () => void;
+  dragIcon?: JSX.Element;
 }
 
 export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
@@ -40,11 +41,24 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
   handleDeleteSubOption,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
-  const placeholder = isBasicOption ? 'type sub classification name' : 'sub preset name';
-  const defaultWidth = subOption.name ? 30 : isBasicOption ? placeholder.length * 6.5 : 106;
+  const { isAttribute } = useCheckAttributeForm();
 
+  const placeholder = isAttribute
+    ? 'type sub attribute name'
+    : isBasicOption
+    ? 'type sub classification name'
+    : 'sub preset name';
+  const defaultWidth = subOption.name
+    ? 30
+    : isAttribute
+    ? placeholder.length * 6.5
+    : isBasicOption
+    ? placeholder.length * 6.5
+    : 106;
+
+  const newId = uniqueId();
   const { mode } = useContext(FormOptionGroupHeaderContext);
-  const { collapse, setCollapse } = useContext(FormOptionGroupContext);
+  const { collapse, setCollapse } = useContext(FormGroupContext);
 
   const addNewSubOptionItem = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     e.stopPropagation();
@@ -58,14 +72,30 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
 
     /// default open option item list when add new
     /// add new sub option item
-    const newSubOptionItem: Partial<SubBasisOption> = {
+    let newSubOptionItem: any = {
       value_1: '',
       value_2: '',
       unit_2: '',
       unit_1: '',
-      product_id: '',
-      paired: 0,
     };
+
+    if (isAttribute) {
+      newSubOptionItem = {
+        id: `new-${newId}`,
+        name: '',
+        description: '',
+        content_type: '',
+      };
+    } else if (isBasicOption) {
+      newSubOptionItem = {
+        value_1: '',
+        value_2: '',
+        unit_2: '',
+        unit_1: '',
+        product_id: '',
+        paired: 0,
+      };
+    }
 
     handleChangeSubItem({
       ...subOption,
@@ -91,7 +121,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
             onClick={(e) => {
               e.stopPropagation();
             }}
-            style={{ cursor: 'default' }}
+            style={{ cursor: 'default', paddingLeft: isAttribute ? 32 : 0 }}
           >
             {dragIcon}
             <CustomInput
@@ -124,10 +154,12 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
         >
           <div className="flex-start icons">
             <PlusIcon className={styles.panel_header__field_add} onClick={addNewSubOptionItem} />
-            <CopyIcon
-              className={styles.panel_header__field_add}
-              onClick={mode === 'list' ? handleCopySubOtionItem : undefined}
-            />
+            {isBasicOption ? (
+              <CopyIcon
+                className={styles.panel_header__field_add}
+                onClick={mode === 'list' ? handleCopySubOtionItem : undefined}
+              />
+            ) : null}
           </div>
           <ActionDeleteIcon
             className={styles.panel_header__input_delete_icon}

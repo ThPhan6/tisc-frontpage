@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { DEFAULT_SUB_PRESET_ID } from '@/pages/TISC/Product/Basis/Option/components/constant';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -99,11 +100,45 @@ export async function getOnePresetMiddleware(id: string) {
   return request<{ data: PresetsValueProp }>(`/api/basis-preset/get-one/${id}`, { method: 'GET' })
     .then((response) => {
       hidePageLoading();
-      return response.data;
+
+      const newSubs = response.data.subs.map((el) => {
+        /// change default sub preset id
+        if (el.id === DEFAULT_SUB_PRESET_ID) {
+          const newEl = { ...el };
+          delete newEl?.sub_group_id;
+
+          return {
+            ...newEl,
+            id: `new-${DEFAULT_SUB_PRESET_ID}`,
+          };
+        }
+
+        return el;
+      });
+
+      return {
+        ...response.data,
+        subs: newSubs,
+      };
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRESET_ERROR);
       hidePageLoading();
       return {} as PresetsValueProp;
+    });
+}
+
+export async function copyPresetMiddleware(id: string) {
+  // showPageLoading();
+
+  request<{ data: any }>(`/api/basis-preset/copy/${id}`, { method: 'POST' })
+    .then((response) => {
+      // hidePageLoading();
+
+      message.success(MESSAGE_NOTIFICATION.COPY_ONE_PRESET_SUCCESS);
+    })
+    .catch((err) => {
+      // hidePageLoading();
+      message.error(err?.data?.message ?? MESSAGE_NOTIFICATION.COPY_ONE_PRESET_ERROR);
     });
 }
