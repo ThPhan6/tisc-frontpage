@@ -238,7 +238,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             title={upperCase(POPOVER_TITLE[activeKey])}
             visible={visible}
             setVisible={setVisible}
-            dropdownCheckboxList={attributes.map((item) => ({
+            dropdownCheckboxList={subAttributes.map((item) => ({
               name: item.name,
               count: item.subs.length,
               options: flatMap(
@@ -262,6 +262,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             chosenValue={selected}
             onFormSubmit={onSelectValue}
             secondaryModal
+            collapseLevel="2"
           />
         )}
       </>

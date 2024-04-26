@@ -6,11 +6,20 @@ import { BrandAttributeParamProps } from './types';
 import { BranchTabKey } from './BranchHeader';
 import { replaceBrandAttributeBrandId } from './util';
 
+export const useBrandAttributeParam = () => {
+  const params = useParams<BrandAttributeParamProps>();
+  const brandName = params.brandName;
+  const brandId = params.brandId;
+  const id = params?.id;
+  const groupId = params?.groupId;
+  const groupName = params?.groupName;
+  const subId = params?.subId;
+
+  return { brandName, brandId, id, groupId, groupName, subId };
+};
+
 export const useCheckBrandAttributePath = () => {
-  const param = useParams<BrandAttributeParamProps>();
-  const brandId = param.brandId;
-  const brandName = param.brandName;
-  const id = param?.id;
+  const { brandName, brandId, id, groupId, groupName, subId } = useBrandAttributeParam();
 
   const componentPath = replaceBrandAttributeBrandId(PATH.options, brandId, brandName, id);
   const componentCreatePath = replaceBrandAttributeBrandId(
@@ -18,12 +27,17 @@ export const useCheckBrandAttributePath = () => {
     brandId,
     brandName,
     id,
+    groupId,
+    groupName,
   );
   const componentUpdatePath = replaceBrandAttributeBrandId(
     PATH.updateOptions,
     brandId,
     brandName,
     id,
+    undefined,
+    undefined,
+    subId,
   );
   const linkagePath = replaceBrandAttributeBrandId(PATH.LinkageDataSet, brandId, brandName, id);
 
@@ -117,6 +131,7 @@ export const useCheckBranchAttributeTab = () => {
     componentPath,
     componentCreatePath,
     componentUpdatePath,
+    linkagePath,
 
     generalAttributePath,
     generalAttributeCreatePath,
@@ -140,7 +155,7 @@ export const useCheckBranchAttributeTab = () => {
 
   /// using to navigate after created attribute
   const activePath =
-    pathName === componentCreatePath || pathName === componentUpdatePath
+    pathName === componentCreatePath || pathName === componentUpdatePath || pathName === linkagePath
       ? componentPath
       : pathName === generalAttributeCreatePath || pathName === generalAttributeUpdatePath
       ? generalAttributePath
@@ -155,7 +170,8 @@ export const useCheckBranchAttributeTab = () => {
   const currentTab =
     pathName === componentPath ||
     pathName === componentCreatePath ||
-    pathName === componentUpdatePath
+    pathName === componentUpdatePath ||
+    pathName === linkagePath
       ? BranchTabKey.component
       : pathName === generalAttributePath ||
         pathName === generalAttributeCreatePath ||

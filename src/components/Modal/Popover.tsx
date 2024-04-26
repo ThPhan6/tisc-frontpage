@@ -9,7 +9,7 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
-import { CheckboxValue } from '../CustomCheckbox/types';
+import { CheckboxValue, DropdownCheckboxItem } from '../CustomCheckbox/types';
 import { DropdownRadioItem } from '../CustomRadio/types';
 import { closeModal } from '@/reducers/modal';
 
@@ -17,7 +17,6 @@ import CustomButton from '@/components/Button';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
-import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
@@ -121,6 +120,7 @@ const Popover: FC<PopoverProps> = ({
   maskClosable,
   width,
   cancelSaveFooter,
+  collapseLevel,
 }) => {
   const { isMobile } = useScreen();
 
@@ -180,6 +180,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
           combinable={combinableCheckbox}
+          collapseLevel={collapseLevel}
         />
       );
     }
@@ -346,7 +347,7 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%', textAlign: titlePosition === 'center' ? 'center' : 'left' }}
+            style={{ maxWidth: '95%' }}
           >
             {title}
           </MainTitle>
@@ -358,7 +359,9 @@ const Popover: FC<PopoverProps> = ({
         width={width ? width : 576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
-        className={`${styles.customPopover} ${className ?? ''}`}
+        className={`${styles.customPopover} ${className ?? ''} ${
+          titlePosition === 'center' ? styles.titlePositionCenter : ''
+        }`}
       >
         {extraTopAction}
         {renderChildren()}

@@ -122,11 +122,18 @@ export interface ProductSubAttributes extends SubAttribute {
   };
 }
 
+export interface ProductMainSubAttributes {
+  id: string;
+  name: string;
+  type?: number;
+  subs: ProductSubAttributes[];
+}
+
 export interface ProductAttributes {
   id: string;
   name: string;
   type: number;
-  subs: ProductSubAttributes[];
+  subs: ProductMainSubAttributes[];
 }
 
 export interface ProductAttributeByType {

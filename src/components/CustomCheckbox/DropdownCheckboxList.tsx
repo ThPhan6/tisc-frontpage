@@ -179,14 +179,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       className={`dropdownList dropdownListV2 ${
         isSelectAll ? styles.collapseSelectAll : ''
       } ${customClass}`}
-      onChange={(keys) => {
-        let newKeys = keys;
-        if (!canActiveMultiKey) {
-          newKeys = typeof keys === 'string' ? keys : [keys[keys.length - 1]];
-        }
-
-        setActiveKey(newKeys);
-      }}
+      onChange={handleCollapseMain}
       activeKey={activeKey}
     >
       {data.map((item, index) => (

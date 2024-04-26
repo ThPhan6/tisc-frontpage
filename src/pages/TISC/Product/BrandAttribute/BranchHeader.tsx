@@ -1,6 +1,7 @@
 import { CSSProperties, forwardRef, useImperativeHandle } from 'react';
 
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
 import { useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -27,10 +28,12 @@ export enum BranchTabKey {
 
 interface PresetHeaderProps {
   containerStyle?: CSSProperties;
+  groupId?: string;
+  groupName?: string;
 }
 
 export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
-  const { containerStyle } = props;
+  const { containerStyle, groupId, groupName } = props;
 
   const param = useParams<BrandAttributeParamProps>();
 
@@ -107,7 +110,12 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
 
   const handlePushTo = () => {
     if (currentTab === BranchTabKey.component) {
-      pushTo(componentCreatePath);
+      if (!groupId || !groupName) {
+        message.error('Group not found');
+        return;
+      }
+
+      pushTo(componentCreatePath.replace(':groupId', groupId).replace(':groupName', groupName));
       return;
     }
 

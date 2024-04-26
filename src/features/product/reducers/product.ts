@@ -61,6 +61,7 @@ const initialState: ProductState = {
   details: {
     id: '',
     name: '',
+    brand_id: '',
     description: '',
     keywords: ['', '', '', ''],
     images: [],
