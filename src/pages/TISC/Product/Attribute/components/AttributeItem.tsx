@@ -1,11 +1,11 @@
-import { type FC, useContext } from 'react';
+import { FC, useContext } from 'react';
 
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import { lowerCase, startCase } from 'lodash';
 
-import { type AttributeSubForm, EAttributeContentType } from '@/types';
+import { AttributeSubForm, EAttributeContentType } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
