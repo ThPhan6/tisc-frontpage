@@ -72,14 +72,25 @@ export async function getProductBasisOptionPaginationForTable(
 
       const groupBasisOptions: BasisOptionListResponseForTable[] = flatMap(
         basis_options.map((grp) =>
-          grp.subs.map((sub) => ({
-            ...sub,
-            group_id: grp.id,
-            group_name: grp.name,
-            group_count: grp.count,
-            master: !!grp?.master,
-            group_created_at: grp.created_at,
-          })),
+          grp?.subs?.length
+            ? grp.subs.map((sub) => ({
+                ...sub,
+                group_id: grp.id,
+                group_name: grp.name,
+                group_count: grp.count,
+                master: !!grp?.master,
+                group_created_at: grp.created_at,
+              }))
+            : [
+                {
+                  group_id: grp.id,
+                  group_name: grp.name,
+                  group_count: grp.count,
+                  master: !!grp?.master,
+                  group_created_at: grp.created_at,
+                  subs: [],
+                },
+              ],
         ),
       );
 

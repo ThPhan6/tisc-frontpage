@@ -51,6 +51,7 @@ const BasisOptionList: React.FC = () => {
   const tableRef = useRef<any>();
 
   const [data, setData] = useState<BasisOptionListResponseForTable[]>([]);
+  const hasSubs = !!data?.[0]?.subs?.length;
   const subs = data.map((el) => ({
     id: el.id,
     name: el.name,
@@ -147,7 +148,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: colTitle.main,
       dataIndex: dataIndexDefault,
-      isExpandable: true,
+      isExpandable: hasSubs,
       sorter: {
         multiple: 1,
       },
@@ -172,7 +173,7 @@ const BasisOptionList: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value: any, record: BasisOptionListResponseForTable) => {
-        if (record.master) {
+        if (record.master || !hasSubs) {
           return null;
         }
         return (
@@ -197,50 +198,54 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const SubColumns: TableColumnItem<SubBasisOption>[] = [
-    {
-      title: colTitle.main,
-      dataIndex: colsDataIndex.main,
-      // isExpandable: true,
-      noBoxShadow: true,
-    },
-    {
-      title: colTitle.sub,
-      dataIndex: dataIndexDefault,
-      isExpandable: true,
-      render: (value) => {
-        return <span className="text-capitalize">{value}</span>;
-      },
-    },
-    ...getSameColumns(false),
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-    },
-  ];
+  const SubColumns: TableColumnItem<SubBasisOption>[] = !hasSubs
+    ? []
+    : [
+        {
+          title: colTitle.main,
+          dataIndex: colsDataIndex.main,
+          // isExpandable: true,
+          noBoxShadow: true,
+        },
+        {
+          title: colTitle.sub,
+          dataIndex: dataIndexDefault,
+          isExpandable: true,
+          render: (value) => {
+            return <span className="text-capitalize">{value}</span>;
+          },
+        },
+        ...getSameColumns(false),
+        {
+          title: 'Action',
+          dataIndex: 'action',
+          align: 'center',
+          width: '5%',
+        },
+      ];
 
-  const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = [
-    {
-      title: colTitle.main,
-      dataIndex: colsDataIndex.main,
-      noBoxShadow: true,
-    },
-    {
-      title: colTitle.sub,
-      dataIndex: colsDataIndex.sub,
-      noBoxShadow: true,
-    },
-    ...getSameColumns(true),
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-      noBoxShadow: true,
-    },
-  ];
+  const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = !hasSubs
+    ? []
+    : [
+        {
+          title: colTitle.main,
+          dataIndex: colsDataIndex.main,
+          noBoxShadow: true,
+        },
+        {
+          title: colTitle.sub,
+          dataIndex: colsDataIndex.sub,
+          noBoxShadow: true,
+        },
+        ...getSameColumns(true),
+        {
+          title: 'Action',
+          dataIndex: 'action',
+          align: 'center',
+          width: '5%',
+          noBoxShadow: true,
+        },
+      ];
 
   return (
     <CustomTable

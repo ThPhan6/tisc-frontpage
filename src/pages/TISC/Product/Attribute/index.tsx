@@ -5,6 +5,7 @@ import { useParams } from 'umi';
 
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
+import { useCheckBranchAttributeTab } from '../BrandAttribute/hook';
 import { useAttributeLocation } from './hooks/location';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { copyAttributeToBrand, getBrandPagination } from '@/features/user-group/services';
@@ -12,6 +13,7 @@ import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
+import { startCase } from 'lodash';
 
 import { BrandAttributeParamProps } from '../BrandAttribute/types';
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -24,7 +26,7 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
-import { BranchHeader } from '../BrandAttribute/BranchHeader';
+import { BranchHeader, BranchTabKey } from '../BrandAttribute/BranchHeader';
 import styles from './styles/index.less';
 
 const colTitle = {
@@ -45,6 +47,8 @@ const AttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [4]);
   const param = useParams<BrandAttributeParamProps>();
   const tableRef = useRef<any>();
+
+  const { currentTab } = useCheckBranchAttributeTab();
   const { activePath, attributeLocation } = useAttributeLocation();
 
   const [brands, setBrands] = useState<BrandListItem[]>([]);
@@ -109,6 +113,21 @@ const AttributeList: React.FC = () => {
         dataIndex: 'content_type',
         noBoxShadow: noBoxShadow,
         sorter: true,
+        render: (value, record) => {
+          if (!record || !value) {
+            return null;
+          }
+
+          if (currentTab === BranchTabKey.general) {
+            return <span>General Presets</span>;
+          }
+
+          if (currentTab === BranchTabKey.feature) {
+            return <span>Feature Presets</span>;
+          }
+
+          return <span>Component</span>;
+        },
       },
       {
         title: 'Description',

@@ -3,8 +3,8 @@ import { FC } from 'react';
 import { Col, Row } from 'antd';
 
 import { showImageUrl } from '@/helper/utils';
-import { useCheckAttributeForm } from '@/pages/TISC/Product/Attribute/components/hook';
 import { useCheckBasicOptionForm } from '@/pages/TISC/Product/Basis/hook';
+import { useCheckAttributeForm } from '@/pages/TISC/Product/BrandAttribute/hook';
 
 import { AttributeSubForm, SubBasisOption } from '@/types';
 
