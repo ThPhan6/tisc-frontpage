@@ -143,7 +143,7 @@ const Popover: FC<PopoverProps> = ({
   const renderChildren = () => {
     /// for dropdown radio list
     if (dropdownRadioList) {
-      if (dropdownRadioList.length == 1 && isEmpty(dropdownRadioList[0].options)) {
+      if (dropdownRadioList.length <= 1 && isEmpty(dropdownRadioList?.[0]?.options)) {
         return renderEmptyData();
       }
       return (
@@ -169,7 +169,7 @@ const Popover: FC<PopoverProps> = ({
     }
     /// drodown checkbox list
     if (dropdownCheckboxList) {
-      if (dropdownCheckboxList.length == 1 && isEmpty(dropdownCheckboxList[0].options)) {
+      if (dropdownCheckboxList.length <= 1 && isEmpty(dropdownCheckboxList?.[0]?.options)) {
         return renderEmptyData();
       }
       return (

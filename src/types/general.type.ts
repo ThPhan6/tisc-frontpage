@@ -20,3 +20,5 @@ export enum ActiveStatus {
 export type ActiveStatusKey = keyof typeof ActiveStatus;
 
 export type ActiveKeyType = string | number | (string | number)[];
+
+export type CollapseLevel = '1' | '2';

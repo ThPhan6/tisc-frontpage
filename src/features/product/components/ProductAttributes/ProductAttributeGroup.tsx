@@ -51,8 +51,7 @@ import {
   closeProductFooterTab,
   closeProductInformationGroup,
 } from '@/reducers/active';
-import { ActiveKeyType } from '@/types';
-import { SubBasisOption } from '@/types';
+import { ActiveKeyType, SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';

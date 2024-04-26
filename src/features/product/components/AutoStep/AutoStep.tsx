@@ -9,7 +9,6 @@ import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.sv
 
 import { confirmModal } from '@/helper/common';
 import { sortObjectArray } from '@/helper/utils';
-import { flatMap } from 'lodash';
 
 import {
   resetAutoStepState,
@@ -42,10 +41,8 @@ export const AutoStep: FC<AutoStepProps> = ({
   visible,
   setVisible,
   attributeGroup,
-  attributes: SubAttributes,
+  attributes,
 }) => {
-  const attributes = flatMap(SubAttributes.map((el) => el.subs));
-
   const [disabledCreateStep, setDisabledCreateStep] = useState<boolean>(false);
 
   const linkedOptionData = useAppSelector((state) => state.autoStep.linkedOptionData);
@@ -205,7 +202,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     <CustomModal
       title={
         <MainTitle level={3} style={{ textTransform: 'uppercase' }}>
-          Auto-Steps
+          Create Steps
         </MainTitle>
       }
       secondaryModal
@@ -267,7 +264,7 @@ export const AutoStep: FC<AutoStepProps> = ({
     >
       {step === 'pre' ? (
         <FirstStep
-          data={SubAttributes}
+          attributeGroup={attributeGroup}
           selected={
             subOptionSelected?.[currentActiveSpecAttributeGroupId || ''] ||
             defaultSelected?.id ||

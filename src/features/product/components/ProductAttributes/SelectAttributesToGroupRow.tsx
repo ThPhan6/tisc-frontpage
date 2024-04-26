@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useContext, useEffect, useState } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
@@ -12,10 +12,11 @@ import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } f
 import { ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store from '@/reducers';
-import { ProductAttributes, ProductSubAttributes } from '@/types';
+import { AttributesWithSubAddtionData, ProductAttributes, ProductSubAttributes } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
+import { ProductAttributeComponentContext } from '@/features/product/components/ProductAttributes';
 
 import { AutoStep } from '../AutoStep/AutoStep';
 import styles from './SelectAttributesToGroupRow.less';
@@ -36,8 +37,10 @@ interface SelectAttributesToGroupRowProps {
 }
 
 export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = memo(
-  ({ activeKey, groupItem, attributes: subAttributes, groupIndex, productId }) => {
-    const attributes = flatMap(subAttributes.map((el) => el.subs));
+  ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
+    const { attributeListFilterByBrand, setIsGetAllAttributeFilterByBrand } = useContext(
+      ProductAttributeComponentContext,
+    );
 
     const [visible, setVisible] = useState(false);
 
@@ -185,20 +188,21 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       );
     };
 
+    const handleOpenSelectAttributeModal = () => {
+      setVisible(true);
+
+      setIsGetAllAttributeFilterByBrand(true);
+
+      if (groupItem.type === SpecificationType.autoStep) {
+        store.dispatch(setStep('pre'));
+      }
+    };
+
     return (
       <>
         <div className="attribute-select-group">
           <div className="attribute-select-group-left">
-            <div
-              className="flex-start"
-              onClick={() => {
-                setVisible(true);
-
-                if (groupItem.type === SpecificationType.autoStep) {
-                  store.dispatch(setStep('pre'));
-                }
-              }}
-            >
+            <div className="flex-start" onClick={handleOpenSelectAttributeModal}>
               <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
               <SingleRightIcon className="single-right-icon" />
             </div>
@@ -229,7 +233,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
         {groupItem.type === SpecificationType.autoStep ? (
           <AutoStep
             attributeGroup={attributeGroup}
-            attributes={subAttributes}
+            attributes={attributes}
             visible={visible}
             setVisible={setVisible}
           />
@@ -238,7 +242,9 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             title={upperCase(POPOVER_TITLE[activeKey])}
             visible={visible}
             setVisible={setVisible}
-            dropdownCheckboxList={subAttributes.map((item) => ({
+            dropdownCheckboxList={(
+              attributeListFilterByBrand[activeKey] as AttributesWithSubAddtionData[]
+            ).map((item) => ({
               name: item.name,
               count: item.subs.length,
               options: flatMap(

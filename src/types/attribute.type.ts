@@ -133,11 +133,29 @@ export interface ProductAttributes {
   id: string;
   name: string;
   type: number;
+  subs: ProductSubAttributes[];
+}
+
+export interface AttributesWithSubAddtionData {
+  id: string;
+  name: string;
+  type: number;
   subs: ProductMainSubAttributes[];
+}
+
+export interface ProductAttributeWithSubAdditionByType {
+  general: AttributesWithSubAddtionData[];
+  feature: AttributesWithSubAddtionData[];
+  specification: AttributesWithSubAddtionData[];
 }
 
 export interface ProductAttributeByType {
   general: ProductAttributes[];
   feature: ProductAttributes[];
   specification: ProductAttributes[];
+}
+
+export enum EGetAllAttributeType {
+  ADD_SUB,
+  NONE_SUB,
 }

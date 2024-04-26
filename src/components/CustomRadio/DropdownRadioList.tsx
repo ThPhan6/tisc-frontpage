@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Collapse } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { useDropdropList } from '../hook';
+import { useDropdropRadioList } from '../hook';
 import { isEmpty } from 'lodash';
 
-import type { DropdownRadioListProps, RadioValue } from '@/components/CustomRadio/types';
+import type { DropdownRadioItem, DropdownRadioListProps } from '@/components/CustomRadio/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 
@@ -16,37 +16,10 @@ import { CollapseLevel2Props } from '../Collapse/Expand';
 import styles from './styles/dropdownList.less';
 
 const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
-  const {
-    data,
-    selected,
-    onChange,
-    renderTitle,
-    chosenItem,
-    canActiveMultiKey,
-    radioDisabled,
-    forceEnableCollapse = true,
-    collapseLevel = '1',
-  } = props;
+  const { data, selected, onChange, renderTitle, radioDisabled, collapseLevel = '1' } = props;
 
-  const {
-    activeKey,
-    optionKey,
-    setActiveKey,
-    setOptionKey,
-    handleCollapseMain,
-    handleCollapseOption,
-  } = useDropdropList(data, selected, collapseLevel);
-
-  useEffect(() => {
-    data?.forEach((item, index) => {
-      const checked = item.options.find((option) => {
-        return chosenItem && option.value === chosenItem.value;
-      });
-      if (checked) {
-        setActiveKey([index]);
-      }
-    });
-  }, [chosenItem]);
+  const { activeKey, optionKey, handleCollapseMain, handleCollapseOption } =
+    useDropdropRadioList(props);
 
   const renderHeader = (item: DropdownRadioItem, index: number) => {
     if (renderTitle) {
@@ -59,7 +32,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
               marginLeft: item.margin ? item.margin : 8,
             }}
           >
-            ({item.options.length})
+            ({item?.count ?? item?.options?.length ?? 0})
           </span>
         </span>
       );
@@ -109,13 +82,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
       expandIconPosition="right"
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={`dropdownList dropdownListV2`}
-      onChange={(keys) => {
-        let newKeys = keys;
-        if (!canActiveMultiKey) {
-          newKeys = typeof keys === 'string' ? keys : [keys[keys.length - 1]];
-        }
-        setActiveKey(newKeys);
-      }}
+      onChange={handleCollapseMain}
       activeKey={activeKey}
     >
       {data?.map((item, index) => (

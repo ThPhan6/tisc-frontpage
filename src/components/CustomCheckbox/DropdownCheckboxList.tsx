@@ -5,7 +5,7 @@ import { Collapse, Radio } from 'antd';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { useDropdropList } from '../hook';
+import { useDropdropCheckboxList } from '../hook';
 import { isEmpty } from 'lodash';
 
 import type {
@@ -27,13 +27,10 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     onChange,
     onOneChange,
     renderTitle,
-    chosenItem,
     combinable,
     noCollapse,
     showCount = true,
     customClass = '',
-    canActiveMultiKey,
-    forceEnableCollapse = true,
     isSelectAll,
     showCollapseIcon,
     additionalSelected,
@@ -46,13 +43,10 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     curSelect,
     activeKey,
     optionKey,
-    setActiveKey,
-    setOptionKey,
     handleCollapseMain,
     handleCollapseOption,
-    setActiveKeysToEnableCollapseOnCheckboxList,
     handleSelectAll,
-  } = useDropdropList(props);
+  } = useDropdropCheckboxList(props);
 
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
     return (
