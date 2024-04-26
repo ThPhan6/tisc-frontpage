@@ -7,6 +7,7 @@ import { getResponseMessage } from '@/helper/common';
 import {
   BrandAlphabet,
   BrandAssignTeamForm,
+  BrandAttributeSummary,
   BrandCard,
   BrandDesignProfile,
   BrandDetail,
@@ -18,6 +19,7 @@ import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import { KeyValueData } from '@/types';
 
@@ -26,6 +28,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 interface BrandListResponse {
   brands: BrandListItem[];
   pagination: PaginationResponse;
+  summary: SummaryResponse[];
 }
 
 export async function getBrandPagination(
@@ -37,7 +40,7 @@ export async function getBrandPagination(
     params,
   })
     .then((response: { data: BrandListResponse }) => {
-      const { brands, pagination } = response.data;
+      const { brands, pagination, summary } = response.data;
       callback({
         data: brands,
         pagination: {
@@ -45,6 +48,7 @@ export async function getBrandPagination(
           pageSize: pagination.page_size,
           total: pagination.total,
         },
+        summary,
       });
     })
     .catch((error) => {
@@ -167,6 +171,24 @@ export async function createBrand(data: TISCUserGroupBrandForm) {
     })
     .catch((error) => {
       message.error(getResponseMessage('create', 'brand', 'failed', error));
+      hidePageLoading();
+      return undefined;
+    });
+}
+
+export async function copyAttributeToBrand(id: string, brandId: string) {
+  showPageLoading();
+
+  return request<{ data: BrandDetail }>(`/api/attribute/copy/${id}/brand/${brandId}`, {
+    method: 'POST',
+  })
+    .then((res) => {
+      message.success(MESSAGE_NOTIFICATION.COPY_TO_BRAND_SUCCESS);
+      hidePageLoading();
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.COPY_TO_BRAND_ERROR);
       hidePageLoading();
       return undefined;
     });

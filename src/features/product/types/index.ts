@@ -143,6 +143,7 @@ export interface SpecifiedDetail {
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
+  brand_id: string;
   collections: GeneralData[];
   collection?: GeneralData;
   categories: GeneralData[];

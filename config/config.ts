@@ -80,7 +80,7 @@ export default defineConfig({
   // Fast Refresh 热更新
   fastRefresh: {},
   nodeModulesTransform: { type: 'none' },
-  mfsu: {},
+  mfsu: false,
   webpack5: {},
   exportStatic: {},
   define: {

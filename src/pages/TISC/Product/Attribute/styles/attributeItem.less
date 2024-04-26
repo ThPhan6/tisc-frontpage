@@ -1,9 +1,10 @@
 .attribute_container {
-  margin-top: 16px;
-  box-shadow: @border-bottom-light;
-  &:last-child {
-    box-shadow: none;
-  }
+  flex: 1;
+
+  // &:last-child {
+  //   box-shadow: none;
+  // }
+
   .field {
     display: flex;
     align-items: center;
@@ -73,7 +74,7 @@
     justify-content: center;
     padding-left: var(--spacing);
     :global(.group-type-placeholder) {
-      margin-left: 12px;
+      margin-left: 16px;
       color: @mono-color-medium;
       :global(.basis-conversion-group) {
         display: flex;
@@ -82,13 +83,14 @@
         color: #000;
         text-transform: capitalize;
         svg {
-          margin: 0 12px;
           cursor: default;
         }
       }
     }
   }
   :global(.attribute-input) {
+    padding-right: 0;
+    padding-left: 0;
     color: @primary-color-dark;
     text-transform: capitalize;
   }

@@ -28,3 +28,22 @@ export interface CustomRadioProps {
   optionStyle?: CSSProperties;
   disabled?: boolean;
 }
+
+export interface DropdownRadioItem {
+  [key: string]: any;
+  margin?: 8 | 12;
+  options: RadioValue[];
+}
+
+export interface DropdownRadioListProps {
+  selected?: RadioValue; // current value select
+  chosenItem?: RadioValue; // option selected // show active collapse
+  data: DropdownRadioItem[] | undefined;
+  renderTitle?: (data: DropdownRadioItem) => string | number | React.ReactNode;
+  onChange?: (value: RadioValue) => void;
+  noCollapse?: boolean;
+  canActiveMultiKey?: boolean;
+  radioDisabled?: boolean;
+  forceEnableCollapse?: boolean;
+  collapseLevel?: '1' | '2';
+}

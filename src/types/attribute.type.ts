@@ -1,5 +1,5 @@
 import { ProductAttributeType } from '@/features/product/types';
-import { SubBasisConversion, SubBasisPreset } from '@/types';
+import { BasisPresetTypeString, SubBasisConversion, SubBasisPreset } from '@/types';
 
 export interface SubAttribute {
   id: string;
@@ -9,6 +9,7 @@ export interface SubAttribute {
   description_1: string;
   description_2: string;
   content_type: string;
+  sub_group_id: string;
 }
 
 export interface AttributeListResponse {
@@ -45,7 +46,16 @@ export interface AttributeContentType {
   texts: BasisText[];
   conversions: BasisConvention[];
   presets: BasisPresetOption[];
+  feature_presets: BasisPresetOption[];
   options: BasisPresetOption[];
+}
+
+export enum EAttributeContentType {
+  texts = 'texts',
+  conversions = 'conversions',
+  presets = 'presets',
+  feature_presets = 'feature_presets',
+  options = 'options',
 }
 
 export interface AttributeSubForm {
@@ -57,12 +67,48 @@ export interface AttributeSubForm {
   description_2?: string;
   content_type?: string;
   activeKey?: string;
+  additional_type?: BasisPresetTypeString;
+  sub_group_id?: string;
 }
 export interface AttributeForm {
   id?: string;
   type?: number;
   name: string;
-  subs: AttributeSubForm[];
+  count: number;
+  subs: {
+    id?: string;
+    name: string;
+    count: number;
+    subs: AttributeSubForm[];
+  }[];
+}
+
+export interface ICreateAttributeRequest {
+  brand_id: string;
+  name: string;
+  type: number;
+  subs: {
+    name: string;
+    subs: {
+      name: string;
+      basis_id: string;
+      description: string;
+    }[];
+  }[];
+}
+
+export interface IUpdateAttributeRequest {
+  name: string;
+  subs: {
+    id?: string;
+    name: string;
+    subs: {
+      id?: string;
+      name: string;
+      basis_id: string;
+      description: string;
+    }[];
+  }[];
 }
 
 export interface ProductSubAttributes extends SubAttribute {
@@ -76,6 +122,13 @@ export interface ProductSubAttributes extends SubAttribute {
   };
 }
 
+export interface ProductMainSubAttributes {
+  id: string;
+  name: string;
+  type?: number;
+  subs: ProductSubAttributes[];
+}
+
 export interface ProductAttributes {
   id: string;
   name: string;
@@ -83,8 +136,26 @@ export interface ProductAttributes {
   subs: ProductSubAttributes[];
 }
 
+export interface AttributesWithSubAddtionData {
+  id: string;
+  name: string;
+  type: number;
+  subs: ProductMainSubAttributes[];
+}
+
+export interface ProductAttributeWithSubAdditionByType {
+  general: AttributesWithSubAddtionData[];
+  feature: AttributesWithSubAddtionData[];
+  specification: AttributesWithSubAddtionData[];
+}
+
 export interface ProductAttributeByType {
   general: ProductAttributes[];
   feature: ProductAttributes[];
   specification: ProductAttributes[];
+}
+
+export enum EGetAllAttributeType {
+  ADD_SUB,
+  NONE_SUB,
 }

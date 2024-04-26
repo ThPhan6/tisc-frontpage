@@ -9,16 +9,15 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
-import { CheckboxValue } from '../CustomCheckbox/types';
+import { CheckboxValue, DropdownCheckboxItem } from '../CustomCheckbox/types';
+import { DropdownRadioItem } from '../CustomRadio/types';
 import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
-import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
-import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 import { MainTitle } from '@/components/Typography';
@@ -31,6 +30,7 @@ import styles from './styles/Popover.less';
 
 export interface PopoverProps {
   title: string;
+  titlePosition?: 'left' | 'center';
   visible: boolean;
   setVisible?: (visible: boolean) => void;
   /// dropdown radio list
@@ -43,6 +43,9 @@ export interface PopoverProps {
 
   /// group checkbox list
   groupCheckboxList?: CheckboxValue[];
+
+  /// Currently, only implemented for dropdown checkbox list and drop down radio list
+  collapseLevel?: '1' | '2';
 
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];
@@ -61,6 +64,7 @@ export interface PopoverProps {
   // extra top action
   extraTopAction?: ReactNode;
   noFooter?: boolean;
+  cancelSaveFooter?: boolean;
 
   className?: string;
 
@@ -87,6 +91,7 @@ export interface PopoverProps {
 
 const Popover: FC<PopoverProps> = ({
   title,
+  titlePosition = 'left',
   visible,
   setVisible,
   dropdownRadioList,
@@ -114,6 +119,8 @@ const Popover: FC<PopoverProps> = ({
   secondaryModal,
   maskClosable,
   width,
+  cancelSaveFooter,
+  collapseLevel,
 }) => {
   const { isMobile } = useScreen();
 
@@ -128,7 +135,7 @@ const Popover: FC<PopoverProps> = ({
   const renderEmptyData = () => {
     return (
       <div className={styles.popoverEmptyData}>
-        <EmptyOne />
+        <EmptyOne isCenter />
       </div>
     );
   };
@@ -136,7 +143,7 @@ const Popover: FC<PopoverProps> = ({
   const renderChildren = () => {
     /// for dropdown radio list
     if (dropdownRadioList) {
-      if (dropdownRadioList.length == 1 && isEmpty(dropdownRadioList[0].options)) {
+      if (dropdownRadioList.length <= 1 && isEmpty(dropdownRadioList?.[0]?.options)) {
         return renderEmptyData();
       }
       return (
@@ -147,6 +154,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropDownRadioTitle}
           onChange={setCurrentValue}
           radioDisabled={disabledDropDownRadio}
+          collapseLevel={collapseLevel}
         />
       );
     }
@@ -161,7 +169,7 @@ const Popover: FC<PopoverProps> = ({
     }
     /// drodown checkbox list
     if (dropdownCheckboxList) {
-      if (dropdownCheckboxList.length == 1 && isEmpty(dropdownCheckboxList[0].options)) {
+      if (dropdownCheckboxList.length <= 1 && isEmpty(dropdownCheckboxList?.[0]?.options)) {
         return renderEmptyData();
       }
       return (
@@ -172,6 +180,7 @@ const Popover: FC<PopoverProps> = ({
           renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
           combinable={combinableCheckbox}
+          collapseLevel={collapseLevel}
         />
       );
     }
@@ -220,19 +229,31 @@ const Popover: FC<PopoverProps> = ({
   const onClose = () => {
     setVisible?.(false);
     closeModal();
+
+    if (clearOnClose) {
+      setChosenValue?.(undefined);
+    }
   };
 
   const onCancel = () => {
-    if (clearOnClose) {
-      setChosenValue?.(undefined);
-    } else {
-      // reset current value
-      setCurrentValue(chosenValue);
-      // onchange selected Value
-      if (setChosenValue) {
-        setChosenValue(chosenValue);
-      }
+    // if (clearOnClose) {
+    //   setChosenValue?.(undefined);
+    // } else {
+    //   // reset current value
+    //   setCurrentValue(chosenValue);
+    //   // onchange selected Value
+    //   if (setChosenValue) {
+    //     setChosenValue(chosenValue);
+    //   }
+    // }
+
+    // reset current value
+    setCurrentValue(chosenValue);
+    // onchange selected Value
+    if (setChosenValue) {
+      setChosenValue(chosenValue);
     }
+
     // hide popup
     onClose();
   };
@@ -251,7 +272,7 @@ const Popover: FC<PopoverProps> = ({
     onClose();
   };
 
-  const renderButtonFooter = () => {
+  const renderDoneFooter = (label: string = 'Done') => {
     return submitButtonStatus ? (
       <CustomButton
         size="small"
@@ -269,9 +290,32 @@ const Popover: FC<PopoverProps> = ({
         disabled={disabledSubmit}
         onClick={handleDone}
       >
-        Done
+        {label}
       </CustomButton>
     );
+  };
+
+  const renderButtonFooter = () => {
+    if (cancelSaveFooter) {
+      return (
+        <div className="flex-end" style={{ gap: 16 }}>
+          <CustomButton
+            size="small"
+            variant="primary"
+            properties="rounded"
+            buttonClass="done-btn"
+            disabled={disabledSubmit}
+            onClick={onCancel}
+          >
+            Cancel
+          </CustomButton>
+
+          {renderDoneFooter('Save')}
+        </div>
+      );
+    }
+
+    return renderDoneFooter();
   };
 
   const renderMobileContent = () => (
@@ -315,7 +359,9 @@ const Popover: FC<PopoverProps> = ({
         width={width ? width : 576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
-        className={`${styles.customPopover} ${className ?? ''}`}
+        className={`${styles.customPopover} ${className ?? ''} ${
+          titlePosition === 'center' ? styles.titlePositionCenter : ''
+        }`}
       >
         {extraTopAction}
         {renderChildren()}

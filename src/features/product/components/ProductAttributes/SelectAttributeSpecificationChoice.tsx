@@ -7,7 +7,8 @@ import { useProductAttributeForm } from './hooks';
 import { useCheckPermission } from '@/helper/hook';
 
 import { AttributeSelectedProps, ProductAttributeFormInput } from '../../types';
-import { ActiveKeyType, ProductInfoTab } from './types';
+import { ProductInfoTab } from './types';
+import { ActiveKeyType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
