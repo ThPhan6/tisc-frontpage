@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { getDefaultIDOfBasic } from './Option/components/constant';
+import { DEFAULT_MAIN_OPTION_ID, getDefaultIDOfBasic } from './Option/components/constant';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history, useLocation, useParams } from 'umi';
@@ -103,9 +103,11 @@ const getAttributeValueDefault = (subs: AttributeForm[]) => {
 };
 
 const removeOtherSubOptions = (data: BasisOptionForm, id: string) => {
+  const sub = data.subs.find((el) => el.id === id || el.id === `new-${id}`);
+
   return {
     ...data,
-    subs: [data.subs.find((el) => el.id === id)],
+    subs: sub ? [sub] : [],
   };
 };
 
@@ -981,6 +983,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
           handleOnClickDelete={() => handleOnClickDelete(index)}
         />
       );
+    }
+
+    if (!item?.id) {
+      return null;
     }
 
     return (
