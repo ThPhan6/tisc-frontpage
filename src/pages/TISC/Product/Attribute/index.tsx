@@ -110,33 +110,6 @@ const AttributeList: React.FC = () => {
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColumns: TableColumnItem<any>[] = [
       {
-        title: 'Content Type',
-        dataIndex: 'content_type',
-        noBoxShadow: noBoxShadow,
-        sorter: true,
-        render: (value: EAttributeContentType, record) => {
-          if (!record || !value) {
-            return null;
-          }
-
-          if (value.toLowerCase() === EAttributeContentType.presets) {
-            if (currentTab === BranchTabKey.general) {
-              return <span>General Presets</span>;
-            }
-
-            if (currentTab === BranchTabKey.feature) {
-              return <span>Feature Presets</span>;
-            }
-          }
-
-          if (value.toLowerCase() === EAttributeContentType.options) {
-            return <span>Component</span>;
-          }
-
-          return <span>{startCase(value)}</span>;
-        },
-      },
-      {
         title: 'Description',
         dataIndex: 'description',
         noBoxShadow: noBoxShadow,
@@ -192,6 +165,13 @@ const AttributeList: React.FC = () => {
       },
       // defaultSortOrder: 'ascend',
     },
+    {
+      title: 'Content Type',
+      dataIndex: 'content_type',
+      sorter: {
+        multiple: 4,
+      },
+    },
     ...getSameColumns(false),
     {
       title: 'Action',
@@ -243,6 +223,10 @@ const AttributeList: React.FC = () => {
         return <span className="text-capitalize">{value}</span>;
       },
     },
+    {
+      title: 'Content Type',
+      dataIndex: 'content_type',
+    },
     ...getSameColumns(false),
     {
       title: 'Action',
@@ -268,6 +252,32 @@ const AttributeList: React.FC = () => {
       dataIndex: dataIndexDefault,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
+      },
+    },
+    {
+      title: 'Content Type',
+      dataIndex: 'content_type',
+      noBoxShadow: false,
+      render: (value: EAttributeContentType, record) => {
+        if (!record || !value) {
+          return null;
+        }
+
+        if (value.toLowerCase() === EAttributeContentType.presets) {
+          if (currentTab === BranchTabKey.general) {
+            return <span>General Presets</span>;
+          }
+
+          if (currentTab === BranchTabKey.feature) {
+            return <span>Feature Presets</span>;
+          }
+        }
+
+        if (value.toLowerCase() === EAttributeContentType.options) {
+          return <span>Component</span>;
+        }
+
+        return <span>{startCase(value)}</span>;
       },
     },
     ...getSameColumns(false),
