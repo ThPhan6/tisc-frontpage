@@ -256,8 +256,7 @@ const BasisOptionList: React.FC = () => {
       fetchDataFunc={handleGetData}
       multiSort={{
         // colsDataIndex is sort keys
-        name: 'group_order',
-        main_group: 'main_order',
+        name: 'main_order',
         sub_group: 'option_order',
       }}
       extraParams={{

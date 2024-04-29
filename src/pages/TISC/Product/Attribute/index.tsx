@@ -20,6 +20,7 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import { BrandListItem } from '@/features/user-group/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
+import { EAttributeContentType } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
@@ -113,20 +114,26 @@ const AttributeList: React.FC = () => {
         dataIndex: 'content_type',
         noBoxShadow: noBoxShadow,
         sorter: true,
-        render: (value, record) => {
+        render: (value: EAttributeContentType, record) => {
           if (!record || !value) {
             return null;
           }
 
-          if (currentTab === BranchTabKey.general) {
-            return <span>General Presets</span>;
+          if (value.toLowerCase() === EAttributeContentType.presets) {
+            if (currentTab === BranchTabKey.general) {
+              return <span>General Presets</span>;
+            }
+
+            if (currentTab === BranchTabKey.feature) {
+              return <span>Feature Presets</span>;
+            }
           }
 
-          if (currentTab === BranchTabKey.feature) {
-            return <span>Feature Presets</span>;
+          if (value.toLowerCase() === EAttributeContentType.options) {
+            return <span>Component</span>;
           }
 
-          return <span>Component</span>;
+          return <span>{startCase(value)}</span>;
         },
       },
       {
@@ -286,6 +293,7 @@ const AttributeList: React.FC = () => {
         }}
         multiSort={{
           name: 'group_order',
+          'name 1': 'sub_group_order',
           attribute_name: 'attribute_order',
           content_type: 'content_type_order',
         }}
