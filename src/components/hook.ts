@@ -310,14 +310,39 @@ export const useDropdropRadioList = (params: DropdownRadioListProps) => {
       return;
     }
 
-    data?.forEach((item, index) => {
-      const checked = item.options.find((option) => {
-        return chosenItem && option.value === chosenItem.value;
+    if (collapseLevel === '1') {
+      data?.forEach((item, index) => {
+        const checked = item.options.find((option) => {
+          return chosenItem && option.value === chosenItem.value;
+        });
+        if (checked) {
+          setActiveKey([index]);
+        }
       });
-      if (checked) {
-        setActiveKey([index]);
-      }
-    });
+
+      return;
+    }
+
+    let activeKeys: string[] = [];
+    let optionKeys: string[] = [];
+
+    if (collapseLevel == '2') {
+      data?.forEach((item: any, index: number) => {
+        item.subs.forEach((sub: any, subIdx: number) => {
+          const selectedOption = sub.options.find((option: DropdownCheckboxItem) => {
+            return chosenItem && [chosenItem]?.find((checked) => option.value === checked?.value);
+          });
+
+          if (selectedOption) {
+            optionKeys = [String(subIdx)];
+            activeKeys = [String(index)];
+          }
+        });
+      });
+    }
+
+    setActiveKey(activeKeys);
+    setOptionKey(optionKeys);
   }, [chosenItem, forceEnableCollapse]);
 
   useEffect(() => {

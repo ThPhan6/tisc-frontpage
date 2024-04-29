@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
+import { useCheckBranchAttributeTab } from '../../BrandAttribute/hook';
 import { useAttributeLocation } from '../hooks/location';
 import { getProductAttributeContentType } from '@/services';
 import { isEmpty, isUndefined, lowerCase } from 'lodash';
@@ -23,6 +24,7 @@ import { EmptyOne } from '@/components/Empty';
 import { CustomModal } from '@/components/Modal';
 import { CustomTabs } from '@/components/Tabs';
 
+import { BranchTabKey } from '../../BrandAttribute/BranchHeader';
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
 import { AttributeEntryFormContext } from './AttributeEntryForm';
@@ -190,6 +192,7 @@ interface ContentTypeModalProps {}
 const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   const {} = props;
 
+  const { currentTab } = useCheckBranchAttributeTab();
   const { attributeLocation } = useAttributeLocation();
   const type = attributeLocation.TYPE;
 
@@ -208,12 +211,12 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
     {
       tab: 'GENERAL PRESETS',
       key: EAttributeContentType.presets,
-      disable: type === SPECIFICATION_TYPE,
+      disable: type === SPECIFICATION_TYPE || currentTab !== BranchTabKey.general,
     },
     {
       tab: 'FEATURE PRESETS',
       key: EAttributeContentType.feature_presets,
-      disable: type === SPECIFICATION_TYPE,
+      disable: type === SPECIFICATION_TYPE || currentTab !== BranchTabKey.feature,
     },
     { tab: 'COMPONENTS', key: EAttributeContentType.options, disable: type !== SPECIFICATION_TYPE },
   ];

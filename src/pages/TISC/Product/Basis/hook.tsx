@@ -121,6 +121,10 @@ const getEntryFormTitle = (type: ProductBasisFormType) => {
     return 'Conversion Group';
   }
 
+  if (type === ProductBasisFormType.attributes) {
+    return 'Attributes Configuration';
+  }
+
   return type === ProductBasisFormType.presets ? 'Group Name' : 'Components Configuration';
 };
 

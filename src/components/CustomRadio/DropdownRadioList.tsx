@@ -16,7 +16,15 @@ import { CollapseLevel2Props } from '../Collapse/Expand';
 import styles from './styles/dropdownList.less';
 
 const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
-  const { data, selected, onChange, renderTitle, radioDisabled, collapseLevel = '1' } = props;
+  const {
+    data,
+    selected,
+    chosenItem,
+    onChange,
+    renderTitle,
+    radioDisabled,
+    collapseLevel = '1',
+  } = props;
 
   const { activeKey, optionKey, handleCollapseMain, handleCollapseOption } =
     useDropdropRadioList(props);
@@ -102,7 +110,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
             {item?.subs?.map((opt: DropdownRadioItem, optIndex: number) => (
               <Collapse.Panel
                 className="site-collapse-custom-panel-level-2"
-                key={opt?.id ?? optIndex}
+                key={optIndex}
                 collapsible={opt?.count === 0 || isEmpty(item.subs) ? 'disabled' : undefined}
                 header={
                   <div className="flex-center">

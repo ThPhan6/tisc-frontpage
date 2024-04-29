@@ -9,7 +9,9 @@ export const replaceBrandAttributeBrandId = (
 ) => {
   const url = path.replace(':brandId', brandId).replace(':brandName', name);
 
-  return subId
+  return subId && id
+    ? url.replace(':subId', subId).replace(':id', id)
+    : subId
     ? url.replace(':subId', subId)
     : groupId && groupName
     ? url.replace(':groupName', groupName).replace(':groupId', groupId)
