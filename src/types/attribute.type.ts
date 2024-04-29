@@ -1,6 +1,14 @@
 import { ProductAttributeType } from '@/features/product/types';
 import { BasisPresetTypeString, SubBasisConversion, SubBasisPreset } from '@/types';
 
+export enum EAttributeContentType {
+  texts = 'texts',
+  conversions = 'conversions',
+  presets = 'presets',
+  feature_presets = 'feature_presets',
+  options = 'options',
+}
+
 export interface SubAttribute {
   id: string;
   name: string;
@@ -8,7 +16,7 @@ export interface SubAttribute {
   description: string;
   description_1: string;
   description_2: string;
-  content_type: string;
+  content_type: EAttributeContentType;
   sub_group_id: string;
 }
 
@@ -48,14 +56,6 @@ export interface AttributeContentType {
   presets: BasisPresetOption[];
   feature_presets: BasisPresetOption[];
   options: BasisPresetOption[];
-}
-
-export enum EAttributeContentType {
-  texts = 'texts',
-  conversions = 'conversions',
-  presets = 'presets',
-  feature_presets = 'feature_presets',
-  options = 'options',
 }
 
 export interface AttributeSubForm {
