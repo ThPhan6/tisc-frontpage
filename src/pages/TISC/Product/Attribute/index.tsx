@@ -286,6 +286,7 @@ const AttributeList: React.FC = () => {
         }}
         multiSort={{
           name: 'group_order',
+          'name 1': 'sub_group_order',
           attribute_name: 'attribute_order',
           content_type: 'content_type_order',
         }}
