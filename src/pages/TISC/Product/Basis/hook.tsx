@@ -12,6 +12,7 @@ import {
   useCheckBranchAttributeTab,
   useCheckBrandAttributePath,
 } from '../BrandAttribute/hook';
+import { useCheckPresetActiveTab } from './Preset/hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { checkNil, findDuplicateBy } from '@/helper/utils';
@@ -196,7 +197,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   const hideDrag = type === ProductBasisFormType.attributes;
 
   const location = useLocation();
-  const tabActive = location.hash.split('#')[1] as PresetTabKey;
+
+  const { selectedTab } = useCheckPresetActiveTab();
 
   const { brandName, brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
 
@@ -235,7 +237,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       createFunction: createPresetMiddleware,
       updateFunction: updatePresetMiddleware,
       newSubs: presetsValueDefault,
-      path: PATH.presets,
+      path:
+        selectedTab === PresetTabKey.generalPresets
+          ? `${PATH.presets}#general`
+          : `${PATH.presets}#feature`,
     },
     options: {
       getOneFunction: getOneBasisOption,
@@ -905,7 +910,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
           count: data.count,
           subs: newSubs,
           additional_type:
-            tabActive === PresetTabKey.generalPresets
+            selectedTab === PresetTabKey.generalPresets
               ? BasisPresetType.general
               : BasisPresetType.feature,
         };
