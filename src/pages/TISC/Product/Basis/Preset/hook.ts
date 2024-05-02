@@ -14,7 +14,7 @@ export const useCheckPresetActiveTab = () => {
   const [selectedTab, setSelectedTab] = useState<PresetTabKey>();
 
   useEffect(() => {
-    if (!location?.hash) {
+    if (!location?.hash && isActiveTab) {
       location.hash = '#' + PresetTabKey.generalPresets;
       history.push(location);
     }
