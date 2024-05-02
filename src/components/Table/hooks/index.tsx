@@ -373,7 +373,6 @@ const injectScriptToExpandableCellByLevel = (
 export const useAutoExpandNestedTableColumn = (
   totalNestedLevel: number,
   excludedColumns: number[],
-  forceReload?: boolean,
 ) => {
   useEffect(() => {
     const defaultStyle = document.createElement('style');
@@ -426,6 +425,6 @@ export const useAutoExpandNestedTableColumn = (
       cellStyles.forEach((stl) => stl.remove());
       injectedCell = '';
     };
-  }, [forceReload]);
+  }, []);
   return null;
 };

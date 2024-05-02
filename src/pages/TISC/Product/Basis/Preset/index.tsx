@@ -39,6 +39,8 @@ const colsDataIndex = {
 };
 
 const BasisPresetList: React.FC = () => {
+  useAutoExpandNestedTableColumn(3, [6]);
+
   const tableRef = useRef<any>();
   const tabRef = useRef<any>();
 
@@ -48,8 +50,6 @@ const BasisPresetList: React.FC = () => {
   useEffect(() => {
     setSelectedTab(location.hash.split('#')[1] as PresetTabKey);
   }, [location.hash]);
-
-  useAutoExpandNestedTableColumn(3, [5], selectedTab === PresetTabKey.generalPresets);
 
   useEffect(() => {
     if (selectedTab) {
