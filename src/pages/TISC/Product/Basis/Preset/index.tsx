@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useLocation } from 'umi';
 
+import { useCheckPresetActiveTab } from './hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -39,19 +39,11 @@ const colsDataIndex = {
 };
 
 const BasisPresetList: React.FC = () => {
-  useAutoExpandNestedTableColumn(3, [5]);
-
-  const location = useLocation();
+  useAutoExpandNestedTableColumn(3, [6]);
 
   const tableRef = useRef<any>();
-  const tabRef = useRef<any>();
 
-  const [selectedTab, setSelectedTab] = useState<PresetTabKey>();
-
-  /// watch tab selected changed
-  useEffect(() => {
-    setSelectedTab(location.hash.split('#')[1] as PresetTabKey);
-  }, [location.hash]);
+  const { selectedTab } = useCheckPresetActiveTab();
 
   useEffect(() => {
     if (selectedTab) {
@@ -167,7 +159,7 @@ const BasisPresetList: React.FC = () => {
               {
                 type: 'copy',
                 label: `Copy to ${
-                  tabRef.current.tab === PresetTabKey.featurePresets ? 'General' : 'Feature'
+                  selectedTab === PresetTabKey.featurePresets ? 'General' : 'Feature'
                 }`,
                 onClick: () => handleCopyPreset(record.id),
               },
@@ -266,7 +258,7 @@ const BasisPresetList: React.FC = () => {
 
   return (
     <CustomTable
-      header={<PresetHeader ref={tabRef} />}
+      header={<PresetHeader />}
       columns={setDefaultWidthForEachColumn(MainColumns, 6)}
       ref={tableRef}
       fetchDataFunc={getProductBasisPresetPagination}

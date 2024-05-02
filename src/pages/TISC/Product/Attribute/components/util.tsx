@@ -14,6 +14,7 @@ import {
 
 import { CollapseLevel1Props } from '@/components/Collapse/Expand';
 import { CustomRadio } from '@/components/CustomRadio';
+import { BodyText } from '@/components/Typography';
 
 export const formatBasisText = (items: BasisText[]): RadioValue[] => {
   return items.map((item) => {
@@ -260,7 +261,7 @@ export const ContentOptionTypeDetail: FC<{
                 header={
                   <div className="flex-center">
                     <span
-                      className="text-uppercase"
+                      className="text-capitalize"
                       style={{ fontWeight: optionKey === opt.id ? '400' : '300' }}
                     >
                       {opt.name}
@@ -272,7 +273,11 @@ export const ContentOptionTypeDetail: FC<{
                 <CustomRadio
                   options={
                     opt?.subs?.map((el: any) => ({
-                      label: el.name,
+                      label: (
+                        <BodyText level={5} fontFamily="Roboto" customClass="text-capitalize">
+                          {el.name}
+                        </BodyText>
+                      ),
                       value: el.id,
                     })) ?? []
                   }

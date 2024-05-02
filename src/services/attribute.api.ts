@@ -34,9 +34,51 @@ export async function getProductAttributePagination(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
+  if (!params) {
+    message.error('Something went wrong');
+    return;
+  }
+
+  const newParams = { ...params };
+  let attributeOrderIndex = -1;
+  let contentTypeOrderIndex = -1;
+
+  Object.keys(params).map((key, index) => {
+    if (key === 'attribute_order') {
+      attributeOrderIndex = index;
+    }
+
+    if (key === 'content_type_order') {
+      contentTypeOrderIndex = index;
+    }
+  });
+
+  if (attributeOrderIndex !== -1 && contentTypeOrderIndex !== -1) {
+    /// keep content type order
+    if (attributeOrderIndex > contentTypeOrderIndex) {
+      newParams.content_type_order =
+        (params?.attribute_order === 'ASC' && params?.content_type_order === 'DESC') ||
+        (params?.attribute_order === 'DESC' && params?.content_type_order === 'ASC')
+          ? 'ASC'
+          : 'DESC';
+
+      delete newParams?.attribute_order;
+
+      /// keep attribute order
+    } else {
+      newParams.attribute_order =
+        (params?.attribute_order === 'ASC' && params?.content_type_order === 'DESC') ||
+        (params?.attribute_order === 'DESC' && params?.content_type_order === 'ASC')
+          ? 'DESC'
+          : 'ASC';
+
+      delete newParams?.content_type_order;
+    }
+  }
+
   request(`/api/attribute/get-list`, {
     method: 'GET',
-    params,
+    params: newParams,
   })
     .then((response: CategoryPaginationResponse) => {
       const { attributes, pagination, summary } = response.data;

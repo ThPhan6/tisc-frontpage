@@ -54,7 +54,9 @@ export const MainPanelHeader: FC<MainPanelHeaderProps> = ({
   const { collapse, setCollapse, hideDelete, hideDrag } = useContext(FormGroupContext);
 
   const handleChangeMainOptionName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     e.stopPropagation();
+
     /// change subOption name
     handleChangeMainSubItem({
       ...mainOption,

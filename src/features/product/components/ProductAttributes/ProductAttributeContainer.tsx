@@ -99,7 +99,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
           {attributeGroupKey === 'specification_attribute_groups' ? (
             <CustomPlusButton
               size={18}
-              label="Create Auto-Steps"
+              label="Create Steps"
               onClick={addNewAutoStep}
               customClass={styles.paddingSpace}
             />
