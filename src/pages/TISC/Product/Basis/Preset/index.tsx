@@ -39,7 +39,7 @@ const colsDataIndex = {
 };
 
 const BasisPresetList: React.FC = () => {
-  useAutoExpandNestedTableColumn(3, [5]);
+  useAutoExpandNestedTableColumn(3, [6]);
 
   const tableRef = useRef<any>();
 
