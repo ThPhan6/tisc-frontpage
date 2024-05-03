@@ -229,7 +229,7 @@ const routes = [
           },
           {
             path: PATH.attributeGeneral,
-            name: 'general',
+            name: 'General',
             hideInMenu: true,
             routes: [
               {
@@ -251,7 +251,7 @@ const routes = [
           },
           {
             path: PATH.attributeFeature,
-            name: 'feature',
+            name: 'Feature',
             hideInMenu: true,
             routes: [
               {
@@ -273,7 +273,7 @@ const routes = [
           },
           {
             path: PATH.attributeSpecification,
-            name: 'specification',
+            name: 'Specification',
             hideInMenu: true,
             routes: [
               {
@@ -295,7 +295,7 @@ const routes = [
           },
           {
             path: PATH.options,
-            name: 'component',
+            name: 'Component',
             hideInMenu: true,
             routes: [
               {
@@ -795,7 +795,7 @@ const routes = [
   },
   {
     path: PATH.designerProject,
-    name: 'project',
+    name: 'Project',
     icon: 'project-icon.svg',
     access: 'design_project_overal_listing',
     routes: [
@@ -824,7 +824,7 @@ const routes = [
   },
   {
     path: PATH.designerAdminstration,
-    name: 'adminstration',
+    name: 'Adminstration',
     icon: 'adminstration-icon.svg',
     access: 'design_administration',
     routes: [
