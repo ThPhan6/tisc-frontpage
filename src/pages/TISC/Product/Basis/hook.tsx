@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { DEFAULT_MAIN_OPTION_ID, getDefaultIDOfBasic } from './Option/components/constant';
+import { getDefaultIDOfBasic } from './Option/components/constant';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { history, useLocation, useParams } from 'umi';
@@ -198,7 +198,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
   const location = useLocation();
 
-  const { selectedTab } = useCheckPresetActiveTab();
+  const { selectedTab, activePath: presetActivePath } = useCheckPresetActiveTab();
 
   const { brandName, brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
 
@@ -237,10 +237,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       createFunction: createPresetMiddleware,
       updateFunction: updatePresetMiddleware,
       newSubs: presetsValueDefault,
-      path:
-        selectedTab === PresetTabKey.generalPresets
-          ? `${PATH.presets}#general`
-          : `${PATH.presets}#feature`,
+      path: presetActivePath,
     },
     options: {
       getOneFunction: getOneBasisOption,
@@ -574,7 +571,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
     deletePresetMiddleware(idBasis).then((isSuccess) => {
       if (isSuccess) {
-        pushTo(PATH.presets);
+        pushTo(presetActivePath);
       }
     });
   };
