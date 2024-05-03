@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle } from 'react';
+import { FC } from 'react';
 
 import { PATH } from '@/constants/path';
 import { useHistory } from 'umi';
@@ -21,7 +21,7 @@ export enum PresetTabKey {
 
 interface PresetHeaderProps {}
 
-export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
+export const PresetHeader: FC<PresetHeaderProps> = () => {
   const history = useHistory();
 
   const { isActiveTab, selectedTab, setSelectedTab } = useCheckPresetActiveTab();
@@ -41,13 +41,11 @@ export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
     },
   ];
 
-  useImperativeHandle(ref, () => ({ tab: selectedTab }), [selectedTab]);
-
   const handleChangeTab = (activeKey: string) => {
     location.hash = '#' + activeKey;
     history.push(location);
 
-    setSelectedTab(activeKey as PresetTabKey);
+    setSelectedTab?.(activeKey as PresetTabKey);
   };
 
   const handlePushTo = () => {
@@ -89,4 +87,4 @@ export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
       />
     </div>
   );
-});
+};

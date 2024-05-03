@@ -13,6 +13,11 @@ export const useCheckPresetActiveTab = () => {
 
   const [selectedTab, setSelectedTab] = useState<PresetTabKey>();
 
+  const activePath =
+    selectedTab === PresetTabKey.generalPresets
+      ? `${PATH.presets}#${PresetTabKey.generalPresets}`
+      : `${PATH.presets}#${PresetTabKey.featurePresets}`;
+
   useEffect(() => {
     if (!location?.hash && isActiveTab) {
       location.hash = '#' + PresetTabKey.generalPresets;
@@ -22,5 +27,5 @@ export const useCheckPresetActiveTab = () => {
     setSelectedTab(location.hash.split('#')[1] as PresetTabKey);
   }, [location.hash]);
 
-  return { isActiveTab, selectedTab, setSelectedTab };
+  return { isActiveTab, activePath, selectedTab, setSelectedTab };
 };
