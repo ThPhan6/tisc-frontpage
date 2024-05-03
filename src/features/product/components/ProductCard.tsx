@@ -368,9 +368,11 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   hideFavorite = false,
 }) => {
   const loading = useAppSelector(loadingSelector);
-  const { data, allProducts } = useAppSelector((state) => state.product.list);
+  const { data, allProducts, filter } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const [collapseKey, setCollapseKey] = useState<number>();
+
+  const filterByCategory = filter?.name.toLowerCase() === 'category_id';
 
   const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!data) {
@@ -402,7 +404,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           groupName="product-group"
           className={styles.productCardCollapse}
           customHeaderClass={`${styles.productCardHeaderCollapse} ${
-            group.description || isTiscAdmin ? styles.productHeaderCollapse : ''
+            (group.description || isTiscAdmin) && !filterByCategory
+              ? styles.productHeaderCollapse
+              : ''
           }`}
           expandIcon={undefined}
           key={index}
@@ -432,7 +436,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           }
         >
           <div style={{ marginBottom: 8 }}>
-            {group.description || isTiscAdmin ? (
+            {(group.description || isTiscAdmin) && !filterByCategory ? (
               <div style={{ background: '#fff' }}>
                 <div
                   className="flex-between"

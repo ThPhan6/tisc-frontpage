@@ -10,9 +10,10 @@ import {
   FormOptionGroupHeaderContext,
   useCheckBasicOptionForm,
 } from '../../../hook';
-import { cloneDeep } from 'lodash';
+import { useCheckAttributeForm } from '@/pages/TISC/Product/BrandAttribute/hook';
+import { cloneDeep, uniqueId } from 'lodash';
 
-import { BasisOptionSubForm, SubBasisOption } from '@/types';
+import { BasisOptionSubForm } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 
@@ -29,7 +30,7 @@ interface SubPanelHeaderProps {
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
   handleCopySubOtionItem?: () => void;
-  dragIcon: JSX.Element;
+  dragIcon?: JSX.Element;
 }
 
 export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
@@ -40,9 +41,22 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
   handleDeleteSubOption,
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
-  const placeholder = isBasicOption ? 'type sub classification name' : 'sub preset name';
-  const defaultWidth = subOption.name ? 30 : isBasicOption ? placeholder.length * 6.5 : 106;
+  const { isAttribute } = useCheckAttributeForm();
 
+  const placeholder = isAttribute
+    ? 'type sub attribute name'
+    : isBasicOption
+    ? 'type sub classification name'
+    : 'sub preset name';
+  const defaultWidth = subOption.name
+    ? 30
+    : isAttribute
+    ? placeholder.length * 6.5
+    : isBasicOption
+    ? placeholder.length * 6.5
+    : 106;
+
+  const newId = uniqueId();
   const { mode } = useContext(FormOptionGroupHeaderContext);
   const { collapse, setCollapse } = useContext(FormGroupContext);
 
@@ -58,14 +72,30 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
 
     /// default open option item list when add new
     /// add new sub option item
-    const newSubOptionItem: Partial<SubBasisOption> = {
+    let newSubOptionItem: any = {
       value_1: '',
       value_2: '',
       unit_2: '',
       unit_1: '',
-      product_id: '',
-      paired: 0,
     };
+
+    if (isAttribute) {
+      newSubOptionItem = {
+        id: `new-${newId}`,
+        name: '',
+        description: '',
+        content_type: '',
+      };
+    } else if (isBasicOption) {
+      newSubOptionItem = {
+        value_1: '',
+        value_2: '',
+        unit_2: '',
+        unit_1: '',
+        product_id: '',
+        paired: 0,
+      };
+    }
 
     handleChangeSubItem({
       ...subOption,
@@ -91,7 +121,7 @@ export const SubPanelHeader: FC<SubPanelHeaderProps> = ({
             onClick={(e) => {
               e.stopPropagation();
             }}
-            style={{ cursor: 'default' }}
+            style={{ cursor: 'default', paddingLeft: isAttribute ? 32 : 0 }}
           >
             {dragIcon}
             <CustomInput

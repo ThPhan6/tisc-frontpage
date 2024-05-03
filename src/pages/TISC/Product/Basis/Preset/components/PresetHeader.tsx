@@ -1,8 +1,9 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { FC } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useHistory, useLocation } from 'umi';
+import { useHistory } from 'umi';
 
+import { useCheckPresetActiveTab } from '../hook';
 import { pushTo } from '@/helper/history';
 
 import { TabItem } from '@/components/Tabs/types';
@@ -20,12 +21,10 @@ export enum PresetTabKey {
 
 interface PresetHeaderProps {}
 
-export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
+export const PresetHeader: FC<PresetHeaderProps> = () => {
   const history = useHistory();
 
-  const location = useLocation();
-
-  const isActiveTab = location.pathname === PATH.presets;
+  const { isActiveTab, selectedTab, setSelectedTab } = useCheckPresetActiveTab();
 
   const listTab: TabItem[] = [
     {
@@ -42,27 +41,11 @@ export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
     },
   ];
 
-  const [selectedTab, setSelectedTab] = useState<PresetTabKey>();
-
-  useEffect(() => {
-    if (!location?.hash) {
-      location.hash = '#' + PresetTabKey.generalPresets;
-      history.push(location);
-
-      setSelectedTab(PresetTabKey.generalPresets);
-      return;
-    }
-
-    setSelectedTab(location.hash.split('#')[1] as PresetTabKey);
-  }, [location.hash]);
-
-  useImperativeHandle(ref, () => ({ tab: selectedTab }), [selectedTab]);
-
   const handleChangeTab = (activeKey: string) => {
     location.hash = '#' + activeKey;
     history.push(location);
 
-    setSelectedTab(activeKey as PresetTabKey);
+    setSelectedTab?.(activeKey as PresetTabKey);
   };
 
   const handlePushTo = () => {
@@ -102,18 +85,6 @@ export const PresetHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
         style={{ position: 'absolute', top: 50, right: 16 }}
         disabled={!isActiveTab}
       />
-
-      {/* {activeTab ? (
-        <>
-          <CustomTabPane active={selectedTab === PresetTabKey.generalPresets} lazyLoad>
-            <div>General</div>
-          </CustomTabPane>
-
-          <CustomTabPane active={selectedTab === PresetTabKey.featurePresets} lazyLoad>
-            <div>Feature</div>
-          </CustomTabPane>
-        </>
-      ) : null} */}
     </div>
   );
-});
+};

@@ -1,0 +1,46 @@
+.element {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: auto hidden;
+
+  .form_sub__input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .form_input {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      overflow: hidden;
+      &__formula,
+      &__unit {
+        // flex: 1;
+        :global(.ant-input) {
+          padding: 0;
+          color: @primary-color-dark;
+        }
+      }
+      &__formula {
+        width: auto !important;
+        margin: 0 8px;
+      }
+    }
+    :global(.product-id-input) {
+      width: 100%;
+      padding: 0 0 0 12px;
+      color: @primary-color-dark;
+      font-size: 14px;
+    }
+    :global(.product-id-label) {
+      color: @mono-color;
+      font-weight: 300;
+      font-size: 16px;
+      font-family: @font-secondary;
+      font-style: normal;
+      line-height: 21px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+  }
+}

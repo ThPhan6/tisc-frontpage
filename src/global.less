@@ -92,12 +92,10 @@ ol {
 
 .basis-conversion-group {
   display: flex;
+  gap: 12px;
   align-items: center;
   text-transform: capitalize;
-  svg {
-    margin: 0 12px;
-    cursor: default;
-  }
+  row-gap: 12px;
 }
 
 @media (max-width: @screen-lg) {
@@ -495,4 +493,95 @@ li.ant-menu-submenu {
       content: attr(data-text);
     }
   }
+}
+
+.dropdownList {
+  background-color: #fff;
+  .ant-collapse-item {
+    border-bottom: 0 !important;
+    box-shadow: @border-bottom-light;
+    &.ant-collapse-item-disabled {
+      .ant-collapse-header {
+        color: #000;
+        .ant-collapse-arrow {
+          color: @mono-color-medium;
+        }
+      }
+    }
+    &.ant-collapse-item-active {
+      box-shadow: @border-bottom;
+      .ant-collapse-header[aria-expanded='true'] {
+        font-weight: 500;
+      }
+    }
+    .ant-collapse-header {
+      padding: 9px 24px 9px 0;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: @font-primary;
+      font-style: normal;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      .ant-collapse-arrow {
+        right: 0;
+      }
+    }
+    .ant-collapse-content-box {
+      padding: 0 0 8px 16px !important;
+    }
+  }
+
+  drop-up-icon,
+  drop-down-icon {
+    margin-left: 12px;
+  }
+}
+
+.dropdownListV2 {
+  .ant-collapse-item {
+    .ant-collapse-content-box {
+      padding: 0 0 8px 32px !important;
+    }
+  }
+}
+
+.dropdownListLevelTwo {
+  .ant-collapse-item:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  .ant-collapse-item {
+    border-bottom: 0 !important;
+    box-shadow: none;
+
+    .ant-collapse-content-box {
+      padding: 0 0 0 16px !important;
+    }
+
+    .ant-collapse-header {
+      padding: 7px 24px 7px 0;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: @font-primary;
+      font-style: normal;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      .ant-collapse-arrow {
+        right: 0;
+      }
+    }
+
+    &.ant-collapse-item-active {
+      box-shadow: none;
+
+      .ant-collapse-header[aria-expanded='true'] {
+        font-weight: 500;
+      }
+    }
+  }
+}
+.mb-4 {
+  margin-bottom: 4px;
 }

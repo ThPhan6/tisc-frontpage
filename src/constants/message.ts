@@ -162,6 +162,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_LIST_ASSIGN_TEAM_SUCCESS: 'Update list assign team successfully',
   UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
   UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
+  COPY_TO_BRAND_SUCCESS: 'Copy to brand successfully',
+  COPY_TO_BRAND_ERROR: 'Failed to copy to brand',
 
   //user-group / design firms
   GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',

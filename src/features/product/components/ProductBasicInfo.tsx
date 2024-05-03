@@ -218,12 +218,11 @@ export const ProductBasicInfo: React.FC = () => {
             );
           }}
         />
-
         {/* Description */}
         <FormGroup
           label="Description"
           layout="horizontal"
-          formClass="mb-16"
+          // formClass="mb-16"
           labelFontSize={4}
           noColon
           labelWidth={75}

@@ -10,6 +10,7 @@ import type {
   SortParams,
   SpecifiedDetail,
 } from '../types';
+import { ProductAttributeWithSubAdditionByType } from './../../../types/attribute.type';
 import { OrderMethod, SpecificationAttributeGroup } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
@@ -30,9 +31,16 @@ interface ProductState {
     [key: string]: string;
   };
   allPreSelectAttributes: SpecificationAttributeGroup[];
+
+  attributeList: ProductAttributeWithSubAdditionByType;
 }
 
 const initialState: ProductState = {
+  attributeList: {
+    feature: [],
+    general: [],
+    specification: [],
+  },
   allPreSelectAttributes: [],
   brandSpecifiedDetails: {
     id: '',
@@ -61,6 +69,7 @@ const initialState: ProductState = {
   details: {
     id: '',
     name: '',
+    brand_id: '',
     description: '',
     keywords: ['', '', '', ''],
     images: [],
@@ -247,6 +256,13 @@ const productSlice = createSlice({
         ['specification_attribute_groups']: '',
       };
     },
+
+    setActualAttributeList: (
+      state,
+      action: PayloadAction<ProductAttributeWithSubAdditionByType>,
+    ) => {
+      state.attributeList = action.payload;
+    },
   },
 });
 
@@ -272,6 +288,7 @@ export const {
   setCurAttrGroupCollapse,
   closeActiveSpecAttributeGroup,
   getAllPreSelectAttributes,
+  setActualAttributeList,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
