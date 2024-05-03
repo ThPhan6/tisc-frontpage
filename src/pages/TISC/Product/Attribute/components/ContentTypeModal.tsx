@@ -257,7 +257,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
       const selected = listTab.find((item) => {
         if (subAttribute.content_type?.toLowerCase() === 'presets') {
           return (item.key =
-            subAttribute.additional_type?.toLowerCase() === 'general presets'
+            currentTab === BranchTabKey.general
               ? EAttributeContentType.presets
               : EAttributeContentType.feature_presets);
         }
