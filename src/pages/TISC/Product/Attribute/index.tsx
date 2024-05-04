@@ -215,13 +215,13 @@ const AttributeList: React.FC = () => {
       title: colTitle.main,
       dataIndex: dataIndexDefault,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     {
       title: colTitle.sub,
       dataIndex: colsDataIndex.sub,
-      render: (value) => {
-        return <span className="text-capitalize">{value}</span>;
-      },
     },
     {
       title: 'Content Type',

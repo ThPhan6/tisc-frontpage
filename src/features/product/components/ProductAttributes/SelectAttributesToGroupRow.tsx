@@ -5,7 +5,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
-import { cloneDeep, flatMap, upperCase } from 'lodash';
+import { capitalize, cloneDeep, flatMap, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
@@ -90,7 +90,6 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
       );
-
       if (value.length > newAttrGroup[groupIndex].attributes.length) {
         newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
@@ -116,6 +115,21 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             activeData.conversion_value_1 = previousData.conversion_value_1;
             activeData.conversion_value_2 = previousData.conversion_value_2;
             activeData.basis_options = previousData.basis_options;
+          }
+
+          // title auto fill from attribute sub group
+          if (selectedAttribute && selectedAttribute?.id) {
+            attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
+              const subGroupAttr = itemSubs.subs.find(
+                (sub: any) => sub.id === selectedAttribute?.sub_group_id,
+              );
+              if (subGroupAttr) {
+                newAttrGroup[groupIndex].name = (subGroupAttr.name || '').replace(
+                  /\w+/g,
+                  _.capitalize,
+                );
+              }
+            });
           }
 
           const newAttribute: ProductAttributeProps = {
