@@ -145,6 +145,7 @@ const BasisConversionList: React.FC = () => {
           childrenColumnName: 'subs',
           level: 2,
         })}
+        isActiveOnRow={true}
       />
     </>
   );

@@ -157,7 +157,7 @@ export const BranchHeader = forwardRef((props: PresetHeaderProps, ref: any) => {
 
       <CustomPlusButton
         onClick={handlePushTo}
-        style={{ position: 'absolute', top: 50, right: 16 }}
+        style={{ position: 'absolute', top: 50, right: 13 }}
         disabled={!activeTab}
       />
     </div>

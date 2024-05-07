@@ -148,7 +148,7 @@ const PresetTable: FC<PresetTableProps> = ({ type }) => {
               },
               {
                 type: 'copy',
-                label: `Copy to Feature`,
+                label: `Copy to ${type === PresetTabKey.featurePresets ? 'General' : 'Feature'} `,
                 onClick: () => handleCopyPreset(record.id),
               },
               {

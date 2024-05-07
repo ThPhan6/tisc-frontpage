@@ -120,7 +120,7 @@ export const ContentTypeDetail: FC<{
           key={option.id}
           collapsible={option?.count === 0 ? 'disabled' : undefined}
           header={
-            <div className="flex-center">
+            <div className="flex-center hover-on-row">
               <span className="text-uppercase">{option.name}</span>
               <span style={{ marginLeft: 8 }}>({option.count})</span>
             </div>

@@ -795,7 +795,7 @@ const routes = [
   },
   {
     path: PATH.designerProject,
-    name: 'Project',
+    name: 'project',
     icon: 'project-icon.svg',
     access: 'design_project_overal_listing',
     routes: [
@@ -824,7 +824,7 @@ const routes = [
   },
   {
     path: PATH.designerAdminstration,
-    name: 'Adminstration',
+    name: 'adminstration',
     icon: 'adminstration-icon.svg',
     access: 'design_administration',
     routes: [
