@@ -148,6 +148,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       menu.name !== undefined
     );
   });
+  console.log(menuData);
 
   const menuItems = getMenuItems(menuData);
 

@@ -5,7 +5,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
-import { capitalize, cloneDeep, flatMap, upperCase } from 'lodash';
+import { cloneDeep, flatMap, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
@@ -120,15 +120,18 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
           // title auto fill from attribute sub group
           if (selectedAttribute && selectedAttribute?.id) {
             attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
-              const subGroupAttr = itemSubs.subs.find(
+              let subGroupAttr = itemSubs.subs.find(
                 (sub: any) => sub.id === selectedAttribute?.sub_group_id,
               );
-              if (subGroupAttr) {
-                newAttrGroup[groupIndex].name = (subGroupAttr.name || '').replace(
-                  /\w+/g,
-                  _.capitalize,
-                );
+              if (!subGroupAttr) {
+                subGroupAttr = {
+                  name: 'Sub group',
+                };
               }
+              newAttrGroup[groupIndex].name = (subGroupAttr.name || '').replace(
+                /\w+/g,
+                _.capitalize,
+              );
             });
           }
 
@@ -191,7 +194,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       }
 
       return (
-        <div className={styles.attributeItemCheckBox}>
+        <div className={`${styles.attributeItemCheckBox} hover-on-row`}>
           <BodyText level={3} customClass="attribute-name">
             {item.name}
           </BodyText>
@@ -283,6 +286,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             onFormSubmit={onSelectValue}
             secondaryModal
             collapseLevel="2"
+            width={1152}
           />
         )}
       </>

@@ -50,7 +50,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
 
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
     return (
-      <div className="flex-start w-full">
+      <div className="flex-start w-full hover-on-row">
         <div className="flex-start w-full">
           {renderTitle?.(item) ?? index}
 
@@ -58,7 +58,6 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
             <span
               style={{
                 marginLeft: item.margin ? item.margin : 8,
-                fontWeight: 300,
               }}
             >
               ({item?.count ?? item?.options?.length ?? 0})
@@ -196,7 +195,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
                 collapsible={opt?.count === 0 || isEmpty(item.subs) ? 'disabled' : undefined}
                 className="site-collapse-custom-panel-level-2"
                 header={
-                  <div className="flex-center">
+                  <div className="flex-center hover-on-row">
                     <span className="text-uppercase">{opt.name}</span>
                     <span style={{ marginLeft: 8, fontWeight: 300 }}>
                       ({opt?.count ?? item?.subs?.length ?? 0})

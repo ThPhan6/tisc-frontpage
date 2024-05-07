@@ -60,6 +60,8 @@ export const AttributeItem: FC<AttributeItemProps> = ({ item, onChangeItemName }
             name="name"
             className="attribute-input"
             onChange={onChangeItemName}
+            autoWidth
+            defaultWidth={180}
           />
         </div>
 

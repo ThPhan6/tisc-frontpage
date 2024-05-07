@@ -147,7 +147,10 @@ export const FormOptionGroupHeaderContext = createContext<{
   setMode?: (mode: formOptionMode) => void;
 }>({
   mode: 'list',
-  setMode: (_mode) => null,
+  setMode: (mode) => {
+    console.log(mode);
+    return null;
+  },
 });
 
 export interface DynamicObjectProps {
@@ -200,7 +203,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
   const { selectedTab, activePath: presetActivePath } = useCheckPresetActiveTab();
 
-  const { brandName, brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
+  const { brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
 
   const { activePath } = useCheckBranchAttributeTab();
   const { attributeLocation } = useAttributeLocation();
@@ -390,7 +393,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     setData((prevState) => ({ ...prevState, subs: newSubs }));
   };
 
-  const onDragEnd = (result: any, _provided: any) => {
+  const onDragEnd = (result: any, provided: any) => {
+    console.log(provided);
     const { source, destination, draggableId } = result as DragEndResultProps;
 
     const sourceIndex = source?.index;
@@ -601,14 +605,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       return;
     }
 
-    const inValidAttribute =
-      sub.subs.some((el) => !el.subs.length) ||
-      sub.subs.some((el) => el.subs.some((s) => !s.name || !s.content_type));
+    // const inValidAttribute =
+    //   sub.subs.some((el) => !el.subs.length) ||
+    //   sub.subs.some((el) => el.subs.some((s) => !s.name || !s.content_type));
 
-    if (inValidAttribute) {
-      message.error('Attribute item is uniqued and required');
-      return;
-    }
+    // if (inValidAttribute) {
+    //   message.error('Attribute item is uniqued and required');
+    //   return;
+    // }
 
     const duplicateSub = findDuplicateBy(
       sub.subs.map((el) => ({ ...el, name: el.name.toLowerCase() })),
