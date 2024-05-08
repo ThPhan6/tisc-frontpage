@@ -402,7 +402,15 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         checkboxList={
           isSpecification
             ? {
-                heading: curAttributeData?.basis?.name ?? 'N/A',
+                // heading: curAttributeData?.basis?.name ?? 'N/A',
+                heading: (
+                  <Title
+                    level={7}
+                    customClass={`preset-option-heading text-capitalize ${styles.presetOptionTitle}`}
+                  >
+                    {curAttributeData?.basis?.name ?? 'N/A'}
+                  </Title>
+                ),
                 customItemClass: styles.customItemClass,
                 isSelectAll: true,
                 options:
@@ -426,8 +434,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                 {
                   heading: (
                     <Title
-                      level={8}
-                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}
+                      level={7}
+                      customClass={`preset-option-heading text-capitalize ${styles.presetOptionTitle}`}
                     >
                       {curAttributeData?.basis?.name ?? 'N/A'}
                     </Title>
