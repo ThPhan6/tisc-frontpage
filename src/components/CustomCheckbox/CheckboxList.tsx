@@ -67,7 +67,9 @@ const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange })
               onClick={handleSelectAll}
               className="w-full row-reverse flex-between radio-select-all"
             >
-              <MainTitle level={3}>Select All Options</MainTitle>
+              <MainTitle level={3} style={{ paddingLeft: 0 }}>
+                Select All Components
+              </MainTitle>
             </Radio>
           </div>
         ) : null}
