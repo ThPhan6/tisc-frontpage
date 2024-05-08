@@ -367,7 +367,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       {renderProductAttributeItem()}
 
       <Popover
-        title={isSpecification ? 'OPTION' : 'PRESET'}
+        title={isSpecification ? 'COMPONENTS' : 'PRESET'}
+        width={1152}
         secondaryModal
         visible={visible}
         setVisible={setVisible}

@@ -614,34 +614,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     //   return;
     // }
 
-    const duplicateSub = findDuplicateBy(
-      sub.subs.map((el) => ({ ...el, name: el.name.toLowerCase() })),
-      ['name'],
-    );
-
-    if (duplicateSub.length >= 1) {
-      message.error('Sub attribute name is uniqued and required');
-      return;
-    }
-
-    const duplicateAttributeItem = findDuplicateBy(
-      flatMap(
-        sub.subs.map((el) =>
-          el.subs.map((s) => ({
-            ...s,
-            name: s.name.toLowerCase(),
-            content_type: s.content_type?.toLowerCase(),
-          })),
-        ),
-      ),
-      ['name', 'basis_id'],
-    );
-
-    if (duplicateAttributeItem.length >= 1) {
-      message.error('Attribute item duplicated by its name and content type');
-      return;
-    }
-
     const newSubs: IUpdateAttributeRequest = {
       name: sub.name.trim(),
       subs: sub.subs.map((el) => {
@@ -654,6 +626,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
               name: s.name.trim(),
               basis_id: s.basis_id,
               description: s.description,
+              sub_group_id: el?.id,
             };
 
             if (newSub?.id?.indexOf('new') !== -1) {
@@ -671,6 +644,32 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         return newEl;
       }) as any,
     };
+
+    const duplicateSub = findDuplicateBy(
+      newSubs.subs.map((el) => ({ ...el, name: el.name.toLowerCase() })),
+      ['name'],
+    );
+
+    if (duplicateSub.length >= 1) {
+      message.error('Sub attribute name is uniqued and required');
+      return;
+    }
+
+    const duplicateAttributeItem = findDuplicateBy(
+      flatMap(
+        newSubs.subs.map((el) =>
+          el.subs.map((s) => ({
+            ...s,
+            name: s.name.toLowerCase(),
+          })),
+        ),
+      ),
+      ['name', 'sub_group_id'],
+    );
+    if (duplicateAttributeItem.length >= 1) {
+      message.error('Attribute item duplicated by its name and content type');
+      return;
+    }
 
     const handleSubmit = idBasis ? handleUpdate : handleCreate;
 

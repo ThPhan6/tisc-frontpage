@@ -5,7 +5,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
-import { cloneDeep, flatMap, upperCase } from 'lodash';
+import { capitalize, cloneDeep, flatMap, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
@@ -90,7 +90,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
       );
-      if (value.length > newAttrGroup[groupIndex].attributes.length) {
+      if (value.length != newAttrGroup[groupIndex].attributes.length) {
         newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
           let selectedAttribute: ProductSubAttributes | undefined;
@@ -118,21 +118,23 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
           }
 
           // title auto fill from attribute sub group
+
           if (selectedAttribute && selectedAttribute?.id) {
-            attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
-              let subGroupAttr = itemSubs.subs.find(
-                (sub: any) => sub.id === selectedAttribute?.sub_group_id,
-              );
-              if (!subGroupAttr) {
-                subGroupAttr = {
-                  name: 'Sub group',
-                };
-              }
-              newAttrGroup[groupIndex].name = (subGroupAttr.name || '').replace(
-                /\w+/g,
-                _.capitalize,
-              );
-            });
+            if (!selectedAttribute.sub_group_id) {
+              newAttrGroup[groupIndex].name = 'Sub Group';
+            } else {
+              attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
+                const subGroupAttrWithName = itemSubs.subs.find(
+                  (sub: any) => sub.id === selectedAttribute?.sub_group_id,
+                );
+                if (subGroupAttrWithName) {
+                  newAttrGroup[groupIndex].name = (subGroupAttrWithName.name || '').replace(
+                    /\w+/g,
+                    capitalize,
+                  );
+                }
+              });
+            }
           }
 
           const newAttribute: ProductAttributeProps = {
@@ -145,11 +147,9 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
 
           return newAttribute;
         });
-
-        // close modal
-        setVisible(false);
       }
-
+      // close modal
+      setVisible(false);
       /// set selection for each group attribute has attribute option type
       const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
 

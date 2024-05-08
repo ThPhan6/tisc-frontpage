@@ -129,7 +129,7 @@ const AttributeList: React.FC = () => {
       {
         title: 'Count',
         dataIndex: 'count',
-        width: '5%',
+        width: 63,
         align: 'center',
         noBoxShadow: noBoxShadow,
       },
@@ -177,7 +177,7 @@ const AttributeList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '66px',
       render: (_value, record) => {
         if (record.master) {
           return null;
@@ -232,7 +232,7 @@ const AttributeList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '66px',
     },
   ];
 
@@ -285,7 +285,7 @@ const AttributeList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '66px',
     },
   ];
 
