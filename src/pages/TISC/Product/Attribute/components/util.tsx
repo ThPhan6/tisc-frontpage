@@ -121,8 +121,15 @@ export const ContentTypeDetail: FC<{
           collapsible={option?.count === 0 ? 'disabled' : undefined}
           header={
             <div className="flex-center hover-on-row">
-              <span className="text-uppercase">{option.name}</span>
-              <span style={{ marginLeft: 8 }}>({option.count})</span>
+              <span
+                className="text-uppercase"
+                style={{ fontWeight: optionKey === option.id ? '400' : '' }}
+              >
+                {option.name}
+              </span>
+              <span style={{ marginLeft: 8, fontWeight: optionKey === option.id ? '400' : '' }}>
+                ({option.count})
+              </span>
             </div>
           }
         >
@@ -237,14 +244,16 @@ export const ContentOptionTypeDetail: FC<{
           key={item.id}
           collapsible={item.count === 0 ? 'disabled' : undefined}
           header={
-            <div className="flex-center">
+            <div className="flex-center hover-on-row">
               <span
                 className="text-uppercase"
-                style={{ fontWeight: mainOptionKey === item.id ? '400' : '300' }}
+                style={{ fontWeight: mainOptionKey === item.id ? '400' : '' }}
               >
                 {item.name}
               </span>
-              <span style={{ marginLeft: 8 }}>({item.count})</span>
+              <span style={{ marginLeft: 8, fontWeight: mainOptionKey === item.id ? '400' : '' }}>
+                ({item.count})
+              </span>
             </div>
           }
         >
@@ -259,14 +268,16 @@ export const ContentOptionTypeDetail: FC<{
                 key={opt.id}
                 collapsible={opt.count === 0 ? 'disabled' : undefined}
                 header={
-                  <div className="flex-center">
+                  <div className="flex-center hover-on-row">
                     <span
                       className="text-capitalize"
-                      style={{ fontWeight: optionKey === opt.id ? '400' : '300' }}
+                      style={{ fontWeight: optionKey === opt.id ? '400' : '' }}
                     >
                       {opt.name}
                     </span>
-                    <span style={{ marginLeft: 8 }}>({opt.count})</span>
+                    <span style={{ marginLeft: 8, fontWeight: optionKey === opt.id ? '400' : '' }}>
+                      ({opt.count})
+                    </span>
                   </div>
                 }
               >
