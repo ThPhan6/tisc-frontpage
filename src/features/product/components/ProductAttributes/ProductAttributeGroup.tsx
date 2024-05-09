@@ -16,7 +16,7 @@ import {
   useQuery,
 } from '@/helper/hook';
 import { showImageUrl, sortObjectArray } from '@/helper/utils';
-import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
+import { capitalize, has, sortBy, trimEnd, uniq } from 'lodash';
 
 import {
   LinkedOptionDataProps,
@@ -33,6 +33,7 @@ import {
   setStep,
   setStepData,
 } from '../../reducers';
+import { SpecificationType } from '../../types';
 import {
   AttributeSelectedProps,
   ProductAttributeFormInput,
@@ -539,20 +540,18 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
-
     if (isTiscAdmin) {
-      // return isEditable ? (
-      //   <InputGroup
-      //     horizontal
-      //     fontLevel={4}
-      //     label={icon}
-      //     placeholder="type title"
-      //     noWrap
-      //     value={group.name}
-      //     onChange={onChangeAttributeName(grIndex)}
-      //   />
-      // ) : (
-      return (
+      return group.type === SpecificationType.autoStep ? (
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          label={icon}
+          placeholder="type title"
+          noWrap
+          value={group.name}
+          onChange={onChangeAttributeName(grIndex)}
+        />
+      ) : (
         <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
           {group.name || 'Title'}
         </BodyText>
