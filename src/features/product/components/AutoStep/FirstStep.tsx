@@ -27,6 +27,7 @@ interface FirstStepProps {
 }
 
 export const FirstStep: FC<FirstStepProps> = ({ attributeGroup, selected }) => {
+  console.log(attributeGroup);
   const { attributeListFilterByBrand } = useContext(ProductAttributeComponentContext);
   const attributes = attributeListFilterByBrand.specification;
 
@@ -90,7 +91,7 @@ export const FirstStep: FC<FirstStepProps> = ({ attributeGroup, selected }) => {
       <div className={styles.mainContent}>
         <div className={styles.content}>
           <BodyText level={5} fontFamily="Roboto" customClass={styles.header}>
-            select option dataset
+            select component dataset
           </BodyText>
           <DropdownRadioList
             data={attributes.map((item) => ({
