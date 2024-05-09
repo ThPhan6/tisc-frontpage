@@ -16,15 +16,7 @@ import { CollapseLevel2Props } from '../Collapse/Expand';
 import styles from './styles/dropdownList.less';
 
 const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
-  const {
-    data,
-    selected,
-    chosenItem,
-    onChange,
-    renderTitle,
-    radioDisabled,
-    collapseLevel = '1',
-  } = props;
+  const { data, selected, onChange, renderTitle, radioDisabled, collapseLevel = '1' } = props;
 
   const { activeKey, optionKey, handleCollapseMain, handleCollapseOption } =
     useDropdropRadioList(props);
@@ -32,7 +24,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
   const renderHeader = (item: DropdownRadioItem, index: number) => {
     if (renderTitle) {
       return (
-        <span>
+        <span className="hover-on-row">
           {renderTitle(item)}
           <span
             className={styles.dropdownCount}
@@ -113,11 +105,9 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
                 key={optIndex}
                 collapsible={opt?.count === 0 || isEmpty(item.subs) ? 'disabled' : undefined}
                 header={
-                  <div className="flex-center">
+                  <div className="flex-center hover-on-row">
                     <span className="text-uppercase">{opt.name}</span>
-                    <span style={{ marginLeft: 8, fontWeight: 300 }}>
-                      ({opt?.count ?? item?.subs?.length ?? 0})
-                    </span>
+                    <span style={{ marginLeft: 8 }}>({opt?.count ?? item?.subs?.length ?? 0})</span>
                   </div>
                 }
               >

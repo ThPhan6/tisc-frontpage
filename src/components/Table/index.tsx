@@ -358,6 +358,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           if (onRow) {
             return 'cursor-pointer hover-on-row';
           }
+          return isActiveOnRow ? 'hover-on-row' : '';
         }}
         onRow={onRow}
         dataSource={data}

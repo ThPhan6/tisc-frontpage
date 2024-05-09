@@ -98,7 +98,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
           isCheckboxList ? (
             <label
               key={`${option.value}_${index}_${randomId}`}
-              className={`${style['item-wrapper']} ${
+              className={` ${style['item-wrapper']} ${
                 chosenItems?.some((el) => el.value === option.select_id)
                   ? 'item-checkbox-active'
                   : ''
@@ -113,7 +113,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                 }}
-                className={getActiveClass(option)}
+                className={`${getActiveClass(option)}`}
               >
                 {option.label}
               </div>

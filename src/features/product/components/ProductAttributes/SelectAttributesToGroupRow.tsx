@@ -90,7 +90,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
       );
-      if (value.length > newAttrGroup[groupIndex].attributes.length) {
+      if (value.length != newAttrGroup[groupIndex].attributes.length) {
         newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
           let selectedAttribute: ProductSubAttributes | undefined;
@@ -118,18 +118,23 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
           }
 
           // title auto fill from attribute sub group
+
           if (selectedAttribute && selectedAttribute?.id) {
-            attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
-              const subGroupAttr = itemSubs.subs.find(
-                (sub: any) => sub.id === selectedAttribute?.sub_group_id,
-              );
-              if (subGroupAttr) {
-                newAttrGroup[groupIndex].name = (subGroupAttr.name || '').replace(
-                  /\w+/g,
-                  _.capitalize,
+            if (!selectedAttribute.sub_group_id) {
+              newAttrGroup[groupIndex].name = 'Sub Group';
+            } else {
+              attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
+                const subGroupAttrWithName = itemSubs.subs.find(
+                  (sub: any) => sub.id === selectedAttribute?.sub_group_id,
                 );
-              }
-            });
+                if (subGroupAttrWithName) {
+                  newAttrGroup[groupIndex].name = (subGroupAttrWithName.name || '').replace(
+                    /\w+/g,
+                    capitalize,
+                  );
+                }
+              });
+            }
           }
 
           const newAttribute: ProductAttributeProps = {
@@ -142,11 +147,9 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
 
           return newAttribute;
         });
-
-        // close modal
-        setVisible(false);
       }
-
+      // close modal
+      setVisible(false);
       /// set selection for each group attribute has attribute option type
       const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
 
@@ -191,7 +194,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       }
 
       return (
-        <div className={styles.attributeItemCheckBox}>
+        <div className={`${styles.attributeItemCheckBox} hover-on-row`}>
           <BodyText level={3} customClass="attribute-name">
             {item.name}
           </BodyText>
@@ -283,6 +286,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             onFormSubmit={onSelectValue}
             secondaryModal
             collapseLevel="2"
+            width={1152}
           />
         )}
       </>

@@ -147,7 +147,10 @@ export const FormOptionGroupHeaderContext = createContext<{
   setMode?: (mode: formOptionMode) => void;
 }>({
   mode: 'list',
-  setMode: (_mode) => null,
+  setMode: (mode) => {
+    console.log(mode);
+    return null;
+  },
 });
 
 export interface DynamicObjectProps {
@@ -200,13 +203,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
   const { selectedTab, activePath: presetActivePath } = useCheckPresetActiveTab();
 
-  const { brandName, brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
+  const { brandId, id: idBasis, groupId, groupName, subId } = useBrandAttributeParam();
 
   const { activePath } = useCheckBranchAttributeTab();
   const { attributeLocation } = useAttributeLocation();
   const { componentCreatePath } = useCheckBrandAttributePath();
 
-  const isCreateComponent = location.pathname === componentCreatePath && !idBasis;
+  const isCreateComponent =
+    decodeURIComponent(location.pathname) === decodeURIComponent(componentCreatePath) && !idBasis;
 
   const submitButtonStatus = useBoolean(false);
 
@@ -316,7 +320,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         message.error('Group not found');
         return;
       }
-
+      handleOnClickAddIcon();
       FORM_CONFIG[type].getOneFunction(groupId).then((res) => {
         setComponentData(res as any);
       });
@@ -390,7 +394,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     setData((prevState) => ({ ...prevState, subs: newSubs }));
   };
 
-  const onDragEnd = (result: any, _provided: any) => {
+  const onDragEnd = (result: any, provided: any) => {
+    console.log(provided);
     const { source, destination, draggableId } = result as DragEndResultProps;
 
     const sourceIndex = source?.index;
@@ -525,7 +530,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
             newData = removeOtherSubOptions(newData, subId as string);
           }
-
           setData(newData);
         }
       }
@@ -601,42 +605,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
       return;
     }
 
-    const inValidAttribute =
-      sub.subs.some((el) => !el.subs.length) ||
-      sub.subs.some((el) => el.subs.some((s) => !s.name || !s.content_type));
+    // const inValidAttribute =
+    //   sub.subs.some((el) => !el.subs.length) ||
+    //   sub.subs.some((el) => el.subs.some((s) => !s.name || !s.content_type));
 
-    if (inValidAttribute) {
-      message.error('Attribute item is uniqued and required');
-      return;
-    }
-
-    const duplicateSub = findDuplicateBy(
-      sub.subs.map((el) => ({ ...el, name: el.name.toLowerCase() })),
-      ['name'],
-    );
-
-    if (duplicateSub.length >= 1) {
-      message.error('Sub attribute name is uniqued and required');
-      return;
-    }
-
-    const duplicateAttributeItem = findDuplicateBy(
-      flatMap(
-        sub.subs.map((el) =>
-          el.subs.map((s) => ({
-            ...s,
-            name: s.name.toLowerCase(),
-            content_type: s.content_type?.toLowerCase(),
-          })),
-        ),
-      ),
-      ['name', 'basis_id'],
-    );
-
-    if (duplicateAttributeItem.length >= 1) {
-      message.error('Attribute item duplicated by its name and content type');
-      return;
-    }
+    // if (inValidAttribute) {
+    //   message.error('Attribute item is uniqued and required');
+    //   return;
+    // }
 
     const newSubs: IUpdateAttributeRequest = {
       name: sub.name.trim(),
@@ -650,6 +626,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
               name: s.name.trim(),
               basis_id: s.basis_id,
               description: s.description,
+              sub_group_id: el?.id,
             };
 
             if (newSub?.id?.indexOf('new') !== -1) {
@@ -667,6 +644,32 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         return newEl;
       }) as any,
     };
+
+    const duplicateSub = findDuplicateBy(
+      newSubs.subs.map((el) => ({ ...el, name: el.name.toLowerCase() })),
+      ['name'],
+    );
+
+    if (duplicateSub.length >= 1) {
+      message.error('Sub attribute name is uniqued and required');
+      return;
+    }
+
+    const duplicateAttributeItem = findDuplicateBy(
+      flatMap(
+        newSubs.subs.map((el) =>
+          el.subs.map((s) => ({
+            ...s,
+            name: s.name.toLowerCase(),
+          })),
+        ),
+      ),
+      ['name', 'sub_group_id'],
+    );
+    if (duplicateAttributeItem.length >= 1) {
+      message.error('Attribute item duplicated by its name and content type');
+      return;
+    }
 
     const handleSubmit = idBasis ? handleUpdate : handleCreate;
 

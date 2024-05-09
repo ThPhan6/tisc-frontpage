@@ -146,7 +146,10 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           key={subOption.id}
           showArrow={false}
         >
-          <div className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}>
+          <div
+            style={{ paddingLeft: 80 }}
+            className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}
+          >
             {!subOption.subs?.length ? (
               <EmptyOne />
             ) : (
@@ -231,8 +234,6 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   } = props;
 
   const { collapse, setCollapse, hideDrag } = useContext(FormGroupContext);
-
-  const { isAttribute } = useCheckAttributeForm();
 
   const handleDeleteSubOption = (index: number) => {
     const newSubItems = [...mainOption.subs];

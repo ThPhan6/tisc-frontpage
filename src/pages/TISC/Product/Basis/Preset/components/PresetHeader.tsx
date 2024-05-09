@@ -65,7 +65,7 @@ export const PresetHeader: FC<PresetHeaderProps> = () => {
 
   return (
     <div>
-      <TableHeader title="PRESET" customClass={styles.presetHeader} />
+      <TableHeader title="PRESETS" customClass={styles.presetHeader} />
 
       <CustomTabs
         listTab={listTab}
