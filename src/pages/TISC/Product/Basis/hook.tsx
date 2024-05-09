@@ -111,6 +111,23 @@ const removeOtherSubOptions = (data: BasisOptionForm, id: string) => {
     subs: sub ? [sub] : [],
   };
 };
+const toUpdatedSubOptions = (
+  data: BasisOptionForm,
+  currentSubId: string,
+  newSubNames: string[],
+) => {
+  const subs = data.subs.filter(
+    (el) =>
+      el.id === currentSubId ||
+      el.id === `new-${currentSubId}` ||
+      newSubNames.includes(el.name.toLowerCase()),
+  );
+
+  return {
+    ...data,
+    subs,
+  };
+};
 
 export enum ProductBasisFormType {
   conversions = 'conversions',
@@ -319,7 +336,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         message.error('Group not found');
         return;
       }
-
+      handleOnClickAddIcon();
       FORM_CONFIG[type].getOneFunction(groupId).then((res) => {
         setComponentData(res as any);
       });
@@ -467,6 +484,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
         : updateFunction(idBasis as string, dataSubmit);
 
     updateFunctionExcute.then((res: any) => {
+      const newSubsName = dataSubmit.subs
+        .filter((item: any) => !item.id)
+        .map((item: any) => item.name.toLowerCase());
       if (hasMainSubOption) {
         if (res?.id) {
           const oldDdata = cloneDeep(data);
@@ -527,9 +547,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
               return;
             }
 
-            newData = removeOtherSubOptions(newData, subId as string);
+            newData = toUpdatedSubOptions(newData, subId as string, newSubsName);
           }
-
           setData(newData);
         }
       }
