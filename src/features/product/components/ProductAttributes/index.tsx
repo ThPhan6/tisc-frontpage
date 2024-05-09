@@ -111,10 +111,7 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
       return;
     }
 
-    getAllAttribute(
-      EGetAllAttributeType.ADD_SUB,
-      isFilterByBrand && brandId ? brandId : undefined,
-    ).then((data) => {
+    getAllAttribute(EGetAllAttributeType.ADD_SUB, brandId ? brandId : undefined).then((data) => {
       setAllAttributeFilterByBrand(data as ProductAttributeWithSubAdditionByType);
     });
   }, [brandId, isFilterByBrand]);
