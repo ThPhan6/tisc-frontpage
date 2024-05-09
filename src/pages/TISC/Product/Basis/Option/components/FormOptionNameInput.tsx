@@ -29,7 +29,6 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   const { setMode, mode, hideTitleAddIcon, hideTitleInput } = useContext(
     FormOptionGroupHeaderContext,
   );
-
   return (
     <div className={`${styles.option_form_container} ${customClass}`}>
       <div className={styles.header}>
@@ -46,9 +45,9 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
         )}
 
         <div className="flex-end">
-          {hideTitleAddIcon || !isCreateComponent ? null : (
+          {hideTitleAddIcon ? null : isCreateComponent ? (
             <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
-          )}
+          ) : null}
           {isBasicOption ? (
             <ListIcon
               className={`${styles.header__icon} ${mode === 'list' ? 'list-icon' : ''}`}
