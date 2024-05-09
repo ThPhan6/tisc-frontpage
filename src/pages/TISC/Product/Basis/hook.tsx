@@ -209,7 +209,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
   const { attributeLocation } = useAttributeLocation();
   const { componentCreatePath } = useCheckBrandAttributePath();
 
-  const isCreateComponent = location.pathname === componentCreatePath && !idBasis;
+  const isCreateComponent =
+    decodeURIComponent(location.pathname) === decodeURIComponent(componentCreatePath) && !idBasis;
 
   const submitButtonStatus = useBoolean(false);
 

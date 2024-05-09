@@ -25,7 +25,8 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   const isBasicOption = useCheckBasicOptionForm();
   const { id: idBasis } = useBrandAttributeParam();
   const { componentCreatePath } = useCheckBrandAttributePath();
-  const isCreateComponent = location.pathname === componentCreatePath && !idBasis;
+  const isCreateComponent =
+    decodeURIComponent(location.pathname) === decodeURIComponent(componentCreatePath) && !idBasis;
   const { setMode, mode, hideTitleAddIcon, hideTitleInput } = useContext(
     FormOptionGroupHeaderContext,
   );
