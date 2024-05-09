@@ -4,7 +4,7 @@ import { ReactComponent as CardImageIcon } from '@/assets/icons/card-image-icon-
 import { ReactComponent as ListIcon } from '@/assets/icons/hamburger-menu-icon-18.svg';
 import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
 
-import { useBrandAttributeParam, useCheckBrandAttributePath } from '../../../BrandAttribute/hook';
+import { useBrandAttributeParam } from '../../../BrandAttribute/hook';
 import { FormOptionGroupHeaderContext, useCheckBasicOptionForm } from '../../hook';
 
 import { FormNameInputProps } from '@/components/EntryForm/types';
@@ -24,9 +24,7 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
   const { id: idBasis } = useBrandAttributeParam();
-  const { componentCreatePath } = useCheckBrandAttributePath();
-  const isCreateComponent =
-    decodeURIComponent(location.pathname) === decodeURIComponent(componentCreatePath) && !idBasis;
+  const isCreateComponent = !idBasis;
   const { setMode, mode, hideTitleAddIcon, hideTitleInput } = useContext(
     FormOptionGroupHeaderContext,
   );

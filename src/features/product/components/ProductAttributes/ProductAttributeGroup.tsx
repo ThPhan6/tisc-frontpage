@@ -541,19 +541,20 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const group = attributeGroup[grIndex];
 
     if (isTiscAdmin) {
-      return isEditable ? (
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          label={icon}
-          placeholder="type title"
-          noWrap
-          value={group.name}
-          onChange={onChangeAttributeName(grIndex)}
-        />
-      ) : (
+      // return isEditable ? (
+      //   <InputGroup
+      //     horizontal
+      //     fontLevel={4}
+      //     label={icon}
+      //     placeholder="type title"
+      //     noWrap
+      //     value={group.name}
+      //     onChange={onChangeAttributeName(grIndex)}
+      //   />
+      // ) : (
+      return (
         <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
-          {group.name}
+          {group.name || 'Title'}
         </BodyText>
       );
     }
