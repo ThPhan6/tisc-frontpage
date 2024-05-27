@@ -1,10 +1,11 @@
 import { FC, useContext } from 'react';
+import { useLocation } from 'react-router';
 
 import { ReactComponent as CardImageIcon } from '@/assets/icons/card-image-icon-18.svg';
 import { ReactComponent as ListIcon } from '@/assets/icons/hamburger-menu-icon-18.svg';
 import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
 
-import { useBrandAttributeParam } from '../../../BrandAttribute/hook';
+import { useCheckBrandAttributePath } from '../../../BrandAttribute/hook';
 import { FormOptionGroupHeaderContext, useCheckBasicOptionForm } from '../../hook';
 
 import { FormNameInputProps } from '@/components/EntryForm/types';
@@ -23,11 +24,14 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
   customClass = '',
 }) => {
   const isBasicOption = useCheckBasicOptionForm();
-  const { id: idBasis } = useBrandAttributeParam();
-  const isCreateComponent = !idBasis;
   const { setMode, mode, hideTitleAddIcon, hideTitleInput } = useContext(
     FormOptionGroupHeaderContext,
   );
+  const location = useLocation();
+
+  const { componentUpdatePath } = useCheckBrandAttributePath();
+  const isUpdateComponent =
+    decodeURIComponent(location.pathname) === decodeURIComponent(componentUpdatePath);
   return (
     <div className={`${styles.option_form_container} ${customClass}`}>
       <div className={styles.header}>
@@ -44,7 +48,7 @@ export const FormOptionNameInput: FC<FormNameInputProps> = ({
         )}
 
         <div className="flex-end">
-          {hideTitleAddIcon ? null : isCreateComponent ? (
+          {hideTitleAddIcon ? null : !isUpdateComponent ? (
             <AddIcon className={styles.header__icon} onClick={handleOnClickAddIcon} />
           ) : null}
           {isBasicOption ? (
