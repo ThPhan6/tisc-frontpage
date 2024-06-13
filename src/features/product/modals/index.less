@@ -41,10 +41,22 @@
   }
 
   .boxShadowBottom {
-    box-shadow: @border-bottom-light;
+    // box-shadow: @border-bottom-light;
 
     :global(.ant-input) {
       color: @primary-color-dark;
+    }
+    :global(.side-container) {
+      width: 576px;
+
+      &:first-child {
+        margin-right: 15px;
+        box-shadow: @border-bottom-light;
+      }
+      &:last-child {
+        margin-left: 16px;
+        box-shadow: @border-bottom-light;
+      }
     }
   }
 

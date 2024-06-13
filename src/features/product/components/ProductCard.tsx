@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
@@ -7,6 +7,7 @@ import { Tooltip, TooltipProps, message } from 'antd';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
@@ -25,7 +26,7 @@ import {
 } from '@/features/product/services';
 import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import {
   deleteCustomProduct,
@@ -33,7 +34,7 @@ import {
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
 import { deleteCollection, updateCollection } from '@/services';
-import { capitalize, truncate } from 'lodash';
+import { capitalize, flatMap, truncate } from 'lodash';
 
 import { setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
@@ -54,6 +55,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { assignProductModalTitle } from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
 import styles from './ProductCard.less';
+import { CheckBoxDropDown } from './ProductTopBarItem';
 
 interface CollapseProductListProps {
   showBrandLogo?: boolean;
@@ -367,10 +369,48 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   showInquiryRequest = false,
   hideFavorite = false,
 }) => {
+  const { isMobile } = useScreen();
   const loading = useAppSelector(loadingSelector);
   const { data, allProducts, filter } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
-  const [collapseKey, setCollapseKey] = useState<number>();
+  const [collapseKey, setCollapseKey] = useState<number>(-1);
+  const [activeLabels, setActiveLabels] = useState<{ id: string; name: string }[]>([]);
+  const [groups, setGroups] = useState<any>([]);
+  const isOpenGallery = useBoolean(false);
+  const isOpenLabel = useBoolean(false);
+
+  useEffect(() => {
+    setGroups(data);
+  }, [JSON.stringify(data)]);
+  useEffect(() => {
+    if (data) {
+      const activeProducts =
+        activeLabels.length === 0
+          ? data[collapseKey]?.products
+          : data[collapseKey]?.products.filter((product) => {
+              if (
+                product.labels
+                  .map((label) => label.id)
+                  .some((label) =>
+                    activeLabels.map((activeLabel: any) => activeLabel.id).includes(label),
+                  )
+              )
+                return true;
+              return false;
+            });
+      setGroups(
+        data.map((item, index: number) => {
+          if (index === collapseKey) {
+            return {
+              ...item,
+              products: activeProducts,
+            };
+          }
+          return item;
+        }),
+      );
+    }
+  }, [JSON.stringify(activeLabels)]);
 
   const filterByCategory = filter?.name.toLowerCase() === 'category_id';
 
@@ -398,7 +438,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 
   return (
     <>
-      {data?.map((group, index) => (
+      {groups?.map((group: any, index: number) => (
         <ActiveOneCustomCollapse
           groupIndex={index}
           groupName="product-group"
@@ -413,7 +453,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           collapsible={group.count === 0 ? 'disabled' : undefined}
           forceOnKeyChange
           onChange={() => {
-            setCollapseKey(collapseKey === index ? undefined : index);
+            isOpenLabel.setValue(false);
+            isOpenGallery.setValue(false);
+            setActiveLabels([]);
+            setCollapseKey(collapseKey === index ? -1 : index);
           }}
           header={
             <div style={{ width: '100%' }}>
@@ -477,7 +520,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                         onClick={() => {
                           confirmDelete(() => {
                             deleteCollection(group.id).then(() => {
-                              const brandId = data[0].products[0].brand?.id || '';
+                              const brandId = groups[0].products[0].brand?.id || '';
                               getProductSummary(brandId).then(() => {
                                 const params = {
                                   brand_id: brandId,
@@ -510,10 +553,95 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 </div>
               </div>
             ) : null}
+            {!filterByCategory ? (
+              <div className={styles.galleryContainer}>
+                <div className={styles.group}>
+                  <div
+                    className={`header-text ${styles.gallery} ${
+                      isOpenGallery.value ? styles.active : ''
+                    }`}
+                    onClick={() => {
+                      isOpenGallery.setValue((pre) => !pre);
+                    }}
+                  >
+                    <BodyText level={5} fontFamily="Roboto">
+                      Gallery
+                    </BodyText>
+                    <div style={{ marginRight: 16, marginLeft: 8, height: 20 }}>
+                      {isOpenGallery.value ? <DropupIcon /> : <DropdownIcon />}
+                    </div>
+                  </div>
+
+                  <div className={'d-flex'}>
+                    <div
+                      className={`${styles.label} ${
+                        activeLabels[0] || isOpenLabel.value ? styles.active : ''
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        isOpenLabel.setValue((pre) => !pre);
+                      }}
+                    >
+                      <CheckBoxDropDown
+                        items={flatMap(group.products.map((product: any) => product.labels))}
+                        onChange={(values) => {
+                          setActiveLabels(values);
+                        }}
+                        viewAllTop={true}
+                        textCapitalize={false}
+                        placement={'bottomLeft'}
+                        menuStyle={{ height: 'max-content', width: 240 }}
+                        handleChangeDropDownIcon={() => {}}
+                        className={'header-text'}
+                        dropDownListVisible={isOpenLabel.value}
+                        selected={activeLabels}
+                      >
+                        {'Filter by'}
+                      </CheckBoxDropDown>
+                    </div>
+                    {!isMobile
+                      ? activeLabels.map((activeLabel: any, labelIndex: number) => (
+                          <div style={{ padding: 8 }}>
+                            <div
+                              key={labelIndex}
+                              style={{
+                                borderRadius: 12,
+                                border: '1px solid black',
+                                height: 22,
+                                paddingLeft: 8,
+                                paddingRight: 1,
+                              }}
+                              className={'d-flex flex-center'}
+                            >
+                              <span style={{ paddingRight: 8 }}>{activeLabel.name}</span>
+                              <RemoveIcon
+                                className={styles.removeIcon}
+                                onClick={() => {
+                                  setActiveLabels(
+                                    activeLabels.filter((item: any) => item.id !== activeLabel.id),
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      : null}
+                  </div>
+                </div>
+                <div
+                  className={` ${
+                    isOpenGallery.value ? styles.galleryContentIn : styles.galleryContentOut
+                  }`}
+                >
+                  <p style={{ padding: 16 }}>Gallery is coming</p>
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <div className={styles.productCardContainer}>
-            {group.products.map((productItem, itemIndex) => (
+            {group.products.map((productItem: any, itemIndex: number) => (
               <ProductCard
                 key={productItem.id || itemIndex}
                 product={productItem}

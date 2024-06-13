@@ -8,3 +8,4 @@ export * from './inspiration-quotation';
 export * from './email-auto.type';
 export * from './permission.type';
 export * from './material-code.type';
+export * from './label.type';
