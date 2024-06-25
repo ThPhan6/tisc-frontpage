@@ -4,6 +4,8 @@ import { request } from 'umi';
 
 import type { Collection, CollectionAddPayload, CollectionRelationType } from '@/types';
 
+import { setLoadingAction } from '@/components/LoadingPage/slices';
+
 export async function getCollections(
   relationId: string,
   relationType: CollectionRelationType,
@@ -45,18 +47,21 @@ export async function createCollection(data: CollectionAddPayload) {
 }
 export async function updateCollection(
   collectionId: string,
-  props: { name: string; description?: string },
+  props: { name: string; description?: string; images?: string[]; brand_id?: string },
 ) {
+  setLoadingAction(true);
   return request(`/api/collection/update/${collectionId}`, {
     method: 'PATCH',
-    data: { name: props.name, description: props.description },
+    data: props,
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_BRAND_COLLECTION_SUCCESS);
+      setLoadingAction(false);
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_BRAND_COLLECTION_ERROR);
+      setLoadingAction(false);
       return false;
     });
 }

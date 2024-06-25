@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
-import { Tooltip, TooltipProps, message } from 'antd';
+import { Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
@@ -56,6 +56,7 @@ import { assignProductModalTitle } from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
 import styles from './ProductCard.less';
 import { CheckBoxDropDown } from './ProductTopBarItem';
+import CollectionGallery from '@/features/gallery/CollectionGallery';
 
 interface CollapseProductListProps {
   showBrandLogo?: boolean;
@@ -378,7 +379,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const [groups, setGroups] = useState<any>([]);
   const isOpenGallery = useBoolean(false);
   const isOpenLabel = useBoolean(false);
-
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   useEffect(() => {
     setGroups(data);
   }, [JSON.stringify(data)]);
@@ -435,7 +436,13 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   if (!allProducts?.length && !data?.length) {
     return <EmptyOne />;
   }
-
+  const onChangeGallery = (images: any) => {
+    const newImages = images.map((image: string) => {
+      const parts = image.split('base64,');
+      return parts[1] || image;
+    });
+    setGalleryImages(newImages);
+  };
   return (
     <>
       {groups?.map((group: any, index: number) => (
@@ -478,12 +485,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             </div>
           }
         >
-          <div style={{ marginBottom: 8 }}>
+          <div style={{ marginBottom: 8, boxShadow: 'rgba(0, 0, 0, 0.5) 1px 1px 3px' }}>
             {(group.description || isTiscAdmin) && !filterByCategory ? (
               <div style={{ background: '#fff' }}>
                 <div
                   className="flex-between"
-                  style={{ minHeight: 40, boxShadow: '1px 1px 3px rgb(0 0 0 / 50%)' }}
+                  style={{ minHeight: 40, borderBottom: '1px solid #bfbfbf' }}
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
@@ -509,53 +516,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       autoResize
                     />
                   )}
-                  {isTiscAdmin ? (
-                    <>
-                      <CustomButton
-                        style={{ marginRight: 16, borderRadius: 12 }}
-                        properties={'warning'}
-                        variant={'primary'}
-                        size={'small'}
-                        disabled={group.type === CollectionRelationType.Color}
-                        onClick={() => {
-                          confirmDelete(() => {
-                            deleteCollection(group.id).then(() => {
-                              const brandId = groups[0].products[0].brand?.id || '';
-                              getProductSummary(brandId).then(() => {
-                                const params = {
-                                  brand_id: brandId,
-                                  collection_id: 'all',
-                                } as ProductGetListParameter;
-                                getProductListByBrandId(params);
-                              });
-                            });
-                          });
-                        }}
-                      >
-                        Delete
-                      </CustomButton>
-                      <CustomSaveButton
-                        style={{ marginRight: 16 }}
-                        onClick={() => {
-                          if (!group.description) {
-                            message.error('Please enter description');
-                            return;
-                          }
-
-                          updateCollection(group.id, {
-                            name: group.name,
-                            description: group.description,
-                          });
-                        }}
-                      />
-                    </>
-                  ) : null}
                 </div>
               </div>
             ) : null}
             {!filterByCategory ? (
               <div className={styles.galleryContainer}>
-                <div className={styles.group}>
+                <div
+                  className={styles.group}
+                  style={{
+                    boxShadow: `0px -0.5px 0px 0px ${
+                      isOpenGallery.value && group.images ? '#bfbfbf' : '#000'
+                    } inset`,
+                  }}
+                >
                   <div
                     className={`header-text ${styles.gallery} ${
                       isOpenGallery.value ? styles.active : ''
@@ -633,8 +606,68 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   className={` ${
                     isOpenGallery.value ? styles.galleryContentIn : styles.galleryContentOut
                   }`}
+                  style={{
+                    height: !isTiscAdmin && (!group.images || !group.images[0]) ? 0 : 'unset',
+                    boxShadow: '0px -0.5px 0px 0px #000 inset',
+                  }}
                 >
-                  <p style={{ padding: 16 }}>Gallery is coming</p>
+                  <CollectionGallery onChangeImages={onChangeGallery} data={group.images} />
+                </div>
+              </div>
+            ) : null}
+            {isTiscAdmin && !filterByCategory ? (
+              <div style={{ background: '#fff' }}>
+                <div
+                  style={{
+                    minHeight: 40,
+                    display: 'flex',
+                    justifyContent: 'end',
+                    alignItems: 'center',
+                  }}
+                >
+                  {isTiscAdmin ? (
+                    <>
+                      <CustomButton
+                        style={{ marginRight: 16, borderRadius: 12 }}
+                        properties={'warning'}
+                        variant={'primary'}
+                        size={'small'}
+                        disabled={group.type === CollectionRelationType.Color}
+                        onClick={() => {
+                          confirmDelete(() => {
+                            deleteCollection(group.id).then(() => {
+                              const brandId = groups[0].products[0].brand?.id || '';
+                              getProductSummary(brandId).then(() => {
+                                const params = {
+                                  brand_id: brandId,
+                                  collection_id: 'all',
+                                } as ProductGetListParameter;
+                                getProductListByBrandId(params);
+                              });
+                            });
+                          });
+                        }}
+                      >
+                        Delete
+                      </CustomButton>
+                      <CustomSaveButton
+                        style={{ marginRight: 16 }}
+                        onClick={() => {
+                          // if (!group.description) {
+                          //   message.error('Please enter description');
+                          //   return;
+                          // }
+                          const brandId = groups[0].products[0].brand?.id || '';
+                          updateCollection(group.id, {
+                            name: group.name,
+                            description: group.description,
+                            images: galleryImages,
+                            brand_id: brandId,
+                          });
+                        }}
+                      />
+                    </>
+                  ) : null}
                 </div>
               </div>
             ) : null}

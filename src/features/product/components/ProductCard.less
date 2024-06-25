@@ -222,7 +222,8 @@
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
       :global(.header-text) {
-        box-shadow: @border-bottom-light;
+        // box-shadow: @border-bottom-light;
+        box-shadow: 0 -0.5px 0 0 #000 inset;
         p {
           font-weight: 500;
         }
@@ -286,17 +287,13 @@
 
 .galleryContainer {
   background-color: white;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 
   .group {
     display: flex;
-    border-top: solid 1px #bfbfbf;
-    border-bottom: solid 1px #bfbfbf;
   }
 
   .gallery {
     width: fit-content !important;
-    border-right: solid 1px #bfbfbf;
     p {
       font-weight: 300 !important;
     }
@@ -319,6 +316,7 @@
     }
   }
   .active {
+    box-shadow: -0.5px 0 0 0 rgba(0, 0, 0, 0.25) inset !important;
     p {
       font-weight: 500 !important;
     }
@@ -331,28 +329,34 @@
   animation: slideDown 200ms forwards;
 }
 .galleryContentOut {
+  display: none;
   animation: slideUp 200ms forwards;
 }
 @keyframes slideUp {
   0% {
-    height: 100px;
+    display: block;
+    // min-height: 260px;
     transform: translateY(0);
     opacity: 1;
   }
   100% {
+    display: none;
     height: 0;
+    // min-height: 0;
     transform: translateY(-10px);
     opacity: 0;
   }
 }
 @keyframes slideDown {
   0% {
-    height: 0;
+    display: none;
+    // min-height: 0;
     transform: translateY(-10px);
     opacity: 0;
   }
   100% {
-    height: 100px;
+    display: block;
+    // min-height: 260px;
     transform: translateY(0);
     opacity: 1;
   }
