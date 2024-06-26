@@ -53,13 +53,17 @@ export interface PopoverProps {
 
   // checkbox listTab
   checkboxList?: CheckboxOption;
+  leftCheckboxList?: CheckboxOption;
+  rightCheckboxList?: CheckboxOption;
 
   // category dropdown checkbox
   categoryDropdown?: boolean;
 
   // active value
   chosenValue?: any;
+  rightChosenValue?: any;
   setChosenValue?: (value: any) => void;
+  setRightChosenValue?: (value: any) => void;
 
   // extra top action
   extraTopAction?: ReactNode;
@@ -102,9 +106,13 @@ const Popover: FC<PopoverProps> = ({
   groupRadioList,
   groupCheckboxList,
   checkboxList,
+  leftCheckboxList,
+  rightCheckboxList,
   categoryDropdown,
   chosenValue,
+  rightChosenValue,
   setChosenValue,
+  setRightChosenValue,
   extraTopAction,
   noFooter,
   className,
@@ -125,7 +133,7 @@ const Popover: FC<PopoverProps> = ({
   const { isMobile } = useScreen();
 
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
-
+  const [rightCurrentValue, setRightCurrentValue] = useState<any>(rightChosenValue);
   useEffect(() => {
     if (forceUpdateCurrentValue) {
       setCurrentValue(chosenValue);
@@ -198,6 +206,31 @@ const Popover: FC<PopoverProps> = ({
       );
     }
 
+    if (leftCheckboxList && rightCheckboxList) {
+      if (isEmpty(leftCheckboxList)) {
+        return renderEmptyData();
+      }
+      return (
+        <div className={`d-flex ${styles.sidePopover}`}>
+          <div className={'flex-grow side-container'}>
+            <CheckboxList
+              selected={currentValue}
+              chosenItem={chosenValue}
+              data={leftCheckboxList}
+              onChange={setCurrentValue}
+            />
+          </div>
+          <div className={'flex-grow side-container'}>
+            <CheckboxList
+              selected={rightCurrentValue}
+              chosenItem={rightChosenValue}
+              data={rightCheckboxList}
+              onChange={setRightCurrentValue}
+            />
+          </div>
+        </div>
+      );
+    }
     if (checkboxList) {
       if (isEmpty(checkboxList)) {
         return renderEmptyData();
@@ -253,6 +286,9 @@ const Popover: FC<PopoverProps> = ({
     if (setChosenValue) {
       setChosenValue(chosenValue);
     }
+    if (setRightChosenValue) {
+      setRightChosenValue(rightChosenValue);
+    }
 
     // hide popup
     onClose();
@@ -268,6 +304,11 @@ const Popover: FC<PopoverProps> = ({
     if (setChosenValue) {
       setChosenValue(currentValue);
     }
+    // onchange selected Value for right list
+    if (setRightChosenValue) {
+      setRightChosenValue(rightCurrentValue);
+    }
+
     // hide popup
     onClose();
   };

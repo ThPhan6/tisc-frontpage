@@ -2,6 +2,7 @@ import { CSSProperties, FC, useEffect, useState } from 'react';
 
 import { DropDownProps, Menu, Row } from 'antd';
 import Dropdown from 'antd/es/dropdown';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
@@ -202,7 +203,178 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
     </>
   );
 };
+interface CheckboxMenuProps {
+  items: { id: string; name: string }[];
+  subLevel?: number;
+  visible?: boolean;
+  onCloseMenu: () => void;
+  menuStyle?: CSSProperties;
+  alignRight?: boolean;
+  textCapitalize?: boolean;
+  position: 'left' | 'right';
+  onChangeValues?: (values: any) => void;
+  selected?: { id: string; name: string }[];
+}
+const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
+  items,
+  subLevel,
+  menuStyle,
+  position = 'right',
+  onChangeValues,
+  selected,
+  visible,
+}) => {
+  const [values, setValues] = useState<{ id: string; name: string }[]>([]);
+  useEffect(() => {
+    if (selected) {
+      setValues(selected);
+    }
+  }, [selected]);
+  const getPositionLeftMenu = () => {
+    if (subLevel) {
+      return subLevel * DEFAULT_WIDTH * (position === 'right' ? 1 : -1);
+    }
+    return undefined;
+  };
+  const handleSelect = (item: { id: string; name: string }) => (e: any) => {
+    e.stopPropagation();
+    setValues((pre) => {
+      let newValues = pre;
+      if (pre.includes(item)) {
+        newValues = pre.filter((i) => i.id !== item.id);
+        if (onChangeValues) onChangeValues(newValues);
+        return newValues;
+      }
+      newValues = pre.concat([item]);
+      if (onChangeValues) onChangeValues(newValues);
+      return newValues;
+    });
+  };
+  return visible ? (
+    <>
+      <Menu
+        style={{
+          width: DEFAULT_WIDTH,
+          position: subLevel ? 'absolute' : 'relative',
+          top: subLevel ? 0 : undefined,
+          left: getPositionLeftMenu(),
+          boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+          height: 432,
+          overflow: 'hidden auto',
+          padding: 0,
+          bottom: -3,
+          ...menuStyle,
+        }}
+      >
+        {items.map((item, index) => {
+          return (
+            <div className={'d-flex flex-between'} onClick={handleSelect(item)}>
+              <Menu.Item
+                key={item?.id || index}
+                className={`${styles.checkboxListItem} ${
+                  values.includes(item) ? styles.active : ''
+                } text-capitalize`}
+              >
+                {item?.name}
+              </Menu.Item>
+              <div style={{ padding: 8 }}>
+                <Checkbox checked={values.includes(item)} onClick={handleSelect(item)}></Checkbox>
+              </div>
+            </div>
+          );
+        })}
+      </Menu>
+    </>
+  ) : null;
+};
 
+export interface CheckBoxDropDownProps extends Omit<DropDownProps, 'overlay'> {
+  items?: { id: string; name: string }[]; // Use items or overlay
+  overlay?: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  menuStyle?: CSSProperties;
+  labelProps?: React.HTMLAttributes<HTMLSpanElement>;
+  hideDropdownIcon?: boolean;
+  alignRight?: boolean;
+  textCapitalize?: boolean;
+  viewAllTop?: boolean;
+  autoHeight?: boolean;
+  position?: 'left' | 'right';
+  nestedMenu?: boolean;
+  borderFirstItem?: boolean;
+  showCloseFooter?: boolean;
+  handleChangeDropDownIcon: any;
+  dropDownListVisible?: boolean;
+  onChange?: (values: any) => void;
+  selected?: any;
+}
+export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
+  children,
+  items = [],
+  menuStyle,
+  labelProps,
+  hideDropdownIcon,
+  overlay,
+  viewAllTop,
+  alignRight = true,
+  textCapitalize = true,
+  position = 'right',
+  nestedMenu,
+  borderFirstItem,
+  showCloseFooter,
+  handleChangeDropDownIcon,
+  dropDownListVisible,
+  onChange,
+  selected,
+  ...props
+}) => {
+  const onSelect = (values: any) => {
+    if (onChange) onChange(values);
+  };
+  const content = (
+    <CheckboxCascadingMenu
+      items={items}
+      visible={dropDownListVisible}
+      onCloseMenu={() => {}}
+      menuStyle={{
+        ...menuStyle,
+      }}
+      alignRight={alignRight}
+      textCapitalize={textCapitalize}
+      position={position}
+      onChangeValues={onSelect}
+      selected={selected}
+    />
+  );
+
+  const renderContent = () => {
+    return <>{content}</>;
+  };
+
+  return (
+    <>
+      <Dropdown
+        placement="bottomLeft"
+        trigger={['click']}
+        {...props}
+        visible={dropDownListVisible}
+        onVisibleChange={(visible) => {
+          if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
+        }}
+        overlayClassName={`${viewAllTop ? styles.viewAllTop : ''}`}
+        overlay={renderContent()}
+      >
+        <span {...labelProps}>
+          {children}
+          {hideDropdownIcon ? null : dropDownListVisible ? (
+            <DropupIcon style={{ marginLeft: 8 }} />
+          ) : (
+            <DropdownIcon style={{ marginLeft: 8 }} />
+          )}
+        </span>
+      </Dropdown>
+    </>
+  );
+};
 export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   items?: ItemType[]; // Use items or overlay
   overlay?: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
@@ -218,6 +390,7 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   borderFirstItem?: boolean;
   showCloseFooter?: boolean;
   handleChangeDropDownIcon: any;
+  dropDownListVisible?: boolean;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -235,6 +408,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   borderFirstItem,
   showCloseFooter,
   handleChangeDropDownIcon,
+  dropDownListVisible,
   ...props
 }) => {
   const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
@@ -316,7 +490,11 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         placement="bottomLeft"
         trigger={['click']}
         {...props}
-        visible={dropdownVisible.value && isMobile === false}
+        visible={
+          dropDownListVisible === true || dropDownListVisible === false
+            ? dropDownListVisible
+            : dropdownVisible.value && isMobile === false
+        }
         onVisibleChange={(visible) => {
           if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
           dropdownVisible.setValue(visible);

@@ -102,7 +102,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 chosenItems?.some((el) => el.value === option.select_id)
                   ? 'item-checkbox-active'
                   : ''
-              } item-wrapper-custom`}
+              } item-wrapper-custom text-capitalize`}
               style={{ minHeight: heightItem }}
               htmlFor={`${option.value}_${index}_${randomId}`}
             >

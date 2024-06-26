@@ -81,3 +81,17 @@
     box-shadow: @border-top;
   }
 }
+
+.sidePopover {
+  :global(.side-container) {
+    width: 576px;
+
+    &:first-child {
+      padding-right: 16px;
+      border-right: 1px solid black;
+    }
+    &:last-child {
+      padding-left: 16px;
+    }
+  }
+}

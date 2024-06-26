@@ -210,6 +210,13 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
   DELETE_BRAND_COLLECTION_SUCCESS: 'Delete collection successfully',
   DELETE_BRAND_COLLECTION_ERROR: 'Failed to delete collection',
+  CREATE_LABEL_SUCCESS: 'Create new label successfully',
+  CREATE_LABEL_ERROR: 'Failed to create label',
+  UPDATE_LABEL_SUCCESS: 'Update label successfully',
+  UPDATE_LABEL_ERROR: 'Failed to update label',
+  GET_LABEL_ERROR: 'Failed to get label data',
+  DELETE_LABEL_SUCCESS: 'Delete label successfully',
+  DELETE_LABEL_ERROR: 'Failed to delete label',
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',

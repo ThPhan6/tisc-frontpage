@@ -218,6 +218,7 @@ const ProductDetailContainer: React.FC = () => {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
       collection_ids: details.collections.map((collection) => collection.id),
+      label_ids: details.labels.map((label) => label.id),
       name: details.name.trim(),
       description: details.description.trim(),
       general_attribute_groups: productGeneralData,

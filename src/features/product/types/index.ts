@@ -145,6 +145,7 @@ export interface ProductItem {
   brand?: BrandDetail;
   brand_id: string;
   collections: GeneralData[];
+  labels: GeneralData[];
   collection?: GeneralData;
   categories: GeneralData[];
   name: string;
@@ -194,6 +195,7 @@ export interface ProductFormData {
   brand_id: string;
   collection_ids: string[];
   category_ids: string[];
+  label_ids: string[];
   name: string;
   description: string;
   general_attribute_groups: ProductAttributeFormInput[];
