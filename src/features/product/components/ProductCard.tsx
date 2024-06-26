@@ -381,7 +381,15 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isOpenLabel = useBoolean(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   useEffect(() => {
-    setGroups(data);
+    if (data) {
+      const newData = data.map((item) => {
+        return {
+          ...item,
+          labels: flatMap(item.products.map((product: any) => product.labels)),
+        };
+      });
+      setGroups(newData);
+    }
   }, [JSON.stringify(data)]);
   useEffect(() => {
     if (data) {
@@ -405,6 +413,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             return {
               ...item,
               products: activeProducts,
+              labels: flatMap(item.products.map((product: any) => product.labels)),
             };
           }
           return item;
@@ -557,7 +566,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       }}
                     >
                       <CheckBoxDropDown
-                        items={flatMap(group.products.map((product: any) => product.labels))}
+                        items={group.labels}
                         onChange={(values) => {
                           setActiveLabels(values);
                         }}
