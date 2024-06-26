@@ -25,7 +25,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
-import { MultiCollectionModal } from '../modals/MultiCollectionModal';
+import { CollectionAndLabelModal } from '../modals/CollectionAndLabel';
 import styles from './detail.less';
 
 export const getProductVariant = (specGroup: ProductAttributeFormInput[]): string => {
@@ -60,6 +60,7 @@ export const ProductBasicInfo: React.FC = () => {
     name,
     description,
     collections,
+    labels,
     categories,
     specification_attribute_groups: spec,
   } = useAppSelector((state) => state.product.details);
@@ -268,7 +269,7 @@ export const ProductBasicInfo: React.FC = () => {
         </div>
       </CustomCollapse>
       {editable && brand?.id ? (
-        <MultiCollectionModal
+        <CollectionAndLabelModal
           brandId={brand.id}
           collectionType={CollectionRelationType.Brand}
           categoryIds={categories?.map((el) => el.id)}
@@ -283,6 +284,20 @@ export const ProductBasicInfo: React.FC = () => {
             dispatch(
               setPartialProductDetail({
                 collections: selected.map((el) => ({
+                  name: String(el.label),
+                  id: String(el.value),
+                })),
+              }),
+            );
+          }}
+          chosenLabel={labels?.map((el) => ({
+            value: el?.id || '',
+            label: el?.name || '',
+          }))}
+          setChosenLabel={(selected) => {
+            dispatch(
+              setPartialProductDetail({
+                labels: selected.map((el) => ({
                   name: String(el.label),
                   id: String(el.value),
                 })),

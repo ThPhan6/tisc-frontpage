@@ -1,0 +1,66 @@
+.imagesContainer {
+  justify-content: space-between;
+  height: 100%;
+  .contentList {
+    flex-flow: nowrap;
+    height: 100%;
+    overflow: auto;
+  }
+  .addMorePhotocontent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 12px 0;
+    overflow: hidden;
+    text-align: center;
+    border: 0.6px dashed @primary-color-dark;
+    p {
+      color: @primary-color-dark;
+    }
+  }
+  .fileItem {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+
+    .lightBorder {
+      border: 0.3px solid @mono-color-medium !important;
+    }
+  }
+}
+.subPhotoAction {
+  position: absolute;
+  bottom: 48px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  button {
+    color: @primary-color-dark;
+    background-color: #fff;
+  }
+}
+.filePreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: @mono-color-medium;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
