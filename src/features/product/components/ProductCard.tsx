@@ -538,21 +538,23 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     } inset`,
                   }}
                 >
-                  <div
-                    className={`header-text ${styles.gallery} ${
-                      isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
-                    }`}
-                    onClick={() => {
-                      isOpenGallery.setValue((pre) => !pre);
-                    }}
-                  >
-                    <BodyText level={5} fontFamily="Roboto">
-                      Gallery
-                    </BodyText>
-                    <div style={{ marginRight: 16, marginLeft: 8, height: 20 }}>
-                      {isOpenGallery.value ? <DropupIcon /> : <DropdownIcon />}
+                  {(group.description || isTiscAdmin) && !filterByCategory ? (
+                    <div
+                      className={`header-text ${styles.gallery} ${
+                        isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
+                      }`}
+                      onClick={() => {
+                        isOpenGallery.setValue((pre) => !pre);
+                      }}
+                    >
+                      <BodyText level={5} fontFamily="Roboto">
+                        Gallery
+                      </BodyText>
+                      <div style={{ marginRight: 16, marginLeft: 8, height: 20 }}>
+                        {isOpenGallery.value ? <DropupIcon /> : <DropdownIcon />}
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
 
                   <div className={'d-flex'}>
                     <div
