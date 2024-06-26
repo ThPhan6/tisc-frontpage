@@ -531,7 +531,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 >
                   <div
                     className={`header-text ${styles.gallery} ${
-                      isOpenGallery.value ? styles.active : ''
+                      isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
                     }`}
                     onClick={() => {
                       isOpenGallery.setValue((pre) => !pre);
