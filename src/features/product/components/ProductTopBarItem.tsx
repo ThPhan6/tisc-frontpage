@@ -11,7 +11,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
-import { capitalize, truncate } from 'lodash';
+import { capitalize, sortBy, truncate } from 'lodash';
 
 import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
@@ -332,7 +332,7 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
   };
   const content = (
     <CheckboxCascadingMenu
-      items={items}
+      items={sortBy(items, 'name')}
       visible={dropDownListVisible}
       onCloseMenu={() => {}}
       menuStyle={{
