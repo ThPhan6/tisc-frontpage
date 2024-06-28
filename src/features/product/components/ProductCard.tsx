@@ -380,12 +380,14 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isOpenGallery = useBoolean(false);
   const isOpenLabel = useBoolean(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
+
   useEffect(() => {
     if (data) {
       const newData = data.map((item) => {
+        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
         return {
           ...item,
-          labels: uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name'),
+          labels: temp,
         };
       });
       setGroups(newData);
@@ -409,18 +411,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             });
       setGroups(
         data.map((item, index: number) => {
+          const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
           if (index === collapseKey) {
             return {
               ...item,
               products: activeProducts,
-              labels: uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name'),
+              labels: temp,
             };
           }
           return item;
         }),
       );
     }
-  }, [JSON.stringify(activeLabels)]);
+  }, [JSON.stringify(activeLabels), collapseKey]);
 
   const filterByCategory = filter?.name.toLowerCase() === 'category_id';
 
@@ -550,13 +553,15 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       <BodyText level={5} fontFamily="Roboto">
                         Gallery
                       </BodyText>
-                      <div style={{ marginRight: 16, marginLeft: 8, height: 20 }}>
+                      <div
+                        style={{ marginRight: 16, marginLeft: 8, height: 20, cursor: 'pointer' }}
+                      >
                         {isOpenGallery.value ? <DropupIcon /> : <DropdownIcon />}
                       </div>
                     </div>
                   ) : null}
 
-                  <div className={'d-flex'}>
+                  <div className={'d-flex'} style={{ alignItems: 'center' }}>
                     <div
                       className={`${styles.label} ${
                         activeLabels[0] || isOpenLabel.value ? styles.active : ''
@@ -581,38 +586,58 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                         dropDownListVisible={isOpenLabel.value}
                         selected={activeLabels}
                       >
-                        {'Filter by'}
+                        <span
+                          className={'text-overflow'}
+                          style={{
+                            maxWidth: 150,
+                          }}
+                        >
+                          Filter By
+                        </span>
                       </CheckBoxDropDown>
                     </div>
-                    {!isMobile
-                      ? activeLabels.map((activeLabel: any, labelIndex: number) => (
-                          <div style={{ padding: 8 }}>
-                            <div
-                              key={labelIndex}
-                              style={{
-                                borderRadius: 12,
-                                border: '1px solid black',
-                                height: 22,
-                                paddingLeft: 8,
-                                paddingRight: 1,
-                              }}
-                              className={'d-flex flex-center'}
-                            >
-                              <span className={'text-capitalize'} style={{ paddingRight: 8 }}>
-                                {activeLabel.name}
-                              </span>
-                              <RemoveIcon
-                                className={styles.removeIcon}
-                                onClick={() => {
-                                  setActiveLabels(
-                                    activeLabels.filter((item: any) => item.id !== activeLabel.id),
-                                  );
+                    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                      {!isMobile
+                        ? activeLabels.map((activeLabel: any, labelIndex: number) => (
+                            <div className={styles.labelContainer} style={{ padding: 8 }}>
+                              <div
+                                key={labelIndex}
+                                style={{
+                                  borderRadius: 12,
+                                  border: '1px solid black',
+                                  height: 22,
+                                  paddingLeft: 16,
+                                  paddingRight: 1,
                                 }}
-                              />
+                                className={'d-flex flex-center'}
+                              >
+                                <span
+                                  className={'text-capitalize'}
+                                  style={{
+                                    paddingRight: 8,
+                                    maxWidth: 150,
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {activeLabel.name}
+                                </span>
+                                <RemoveIcon
+                                  className={styles.removeIcon}
+                                  onClick={() => {
+                                    setActiveLabels(
+                                      activeLabels.filter(
+                                        (item: any) => item.id !== activeLabel.id,
+                                      ),
+                                    );
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))
-                      : null}
+                          ))
+                        : null}
+                    </div>
                   </div>
                 </div>
                 <div

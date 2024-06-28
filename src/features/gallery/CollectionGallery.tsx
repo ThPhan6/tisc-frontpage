@@ -146,8 +146,7 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
             </div>
           </Col>
         ))}
-        {emptyImages.slice(0, emptyImages.length - images.length).map((item) => {
-          console.log(item);
+        {emptyImages.slice(0, emptyImages.length - images.length).map(() => {
           return <Col span={4}></Col>;
         })}
         {isEditable && (
