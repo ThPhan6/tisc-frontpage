@@ -34,7 +34,7 @@ import {
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
 import { deleteCollection, updateCollection } from '@/services';
-import { capitalize, flatMap, truncate } from 'lodash';
+import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
 import { setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
@@ -385,7 +385,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
       const newData = data.map((item) => {
         return {
           ...item,
-          labels: flatMap(item.products.map((product: any) => product.labels)),
+          labels: uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name'),
         };
       });
       setGroups(newData);
@@ -413,7 +413,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             return {
               ...item,
               products: activeProducts,
-              labels: flatMap(item.products.map((product: any) => product.labels)),
+              labels: uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name'),
             };
           }
           return item;
@@ -598,7 +598,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                               }}
                               className={'d-flex flex-center'}
                             >
-                              <span style={{ paddingRight: 8 }}>{activeLabel.name}</span>
+                              <span className={'text-capitalize'} style={{ paddingRight: 8 }}>
+                                {activeLabel.name}
+                              </span>
                               <RemoveIcon
                                 className={styles.removeIcon}
                                 onClick={() => {
