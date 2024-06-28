@@ -162,11 +162,11 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
             >
               <Upload {...uploadProps}>
                 <div className={styles.addMorePhotocontent}>
-                  <BodyText level={6} fontFamily="Roboto">
+                  <BodyText level={6} fontFamily="Roboto" style={{ paddingBottom: 16 }}>
                     Add more images
                   </BodyText>
                   <AddMoreIcon />
-                  <BodyText level={6} fontFamily="Roboto">
+                  <BodyText level={6} fontFamily="Roboto" style={{ paddingTop: 16 }}>
                     (max.5)
                   </BodyText>
                 </div>
