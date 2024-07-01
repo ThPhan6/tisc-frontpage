@@ -276,7 +276,9 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
               className={`${styles.checkboxListItem} ${
                 values.includes(item) ? styles.active : ''
               } text-capitalize`}
-              onClick={() => {}}
+              onClick={() => {
+                return;
+              }}
             >
               {item?.name}
             </Menu.Item>
@@ -359,7 +361,7 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
         placement="bottomLeft"
         trigger={['click']}
         {...props}
-        // visible={dropDownListVisible}
+        visible={tempVisible.value}
         onVisibleChange={(visible) => {
           tempVisible.setValue(visible);
           if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
