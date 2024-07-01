@@ -222,7 +222,6 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   position = 'right',
   onChangeValues,
   selected,
-  visible,
 }) => {
   const [values, setValues] = useState<{ id: string; name: string }[]>([]);
   useEffect(() => {
@@ -250,42 +249,40 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
       return newValues;
     });
   };
-  return visible ? (
-    <>
-      <Menu
-        style={{
-          width: DEFAULT_WIDTH,
-          position: subLevel ? 'absolute' : 'relative',
-          top: subLevel ? 0 : undefined,
-          left: getPositionLeftMenu(),
-          boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-          height: 432,
-          overflow: 'hidden auto',
-          padding: 0,
-          bottom: -3,
-          ...menuStyle,
-        }}
-      >
-        {items.map((item, index) => {
-          return (
-            <div className={'d-flex flex-between'} onClick={handleSelect(item)}>
-              <Menu.Item
-                key={item?.id || index}
-                className={`${styles.checkboxListItem} ${
-                  values.includes(item) ? styles.active : ''
-                } text-capitalize`}
-              >
-                {item?.name}
-              </Menu.Item>
-              <div style={{ padding: 8 }}>
-                <Checkbox checked={values.includes(item)} onClick={handleSelect(item)}></Checkbox>
-              </div>
+  return (
+    <Menu
+      style={{
+        width: DEFAULT_WIDTH,
+        position: subLevel ? 'absolute' : 'relative',
+        top: subLevel ? 0 : undefined,
+        left: getPositionLeftMenu(),
+        boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+        height: 432,
+        overflow: 'hidden auto',
+        padding: 0,
+        bottom: -3,
+        ...menuStyle,
+      }}
+    >
+      {items.map((item, index) => {
+        return (
+          <div className={'d-flex flex-between'} onClick={handleSelect(item)}>
+            <Menu.Item
+              key={item?.id || index}
+              className={`${styles.checkboxListItem} ${
+                values.includes(item) ? styles.active : ''
+              } text-capitalize`}
+            >
+              {item?.name}
+            </Menu.Item>
+            <div style={{ padding: 8 }}>
+              <Checkbox checked={values.includes(item)} onClick={handleSelect(item)}></Checkbox>
             </div>
-          );
-        })}
-      </Menu>
-    </>
-  ) : null;
+          </div>
+        );
+      })}
+    </Menu>
+  );
 };
 
 export interface CheckBoxDropDownProps extends Omit<DropDownProps, 'overlay'> {
@@ -330,10 +327,11 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
   const onSelect = (values: any) => {
     if (onChange) onChange(values);
   };
+  const tempVisible = useBoolean(false);
+
   const content = (
     <CheckboxCascadingMenu
       items={sortBy(items, 'name')}
-      visible={dropDownListVisible}
       onCloseMenu={() => {}}
       menuStyle={{
         ...menuStyle,
@@ -349,15 +347,15 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
   const renderContent = () => {
     return <>{content}</>;
   };
-
   return (
     <>
       <Dropdown
         placement="bottomLeft"
         trigger={['click']}
         {...props}
-        visible={dropDownListVisible}
+        // visible={dropDownListVisible}
         onVisibleChange={(visible) => {
+          tempVisible.setValue(visible);
           if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
         }}
         overlayClassName={`${viewAllTop ? styles.viewAllTop : ''}`}
@@ -365,7 +363,7 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
       >
         <span {...labelProps}>
           {children}
-          {hideDropdownIcon ? null : dropDownListVisible ? (
+          {hideDropdownIcon ? null : tempVisible.value ? (
             <DropupIcon style={{ marginLeft: 8 }} />
           ) : (
             <DropdownIcon style={{ marginLeft: 8 }} />
