@@ -222,6 +222,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   position = 'right',
   onChangeValues,
   selected,
+  visible,
 }) => {
   const [values, setValues] = useState<{ id: string; name: string }[]>([]);
   useEffect(() => {
@@ -249,7 +250,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
       return newValues;
     });
   };
-  return (
+  return visible ? (
     <Menu
       style={{
         width: DEFAULT_WIDTH,
@@ -282,7 +283,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
         );
       })}
     </Menu>
-  );
+  ) : null;
 };
 
 export interface CheckBoxDropDownProps extends Omit<DropDownProps, 'overlay'> {
@@ -341,6 +342,7 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
       position={position}
       onChangeValues={onSelect}
       selected={selected}
+      visible={tempVisible.value}
     />
   );
 
