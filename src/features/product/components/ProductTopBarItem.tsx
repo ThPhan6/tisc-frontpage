@@ -361,8 +361,9 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
     <>
       <Dropdown
         placement="bottomLeft"
+        trigger={['click']}
         {...props}
-        // visible={dropDownListVisible}
+        visible={tempVisible.value}
         onVisibleChange={(visible) => {
           console.log(visible);
           tempVisible.setValue(visible);
