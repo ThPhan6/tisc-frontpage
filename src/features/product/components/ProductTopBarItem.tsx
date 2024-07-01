@@ -224,6 +224,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   selected,
   visible,
 }) => {
+  console.log(visible);
   const [values, setValues] = useState<{ id: string; name: string }[]>([]);
   useEffect(() => {
     if (selected) {
@@ -360,10 +361,10 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
     <>
       <Dropdown
         placement="bottomLeft"
-        trigger={['click']}
         {...props}
         // visible={dropDownListVisible}
         onVisibleChange={(visible) => {
+          console.log(visible);
           tempVisible.setValue(visible);
           if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
         }}
