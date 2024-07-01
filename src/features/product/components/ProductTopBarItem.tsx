@@ -276,7 +276,8 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
               className={`${styles.checkboxListItem} ${
                 values.includes(item) ? styles.active : ''
               } text-capitalize`}
-              onClick={() => {
+              onClick={(menuInfo) => {
+                console.log(menuInfo);
                 return;
               }}
             >
