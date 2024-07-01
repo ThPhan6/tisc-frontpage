@@ -267,17 +267,21 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
     >
       {items.map((item, index) => {
         return (
-          <div className={'d-flex flex-between'} onClick={handleSelect(item)}>
+          <div
+            className={`d-flex flex-between cursor-pointer ${styles.checkboxMenuItem}`}
+            onClick={handleSelect(item)}
+          >
             <Menu.Item
               key={item?.id || index}
               className={`${styles.checkboxListItem} ${
                 values.includes(item) ? styles.active : ''
               } text-capitalize`}
+              onClick={(menuInfo) => handleSelect(item)(menuInfo.domEvent)}
             >
               {item?.name}
             </Menu.Item>
             <div style={{ padding: 8 }}>
-              <Checkbox checked={values.includes(item)} onClick={handleSelect(item)}></Checkbox>
+              <Checkbox checked={values.includes(item)}></Checkbox>
             </div>
           </div>
         );
