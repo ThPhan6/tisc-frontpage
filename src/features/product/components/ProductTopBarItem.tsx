@@ -224,7 +224,6 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   selected,
   visible,
 }) => {
-  console.log(visible);
   const [values, setValues] = useState<{ id: string; name: string }[]>([]);
   useEffect(() => {
     if (selected) {
@@ -277,8 +276,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
               className={`${styles.checkboxListItem} ${
                 values.includes(item) ? styles.active : ''
               } text-capitalize`}
-              onClick={(menuInfo) => {
-                console.log(menuInfo);
+              onClick={() => {
                 return;
               }}
             >
@@ -365,7 +363,6 @@ export const CheckBoxDropDown: FC<CheckBoxDropDownProps> = ({
         {...props}
         visible={tempVisible.value}
         onVisibleChange={(visible) => {
-          console.log(visible);
           tempVisible.setValue(visible);
           if (handleChangeDropDownIcon) handleChangeDropDownIcon(visible);
         }}
