@@ -276,7 +276,6 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
               className={`${styles.checkboxListItem} ${
                 values.includes(item) ? styles.active : ''
               } text-capitalize`}
-              onClick={(menuInfo) => handleSelect(item)(menuInfo.domEvent)}
             >
               {item?.name}
             </Menu.Item>
