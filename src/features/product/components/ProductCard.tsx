@@ -43,7 +43,6 @@ import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
 import { CollectionRelationType } from '@/types';
 
-import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import CustomButton from '@/components/Button/index';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
@@ -380,7 +379,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isOpenGallery = useBoolean(false);
   const isOpenLabel = useBoolean(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
-
   useEffect(() => {
     if (data) {
       const newData = data.map((item) => {
@@ -400,10 +398,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           ? data[collapseKey]?.products
           : data[collapseKey]?.products.filter((product) => {
               if (
-                product.labels
+                activeLabels
                   .map((label) => label.id)
-                  .some((label) =>
-                    activeLabels.map((activeLabel: any) => activeLabel.id).includes(label),
+                  .every((label) =>
+                    product.labels.map((activeLabel: any) => activeLabel.id).includes(label),
                   )
               )
                 return true;
@@ -431,7 +429,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     if (!data) {
       return;
     }
-
     e.stopPropagation();
 
     const latestData = [...data];
@@ -551,7 +548,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       }}
                     >
                       <BodyText level={5} fontFamily="Roboto">
-                        Gallery
+                        GALLERY
                       </BodyText>
                       <div
                         style={{ marginRight: 16, marginLeft: 8, height: 20, cursor: 'pointer' }}
@@ -566,11 +563,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       className={`${styles.label} ${
                         activeLabels[0] || isOpenLabel.value ? styles.active : ''
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        isOpenLabel.setValue((pre) => !pre);
-                      }}
                     >
                       <CheckBoxDropDown
                         items={group.labels}
@@ -581,9 +573,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                         textCapitalize={false}
                         placement={'bottomLeft'}
                         menuStyle={{ height: 'max-content', width: 240 }}
-                        handleChangeDropDownIcon={() => {}}
+                        handleChangeDropDownIcon={(visible: boolean) => {
+                          isOpenLabel.setValue(visible);
+                        }}
                         className={'header-text'}
-                        dropDownListVisible={isOpenLabel.value}
                         selected={activeLabels}
                       >
                         <span
@@ -592,7 +585,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                             maxWidth: 150,
                           }}
                         >
-                          Filter By
+                          FILTER BY
                         </span>
                       </CheckBoxDropDown>
                     </div>
@@ -604,7 +597,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                                 key={labelIndex}
                                 style={{
                                   borderRadius: 12,
-                                  border: '1px solid black',
                                   height: 22,
                                   paddingLeft: 16,
                                   paddingRight: 1,
@@ -688,13 +680,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                       >
                         Delete
                       </CustomButton>
-                      <CustomSaveButton
-                        style={{ marginRight: 16 }}
+                      <CustomButton
+                        style={{ marginRight: 16, borderRadius: 12 }}
+                        properties={'standard'}
+                        variant={'primary'}
+                        size={'small'}
                         onClick={() => {
-                          // if (!group.description) {
-                          //   message.error('Please enter description');
-                          //   return;
-                          // }
                           const brandId = groups[0].products[0].brand?.id || '';
                           updateCollection(group.id, {
                             name: group.name,
@@ -703,7 +694,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                             brand_id: brandId,
                           });
                         }}
-                      />
+                      >
+                        Save
+                      </CustomButton>
                     </>
                   ) : null}
                 </div>
