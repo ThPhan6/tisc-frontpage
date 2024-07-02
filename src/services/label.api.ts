@@ -4,8 +4,8 @@ import { request } from 'umi';
 
 import type { Label, LabelInput } from '@/types';
 
-export async function getLabels() {
-  return request<{ data: Label[] }>(`/api/label/get-list`, {
+export async function getLabels(brandId: string) {
+  return request<{ data: Label[] }>(`/api/label/get-list/${brandId}`, {
     method: 'GET',
   })
     .then((response) => {

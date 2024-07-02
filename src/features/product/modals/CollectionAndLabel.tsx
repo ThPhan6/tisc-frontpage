@@ -74,7 +74,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
   const getLabelList = async () => {
-    const labelList = await getLabels();
+    const labelList = await getLabels(brandId);
     const currentData = labelList.map((item) => ({
       ...item,
       value: item.id,
@@ -231,6 +231,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
       createLabel({
         name: newLabel,
+        brand_id: brandId,
       }).then((newData) => {
         if (newData) {
           // set empty input
