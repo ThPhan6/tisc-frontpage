@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
-import { Tooltip, TooltipProps } from 'antd';
+import { Spin, Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
@@ -48,6 +48,7 @@ import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
+import loadingStyles from '@/components/LoadingPage/styles/index.less';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
@@ -379,18 +380,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isOpenGallery = useBoolean(false);
   const isOpenLabel = useBoolean(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
-  useEffect(() => {
-    if (data) {
-      const newData = data.map((item) => {
-        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
-        return {
-          ...item,
-          labels: temp,
-        };
-      });
-      setGroups(newData);
-    }
-  }, [JSON.stringify(data)]);
+  const [customLoading, setCustomLoading] = useState(false);
+  console.log(groups);
   useEffect(() => {
     if (data) {
       const activeProducts =
@@ -407,21 +398,21 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 return true;
               return false;
             });
-      setGroups(
-        data.map((item, index: number) => {
-          const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
-          if (index === collapseKey) {
-            return {
-              ...item,
-              products: activeProducts,
-              labels: temp,
-            };
-          }
-          return item;
-        }),
-      );
+
+      const newData = data.map((item, index: number) => {
+        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
+        if (index === collapseKey) {
+          return {
+            ...item,
+            products: activeProducts,
+            labels: temp,
+          };
+        }
+        return { ...item, labels: temp };
+      });
+      setGroups(newData);
     }
-  }, [JSON.stringify(activeLabels), collapseKey]);
+  }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
 
   const filterByCategory = filter?.name.toLowerCase() === 'category_id';
 
@@ -454,6 +445,11 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   };
   return (
     <>
+      {customLoading ? (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      ) : null}
       {groups?.map((group: any, index: number) => (
         <ActiveOneCustomCollapse
           groupIndex={index}
@@ -687,11 +683,14 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                         size={'small'}
                         onClick={() => {
                           const brandId = groups[0].products[0].brand?.id || '';
+                          setCustomLoading(true);
                           updateCollection(group.id, {
                             name: group.name,
                             description: group.description,
                             images: galleryImages,
                             brand_id: brandId,
+                          }).then(() => {
+                            setCustomLoading(false);
                           });
                         }}
                       >
