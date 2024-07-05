@@ -153,7 +153,7 @@ const BasisOptionList: React.FC = () => {
         multiple: 1,
       },
       render: (value) => {
-        return <span className="text-capitalize">{value}</span>;
+        return <span className="text-uppercase">{value}</span>;
       },
     },
     {

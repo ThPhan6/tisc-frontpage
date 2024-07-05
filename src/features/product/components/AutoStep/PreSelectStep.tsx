@@ -617,7 +617,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);
   const mappedRight = mappingOptionGroups(tempRight);
-
+  const disableNext =
+    curOrder === slideBars.length || leftSelectedOption[slide]?.replicate !== totalQuantity.value;
+  const disablePre = slide === 0;
   return (
     <CustomModal
       title={
@@ -636,18 +638,46 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       width={'80%'}
       closeIcon={<CloseIcon />}
       footer={
-        <CustomButton size="small" properties="rounded" onClick={handleCreatePreSelectStep}>
-          Done
-        </CustomButton>
+        <div className="flex-end" style={{ position: 'relative', width: '100%' }}>
+          <div
+            className={'flex-center'}
+            style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
+          >
+            <CustomButton
+              size="small"
+              properties="standard"
+              variant={'secondary'}
+              disabled={disablePre}
+              onClick={handleBackToPrevSlide}
+            >
+              Previous
+            </CustomButton>
+            <CustomButton
+              size="small"
+              properties="standard"
+              variant={'secondary'}
+              disabled={disableNext}
+              style={{ marginLeft: 16 }}
+              onClick={handleGoToNextSlide}
+            >
+              Next
+            </CustomButton>
+          </div>
+          <CustomButton
+            style={{ marginLeft: 16 }}
+            size="small"
+            properties="rounded"
+            onClick={handleCreatePreSelectStep}
+          >
+            Done
+          </CustomButton>
+        </div>
       }
     >
       <SlideBar
         handleBackToPrevSlide={handleBackToPrevSlide}
         handleGoToNextSlide={handleGoToNextSlide}
-        disabledNextSlide={
-          curOrder === slideBars.length ||
-          leftSelectedOption[slide]?.replicate !== totalQuantity.value
-        }
+        disabledNextSlide={disableNext}
       />
 
       <div className={styles.mainContent}>
@@ -792,7 +822,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                   .filter((el: any) => el.picked)
                   .map((el: any) => ({ label: '', value: el.id }))}
                 forceEnableCollapse={forceEnableCollapse}
-                renderTitle={(data) => data.label}
+                renderTitle={(data) => <span style={{ paddingRight: 16 }}>{data.label}</span>}
                 data={mappedRight.map((option) => ({
                   label: option.name,
                   id: option.id,
@@ -870,14 +900,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             e.preventDefault();
                           }}
                         >
-                          <BodyText
-                            fontFamily="Cormorant-Garamond"
-                            customClass="quantity-label"
-                            level={4}
-                            style={{ height: 24 }}
-                          >
-                            Quantity
-                          </BodyText>
                           <div
                             className={`flex-start`}
                             style={{ height: 24 }}

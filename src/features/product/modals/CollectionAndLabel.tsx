@@ -489,7 +489,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         setChosenLabel(
           labels
             .map((el) => {
-              if (selectedItem.some((item: any) => item.value === el.value)) {
+              if (selectedItem?.some((item: any) => item.value === el.value)) {
                 return el;
               }
 

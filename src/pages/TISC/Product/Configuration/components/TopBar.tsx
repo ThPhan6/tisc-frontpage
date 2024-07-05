@@ -255,12 +255,6 @@ export const TopBar: React.FC = () => {
               bottomValue="Cards"
               cursor="default"
             />
-            <TopBarItem
-              topValue={formatNumber(productSummary?.product_count) ?? ''}
-              disabled={!productSummary}
-              bottomValue="Products"
-              cursor="default"
-            />
           </>
         }
         RightSideContent={

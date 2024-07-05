@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { message } from 'antd';
 
@@ -8,6 +8,7 @@ import { ReactComponent as ActionBackIcon } from '@/assets/icons/single-left.svg
 import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.svg';
 
 import { confirmModal } from '@/helper/common';
+import { useBoolean } from '@/helper/hook';
 import { sortObjectArray } from '@/helper/utils';
 
 import {
@@ -28,7 +29,7 @@ import { MainTitle } from '@/components/Typography';
 
 import styles from './AutoStep.less';
 import { FirstStep } from './FirstStep';
-import { NextStep } from './NextStep';
+import { NextStep, SlideActions } from './NextStep';
 
 interface AutoStepProps {
   attributeGroup: ProductAttributeFormInput[];
@@ -58,13 +59,25 @@ export const AutoStep: FC<AutoStepProps> = ({
   const foundGroup = attributes.find((item) => item.name.toLowerCase().includes(brandName));
   const defaultSelected = foundGroup?.subs[0];
   const activeAttrGroupId = useAppSelector((state) => state.product.curAttrGroupCollapseId);
-
+  const slideActionRef = useRef<SlideActions>(null);
   const currentActiveSpecAttributeGroupId = activeAttrGroupId?.['specification_attribute_groups'];
-
+  const disablePreButton = useBoolean<Boolean>(false);
   const handleResetAutoStep = () => {
     store.dispatch(resetAutoStepState());
   };
-
+  const handlePrevious = () => {
+    if (slideActionRef.current) {
+      slideActionRef.current.handleBackToPrevSlide();
+    }
+  };
+  const handleNext = () => {
+    if (slideActionRef.current) {
+      slideActionRef.current.handleGoToNextSlide();
+    }
+  };
+  const onDisablePreButton = (value: boolean) => {
+    disablePreButton.setValue(value);
+  };
   useEffect(() => {
     return () => {
       handleResetAutoStep();
@@ -232,15 +245,40 @@ export const AutoStep: FC<AutoStepProps> = ({
             onClick={handleGoToNextStep}
           />
         ) : (
-          <div className="flex-end">
+          <div className="flex-end" style={{ position: 'relative', width: '100%' }}>
+            <div
+              className={'flex-center'}
+              style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
+            >
+              <CustomButton
+                size="small"
+                properties="standard"
+                variant={'secondary'}
+                disabled={disablePreButton.value}
+                onClick={handlePrevious}
+              >
+                Previous
+              </CustomButton>
+              <CustomButton
+                size="small"
+                properties="standard"
+                variant={'secondary'}
+                disabled={false}
+                style={{ marginLeft: 16 }}
+                onClick={handleNext}
+              >
+                Next
+              </CustomButton>
+            </div>
             <CustomButton
               buttonClass="action-left-icon"
               size="small"
               properties="rounded"
+              style={{ marginLeft: 16 }}
               icon={<ActionBackIcon />}
               onClick={handleBackToSelectOption}
             />
-            <CustomButton
+            {/* <CustomButton
               size="small"
               properties="rounded"
               disabled={disabledCreateStep}
@@ -248,7 +286,7 @@ export const AutoStep: FC<AutoStepProps> = ({
               onClick={handleCreateStep('preserve')}
             >
               Preserve
-            </CustomButton>
+            </CustomButton> */}
             <CustomButton
               size="small"
               properties="rounded"
@@ -272,7 +310,7 @@ export const AutoStep: FC<AutoStepProps> = ({
           }
         />
       ) : (
-        <NextStep />
+        <NextStep onDisablePreButton={onDisablePreButton} ref={slideActionRef} />
       )}
     </CustomModal>
   );
