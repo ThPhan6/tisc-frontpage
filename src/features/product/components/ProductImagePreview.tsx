@@ -21,15 +21,14 @@ import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 import { likeProductById } from '@/features/product/services';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
-import { getBase64, showImageUrl } from '@/helper/utils';
+import { getBase64, showImageUrl, simplizeString } from '@/helper/utils';
+import { isEmpty } from 'lodash';
 
-import { ProductKeyword } from '../types';
 import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import {
   setCustomProductDetail,
@@ -111,7 +110,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     index: 0,
     isOpen: false,
   });
-
+  const brand = useAppSelector((state) => state.product.brand);
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
 
@@ -144,7 +143,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     },
     beforeUpload: (_file, fileList) => {
       const totalImageCount = product.images.length + fileList.length;
-      const maxImageAllow = isCustomProduct ? 4 : 9;
+      const maxImageAllow = 4;
 
       if (totalImageCount > maxImageAllow) {
         message.error(`Maximum ${maxImageAllow} images are allowed`);
@@ -212,6 +211,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       }
     });
   };
+  const namingData: any = product;
 
   const renderBottomPreview = () => {
     if (isTiscUser) {
@@ -220,31 +220,17 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           <BodyText level={4} customClass={styles.imageNaming}>
             Image naming:
           </BodyText>
-          {'keywords' in product
-            ? product.keywords.map((value, index) =>
-                isTablet ? (
-                  <span className="text-overflow" key={index}>
-                    {value}
-                  </span>
-                ) : (
-                  <CustomInput
-                    key={index}
-                    placeholder={`keyword${index + 1}`}
-                    value={value}
-                    disabled={!isEditable}
-                    onChange={(e) => {
-                      const newKeywords = [...product.keywords] as ProductKeyword;
-                      newKeywords[index] = e.target.value;
-                      dispatch(
-                        setPartialProductDetail({
-                          keywords: newKeywords,
-                        }),
-                      );
-                    }}
-                  />
-                ),
-              )
-            : null}
+          {namingData ? (
+            <span className="text-overflow">{`${[
+              simplizeString(brand?.name || ''),
+              (namingData.collections || [])
+                .map((collection: any) => simplizeString(collection.name || ''))
+                .join('-'),
+              simplizeString(namingData.name || ''),
+            ]
+              .filter((text) => !isEmpty(text))
+              .join('-')}`}</span>
+          ) : null}
         </div>
       );
     }
@@ -475,7 +461,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                   </BodyText>
                   <AddMoreIcon />
                   <BodyText level={6} fontFamily="Roboto">
-                    {isCustomProduct ? '(max.4 more images)' : '(min.3 and max.9)'}
+                    {isCustomProduct ? '(max.4 more images)' : '(min.1 and max.4)'}
                   </BodyText>
                 </div>
               </Upload>

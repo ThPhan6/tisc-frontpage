@@ -208,7 +208,7 @@ export const ProductBasicInfo: React.FC = () => {
           label="Product"
           placeholder={editable ? 'type max.100 characters short description' : ''}
           readOnly={editable === false}
-          maxLength={100}
+          maxLength={64}
           noWrap
           value={name}
           onChange={(e) => {

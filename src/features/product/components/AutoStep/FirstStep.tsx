@@ -2,8 +2,6 @@ import { FC, useContext } from 'react';
 
 // import { ReactComponent as LineRightStepIcon } from '@/assets/icons/line-right-blue-24.svg';
 import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-right-grey-24.svg';
-import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
-import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
 import { flatMap } from 'lodash';
 
@@ -82,10 +80,10 @@ export const FirstStep: FC<FirstStepProps> = ({ attributeGroup, selected }) => {
             </div>
           ))}
         </div>
-        <div className="flex-start slide-icons">
+        {/* <div className="flex-start slide-icons">
           <ActionSlideLeftIcon className={slideBarStyles.slideLeftIcon} />
           <ActionSlideRightIcon className={slideBarStyles.slideRightIcon} />
-        </div>
+        </div> */}
       </div>
 
       <div className={styles.mainContent}>
