@@ -135,7 +135,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   );
 
   const [images, setImages] = useState<any>([]);
-
   /// for specification choice attribute
   const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
 
@@ -942,12 +941,26 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                       }`,
                                     )}
                                   </BodyText>
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {option.product_id}
+                                  </BodyText>
                                 </div>
                               }
                             >
                               <div className="step-info">
                                 {option.image ? (
-                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                  option.image === '/default/option_default.webp' ? (
+                                    <div className={'step-image-text-container'}>
+                                      <div className={'step-image-text'}>{option.product_id}</div>
+                                    </div>
+                                  ) : (
+                                    <img className="step-image" src={showImageUrl(option.image)} />
+                                  )
                                 ) : null}
                               </div>
                             </Popover>

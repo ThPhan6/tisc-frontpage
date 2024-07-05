@@ -472,7 +472,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           }}
           header={
             <div style={{ width: '100%' }}>
-              <div className="header-text flex-between">
+              <div className="header-text flex-between text-uppercase">
                 <BodyText
                   data-text={`${group.name} (${group.count})`}
                   level={5}
