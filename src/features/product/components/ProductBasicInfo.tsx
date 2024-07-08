@@ -206,7 +206,7 @@ export const ProductBasicInfo: React.FC = () => {
           containerClass={!editable ? styles.viewInfo : ''}
           fontLevel={4}
           label="Product"
-          placeholder={editable ? 'type max.100 characters short description' : ''}
+          placeholder={editable ? 'type max.64 characters short description' : ''}
           readOnly={editable === false}
           maxLength={64}
           noWrap

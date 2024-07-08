@@ -245,31 +245,26 @@ export const AutoStep: FC<AutoStepProps> = ({
             onClick={handleGoToNextStep}
           />
         ) : (
-          <div className="flex-end" style={{ position: 'relative', width: '100%' }}>
-            <div
-              className={'flex-center'}
-              style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
+          <div className="flex-end">
+            <CustomButton
+              size="small"
+              properties="rounded"
+              variant={'secondary'}
+              disabled={disablePreButton.value}
+              onClick={handlePrevious}
             >
-              <CustomButton
-                size="small"
-                properties="standard"
-                variant={'secondary'}
-                disabled={disablePreButton.value}
-                onClick={handlePrevious}
-              >
-                Previous
-              </CustomButton>
-              <CustomButton
-                size="small"
-                properties="standard"
-                variant={'secondary'}
-                disabled={false}
-                style={{ marginLeft: 16 }}
-                onClick={handleNext}
-              >
-                Next
-              </CustomButton>
-            </div>
+              Previous
+            </CustomButton>
+            <CustomButton
+              size="small"
+              properties="rounded"
+              variant={'secondary'}
+              disabled={false}
+              style={{ marginLeft: 16 }}
+              onClick={handleNext}
+            >
+              Next
+            </CustomButton>
             <CustomButton
               buttonClass="action-left-icon"
               size="small"
