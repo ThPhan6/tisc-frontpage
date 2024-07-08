@@ -284,9 +284,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
         <div className={styles.productInfo} onClick={hanldeRedirectURL}>
-          <BodyText level={6} fontFamily="Roboto" customClass="product-description">
-            {product.name || 'N/A'}
-          </BodyText>
+          <div className={styles.productName}>
+            <BodyText level={6} fontFamily="Roboto" customClass="product-description">
+              {product.name || 'N/A'}
+            </BodyText>
+          </div>
           <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
             {product.brand?.name ?? 'N/A'}
           </BodyText>
