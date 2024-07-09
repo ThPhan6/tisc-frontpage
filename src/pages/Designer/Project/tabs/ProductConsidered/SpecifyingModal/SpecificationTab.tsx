@@ -4,6 +4,7 @@ import { Tooltip } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
+import { useProductAttributeForm } from '@/features/product/components/ProductAttributes/hooks';
 import { getProductById } from '@/features/product/services';
 import { useCheckBrandSpecified } from '@/helper/hook';
 import { getOneCustomProduct } from '@/pages/Designer/Products/CustomLibrary/services';
@@ -46,12 +47,16 @@ const SpecifiedSpecificationTab: FC<{
   isSpecified?: boolean;
 }> = ({ productId, customProduct, referToDesignDocument, isSpecified }) => {
   const isBrandSpecified = useCheckBrandSpecified(!!isSpecified);
+  const { onUnCheckedAllAttributeGroups } = useProductAttributeForm('specification', productId, {
+    isSpecifiedModal: true,
+  });
 
   const checkReferToDesignDocument = () => {
     if (customProduct) {
       store.dispatch(onCheckCustomProductReferToDocument());
     } else {
       store.dispatch(onCheckReferToDesignDocument());
+      onUnCheckedAllAttributeGroups();
     }
   };
 
