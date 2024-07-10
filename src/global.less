@@ -139,8 +139,17 @@ input:-webkit-autofill:active {
 }
 
 .text-hover-bold {
+  &::after {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    font-weight: bold;
+    visibility: hidden;
+    content: attr(data-text);
+  }
+
   &:hover {
-    text-shadow: 0 0 1px rgba(0, 0, 0, 1);
+    font-weight: bold;
   }
 }
 
