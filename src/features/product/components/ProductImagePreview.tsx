@@ -60,9 +60,10 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
         {icon}
         {isMobile ? null : (
           <BodyText
-            level={6}
+            level={5}
             fontFamily="Roboto"
             color={disabled ? 'mono-color-medium' : 'mono-color'}
+            customClass="text-hover-bold"
           >
             {label}
           </BodyText>
@@ -260,7 +261,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <div className={styles.actionRight}>
           {isDesignerUser && !hideInquiryRequest ? (
             <ActionItem
-              label="Inquiry/Request"
+              label="Make Inquiry/Request"
               icon={<CommentIcon />}
               onClick={() =>
                 store.dispatch(
@@ -277,7 +278,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           ) : null}
           {isDesignerUser ? (
             <ActionItem
-              label="Assign Product"
+              label="Assign to Project"
               icon={<AssignIcon />}
               onClick={() =>
                 store.dispatch(
