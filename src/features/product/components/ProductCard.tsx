@@ -218,7 +218,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick: handleDeleteProduct,
     },
     {
-      tooltipText: 'Inquiry/Request',
+      tooltipText: 'Make Inquiry/Request',
       show: Boolean(showInquiryRequest && isDesignFirmUser && !isCustomProduct),
       Icon: CommentIcon,
       onClick: () =>
@@ -231,7 +231,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         ),
     },
     {
-      tooltipText: 'Assign Product',
+      tooltipText: 'Assign to Project',
       show: isDesignFirmUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () =>

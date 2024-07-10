@@ -261,7 +261,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <div className={styles.actionRight}>
           {isDesignerUser && !hideInquiryRequest ? (
             <ActionItem
-              label="Inquiry/Request"
+              label="Make Inquiry/Request"
               icon={<CommentIcon />}
               onClick={() =>
                 store.dispatch(
@@ -278,7 +278,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           ) : null}
           {isDesignerUser ? (
             <ActionItem
-              label="Assign Product"
+              label="Assign to Project"
               icon={<AssignIcon />}
               onClick={() =>
                 store.dispatch(
