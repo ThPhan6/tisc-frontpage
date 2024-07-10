@@ -64,6 +64,7 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
             fontFamily="Roboto"
             color={disabled ? 'mono-color-medium' : 'mono-color'}
             customClass="text-hover-bold"
+            data-text={label}
           >
             {label}
           </BodyText>
