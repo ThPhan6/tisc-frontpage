@@ -60,9 +60,11 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
         {icon}
         {isMobile ? null : (
           <BodyText
-            level={6}
+            level={5}
             fontFamily="Roboto"
             color={disabled ? 'mono-color-medium' : 'mono-color'}
+            customClass="text-hover-bold"
+            data-text={label}
           >
             {label}
           </BodyText>
@@ -245,7 +247,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       return (
         <div className="flex-start" onClick={likeProduct}>
           {liked ? <LikedIcon /> : <LikeIcon />}
-          <BodyText level={6} fontFamily="Roboto" customClass="action-like">
+          <BodyText level={5} fontFamily="Roboto" customClass="action-like text-hover-bold">
             {likeCount.toLocaleString('en-us')} {likeCount <= 1 ? 'like' : 'likes'}
           </BodyText>
         </div>
@@ -260,7 +262,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <div className={styles.actionRight}>
           {isDesignerUser && !hideInquiryRequest ? (
             <ActionItem
-              label="Inquiry/Request"
+              label="Make Inquiry/Request"
               icon={<CommentIcon />}
               onClick={() =>
                 store.dispatch(
@@ -277,7 +279,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           ) : null}
           {isDesignerUser ? (
             <ActionItem
-              label="Assign Product"
+              label="Assign to Project"
               icon={<AssignIcon />}
               onClick={() =>
                 store.dispatch(
