@@ -434,16 +434,10 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
 
-  const subLabelItems: ItemType[] = [
-    {
-      key: 'sub label',
-      label: 'Sub-Label name',
-    },
-    {
-      key: 'sub label 1',
-      label: 'Sub-Label name 1',
-    },
-  ];
+  const subLabelItems: ItemType[] = labels.map(({ id, label }) => ({
+    key: `label-${id}`,
+    label,
+  }));
 
   const bodyTextWrapperSubLabelStyles = {
     display: 'flex',
@@ -569,7 +563,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                 style={bodyTextWrapperSubLabelStyles}
               >
                 Add To
-                <CustomDropDown items={subLabelItems} />
+                <CustomDropDown items={subLabelItems} placement="bottomRight" />
               </BodyText>
             </div>
           </div>
