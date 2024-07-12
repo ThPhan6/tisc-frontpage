@@ -694,6 +694,16 @@ export const useProductAttributeForm = (
       setReferToDesignDocument(newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup),
     );
   };
+  const onUnCheckedAllAttributeGroups = () => {
+    dispatch(
+      setPartialProductSpecifiedData({
+        specification: {
+          is_refer_document: true,
+          attribute_groups: [],
+        },
+      }),
+    );
+  };
 
   return {
     onDeleteProductAttribute,
@@ -704,6 +714,7 @@ export const useProductAttributeForm = (
     attributeGroupKey,
     attributeGroup,
     onCheckedSpecification,
+    onUnCheckedAllAttributeGroups,
     onSelectSpecificationOption,
     referToDesignDocument,
     dimensionWeightData,

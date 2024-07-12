@@ -143,8 +143,8 @@ const ShareViaEmail: FC = () => {
         image={product.images?.[0]}
         logo={product.brand?.logo}
         text_1={product.brand?.name}
-        text_2={product.name}
-        text_3={product.description}
+        text_2={product.collections.map((collection) => collection.name).join(', ')}
+        text_3={product.name}
         customClass={styles.header}
       />
 

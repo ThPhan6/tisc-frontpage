@@ -266,8 +266,8 @@ const InquiryRequestModal: FC = () => {
         image={product.images?.[0] || ''}
         logo={product.brand?.logo}
         text_1={product.brand?.name || ''}
-        text_2={product.collection?.name || ''}
-        text_3={product.description || ''}
+        text_2={product.collections.map((collection) => collection.name).join(', ')}
+        text_3={product.name || ''}
         hasBoxShadow={true}
         customClass={styles.header}
       />
