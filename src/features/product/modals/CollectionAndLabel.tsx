@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 
 import { message } from 'antd';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
@@ -18,7 +19,8 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import Popover from '@/components/Modal/Popover';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
-import { MainTitle, RobotoBodyText } from '@/components/Typography';
+import { BodyText, MainTitle, RobotoBodyText } from '@/components/Typography';
+import { CustomDropDown } from '@/features/product/components/ProductTopBarItem';
 
 import styles from './index.less';
 
@@ -432,6 +434,20 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
 
+  const subLabelItems: ItemType[] = labels.map(({ id, label }) => ({
+    key: `label-${id}`,
+    label,
+  }));
+
+  const bodyTextWrapperSubLabelStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    fontWeight: '600',
+    minWidth: 'fit-content',
+    color: '#808080',
+    cursor: 'pointer',
+  };
+
   return (
     <Popover
       title="SELECT COLLECTION & LABEL"
@@ -502,7 +518,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         <div className={`${styles.boxShadowBottom} d-flex justify-between`}>
           <div className={'side-container'}>
             <MainTitle level={3}>Create New Collection</MainTitle>
-            <div className="flex-between flex-grow">
+            <div className="flex-between flex-grow" style={{ paddingRight: '10px' }}>
               <CustomInput
                 placeholder="type new collection"
                 value={newOption}
@@ -531,6 +547,24 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                 disabled={!newLabel}
                 onClick={newLabel ? handleCreateLabel : undefined}
               />
+            </div>
+          </div>
+          <div className={'side-container'}>
+            <MainTitle style={{ marginBottom: '28px' }}></MainTitle>
+            <div className="flex-between flex-grow">
+              <CustomInput
+                placeholder="Add sub-label name"
+                value={newLabel}
+                onChange={(e) => onChangeCreateNewLabel(e)}
+              />
+              <BodyText
+                level={4}
+                fontFamily="Cormorant-Garamond"
+                style={bodyTextWrapperSubLabelStyles}
+              >
+                Add To
+                <CustomDropDown items={subLabelItems} placement="bottomRight" />
+              </BodyText>
             </div>
           </div>
         </div>
