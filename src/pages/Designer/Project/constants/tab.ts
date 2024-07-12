@@ -43,14 +43,14 @@ export enum ProjectSpecifyTabKeys {
 
 export const ProjectSpecifyTabs: TabItem[] = [
   {
-    tab: 'confirm specification',
+    tab: '1.confirm specification',
     mobileTabTitle: 'Spec',
     key: ProjectSpecifyTabKeys.specification,
   },
-  { tab: 'select vendors', key: ProjectSpecifyTabKeys.vendor },
-  { tab: 'verify locations', key: ProjectSpecifyTabKeys.allocation },
+  { tab: '2.select vendors', key: ProjectSpecifyTabKeys.vendor },
+  { tab: '3.verify locations', key: ProjectSpecifyTabKeys.allocation },
   {
-    tab: 'assign code & instruction',
+    tab: '4.assign code & instruction',
     mobileTabTitle: 'Code',
     key: ProjectSpecifyTabKeys.codeAndOrder,
   },
