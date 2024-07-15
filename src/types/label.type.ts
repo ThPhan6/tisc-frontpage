@@ -5,6 +5,6 @@ export type Label = {
   created_at: string;
 };
 export type LabelInput = {
-  name: string;
+  name?: string;
   brand_id: string;
 };

@@ -19,13 +19,14 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import Popover from '@/components/Modal/Popover';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
-import { BodyText, MainTitle, RobotoBodyText } from '@/components/Typography';
+import { MainTitle, RobotoBodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components/ProductTopBarItem';
 
 import styles from './index.less';
 
 export interface DynamicCheckboxValue extends CheckboxValue, Partial<Collection> {
   editLabel?: boolean;
+  brand_id?: string;
 }
 
 interface MultiCollectionModalProps {
@@ -66,6 +67,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   const curData = useRef<DynamicCheckboxValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
   const [newLabel, setNewLabel] = useState<string>();
+  const [newSubLabel, setNewSubLabel] = useState<string>();
 
   /// collection item
   const [selected, setSelected] = useState<DynamicCheckboxValue[]>([]);
@@ -185,6 +187,12 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
     const newValue = trimStart(e.target.value);
     setNewLabel(newValue);
   };
+
+  const handleOnChangeCreateNewSubLabel = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = trimStart(event.target.value);
+    setNewSubLabel(newValue);
+  };
+
   const handleCreateCollection = () => {
     if (newOption) {
       // check if value is existed
@@ -434,18 +442,46 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
 
-  const subLabelItems: ItemType[] = labels.map(({ id, label }) => ({
-    key: `label-${id}`,
-    label,
-  }));
+  const handleAssignSubLabel = async (brand_id: string, parent_id: string | undefined) => {
+    const subLabeldata = { name: newSubLabel, brand_id, parent_id };
 
-  const bodyTextWrapperSubLabelStyles = {
-    display: 'flex',
-    alignItems: 'center',
+    const res = await createLabel(subLabeldata);
+
+    if (res && res.statusCode === 200 && res.data.id) {
+      const newSubLabelData: DynamicCheckboxValue = {
+        label: res.data?.name,
+        value: res.data?.id,
+        brand_id: res.data?.brand_id,
+      };
+
+      setLabels((prevLabels) => [...prevLabels, newSubLabelData]);
+      setNewSubLabel('');
+      getLabelList();
+    }
+  };
+
+  const subLabelItems: ItemType[] = labels.map(({ id, name, brand_id }) => {
+    const handleAddSubLabel = () => handleAssignSubLabel(brand_id!, id);
+
+    return {
+      key: `label-${id}`,
+      label: name,
+      onClick: handleAddSubLabel,
+    };
+  });
+
+  const dropDownTextStyles = {
     fontWeight: '600',
-    minWidth: 'fit-content',
+    width: 'max-content',
     color: '#808080',
-    cursor: 'pointer',
+    fontSize: '14px',
+    fontFamily: 'Cormorant-Garamond',
+    lineHeight: 'calc(21/14)',
+  };
+
+  const dropDownStyles = {
+    display: 'flex',
+    cursor: !newSubLabel ? 'not-allowed' : 'pointer',
   };
 
   return (
@@ -554,17 +590,17 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
             <div className="flex-between flex-grow">
               <CustomInput
                 placeholder="Add sub-label name"
-                value={newLabel}
-                onChange={(e) => onChangeCreateNewLabel(e)}
+                value={newSubLabel}
+                onChange={handleOnChangeCreateNewSubLabel}
               />
-              <BodyText
-                level={4}
-                fontFamily="Cormorant-Garamond"
-                style={bodyTextWrapperSubLabelStyles}
+              <CustomDropDown
+                items={subLabelItems}
+                placement="bottomRight"
+                disabled={!newSubLabel}
+                dropDownStyles={dropDownStyles}
               >
-                Add To
-                <CustomDropDown items={subLabelItems} placement="bottomRight" />
-              </BodyText>
+                <span style={dropDownTextStyles}>Add To</span>
+              </CustomDropDown>
             </div>
           </div>
         </div>
