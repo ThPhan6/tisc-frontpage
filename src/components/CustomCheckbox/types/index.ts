@@ -26,6 +26,7 @@ export interface CustomCheckboxProps {
   chosenItems?: CheckboxValue[];
   additionalSelected?: string[];
   onChangeAdditionalSelected?: (value: string, option?: any, action?: 'add' | 'remove') => void;
+  isExpanded?: boolean;
 }
 
 export interface DropdownCheckboxItem {

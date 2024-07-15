@@ -16,6 +16,7 @@ import { quotationReducer } from '@/pages/LandingPage/quotionReducer';
 import { componentReducer } from '@/pages/TISC/Product/Basis/Option/componentReducer';
 
 import { activeReducer } from './active';
+import labelReducer from './label';
 import { modalReducer } from './modal';
 import summaryReducer from './summary';
 import userReducer from './user';
@@ -28,6 +29,7 @@ const reducers = combineReducers({
   customProduct: officeProductReducer, // using for office library
   category: categoryReducer,
   user: userReducer,
+  label: labelReducer,
   project: projectReducer,
   loading: loadingActionReducer,
   summary: summaryReducer,

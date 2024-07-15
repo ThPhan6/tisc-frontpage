@@ -1,0 +1,23 @@
+import { DynamicCheckboxValue } from '@/features/product/modals/CollectionAndLabel';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
+interface LabelsState {
+  labels: DynamicCheckboxValue[];
+}
+
+const initialState: LabelsState = {
+  labels: [],
+};
+
+const labelReducer = createSlice({
+  name: 'labels',
+  initialState,
+  reducers: {
+    setLabels(state, action: PayloadAction<DynamicCheckboxValue[]>) {
+      state.labels = action.payload;
+    },
+  },
+});
+
+export const { setLabels } = labelReducer.actions;
+export default labelReducer.reducer;
