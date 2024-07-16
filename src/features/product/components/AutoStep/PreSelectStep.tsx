@@ -39,6 +39,7 @@ interface PreSelectStepProps {
   updatePreSelect?: boolean;
   viewStepsDefault?: AutoStepOnAttributeGroupRequest[];
   quantitiesDefault?: any;
+  isSpecifiedModal?: boolean;
 }
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({
@@ -47,10 +48,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   updatePreSelect,
   viewStepsDefault,
   quantitiesDefault,
+  isSpecifiedModal,
 }) => {
   // const defaultSelectedProductIds = 'AL2404TSAD';
 
-  const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
+  const details = useAppSelector((state) => state.product.details);
+  const allPreSelectAttributes = useAppSelector((state) =>
+    !isSpecifiedModal
+      ? state.product.allPreSelectAttributes
+      : state.product.details.specifiedDetail?.specification.attribute_groups,
+  );
+
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
   const selectProductSpecification = useSelectProductSpecification();
@@ -536,6 +544,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
           };
         })
         .filter((item) => !isEmpty(item));
+      console.log(newAttributeGroups);
       store.dispatch(
         setPartialProductSpecifiedData({
           specification: {
