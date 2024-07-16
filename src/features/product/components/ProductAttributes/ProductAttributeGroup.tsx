@@ -156,7 +156,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     []) as AutoStepOnAttributeGroupResponse[];
 
   const showTISCAutoSteps = !hideAction && isEditable;
-
+  useEffect(() => {
+    console.log(isAttributeGroupSelected);
+  }, []);
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
       let attributeSelected: AttributeSelectedProps = ATTRIBUTE_SELECTED_DEFAULT_VALUE;
@@ -595,11 +597,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             >
               <CustomCheckbox
                 options={[{ label: '', value: grIndex }]}
-                selected={
-                  group.isChecked && isAttributeGroupSelected
-                    ? [{ label: group.name, value: grIndex }]
-                    : []
-                }
+                selected={group.isChecked ? [{ label: group.name, value: grIndex }] : []}
                 onChange={() => {
                   onCheckedSpecification(grIndex, !isTiscAdmin);
 
@@ -1021,6 +1019,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 ? specifiedQuantity
                 : attrGroupItem.stepSelection?.quantities
             }
+            isSpecifiedModal={isSpecifiedModal}
           />
         ) : null
       ) : null}

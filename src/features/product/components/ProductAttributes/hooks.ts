@@ -556,6 +556,7 @@ export const useProductAttributeForm = (
       const newGroup = {
         ...newState[groupIndex],
         ...foundGroup,
+        isChecked: newState[groupIndex].isChecked,
         attributes: newState[groupIndex].attributes
           .map((attribute) => {
             return {
@@ -576,10 +577,11 @@ export const useProductAttributeForm = (
           }
           return newGroup;
         });
+
       dispatch(
         setPartialProductSpecifiedData({
           specification: {
-            is_refer_document: specifiedDetail?.specification.is_refer_document as any,
+            is_refer_document: false,
             attribute_groups: newAttributeGroups as any,
           },
         }),
@@ -674,12 +676,13 @@ export const useProductAttributeForm = (
         specification_attribute_groups: newState,
       }),
     );
+    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
     if (props?.isSpecifiedModal) {
       const foundId = newState[groupIndex].id;
       dispatch(
         setPartialProductSpecifiedData({
           specification: {
-            is_refer_document: specifiedDetail?.specification.is_refer_document as any,
+            is_refer_document: newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup,
             attribute_groups: specifiedDetail?.specification.attribute_groups?.filter(
               (item) => item.id !== foundId,
             ) as any,
@@ -689,7 +692,6 @@ export const useProductAttributeForm = (
     }
 
     /* update specifying of project */
-    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
     dispatch(
       setReferToDesignDocument(newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup),
     );

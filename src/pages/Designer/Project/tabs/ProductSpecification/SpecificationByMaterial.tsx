@@ -61,6 +61,7 @@ export const SpecificationByMaterial: FC = () => {
       width: '5%',
       align: 'center',
       render: (value) => (value ? <LogoIcon logo={value[0]} size={24} /> : null),
+      noBoxShadow: true,
     },
     {
       title: 'Brand',
@@ -114,6 +115,7 @@ export const SpecificationByMaterial: FC = () => {
       dataIndex: 'availability',
       align: 'center',
       render: (_value, record) => renderAvailability(record),
+      noBoxShadow: true,
     },
     {
       title: 'Status',
@@ -128,6 +130,7 @@ export const SpecificationByMaterial: FC = () => {
       width: '5%',
       align: 'center',
       render: renderActionCell(setSpecifyingProduct, tableRef),
+      noBoxShadow: true,
     },
   ];
 
