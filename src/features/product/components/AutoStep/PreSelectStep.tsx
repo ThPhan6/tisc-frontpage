@@ -544,7 +544,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
           };
         })
         .filter((item) => !isEmpty(item));
-      console.log(newAttributeGroups);
       store.dispatch(
         setPartialProductSpecifiedData({
           specification: {
