@@ -78,7 +78,7 @@
   :global(.ant-table-tbody) {
     :global(.custom-expanded) + tr {
       :global(.ant-table-cell) {
-        box-shadow: @border-top;
+        box-shadow: none;
       }
     }
     :global(.ant-table-expanded-row) {
@@ -99,7 +99,7 @@
     tr {
       &:global(.custom-expanded) {
         :global(.ant-table-cell) {
-          // box-shadow: @border-bottom-light;
+          box-shadow: @border-bottom-light;
         }
       }
       &:global(.ant-table-placeholder) {
@@ -127,11 +127,11 @@
           text-decoration: line-through;
         }
       }
-      // &:global(.custom-expanded-level-2):nth-child(1) {
-      //   :global(.ant-table-cell) {
-      //     box-shadow: none;
-      //   }
-      // }
+      &:global(.custom-expanded-level-2):nth-child(1) {
+        :global(.ant-table-cell) {
+          box-shadow: none;
+        }
+      }
       &:global(.ant-table-expanded-row) {
         tr[data-row-key]:not(:first-child) :global(.ant-table-cell:not(.no-box-shadow)) {
           // box-shadow: @border-top-light;
@@ -176,7 +176,7 @@
                 padding: 0;
                 text-transform: capitalize;
                 border-top: 0;
-                // box-shadow: none;
+                box-shadow: none;
                 &:global(.no-box-shadow) {
                   &:not(:last-child) {
                     box-shadow: none;
@@ -219,7 +219,7 @@
   height: 40px;
   color: black;
   background-color: #e6e6e6;
-  box-shadow: @border-top;
+  box-shadow: @border-top-light;
   user-select: none;
   @media (max-width: @screen-lg) {
     bottom: -12px;
@@ -323,17 +323,4 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
   :global(.item:last-child) {
     left: 12px !important;
   }
-}
-
-// :global(tbody) tr:first-child td:first-child {
-//   border-bottom: 1px solid red !important;
-// }
-:global(tbody > tr.custom-expanded-level-2:first-child > .no-box-shadow:nth-child(n + 1)),
-:global(tbody > tr.custom-expanded-level-3:first-child > .no-box-shadow:nth-child(n + 2)),
-:global(tbody > tr.custom-expanded-level-4:first-child > .no-box-shadow:nth-child(n + 3)),
-:global(tbody > tr.custom-expanded-level-5:first-child > .no-box-shadow:nth-child(n + 4)) {
-  box-shadow: @border-top !important;
-}
-:global(tbody > tr.ant-table-row-level-0 > .no-box-shadow:nth-child(n)) {
-  box-shadow: none !important;
 }
