@@ -49,7 +49,7 @@
   th:nth-child(5),
   th:nth-child(6) {
     > .title {
-      word-spacing: 100vw;
+      // word-spacing: 100vw;
     }
   }
 
@@ -100,7 +100,7 @@
       }
 
       :global(.ant-checkbox-wrapper) {
-        height: 23px;
+        height: fit-content;
       }
     }
 
@@ -133,12 +133,13 @@
     flex-direction: row-reverse;
     align-items: stretch;
     justify-content: space-between;
-    margin: 0 !important;
-    padding: 0 28px 0 12px;
+    width: 70%;
+    margin: auto;
 
     @media screen and (max-width: 576px) {
       display: flex;
       justify-content: center;
+      width: 100%;
     }
 
     :global(.ant-checkbox + span) {
