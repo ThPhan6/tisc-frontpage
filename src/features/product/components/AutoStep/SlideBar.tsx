@@ -2,8 +2,6 @@ import { FC } from 'react';
 
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as LineRightDescriptionIcon } from '@/assets/icons/line-right-grey-24.svg';
-import { ReactComponent as ActionSlideLeftIcon } from '@/assets/icons/square-single-left-24.svg';
-import { ReactComponent as ActionSlideRightIcon } from '@/assets/icons/square-single-right-24.svg';
 
 import { useCheckPermission } from '@/helper/hook';
 
@@ -22,13 +20,7 @@ export interface SlideBarProps {
   disabledNextSlide?: boolean;
 }
 
-export const SlideBar: FC<SlideBarProps> = ({
-  className = '',
-  disabledNextSlide,
-  handleBackToPrevSlide,
-  handleGoToNextSlide,
-  handleRemoveStep,
-}) => {
+export const SlideBar: FC<SlideBarProps> = ({ className = '', handleRemoveStep }) => {
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const slide = useAppSelector((state) => state.autoStep.slide as number);
@@ -127,7 +119,7 @@ export const SlideBar: FC<SlideBarProps> = ({
       </div>
 
       {/* slide action */}
-      <div className="flex-start slide-icons">
+      {/* <div className="flex-start slide-icons">
         <ActionSlideLeftIcon
           className={`${styles.slideLeftIcon} ${
             slide !== 0 ? styles.activeSlideLeftIcon : ''
@@ -144,7 +136,7 @@ export const SlideBar: FC<SlideBarProps> = ({
           } slide-right-icon`}
           onClick={disabledNextSlide ? undefined : handleGoToNextSlide}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

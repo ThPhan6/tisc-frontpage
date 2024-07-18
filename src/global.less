@@ -138,6 +138,21 @@ input:-webkit-autofill:active {
   text-transform: capitalize;
 }
 
+.text-hover-bold {
+  &::after {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    font-weight: 400;
+    visibility: hidden;
+    content: attr(data-text);
+  }
+
+  &:hover {
+    font-weight: 400;
+  }
+}
+
 // Compatible with IE11
 @media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
   body .ant-design-pro > .ant-layout {

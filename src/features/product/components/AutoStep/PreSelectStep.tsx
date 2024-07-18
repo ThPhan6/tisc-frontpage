@@ -6,6 +6,8 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/action-extend.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/action-plus-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+import { ReactComponent as ActionBackIcon } from '@/assets/icons/single-left.svg';
+import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useGetUserRoleFromPathname, useNumber } from '@/helper/hook';
@@ -39,6 +41,7 @@ interface PreSelectStepProps {
   updatePreSelect?: boolean;
   viewStepsDefault?: AutoStepOnAttributeGroupRequest[];
   quantitiesDefault?: any;
+  isSpecifiedModal?: boolean;
 }
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({
@@ -47,10 +50,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   updatePreSelect,
   viewStepsDefault,
   quantitiesDefault,
+  isSpecifiedModal,
 }) => {
   // const defaultSelectedProductIds = 'AL2404TSAD';
 
-  const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
+  const details = useAppSelector((state) => state.product.details);
+  const allPreSelectAttributes = useAppSelector((state) =>
+    !isSpecifiedModal
+      ? state.product.allPreSelectAttributes
+      : state.product.details.specifiedDetail?.specification.attribute_groups,
+  );
+
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
   const selectProductSpecification = useSelectProductSpecification();
@@ -617,7 +627,9 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   const currentLeft = slide === 0 ? tempLeft : tempLeft?.filter((item: any) => item.picked);
   const mappedLeft = mappingOptionGroups(currentLeft);
   const mappedRight = mappingOptionGroups(tempRight);
-
+  const disableNext =
+    curOrder === slideBars.length || leftSelectedOption[slide]?.replicate !== totalQuantity.value;
+  const disablePre = slide === 0;
   return (
     <CustomModal
       title={
@@ -636,18 +648,39 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       width={'80%'}
       closeIcon={<CloseIcon />}
       footer={
-        <CustomButton size="small" properties="rounded" onClick={handleCreatePreSelectStep}>
-          Done
-        </CustomButton>
+        <div className="flex-end" style={{ position: 'relative', width: '100%' }}>
+          <CustomButton
+            buttonClass="action-button"
+            size="small"
+            properties="rounded"
+            disabled={disablePre}
+            onClick={handleBackToPrevSlide}
+            icon={<ActionBackIcon />}
+          ></CustomButton>
+          <CustomButton
+            buttonClass="action-button"
+            size="small"
+            properties="rounded"
+            style={{ marginLeft: 16 }}
+            disabled={disableNext}
+            onClick={handleGoToNextSlide}
+            icon={<ActionNextIcon />}
+          ></CustomButton>
+          <CustomButton
+            style={{ marginLeft: 32 }}
+            size="small"
+            properties="rounded"
+            onClick={handleCreatePreSelectStep}
+          >
+            Done
+          </CustomButton>
+        </div>
       }
     >
       <SlideBar
         handleBackToPrevSlide={handleBackToPrevSlide}
         handleGoToNextSlide={handleGoToNextSlide}
-        disabledNextSlide={
-          curOrder === slideBars.length ||
-          leftSelectedOption[slide]?.replicate !== totalQuantity.value
-        }
+        disabledNextSlide={disableNext}
       />
 
       <div className={styles.mainContent}>
@@ -792,7 +825,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                   .filter((el: any) => el.picked)
                   .map((el: any) => ({ label: '', value: el.id }))}
                 forceEnableCollapse={forceEnableCollapse}
-                renderTitle={(data) => data.label}
+                renderTitle={(data) => <span style={{ paddingRight: 16 }}>{data.label}</span>}
                 data={mappedRight.map((option) => ({
                   label: option.name,
                   id: option.id,
@@ -870,14 +903,6 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                             e.preventDefault();
                           }}
                         >
-                          <BodyText
-                            fontFamily="Cormorant-Garamond"
-                            customClass="quantity-label"
-                            level={4}
-                            style={{ height: 24 }}
-                          >
-                            Quantity
-                          </BodyText>
                           <div
                             className={`flex-start`}
                             style={{ height: 24 }}

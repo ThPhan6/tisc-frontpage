@@ -218,7 +218,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick: handleDeleteProduct,
     },
     {
-      tooltipText: 'Inquiry/Request',
+      tooltipText: 'Make Inquiry/Request',
       show: Boolean(showInquiryRequest && isDesignFirmUser && !isCustomProduct),
       Icon: CommentIcon,
       onClick: () =>
@@ -231,7 +231,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         ),
     },
     {
-      tooltipText: 'Assign Product',
+      tooltipText: 'Assign to Project',
       show: isDesignFirmUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () =>
@@ -284,9 +284,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
         <div className={styles.productInfo} onClick={hanldeRedirectURL}>
-          <BodyText level={6} fontFamily="Roboto" customClass="product-description">
-            {product.name || 'N/A'}
-          </BodyText>
+          <div className={styles.productName}>
+            <BodyText level={6} fontFamily="Roboto" customClass="product-description">
+              {product.name || 'N/A'}
+            </BodyText>
+          </div>
           <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
             {product.brand?.name ?? 'N/A'}
           </BodyText>
@@ -472,7 +474,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           }}
           header={
             <div style={{ width: '100%' }}>
-              <div className="header-text flex-between">
+              <div className="header-text flex-between text-uppercase">
                 <BodyText
                   data-text={`${group.name} (${group.count})`}
                   level={5}

@@ -255,8 +255,7 @@ const BrandProductListPage: React.FC = () => {
 
             <div className="flex-end">
               {renderInfoItem('Collections', formatNumber(brandSummary.collection_count) as any)}
-              {renderInfoItem('Cards', formatNumber(brandSummary.card_count) as any)}
-              {renderInfoItem('Products', formatNumber(brandSummary.product_count) as any, true)}
+              {renderInfoItem('Cards', formatNumber(brandSummary.card_count) as any, true)}
             </div>
           </>
         ) : undefined

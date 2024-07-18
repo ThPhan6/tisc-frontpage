@@ -80,11 +80,9 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   useEffect(() => {
     fetchMaterialCodes();
   }, []);
-  const referToDesignDocument: boolean = customProduct
-    ? specifiedDetail?.specification.is_refer_document
-    : (curProduct as any).referToDesignDocument;
+  const referToDesignDocument: boolean = specifiedDetail?.specification.is_refer_document || false;
 
-  // console.log('specifiedDetail', specifiedDetail);
+  // console.log('productDetail', productDetail);
   // console.log('referToDesignDocument', referToDesignDocument);
 
   const specification_attribute_groups = useAppSelector(
@@ -200,7 +198,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       );
     }
   };
-
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
@@ -218,7 +215,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         </MainTitle>
       }
       centered
-      width={576}
+      width={1100}
       footer={
         <CustomButton
           disabled={isDisableDone}
@@ -236,7 +233,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         image={product.images[0]}
         logo={product.brand?.logo}
         text_1={product.brand?.name}
-        text_2={product.collection?.name}
+        text_2={product.collections.map((collection) => collection.name).join(', ')}
         text_3={product.name}
         text_4={productId === '' ? 'N/A' : productId}
         customClass={styles.customHeader}
