@@ -90,9 +90,9 @@
   .groupRoom {
     td {
       position: relative;
-      height: 48px;
+      // height: 48px;
       &:nth-last-child(2) {
-        padding-right: 10px;
+        // padding-right: 10px;
 
         @media screen and (max-width: 576px) {
           padding: 0;
@@ -100,7 +100,12 @@
       }
 
       :global(.ant-checkbox-wrapper) {
-        height: fit-content;
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      :global(.ant-checkbox) {
+        top: unset;
       }
     }
 
@@ -131,7 +136,7 @@
   .rowInfo {
     display: flex;
     flex-direction: row-reverse;
-    align-items: stretch;
+    align-items: center;
     justify-content: space-between;
     width: 70%;
     margin: auto;

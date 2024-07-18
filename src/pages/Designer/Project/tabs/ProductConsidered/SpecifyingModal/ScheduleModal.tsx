@@ -176,16 +176,6 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                         Ceiling Level
                       </RobotoBodyText>
                     </Checkbox>
-
-                    <Checkbox
-                      className={styles.rowInfo}
-                      checked={el.base.floor}
-                      onChange={onChangeData(index, 'base', 'floor')}
-                    >
-                      <RobotoBodyText level={7} customClass={styles.text}>
-                        Floor Level
-                      </RobotoBodyText>
-                    </Checkbox>
                   </td>
                   <td>
                     <Checkbox
@@ -232,16 +222,6 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                         Door Frame
                       </RobotoBodyText>
                     </Checkbox>
-
-                    <Checkbox
-                      className={styles.rowInfo}
-                      checked={el.door.panel}
-                      onChange={onChangeData(index, 'door', 'panel')}
-                    >
-                      <RobotoBodyText level={7} customClass={styles.text}>
-                        Door Panel
-                      </RobotoBodyText>
-                    </Checkbox>
                   </td>
                   <td>
                     <Checkbox
@@ -253,7 +233,38 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                         Cabinet Carcass
                       </RobotoBodyText>
                     </Checkbox>
-
+                  </td>
+                </tr>
+                <tr className={styles.groupRoom}>
+                  <td></td>
+                  <td>
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.base.floor}
+                      onChange={onChangeData(index, 'base', 'floor')}
+                    >
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Floor Level
+                      </RobotoBodyText>
+                    </Checkbox>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.door.panel}
+                      onChange={onChangeData(index, 'door', 'panel')}
+                    >
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Door Panel
+                      </RobotoBodyText>
+                    </Checkbox>
+                  </td>
+                  <td>
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.cabinet.door}
