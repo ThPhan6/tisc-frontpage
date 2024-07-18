@@ -231,7 +231,9 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   selected,
   visible,
 }) => {
-  const [values, setValues] = useState<{ id: string; name: string }[]>([]);
+  const [values, setValues] = useState<
+    { id: string; name: string; subs?: [{ id: string; name: string }] }[]
+  >([]);
   const { expandedKeys, handleToggleExpand } = useToggleExpand();
 
   useEffect(() => {
@@ -296,6 +298,34 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
     return Array.from(labelMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   };
 
+  /**
+   * Check if any sub labels are selected for a given label.
+   *
+   * @param labelId - The ID of the label to check.
+   * @returns True if any sub label is selected, otherwise false.
+   */
+  const isAnySubLabelChecked = (labelId: string) => {
+    const subLabel = items.find((item) => item.id === labelId || item.parent?.id === labelId);
+    return values.some((value) => value.id === subLabel?.id);
+  };
+
+  const mainLabelNameStyles = (labelId: string) => {
+    return {
+      fontWeight: `${
+        expandedKeys.includes(labelId) || isAnySubLabelChecked(labelId) ? '500' : '300'
+      }`,
+      fontSize: '14px',
+      fontFamily: 'Roboto',
+      lineHeight: 'calc(22/14)',
+    };
+  };
+
+  const subLabelNameStyles = (subId: string) => {
+    return {
+      fontWeight: `${values.some((value) => value.id === subId) ? '500' : ''}`,
+    };
+  };
+
   return visible ? (
     <Menu
       style={{
@@ -327,22 +357,27 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                 return;
               }}
             >
-              {item.name}
+              <span style={mainLabelNameStyles(item.id)}>{item.name}</span>
             </Menu.Item>
-            <span style={{ paddingRight: '16px' }}>
-              {expandedKeys.includes(item.id) ? <DropupIcon /> : <DropdownIcon />}
-            </span>
+            <span>{expandedKeys.includes(item.id) ? <DropupIcon /> : <DropdownIcon />}</span>
           </div>
           {expandedKeys.includes(item.id) &&
-            item.subs?.map((sub: DynamicCheckboxValue) => (
-              <section key={sub.id} className={`${styles['sub-label-wrapper']}`}>
-                <h2 className={`${styles['sub-label-name']}`}>{sub.name}</h2>
-                <Checkbox
-                  checked={values?.some((value) => value.id === sub.id)}
-                  onChange={handleSelect(sub)}
-                />
-              </section>
-            ))}
+            item.subs
+              .slice()
+              .sort((a: DynamicCheckboxValue, b: DynamicCheckboxValue) =>
+                a.name?.localeCompare(b.name!),
+              )
+              .map((sub: DynamicCheckboxValue) => (
+                <section key={sub.id} className={`${styles['sub-label-wrapper']}`}>
+                  <h2 className={`${styles['sub-label-name']}`} style={subLabelNameStyles(sub.id!)}>
+                    {sub.name}
+                  </h2>
+                  <Checkbox
+                    checked={values?.some((value) => value.id === sub.id)}
+                    onChange={handleSelect(sub)}
+                  />
+                </section>
+              ))}
         </>
       ))}
     </Menu>

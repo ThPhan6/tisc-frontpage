@@ -295,7 +295,8 @@
   }
 }
 .checkboxMenuItem {
-  margin: 0 0 14px 16px;
+  margin-right: 16px;
+  margin-left: 4px;
 
   &:hover {
     span {
@@ -307,7 +308,8 @@
 .sub-label-wrapper {
   display: flex;
   justify-content: space-between;
-  padding: 0 16px 14px 32px;
+  padding: 6px 18px 0 32px;
+  cursor: pointer;
 }
 
 .sub-label-name {
@@ -316,4 +318,8 @@
   font-size: 14px;
   font-family: 'Roboto';
   line-height: calc(22 / 14);
+
+  &:hover {
+    font-weight: 500;
+  }
 }
