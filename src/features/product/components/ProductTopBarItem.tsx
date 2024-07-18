@@ -1,6 +1,7 @@
 import { CSSProperties, FC, useEffect, useState } from 'react';
 
 import { DropDownProps, Menu, Row } from 'antd';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import Dropdown from 'antd/es/dropdown';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -10,7 +11,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useScreen } from '@/helper/common';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useToggleExpand } from '@/helper/hook';
 import { capitalize, sortBy, truncate } from 'lodash';
 
 import CustomButton from '@/components/Button';
@@ -18,6 +19,7 @@ import CustomCollapse from '@/components/Collapse';
 import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
 
+import { DynamicCheckboxValue } from '../modals/CollectionAndLabel';
 import styles from './ProductTopBarItem.less';
 
 interface ProductTopBarProps {
@@ -204,7 +206,12 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
   );
 };
 interface CheckboxMenuProps {
-  items: { id: string; name: string }[];
+  items: {
+    id: string;
+    name: string;
+    parent_id: string;
+    parent: { id: string; name: string };
+  }[];
   subLevel?: number;
   visible?: boolean;
   onCloseMenu: () => void;
@@ -225,6 +232,8 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   visible,
 }) => {
   const [values, setValues] = useState<{ id: string; name: string }[]>([]);
+  const { expandedKeys, handleToggleExpand } = useToggleExpand();
+
   useEffect(() => {
     if (selected) {
       setValues(selected);
@@ -236,20 +245,57 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
     }
     return undefined;
   };
-  const handleSelect = (item: { id: string; name: string }) => (e: any) => {
-    e.stopPropagation();
-    setValues((pre) => {
-      let newValues = pre;
-      if (pre.includes(item)) {
-        newValues = pre.filter((i) => i.id !== item.id);
-        if (onChangeValues) onChangeValues(newValues);
-        return newValues;
-      }
-      newValues = pre.concat([item]);
+
+  /**
+   * Handles the selection of a label item.
+   *
+   * @param item - The label item object.
+   */
+  const handleSelect = (item: DynamicCheckboxValue) => (event: CheckboxChangeEvent) => {
+    event.stopPropagation();
+
+    setValues((preValues) => {
+      const isSelected = preValues.some((value) => value.id === item.id);
+
+      const newValues = isSelected
+        ? preValues.filter((value) => value.id !== item.id)
+        : preValues.concat([{ id: item.id!, name: item.name! }]);
+
       if (onChangeValues) onChangeValues(newValues);
       return newValues;
     });
   };
+
+  /**
+   * Function that converts a list of labels into a hierarchical structure.
+   *
+   * @returns List of label objects with corresponding sublabels.
+   */
+  const handleTransformLabelItems = () => {
+    // Create new Map to store label
+    const labelMap = new Map();
+
+    items.forEach((item) => {
+      const { id, name, parent } = item;
+
+      // Check the parentId is exist or not
+      if (!labelMap.has(parent?.id)) {
+        // If doesn't exist, add the object into the labelMap with key is parent.id
+        labelMap.set(parent?.id, {
+          id: parent?.id,
+          name: parent?.name,
+          subs: [],
+        });
+      }
+
+      // Add current item into the subs array with the corresponding object in the labelMap
+      labelMap.get(parent?.id).subs.push({ id, name });
+    });
+
+    // Convert labelMap into an array and sort the elements following the name attribues
+    return Array.from(labelMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  };
+
   return visible ? (
     <Menu
       style={{
@@ -265,29 +311,40 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
         ...menuStyle,
       }}
     >
-      {items.map((item, index) => {
-        return (
+      {handleTransformLabelItems().map((item, index) => (
+        <>
           <div
+            key={item.id}
             className={`d-flex flex-between cursor-pointer ${styles.checkboxMenuItem}`}
-            onClick={handleSelect(item)}
+            onClick={handleToggleExpand(item.id)}
           >
             <Menu.Item
-              key={item?.id || index}
+              key={item.id || index}
               className={`${styles.checkboxListItem} ${
-                values.includes(item) ? styles.active : ''
+                values?.some((value) => value.id === item.id) ? styles.active : ''
               } text-capitalize`}
               onClick={() => {
                 return;
               }}
             >
-              {item?.name}
+              {item.name}
             </Menu.Item>
-            <div style={{ padding: 8 }}>
-              <Checkbox checked={values.includes(item)}></Checkbox>
-            </div>
+            <span style={{ paddingRight: '16px' }}>
+              {expandedKeys.includes(item.id) ? <DropupIcon /> : <DropdownIcon />}
+            </span>
           </div>
-        );
-      })}
+          {expandedKeys.includes(item.id) &&
+            item.subs?.map((sub: DynamicCheckboxValue) => (
+              <section key={sub.id} className={`${styles['sub-label-wrapper']}`}>
+                <h2 className={`${styles['sub-label-name']}`}>{sub.name}</h2>
+                <Checkbox
+                  checked={values?.some((value) => value.id === sub.id)}
+                  onChange={handleSelect(sub)}
+                />
+              </section>
+            ))}
+        </>
+      ))}
     </Menu>
   ) : null;
 };
