@@ -1,19 +1,23 @@
-import { FC, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { FC, Fragment, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+
+import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
+import { useToggleExpand } from '@/helper/hook';
 
 import { CheckboxValue, CustomCheckboxProps } from './types';
 import { RootState } from '@/reducers';
-
-import { MenuIconProps } from '@/components/HeaderDropdown';
-import { ActionMenu, ActionType } from '@/components/TableAction';
+import { setSelectedSubLabels } from '@/reducers/label';
 
 import { CustomInput } from '../Form/CustomInput';
+import { MenuIconProps } from '../HeaderDropdown';
+import { ActionMenu, ActionType } from '../TableAction';
 import style from './styles/index.less';
+import { DynamicCheckboxValue } from '@/features/product/modals/CollectionAndLabel';
 
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
@@ -33,17 +37,29 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   isExpanded,
   ...props
 }) => {
-  const labels = useSelector((state: RootState) => state.label.labels);
-
   const [inputValue, setInputValue] = useState('');
   const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
-  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<DynamicCheckboxValue[]>(
+    (selected as DynamicCheckboxValue[]) || [],
+  );
+
+  const { labels } = useSelector((state: RootState) => state.label);
+
+  const dispatch = useDispatch();
+
+  const { expandedKeys, handleToggleExpand } = useToggleExpand();
 
   useEffect(() => {
     if (otherInput && clearOtherInput) {
       setInputValue('');
     }
   }, [otherInput && clearOtherInput]);
+
+  useEffect(() => {
+    if (onChange) onChange(checkedItems);
+
+    dispatch(setSelectedSubLabels(checkedItems.map((item) => String(item.value))));
+  }, [JSON.stringify(checkedItems)]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const newCheckedValues = [...checkedValues];
@@ -94,37 +110,16 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   };
 
   /**
-   * Function to toggle the expanded state of an item.
+   * Handles the change event of a checkbox.
    *
-   * @param key - The key of the item to toggle the expanded state.
+   * @param sub - The checkbox value object.
    */
-  const handleToggleExpand = (key: string) => {
-    // Toggle the expanded state of the item based on the presence of the key.
-    setExpandedKeys((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
+  const handleCheckboxChange = (sub: DynamicCheckboxValue) => {
+    setCheckedItems((pre) =>
+      pre.some((preItem) => preItem.value === sub.value)
+        ? pre.filter((item) => item.value !== sub.value)
+        : pre.concat([sub]),
     );
-  };
-
-  /**
-   * Function to handle events that change the checkbox's state.
-   *
-   * @param value - The value of checkbox.
-   * @param option - Object containing information about the checkbox.
-   * @param event - Checkbox state change event.
-   */
-  const handleCheckboxChange = <T extends {}>(
-    value: string,
-    option: T,
-    event: CheckboxChangeEvent,
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    if (additionalSelected && onChangeAdditionalSelected) {
-      onChangeAdditionalSelected(value, option, 'remove');
-    }
-
-    onOneChange?.(event);
   };
 
   const handleEdit = () => {};
@@ -149,14 +144,47 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     display: 'flex',
     alignItems: 'center',
     paddingLeft: '16px',
+    margin: '8px 0',
   };
 
-  const flexEndStyle = {
+  const flexEndStyles = {
     display: 'flex',
     width: '100%',
     justifyContent: 'flex-end',
-    gap: '22px',
+    gap: '26px',
   };
+
+  const labelWrapperStyles = (labelId: string) => {
+    return {
+      display: 'flex',
+      cursor: 'pointer',
+      justifyContent: 'space-between',
+      marginBottom: `${!expandedKeys.includes(labelId) ? '8px' : '0'}`,
+    };
+  };
+
+  /**
+   * Check if any sub labels are selected for a given label.
+   *
+   * @param labelId - The ID of the label to check.
+   * @returns True if any sub label is selected, otherwise false.
+   */
+  const isAnySubLabelChecked = (labelId: string) => {
+    const label = labels.find((item) => item.id === labelId);
+    return label?.subs?.some((sub) => selected?.some((el) => el.value === sub.id));
+  };
+
+  const mainLabelNameStyles = (labelId: string) => {
+    return {
+      fontWeight: `${expandedKeys.includes(labelId) ? '500' : '300'}`,
+      fontSize: '14px',
+      fontFamily: 'Roboto',
+      lineHeight: 'calc(22/14)',
+      color: `${expandedKeys.includes(labelId) && isAnySubLabelChecked(labelId) ? '#2b39d4' : ''}`,
+    };
+  };
+
+  const sortedLabels = [...labels].sort((a, b) => a.name!.localeCompare(b.name!));
 
   return (
     <div
@@ -165,24 +193,21 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       } ${style['color-checkbox-checked']} ${checkboxClass}`}
       onClick={(e) => e.stopPropagation()}
     >
-      <Checkbox.Group
-        {...props}
-        value={selected?.map((item) => item?.value) ?? []}
-        onChange={onChangeValue}
-      >
-        {options.map((option, index) =>
-          isCheckboxList ? (
-            <div key={option.value}>
+      {!isExpanded ? (
+        <Checkbox.Group
+          {...props}
+          value={selected?.map((item) => item?.value) ?? []}
+          onChange={onChangeValue}
+        >
+          {options.map((option, index) =>
+            isCheckboxList ? (
               <label
                 key={`${option.value}_${index}_${randomId}`}
                 className={` ${style['item-wrapper']} ${
-                  chosenItems?.some((el) => el.value === option.select_id)
-                    ? 'item-checkbox-active'
-                    : ''
+                  chosenItems?.some((el) => el.value === option.value) ? 'item-checkbox-active' : ''
                 } item-wrapper-custom text-capitalize`}
                 style={{ minHeight: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}
-                onClick={() => handleToggleExpand(option.value as string)}
               >
                 <div
                   style={{
@@ -195,23 +220,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 >
                   {option.label}
                 </div>
-                {isExpanded ? (
-                  expandedKeys.includes(option.value as string) ? (
-                    <UpOutlined />
-                  ) : (
-                    <DownOutlined />
-                  )
-                ) : (
-                  <Checkbox
-                    id={`${option.value}_${index}_${randomId}`}
-                    {...option}
-                    onChange={(event) =>
-                      handleCheckboxChange(option.value.toString(), option, event)
-                    }
-                  />
-                )}
-
-                {additionalSelected && onChangeAdditionalSelected ? (
+                <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
+                {additionalSelected && onChangeAdditionalSelected && (
                   <input
                     style={{ marginRight: 4, cursor: 'pointer' }}
                     disabled={!selected?.find((item) => item.value === option.value.toString())}
@@ -220,66 +230,108 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     name="defaultSelect"
                     value={option.value}
                     checked={additionalSelected.includes(option.value.toString())}
-                    onChange={() => {
-                      onChangeAdditionalSelected(option.value.toString(), option);
-                    }}
+                    onChange={() => onChangeAdditionalSelected(option.value.toString(), option)}
                   />
-                ) : null}
+                )}
               </label>
-              {isExpanded &&
-                expandedKeys.includes(option.value as string) &&
-                labels
-                  .filter((label) => label.id === option.value)
-                  .map((label) => (
-                    <div key={label.id}>
-                      {label.subs &&
-                        label.subs.length > 0 &&
-                        label.subs.map((sub, subIndex) => (
-                          <div
-                            key={sub.id}
-                            className={`${style['sub-item-checkbox']} sub-item-wrapper-checkbox`}
-                            style={alignCenterStyles}
-                          >
-                            <span className={`${style['sub-label-name']}`}>{sub.name}</span>
-                            <div style={flexEndStyle}>
-                              <ActionMenu
-                                className={`mono-color`}
-                                editActionOnMobile={false}
-                                actionItems={actionItems}
-                              />
-                              <Checkbox
-                                id={`${sub.id}_${subIndex}_${randomId}`}
-                                {...option}
-                                onChange={(event) =>
-                                  handleCheckboxChange(sub.id.toString(), sub, event)
-                                }
-                              />
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  ))}
-            </div>
-          ) : (
-            <div
-              key={option.value}
-              className={`${style['item-checkbox']} item-wrapper-checkbox`}
-              style={{ minHeight: heightItem }}
+            ) : (
+              <div
+                key={option.value}
+                className={`${style['item-checkbox']} item-wrapper-checkbox`}
+                style={{ minHeight: heightItem }}
+              >
+                <Checkbox {...option} style={{ maxWidth: '100%' }}>
+                  <span className={getActiveClass(option)}>{option.label}</span>
+                </Checkbox>
+              </div>
+            ),
+          )}
+        </Checkbox.Group>
+      ) : (
+        sortedLabels.map((label) => (
+          <Fragment key={label.id}>
+            <section
+              style={labelWrapperStyles(label.id as string)}
+              onClick={handleToggleExpand(label.value as string)}
             >
-              <Checkbox {...option} style={{ maxWidth: '100%' }}>
-                <span className={getActiveClass(option)}>{option.label}</span>
-              </Checkbox>
-            </div>
-          ),
-        )}
-      </Checkbox.Group>
-      {otherInput ? (
+              <h2 style={mainLabelNameStyles(label.id!)} className={`${style['main-label-name']}`}>
+                {label.name}
+              </h2>
+              <ActionMenu
+                className={`mono-color ${style['action-menu']}`}
+                editActionOnMobile={false}
+                actionItems={actionItems}
+              />
+
+              {expandedKeys.includes(label.id!) ? <DropupIcon /> : <DropdownIcon />}
+            </section>
+
+            {expandedKeys.includes(label.id as string) &&
+              label.subs &&
+              label.subs
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((sub) => {
+                  const temp = selected?.some((preItem) => preItem.value === sub.id);
+
+                  const isSubLabelNameSelected = selected?.some(
+                    (itemSelected) => itemSelected?.value === sub.id,
+                  );
+
+                  const handleCheckboxChangeWithSub = (item: DynamicCheckboxValue) => () => {
+                    handleCheckboxChange({
+                      value: item.id!,
+                      label: item.name!,
+                    });
+                  };
+
+                  const subLabelNameStyles = () => {
+                    return {
+                      fontWeight: '300',
+                      fontSize: '14px',
+                      fontFamily: 'Roboto',
+                      lineHeight: 'calc(22/14)',
+                      color: `${isSubLabelNameSelected ? '#2b39d4' : ''}`,
+                      width: '100%',
+                    };
+                  };
+
+                  return (
+                    <section
+                      key={sub.id}
+                      style={alignCenterStyles}
+                      className={`${style['sub-label-wrapper']}`}
+                    >
+                      <h2 style={subLabelNameStyles()}>{sub.name}</h2>
+                      <div style={flexEndStyles}>
+                        <ActionMenu
+                          className="mono-color"
+                          editActionOnMobile={false}
+                          actionItems={actionItems}
+                        />
+                        <Checkbox
+                          id={`${sub.id}`}
+                          checked={temp}
+                          onChange={handleCheckboxChangeWithSub({
+                            value: sub.id!,
+                            label: sub.name!,
+                          })}
+                        />
+                      </div>
+                    </section>
+                  );
+                })}
+          </Fragment>
+        ))
+      )}
+
+      {otherInput && (
         <div
           className={`other-field-checkbox ${
             isCheckboxList ? style['other-field-checkbox-list'] : ''
           }`}
         >
-          <Checkbox value={'other'}>
+          <Checkbox value="other">
             <div className={style['input-wrapper']} style={{ height: heightItem }}>
               Other
               <CustomInput
@@ -291,7 +343,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             </div>
           </Checkbox>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
