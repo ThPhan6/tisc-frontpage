@@ -406,10 +406,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     (itemSelected) => itemSelected?.value === sub.id,
                   );
 
-                  const handleCheckboxChangeWithSub = (item: DynamicCheckboxValue) => () => {
+                  const handleCheckboxChangeWithSub = () => {
                     handleCheckboxChange({
-                      value: item.id!,
-                      label: item.name!,
+                      value: sub.id,
+                      label: sub.name,
                     });
                   };
 
@@ -452,10 +452,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                         <Checkbox
                           id={`${sub.id}`}
                           checked={temp}
-                          onChange={handleCheckboxChangeWithSub({
-                            value: sub.id!,
-                            label: sub.name!,
-                          })}
+                          onChange={handleCheckboxChangeWithSub}
                         />
                       </div>
                     </section>
