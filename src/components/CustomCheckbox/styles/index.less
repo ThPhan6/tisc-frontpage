@@ -169,6 +169,12 @@
   margin-left: 8px;
 }
 
-.color-checked {
-  color: #2b39d4;
+.expandable-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 1s ease-in-out;
+
+  &.expanded {
+    max-height: 1000px;
+  }
 }
