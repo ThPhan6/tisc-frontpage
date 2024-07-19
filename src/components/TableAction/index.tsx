@@ -18,7 +18,7 @@ import { useScreen } from '@/helper/common';
 import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDropdown';
 import styles from './index.less';
 
-type ActionType =
+export type ActionType =
   | 'specify'
   | 'updated'
   | 'copy'

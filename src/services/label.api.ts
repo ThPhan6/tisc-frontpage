@@ -32,6 +32,7 @@ export async function createLabel(data: LabelInput) {
       return {} as Label;
     });
 }
+
 export async function updateLabel(labelId: string, props: LabelInput) {
   return request(`/api/label/update/${labelId}`, {
     method: 'PATCH',

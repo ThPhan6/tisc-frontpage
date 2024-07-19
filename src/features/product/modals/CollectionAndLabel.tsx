@@ -1,6 +1,8 @@
 import { FC, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { message } from 'antd';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
@@ -10,7 +12,8 @@ import { trimEnd, trimStart } from 'lodash';
 import { onShowRelatedProductByCollection, setRelatedProduct } from '../reducers';
 import { RelatedCollection } from '../types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import store, { useAppSelector } from '@/reducers';
+import store, { RootState, useAppSelector } from '@/reducers';
+import { setLabels } from '@/reducers/label';
 import { Collection, CollectionRelationType } from '@/types';
 
 import CustomButton from '@/components/Button';
@@ -19,11 +22,17 @@ import Popover from '@/components/Modal/Popover';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
+import { CustomDropDown } from '@/features/product/components/ProductTopBarItem';
 
 import styles from './index.less';
 
 export interface DynamicCheckboxValue extends CheckboxValue, Partial<Collection> {
   editLabel?: boolean;
+  brand_id?: string;
+  subs?: {
+    id: string;
+    name: string;
+  }[];
 }
 
 interface MultiCollectionModalProps {
@@ -60,10 +69,11 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 }) => {
   const { relatedProductOnView, relatedProduct } = useAppSelector((state) => state.product);
   const [data, setData] = useState<DynamicCheckboxValue[]>([]);
-  const [labels, setLabels] = useState<DynamicCheckboxValue[]>([]);
+  // const [labels, setLabels] = useState<DynamicCheckboxValue[]>([]);
   const curData = useRef<DynamicCheckboxValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
   const [newLabel, setNewLabel] = useState<string>();
+  const [newSubLabel, setNewSubLabel] = useState<string>();
 
   /// collection item
   const [selected, setSelected] = useState<DynamicCheckboxValue[]>([]);
@@ -72,6 +82,9 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
   /// for handle edit
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+  const labels = useSelector((state: RootState) => state.label.labels);
 
   const getLabelList = async () => {
     const labelList = await getLabels(brandId);
@@ -83,7 +96,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       editLabel: false,
     }));
 
-    setLabels(currentData);
+    dispatch(setLabels(currentData));
   };
   const getCollectionList = (
     newData?: DynamicCheckboxValue,
@@ -183,6 +196,12 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
     const newValue = trimStart(e.target.value);
     setNewLabel(newValue);
   };
+
+  const handleOnChangeCreateNewSubLabel = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = trimStart(event.target.value);
+    setNewSubLabel(newValue);
+  };
+
   const handleCreateCollection = () => {
     if (newOption) {
       // check if value is existed
@@ -273,7 +292,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         disabled: false,
       };
 
-      setLabels(newData);
+      dispatch(setLabels(newData));
     };
 
   const handleEditNameAssigned =
@@ -379,7 +398,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
           /// update data
           if (type === 'label') {
-            setLabels(newData);
+            dispatch(setLabels(newData));
           } else {
             setData(newData);
           }
@@ -423,7 +442,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       newData[index] = chosenItem;
 
       if (type === 'label') {
-        setLabels(newData);
+        dispatch(setLabels(newData));
       } else {
         setData(newData);
       }
@@ -431,6 +450,54 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   };
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
+
+  /**
+   * Assigns a new sub-label to a main label
+   *
+   * @param brand_id - The ID of the brand to assign the sub-label to.
+   * @param parent_id - The optional ID of the parent label for the new sub-label.
+   */
+  const handleAssignSubLabel = async (brand_id: string, parent_id: string | undefined) => {
+    const subLabeldata = { name: newSubLabel || '', brand_id, parent_id };
+
+    const res = await createLabel(subLabeldata);
+
+    if (res) {
+      const newSubLabelData: DynamicCheckboxValue = {
+        label: res.name,
+        value: res.id,
+        brand_id: res.brand_id,
+      };
+
+      setLabels([...labels, newSubLabelData]);
+      setNewSubLabel('');
+      getLabelList();
+    }
+  };
+
+  const subLabelItems: ItemType[] = labels.map(({ id, name, brand_id }: DynamicCheckboxValue) => {
+    const handleAddSubLabel = () => handleAssignSubLabel(brand_id!, id);
+
+    return {
+      key: `label-${id}`,
+      label: name,
+      onClick: handleAddSubLabel,
+    };
+  });
+
+  const dropDownTextStyles = {
+    fontWeight: '600',
+    width: 'max-content',
+    color: '#808080',
+    fontSize: '14px',
+    fontFamily: 'Cormorant-Garamond',
+    lineHeight: 'calc(21/14)',
+  };
+
+  const dropDownStyles = {
+    display: 'flex',
+    cursor: !newSubLabel ? 'not-allowed' : 'pointer',
+  };
 
   return (
     <Popover
@@ -502,7 +569,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         <div className={`${styles.boxShadowBottom} d-flex justify-between`}>
           <div className={'side-container'}>
             <MainTitle level={3}>Create New Collection</MainTitle>
-            <div className="flex-between flex-grow">
+            <div className="flex-between flex-grow" style={{ paddingRight: '10px' }}>
               <CustomInput
                 placeholder="type new collection"
                 value={newOption}
@@ -531,6 +598,24 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                 disabled={!newLabel}
                 onClick={newLabel ? handleCreateLabel : undefined}
               />
+            </div>
+          </div>
+          <div className={'side-container'}>
+            <MainTitle style={{ marginBottom: '28px' }}></MainTitle>
+            <div className="flex-between flex-grow">
+              <CustomInput
+                placeholder="Add sub-label name"
+                value={newSubLabel}
+                onChange={handleOnChangeCreateNewSubLabel}
+              />
+              <CustomDropDown
+                items={subLabelItems}
+                placement="bottomRight"
+                disabled={!newSubLabel}
+                dropDownStyles={dropDownStyles}
+              >
+                <span style={dropDownTextStyles}>Add To</span>
+              </CustomDropDown>
             </div>
           </div>
         </div>

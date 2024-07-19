@@ -179,7 +179,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
                 }
               }}
               className={`${alignRight ? styles.alignRight : ''} ${
-                textCapitalize ? styles.textCapitalize : styles.text
+                textCapitalize ? styles.text : ''
               } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
               disabled={item?.disabled}
               icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
@@ -395,8 +395,9 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   nestedMenu?: boolean;
   borderFirstItem?: boolean;
   showCloseFooter?: boolean;
-  handleChangeDropDownIcon: any;
+  handleChangeDropDownIcon?: any;
   dropDownListVisible?: boolean;
+  dropDownStyles: React.CSSProperties;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -415,11 +416,17 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   showCloseFooter,
   handleChangeDropDownIcon,
   dropDownListVisible,
+  disabled = false,
+  dropDownStyles,
   ...props
 }) => {
   const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
   const isMobile = useScreen().isMobile;
   const dropdownVisible = useBoolean(false);
+
+  const handleDropdownClick = (event: React.MouseEvent<HTMLSpanElement>) => {
+    if (disabled) event.stopPropagation();
+  };
 
   const renderNestedMenu = (menuItems: ItemType[]) => {
     return menuItems.map((item) =>
@@ -495,6 +502,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       <Dropdown
         placement="bottomLeft"
         trigger={['click']}
+        disabled={disabled}
         {...props}
         visible={
           dropDownListVisible === true || dropDownListVisible === false
@@ -508,7 +516,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         overlayClassName={`${viewAllTop ? styles.viewAllTop : ''}`}
         overlay={renderContent()}
       >
-        <span {...labelProps} onClick={(e) => e.stopPropagation()}>
+        <span {...labelProps} onClick={handleDropdownClick} style={dropDownStyles}>
           {children}
           {hideDropdownIcon ? null : dropdownVisible.value ? (
             <DropupIcon style={{ marginLeft: 8 }} />
