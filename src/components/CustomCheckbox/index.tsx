@@ -1,13 +1,4 @@
-import {
-  ChangeEvent,
-  FC,
-  Fragment,
-  MouseEventHandler,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Checkbox, message } from 'antd';
@@ -16,8 +7,9 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { confirmDelete } from '@/helper/common';
 import { useToggleExpand } from '@/helper/hook';
-import { updateLabel } from '@/services/label.api';
+import { deleteLabel, updateLabel } from '@/services/label.api';
 import { trimStart } from 'lodash';
 
 import { CheckboxValue, CustomCheckboxProps } from './types';
@@ -151,7 +143,21 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     setEditingValue(labelName);
   };
 
-  const handleDelete = () => {};
+  /**
+   * Handles the delete action for a label.
+   *
+   * @param id The ID of the label or sub-label to delete.
+   */
+  const handleDelete = (id: string) => () => {
+    confirmDelete(async () => {
+      const res = await deleteLabel(id);
+
+      if (res) {
+        const updatedLabels = labels.filter((label) => label.id !== id);
+        dispatch(setLabels(updatedLabels));
+      }
+    });
+  };
 
   /**
    * Handles the expand/collapse action for a sub-label list with a check.
@@ -378,7 +384,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   {
                     type: 'deleted',
                     label: 'Delete',
-                    onClick: handleDelete,
+                    onClick: handleDelete(label.id!),
                   },
                 ]}
               />
@@ -394,70 +400,76 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               )}
             </section>
 
-            {expandedKeys.includes(label.id as string) &&
-              label.subs &&
-              label.subs
-                .slice()
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((sub) => {
-                  const temp = selected?.some((preItem) => preItem.value === sub.id);
+            <div
+              className={`${style['expandable-section']} ${
+                expandedKeys.includes(label.id!) ? `${style['expanded']}` : ''
+              }`}
+            >
+              {expandedKeys.includes(label.id as string) &&
+                label.subs &&
+                label.subs
+                  .slice()
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((sub) => {
+                    const temp = selected?.some((preItem) => preItem.value === sub.id);
 
-                  const isSubLabelNameSelected = selected?.some(
-                    (itemSelected) => itemSelected?.value === sub.id,
-                  );
+                    const isSubLabelNameSelected = selected?.some(
+                      (itemSelected) => itemSelected?.value === sub.id,
+                    );
 
-                  const handleCheckboxChangeWithSub = () => {
-                    handleCheckboxChange({
-                      value: sub.id,
-                      label: sub.name,
-                    });
-                  };
-
-                  const subLabelNameStyles = () => {
-                    return {
-                      fontWeight: '300',
-                      fontSize: '14px',
-                      fontFamily: 'Roboto',
-                      lineHeight: 'calc(22/14)',
-                      color: `${isSubLabelNameSelected ? '#2b39d4' : ''}`,
-                      width: '100%',
+                    const handleCheckboxChangeWithSub = () => {
+                      handleCheckboxChange({
+                        value: sub.id,
+                        label: sub.name,
+                      });
                     };
-                  };
 
-                  return (
-                    <section
-                      key={sub.id}
-                      style={alignCenterStyles}
-                      className={`${style['sub-label-wrapper']}`}
-                    >
-                      <h2 style={subLabelNameStyles()}>{sub.name}</h2>
-                      <div style={flexEndStyles}>
-                        <ActionMenu
-                          className="mono-color"
-                          editActionOnMobile={false}
-                          actionItems={[
-                            {
-                              type: 'updated',
-                              label: 'Edit',
-                              onClick: handleEditClick('sub-label', sub.id, sub.name),
-                            },
+                    const subLabelNameStyles = () => {
+                      return {
+                        fontWeight: '300',
+                        fontSize: '14px',
+                        fontFamily: 'Roboto',
+                        lineHeight: 'calc(22/14)',
+                        color: `${isSubLabelNameSelected ? '#2b39d4' : ''}`,
+                        width: '100%',
+                      };
+                    };
 
-                            {
-                              type: 'deleted',
-                              label: 'Delete',
-                              onClick: handleDelete,
-                            },
-                          ]}
-                        />
-                        <Checkbox
-                          id={`${sub.id}`}
-                          checked={temp}
-                          onChange={handleCheckboxChangeWithSub}
-                        />
-                      </div>
-                    </section>
-                  );
-                })}
+                    return (
+                      <section
+                        key={sub.id}
+                        style={alignCenterStyles}
+                        className={`${style['sub-label-wrapper']}`}
+                      >
+                        <h2 style={subLabelNameStyles()}>{sub.name}</h2>
+                        <div style={flexEndStyles}>
+                          <ActionMenu
+                            className="mono-color"
+                            editActionOnMobile={false}
+                            actionItems={[
+                              {
+                                type: 'updated',
+                                label: 'Edit',
+                                onClick: handleEditClick('sub-label', sub.id, sub.name),
+                              },
+
+                              {
+                                type: 'deleted',
+                                label: 'Delete',
+                                onClick: handleDelete(sub.id),
+                              },
+                            ]}
+                          />
+                          <Checkbox
+                            id={`${sub.id}`}
+                            checked={temp}
+                            onChange={handleCheckboxChangeWithSub}
+                          />
+                        </div>
+                      </section>
+                    );
+                  })}
+            </div>
           </Fragment>
         ))
       )}
