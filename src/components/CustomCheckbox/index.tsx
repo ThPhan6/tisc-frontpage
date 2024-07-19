@@ -180,7 +180,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       fontSize: '14px',
       fontFamily: 'Roboto',
       lineHeight: 'calc(22/14)',
-      color: `${expandedKeys.includes(labelId) && isAnySubLabelChecked(labelId) ? '#2b39d4' : ''}`,
     };
   };
 
@@ -254,7 +253,14 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               style={labelWrapperStyles(label.id as string)}
               onClick={handleToggleExpand(label.value as string)}
             >
-              <h2 style={mainLabelNameStyles(label.id!)} className={`${style['main-label-name']}`}>
+              <h2
+                style={mainLabelNameStyles(label.id!)}
+                className={`${style['main-label-name']} ${
+                  expandedKeys.includes(label.id!) && isAnySubLabelChecked(label.id!)
+                    ? `${style['color-checked']}`
+                    : ''
+                }`}
+              >
                 {label.name}
               </h2>
               <ActionMenu
@@ -291,7 +297,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       fontSize: '14px',
                       fontFamily: 'Roboto',
                       lineHeight: 'calc(22/14)',
-                      color: `${isSubLabelNameSelected ? '#2b39d4' : ''}`,
                       width: '100%',
                     };
                   };
@@ -302,7 +307,12 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       style={alignCenterStyles}
                       className={`${style['sub-label-wrapper']}`}
                     >
-                      <h2 style={subLabelNameStyles()}>{sub.name}</h2>
+                      <h2
+                        style={subLabelNameStyles()}
+                        className={`${isSubLabelNameSelected ? `${style['color-checked']}` : ''}`}
+                      >
+                        {sub.name}
+                      </h2>
                       <div style={flexEndStyles}>
                         <ActionMenu
                           className="mono-color"
