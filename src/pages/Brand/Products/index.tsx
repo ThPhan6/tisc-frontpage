@@ -97,12 +97,12 @@ const BrandProductListPage: React.FC = () => {
             bottomValue="Cards"
             customClass={`left-divider ${summary?.card_count ? 'bold' : ''}`}
           />
-          <TopBarItem
+          {/* <TopBarItem
             topValue={formatNumber(summary?.product_count ?? 0)}
             disabled={summary ? false : true}
             bottomValue="Products"
             customClass={`left-divider mr-12 ${summary?.product_count ? 'bold' : ''}`}
-          />
+          /> */}
         </>
       }
       RightSideContent={

@@ -1,23 +1,35 @@
-import { FC, Fragment, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  Fragment,
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Checkbox } from 'antd';
+import { Checkbox, message } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useToggleExpand } from '@/helper/hook';
+import { updateLabel } from '@/services/label.api';
+import { trimStart } from 'lodash';
 
 import { CheckboxValue, CustomCheckboxProps } from './types';
 import { RootState } from '@/reducers';
-import { setSelectedSubLabels } from '@/reducers/label';
+import { setLabels, setSelectedSubLabels } from '@/reducers/label';
 
+import CustomButton from '../Button';
 import { CustomInput } from '../Form/CustomInput';
-import { MenuIconProps } from '../HeaderDropdown';
-import { ActionMenu, ActionType } from '../TableAction';
+import { ActionMenu } from '../TableAction';
 import style from './styles/index.less';
 import { DynamicCheckboxValue } from '@/features/product/modals/CollectionAndLabel';
+import modalStyle from '@/features/product/modals/index.less';
 
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
@@ -38,6 +50,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
+  const [isActionMenuDisabled, setIsActionMenuDisabled] = useState(false);
+  const [editingValue, setEditingValue] = useState<string>('');
   const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
   const [checkedItems, setCheckedItems] = useState<DynamicCheckboxValue[]>(
     (selected as DynamicCheckboxValue[]) || [],
@@ -48,6 +62,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const dispatch = useDispatch();
 
   const { expandedKeys, handleToggleExpand } = useToggleExpand();
+
+  const editingLabelIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (otherInput && clearOtherInput) {
@@ -122,23 +138,67 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     );
   };
 
-  const handleEdit = () => {};
+  /**
+   * Handles the edit action for a label.
+   *
+   * @param type The type of label to edit ('label' or 'sub-label').
+   * @param id The ID of the label or sub-label to edit.
+   * @param labelName The original label or sub-label name.
+   */
+  const handleEditClick = (type: 'label' | 'sub-label', id: string, labelName: string) => () => {
+    editingLabelIdRef.current = id;
+    setIsActionMenuDisabled(true);
+    setEditingValue(labelName);
+  };
 
   const handleDelete = () => {};
 
-  const actionItems: (MenuIconProps & { type: ActionType })[] = [
-    {
-      type: 'updated',
-      label: 'Edit',
-      onClick: handleEdit,
-    },
+  /**
+   * Handles the expand/collapse action for a sub-label list with a check.
+   *
+   * @param key The key of the label list to expand/collapse.
+   */
+  const handleToggleExpandWithCheck = (key: string) => () => {
+    if (!isActionMenuDisabled) handleToggleExpand(key);
+  };
 
-    {
-      type: 'deleted',
-      label: 'Delete',
-      onClick: handleDelete,
-    },
-  ];
+  /**
+   * Handle the event of changing the value of the label name input field.
+   *
+   * @param event Change event of the input field.
+   */
+  const handleOnChangeLabelNameAssigned = (event: ChangeEvent<HTMLInputElement>) =>
+    setEditingValue(trimStart(event.target.value));
+
+  /**
+   * Handles the edit name action for an assigned label.
+   *
+   * @param type The type of action ('save' or 'cancel').
+   * @param index The index of the label in the array.
+   * @param selectedValue The selected label value.
+   */
+  const handleEditNameAssigned = (selectedValue: DynamicCheckboxValue) => async () => {
+    if (editingValue === '') {
+      message.error('Input cannot be empty!');
+      return;
+    }
+
+    const res = await updateLabel(selectedValue.id!, {
+      name: editingValue,
+      brand_id: selectedValue.brand_id!,
+    });
+
+    const updatedLabels = labels.map((label) =>
+      label.id === selectedValue.id ? { ...label, name: editingValue } : label,
+    );
+
+    if (res) {
+      dispatch(setLabels(updatedLabels));
+      setIsActionMenuDisabled(false);
+    }
+  };
+
+  const handleCancel = () => setIsActionMenuDisabled(false);
 
   const alignCenterStyles = {
     display: 'flex',
@@ -159,6 +219,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       display: 'flex',
       cursor: 'pointer',
       justifyContent: 'space-between',
+      alignItems: 'center',
       marginBottom: `${!expandedKeys.includes(labelId) ? '8px' : '0'}`,
     };
   };
@@ -180,10 +241,18 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       fontSize: '14px',
       fontFamily: 'Roboto',
       lineHeight: 'calc(22/14)',
+      color: `${expandedKeys.includes(labelId) && isAnySubLabelChecked(labelId) ? '#2b39d4' : ''}`,
     };
   };
 
-  const sortedLabels = [...labels].sort((a, b) => a.name!.localeCompare(b.name!));
+  const disableArrowIconStyles = {
+    cursor: isActionMenuDisabled ? 'not-allowed' : 'pointer',
+  };
+
+  const sortedLabels = useMemo(
+    () => [...labels].sort((a, b) => (a.name && b.name ? a.name.localeCompare(b.name) : 0)),
+    [labels],
+  );
 
   return (
     <div
@@ -247,29 +316,82 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
           )}
         </Checkbox.Group>
       ) : (
-        sortedLabels.map((label) => (
+        sortedLabels.map((label, index) => (
           <Fragment key={label.id}>
             <section
               style={labelWrapperStyles(label.id as string)}
-              onClick={handleToggleExpand(label.value as string)}
+              onClick={handleToggleExpandWithCheck(label.value as string)}
             >
-              <h2
-                style={mainLabelNameStyles(label.id!)}
-                className={`${style['main-label-name']} ${
-                  expandedKeys.includes(label.id!) && isAnySubLabelChecked(label.id!)
-                    ? `${style['color-checked']}`
-                    : ''
-                }`}
-              >
-                {label.name}
-              </h2>
+              {isActionMenuDisabled && editingLabelIdRef.current === label.id ? (
+                <div className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}>
+                  <CustomInput
+                    autoFocus={isActionMenuDisabled}
+                    placeholder="type here"
+                    className={modalStyle.paddingLeftNone}
+                    value={editingValue}
+                    onChange={handleOnChangeLabelNameAssigned}
+                  />
+                  <div className={`cursor-default flex-start ${style['btn-action-wrapper']}`}>
+                    <CustomButton
+                      size="small"
+                      variant="primary"
+                      properties="rounded"
+                      buttonClass={modalStyle.btnSize}
+                      onClick={handleEditNameAssigned(label)}
+                    >
+                      Save
+                    </CustomButton>
+                    <CustomButton
+                      size="small"
+                      variant="primary"
+                      properties="rounded"
+                      buttonClass={modalStyle.btnSize}
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </CustomButton>
+                  </div>
+                </div>
+              ) : (
+                <h2
+                  style={mainLabelNameStyles(label.id!)}
+                  className={`${style['main-label-name']}`}
+                >
+                  {label.name}
+                </h2>
+              )}
+
               <ActionMenu
-                className={`mono-color ${style['action-menu']}`}
+                disabled={isActionMenuDisabled}
+                className={`${modalStyle.marginSpace} ${
+                  isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
+                } ${style['action-menu']}`}
+                overlayClassName={modalStyle.actionMenuOverlay}
                 editActionOnMobile={false}
-                actionItems={actionItems}
+                actionItems={[
+                  {
+                    type: 'updated',
+                    label: 'Edit',
+                    onClick: handleEditClick('label', label.id!, label.name as string),
+                  },
+
+                  {
+                    type: 'deleted',
+                    label: 'Delete',
+                    onClick: handleDelete,
+                  },
+                ]}
               />
 
-              {expandedKeys.includes(label.id!) ? <DropupIcon /> : <DropdownIcon />}
+              {expandedKeys.includes(label.id!) ? (
+                <span style={disableArrowIconStyles}>
+                  <DropupIcon />
+                </span>
+              ) : (
+                <span style={disableArrowIconStyles}>
+                  <DropdownIcon />
+                </span>
+              )}
             </section>
 
             {expandedKeys.includes(label.id as string) &&
@@ -284,10 +406,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     (itemSelected) => itemSelected?.value === sub.id,
                   );
 
-                  const handleCheckboxChangeWithSub = (item: DynamicCheckboxValue) => () => {
+                  const handleCheckboxChangeWithSub = () => {
                     handleCheckboxChange({
-                      value: item.id!,
-                      label: item.name!,
+                      value: sub.id,
+                      label: sub.name,
                     });
                   };
 
@@ -297,6 +419,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       fontSize: '14px',
                       fontFamily: 'Roboto',
                       lineHeight: 'calc(22/14)',
+                      color: `${isSubLabelNameSelected ? '#2b39d4' : ''}`,
                       width: '100%',
                     };
                   };
@@ -307,25 +430,29 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       style={alignCenterStyles}
                       className={`${style['sub-label-wrapper']}`}
                     >
-                      <h2
-                        style={subLabelNameStyles()}
-                        className={`${isSubLabelNameSelected ? `${style['color-checked']}` : ''}`}
-                      >
-                        {sub.name}
-                      </h2>
+                      <h2 style={subLabelNameStyles()}>{sub.name}</h2>
                       <div style={flexEndStyles}>
                         <ActionMenu
                           className="mono-color"
                           editActionOnMobile={false}
-                          actionItems={actionItems}
+                          actionItems={[
+                            {
+                              type: 'updated',
+                              label: 'Edit',
+                              onClick: handleEditClick('sub-label', sub.id, sub.name),
+                            },
+
+                            {
+                              type: 'deleted',
+                              label: 'Delete',
+                              onClick: handleDelete,
+                            },
+                          ]}
                         />
                         <Checkbox
                           id={`${sub.id}`}
                           checked={temp}
-                          onChange={handleCheckboxChangeWithSub({
-                            value: sub.id!,
-                            label: sub.name!,
-                          })}
+                          onChange={handleCheckboxChangeWithSub}
                         />
                       </div>
                     </section>

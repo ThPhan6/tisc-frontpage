@@ -80,9 +80,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   useEffect(() => {
     fetchMaterialCodes();
   }, []);
-  const referToDesignDocument: boolean = customProduct
-    ? specifiedDetail?.specification.is_refer_document
-    : (curProduct as any).referToDesignDocument;
+  const referToDesignDocument: boolean = specifiedDetail?.specification.is_refer_document || false;
 
   // console.log('productDetail', productDetail);
   // console.log('referToDesignDocument', referToDesignDocument);

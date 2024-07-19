@@ -247,33 +247,32 @@ export const AutoStep: FC<AutoStepProps> = ({
         ) : (
           <div className="flex-end">
             <CustomButton
+              buttonClass="action-left-icon"
               size="small"
               properties="rounded"
-              variant={'secondary'}
               disabled={disablePreButton.value}
               onClick={handlePrevious}
-            >
-              Previous
-            </CustomButton>
-            <CustomButton
-              size="small"
-              properties="rounded"
-              variant={'secondary'}
-              disabled={false}
-              style={{ marginLeft: 16 }}
-              onClick={handleNext}
-            >
-              Next
-            </CustomButton>
+              icon={<ActionBackIcon />}
+            ></CustomButton>
             <CustomButton
               buttonClass="action-left-icon"
               size="small"
               properties="rounded"
+              disabled={false}
               style={{ marginLeft: 16 }}
-              icon={<ActionBackIcon />}
+              onClick={handleNext}
+              icon={<ActionNextIcon />}
+            ></CustomButton>
+            <CustomButton
+              buttonClass="action-left-icon"
+              size="small"
+              properties="rounded"
+              style={{ marginLeft: 32 }}
               onClick={handleBackToSelectOption}
-            />
-            {/* <CustomButton
+            >
+              Go Back
+            </CustomButton>
+            <CustomButton
               size="small"
               properties="rounded"
               disabled={disabledCreateStep}
@@ -281,7 +280,7 @@ export const AutoStep: FC<AutoStepProps> = ({
               onClick={handleCreateStep('preserve')}
             >
               Preserve
-            </CustomButton> */}
+            </CustomButton>
             <CustomButton
               size="small"
               properties="rounded"

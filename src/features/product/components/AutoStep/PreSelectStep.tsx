@@ -6,6 +6,8 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/action-extend.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/action-plus-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+import { ReactComponent as ActionBackIcon } from '@/assets/icons/single-left.svg';
+import { ReactComponent as ActionNextIcon } from '@/assets/icons/single-right.svg';
 
 import { useSelectProductSpecification } from '../../services';
 import { useGetParamId, useGetUserRoleFromPathname, useNumber } from '@/helper/hook';
@@ -39,6 +41,7 @@ interface PreSelectStepProps {
   updatePreSelect?: boolean;
   viewStepsDefault?: AutoStepOnAttributeGroupRequest[];
   quantitiesDefault?: any;
+  isSpecifiedModal?: boolean;
 }
 
 export const PreSelectStep: FC<PreSelectStepProps> = ({
@@ -47,10 +50,17 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
   updatePreSelect,
   viewStepsDefault,
   quantitiesDefault,
+  isSpecifiedModal,
 }) => {
   // const defaultSelectedProductIds = 'AL2404TSAD';
 
-  const { allPreSelectAttributes, details } = useAppSelector((state) => state.product);
+  const details = useAppSelector((state) => state.product.details);
+  const allPreSelectAttributes = useAppSelector((state) =>
+    !isSpecifiedModal
+      ? state.product.allPreSelectAttributes
+      : state.product.details.specifiedDetail?.specification.attribute_groups,
+  );
+
   const { specification_attribute_groups: specificationAttributeGroups } = details;
 
   const selectProductSpecification = useSelectProductSpecification();
@@ -639,32 +649,25 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
       closeIcon={<CloseIcon />}
       footer={
         <div className="flex-end" style={{ position: 'relative', width: '100%' }}>
-          <div
-            className={'flex-center'}
-            style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
-          >
-            <CustomButton
-              size="small"
-              properties="standard"
-              variant={'secondary'}
-              disabled={disablePre}
-              onClick={handleBackToPrevSlide}
-            >
-              Previous
-            </CustomButton>
-            <CustomButton
-              size="small"
-              properties="standard"
-              variant={'secondary'}
-              disabled={disableNext}
-              style={{ marginLeft: 16 }}
-              onClick={handleGoToNextSlide}
-            >
-              Next
-            </CustomButton>
-          </div>
           <CustomButton
+            buttonClass="action-button"
+            size="small"
+            properties="rounded"
+            disabled={disablePre}
+            onClick={handleBackToPrevSlide}
+            icon={<ActionBackIcon />}
+          ></CustomButton>
+          <CustomButton
+            buttonClass="action-button"
+            size="small"
+            properties="rounded"
             style={{ marginLeft: 16 }}
+            disabled={disableNext}
+            onClick={handleGoToNextSlide}
+            icon={<ActionNextIcon />}
+          ></CustomButton>
+          <CustomButton
+            style={{ marginLeft: 32 }}
             size="small"
             properties="rounded"
             onClick={handleCreatePreSelectStep}
