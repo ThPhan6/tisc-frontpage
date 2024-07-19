@@ -143,7 +143,6 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       }
     });
   };
-
   useEffect(() => {
     getCollectionList();
     getLabelList();
@@ -469,7 +468,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         brand_id: res.data?.brand_id,
       };
 
-      setLabels([...labels, newSubLabelData]);
+      dispatch(setLabels([...labels, newSubLabelData]));
       setNewSubLabel('');
       getLabelList();
     }

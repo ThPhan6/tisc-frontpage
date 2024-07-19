@@ -115,14 +115,11 @@ export const useToggleExpand = () => {
    *
    * @param key - The key of the item to toggle the expanded state.
    */
-  const handleToggleExpand = useCallback(
-    (key: string) => () => {
-      setExpandedKeys((prev) =>
-        prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-      );
-    },
-    [],
-  );
+  const handleToggleExpand = useCallback((key: string) => {
+    setExpandedKeys((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
+    );
+  }, []);
 
   return { expandedKeys, handleToggleExpand };
 };

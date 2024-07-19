@@ -1,4 +1,4 @@
-import { CSSProperties, FC, useEffect, useState } from 'react';
+import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
 
 import { DropDownProps, Menu, Row } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
@@ -273,30 +273,32 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
    *
    * @returns List of label objects with corresponding sublabels.
    */
-  const handleTransformLabelItems = () => {
-    // Create new Map to store label
-    const labelMap = new Map();
+  const handleTransformLabelItems = useMemo(() => {
+    return () => {
+      // Create new Map to store label
+      const labelMap = new Map();
 
-    items.forEach((item) => {
-      const { id, name, parent } = item;
+      items.forEach((item) => {
+        const { id, name, parent } = item;
 
-      // Check the parentId is exist or not
-      if (!labelMap.has(parent?.id)) {
-        // If doesn't exist, add the object into the labelMap with key is parent.id
-        labelMap.set(parent?.id, {
-          id: parent?.id,
-          name: parent?.name,
-          subs: [],
-        });
-      }
+        // Check the parentId is exist or not
+        if (!labelMap.has(parent?.id)) {
+          // If doesn't exist, add the object into the labelMap with key is parent.id
+          labelMap.set(parent?.id, {
+            id: parent?.id,
+            name: parent?.name,
+            subs: [],
+          });
+        }
 
-      // Add current item into the subs array with the corresponding object in the labelMap
-      labelMap.get(parent?.id).subs.push({ id, name });
-    });
+        // Add current item into the subs array with the corresponding object in the labelMap
+        labelMap.get(parent?.id).subs.push({ id, name });
+      });
 
-    // Convert labelMap into an array and sort the elements following the name attribues
-    return Array.from(labelMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-  };
+      // Convert labelMap into an array and sort the elements following the name attribues
+      return Array.from(labelMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    };
+  }, [items]);
 
   /**
    * Check if any sub labels are selected for a given label.
@@ -346,7 +348,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
           <div
             key={item.id}
             className={`d-flex flex-between cursor-pointer ${styles.checkboxMenuItem}`}
-            onClick={handleToggleExpand(item.id)}
+            onClick={() => handleToggleExpand(item.id)}
           >
             <Menu.Item
               key={item.id || index}
