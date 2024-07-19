@@ -3,7 +3,6 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import type { Label, LabelInput } from '@/types';
-import { ApiResponse } from '@/types/response.type';
 
 export async function getLabels(brandId: string) {
   return request<{ data: Label[] }>(`/api/label/get-list/${brandId}`, {
@@ -18,24 +17,19 @@ export async function getLabels(brandId: string) {
     });
 }
 
-export async function createLabel(data: LabelInput): Promise<ApiResponse<Label>> {
-  return request<{ data: Label; statusCode: number | string; message: string }>(
-    `/api/label/create`,
-    {
-      method: 'POST',
-      data,
-    },
-  )
+export async function createLabel(data: LabelInput) {
+  return request<{ data: Label }>(`/api/label/create`, {
+    method: 'POST',
+    data,
+  })
     .then((res) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_LABEL_SUCCESS);
 
-      return { data: res.data, statusCode: res.statusCode, message: res.message };
+      return res.data;
     })
     .catch((error) => {
-      const errorMessage = error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LABEL_ERROR;
-      message.error(errorMessage);
-
-      return { data: {} as Label, statusCode: error.statusCode, message: errorMessage };
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LABEL_ERROR);
+      return {} as Label;
     });
 }
 

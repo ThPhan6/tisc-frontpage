@@ -458,15 +458,15 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
    * @param parent_id - The optional ID of the parent label for the new sub-label.
    */
   const handleAssignSubLabel = async (brand_id: string, parent_id: string | undefined) => {
-    const subLabeldata = { name: newSubLabel, brand_id, parent_id };
+    const subLabeldata = { name: newSubLabel || '', brand_id, parent_id };
 
     const res = await createLabel(subLabeldata);
 
-    if (res && res.statusCode === 200) {
+    if (res) {
       const newSubLabelData: DynamicCheckboxValue = {
-        label: res.data?.name,
-        value: res.data?.id,
-        brand_id: res.data?.brand_id,
+        label: res.name,
+        value: res.id,
+        brand_id: res.brand_id,
       };
 
       setLabels([...labels, newSubLabelData]);
