@@ -51,7 +51,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [isActionMenuDisabled, setIsActionMenuDisabled] = useState(false);
-  const [originalLabelName, setOriginalLabelName] = useState<string>();
+  const [editingValue, setEditingValue] = useState<string>('');
   const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
   const [checkedItems, setCheckedItems] = useState<DynamicCheckboxValue[]>(
     (selected as DynamicCheckboxValue[]) || [],
@@ -148,7 +148,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const handleEditClick = (type: 'label' | 'sub-label', id: string, labelName: string) => () => {
     editingLabelIdRef.current = id;
     setIsActionMenuDisabled(true);
-    setOriginalLabelName(labelName);
+    setEditingValue(labelName);
   };
 
   const handleDelete = () => {};
@@ -163,23 +163,12 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   };
 
   /**
-   * Handles the change event for the name of an assigned label.
+   * Handle the event of changing the value of the label name input field.
    *
-   * @param selectedValue The selected label value.
-   * @param index The index of the label in the array.
+   * @param event Change event of the input field.
    */
-  const handleOnChangeLabelNameAssigned =
-    (selectedValue: DynamicCheckboxValue, index: number) =>
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const newData = [...labels];
-
-      newData[index] = {
-        ...selectedValue,
-        name: trimStart(event.target.value),
-      };
-
-      dispatch(setLabels(newData));
-    };
+  const handleOnChangeLabelNameAssigned = (event: ChangeEvent<HTMLInputElement>) =>
+    setEditingValue(trimStart(event.target.value));
 
   /**
    * Handles the edit name action for an assigned label.
@@ -188,40 +177,28 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    * @param index The index of the label in the array.
    * @param selectedValue The selected label value.
    */
-  const handleEditNameAssigned =
-    (
-      type: 'save' | 'cancel',
-      index: number,
-      selectedValue: DynamicCheckboxValue,
-    ): MouseEventHandler<HTMLButtonElement> =>
-    async () => {
-      const newData = [...labels];
-      const updatedLabel = {
-        ...selectedValue,
-        name: trimStart(newData[index].name),
-      };
+  const handleEditNameAssigned = (selectedValue: DynamicCheckboxValue) => async () => {
+    if (editingValue === '') {
+      message.error('Input cannot be empty!');
+      return;
+    }
 
-      if (type === 'save') {
-        if (updatedLabel.name === '') {
-          message.error('Input cannot be empty!');
-          setIsActionMenuDisabled(true);
-          return;
-        }
+    const res = await updateLabel(selectedValue.id!, {
+      name: editingValue,
+      brand_id: selectedValue.brand_id!,
+    });
 
-        const res = await updateLabel(updatedLabel.id!, {
-          name: updatedLabel.name,
-          brand_id: updatedLabel.brand_id!,
-        });
+    const updatedLabels = labels.map((label) =>
+      label.id === selectedValue.id ? { ...label, name: editingValue } : label,
+    );
 
-        if (!res) return;
-      }
-
-      if (type === 'cancel') updatedLabel.name = originalLabelName ?? '';
-
-      newData[index] = updatedLabel;
-      dispatch(setLabels(newData));
+    if (res) {
+      dispatch(setLabels(updatedLabels));
       setIsActionMenuDisabled(false);
-    };
+    }
+  };
+
+  const handleCancel = () => setIsActionMenuDisabled(false);
 
   const alignCenterStyles = {
     display: 'flex',
@@ -351,8 +328,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     autoFocus={isActionMenuDisabled}
                     placeholder="type here"
                     className={modalStyle.paddingLeftNone}
-                    value={label.name}
-                    onChange={handleOnChangeLabelNameAssigned(label, index)}
+                    value={editingValue}
+                    onChange={handleOnChangeLabelNameAssigned}
                   />
                   <div className={`cursor-default flex-start ${style['btn-action-wrapper']}`}>
                     <CustomButton
@@ -360,7 +337,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       variant="primary"
                       properties="rounded"
                       buttonClass={modalStyle.btnSize}
-                      onClick={handleEditNameAssigned('save', index, label)}
+                      onClick={handleEditNameAssigned(label)}
                     >
                       Save
                     </CustomButton>
@@ -369,7 +346,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       variant="primary"
                       properties="rounded"
                       buttonClass={modalStyle.btnSize}
-                      onClick={handleEditNameAssigned('cancel', index, label)}
+                      onClick={handleCancel}
                     >
                       Cancel
                     </CustomButton>
