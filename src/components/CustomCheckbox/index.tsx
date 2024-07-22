@@ -457,7 +457,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                         key={sub.id}
                         style={alignCenterStyles}
                         className={`${style['sub-label-wrapper']}`}
-                        onClick={handleCheckboxChangeWithSub}
                       >
                         {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
                           <div
@@ -530,7 +529,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                               },
                             ]}
                           />
-                          <Checkbox id={`${sub.id}`} checked={temp} />
+                          <Checkbox
+                            id={`${sub.id}`}
+                            checked={temp}
+                            onChange={handleCheckboxChangeWithSub}
+                          />
                         </div>
                       </section>
                     );
