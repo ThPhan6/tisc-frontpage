@@ -584,7 +584,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
               />
             </div>
           </div>
-          <div style={{ borderRight: '1px solid black' }}></div>
+          <div style={{ borderRight: '1px solid black', marginTop: '-18px' }}></div>
           <div className={'side-container'}>
             <MainTitle level={3}>Create New Label</MainTitle>
             <div className="flex-between flex-grow">
