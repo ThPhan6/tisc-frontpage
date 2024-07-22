@@ -150,22 +150,25 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    * @param type Type of label to remove ('label' or 'sub-label').
    * @param parentSubLabelId ID of the parent sub label.
    */
-  const handleDelete = (id: string, type: LabelType, parentSubLabelId?: string) => () => {
+  const handleDelete = (id: string, type: LabelType, parentSubLabelId?: string) => async () => {
     confirmDelete(async () => {
       const res = await deleteLabel(id);
 
-      if (res) {
-        const updatedLabels =
-          type === 'label'
-            ? labels.filter((label) => label.id !== id)
-            : labels.map((label) =>
-                label.id === parentSubLabelId
-                  ? { ...label, subs: label.subs?.filter((sub) => sub.id !== id) }
-                  : label,
-              );
+      if (!res) return;
 
-        dispatch(setLabels(updatedLabels));
-      }
+      const updatedLabels =
+        type === 'label'
+          ? labels.filter((label) => label.id !== id)
+          : labels.map((label) => {
+              if (label.id !== parentSubLabelId) return label;
+
+              const updatedSubs = label.subs?.filter((sub) => sub.id !== id);
+              if (updatedSubs?.length === 0) handleToggleExpand(label.id!);
+
+              return { ...label, subs: updatedSubs };
+            });
+
+      dispatch(setLabels(updatedLabels));
     });
   };
 
@@ -239,10 +242,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const isAnySubLabelChecked = (labelId: string) => {
     const label = labels.find((item) => item.id === labelId);
     return label?.subs?.some((sub) => selected?.some((el) => el.value === sub.id));
-  };
-
-  const disableArrowIconStyles = {
-    cursor: isActionMenuDisabled ? 'not-allowed' : 'pointer',
   };
 
   const sortedLabels = useMemo(
@@ -386,11 +385,17 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               />
 
               {expandedKeys.includes(label.id!) ? (
-                <span style={disableArrowIconStyles}>
+                <span
+                  style={{ cursor: `${isActionMenuDisabled ? 'not-allowed' : 'cursor'}` }}
+                  className={`${style['arrow-icon']}`}
+                >
                   <DropupIcon />
                 </span>
               ) : (
-                <span style={disableArrowIconStyles}>
+                <span
+                  style={{ cursor: `${isActionMenuDisabled ? 'not-allowed' : 'cursor'}` }}
+                  className={`${style['arrow-icon']}`}
+                >
                   <DropdownIcon />
                 </span>
               )}
