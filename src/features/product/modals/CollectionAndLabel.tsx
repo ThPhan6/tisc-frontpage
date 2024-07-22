@@ -32,6 +32,7 @@ export interface DynamicCheckboxValue extends CheckboxValue, Partial<Collection>
   subs?: {
     id: string;
     name: string;
+    brand_id: string;
   }[];
 }
 

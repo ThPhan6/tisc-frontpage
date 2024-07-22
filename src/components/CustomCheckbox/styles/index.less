@@ -144,13 +144,20 @@
   }
 }
 
-.main-label-name {
+.main-label-name,
+.sub-label-name {
   width: 100%;
-  text-transform: capitalize;
+  font-size: 14px;
+  font-family: Roboto;
+  line-height: calc(22 / 14);
 
   &:hover {
     font-weight: 400;
   }
+}
+
+.main-label-name {
+  text-transform: capitalize;
 }
 
 .action-menu {
@@ -177,4 +184,8 @@
   &.expanded {
     max-height: 1000px;
   }
+}
+
+.color-checked {
+  color: @primary-color-dark;
 }
