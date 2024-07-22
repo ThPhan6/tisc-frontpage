@@ -131,7 +131,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   };
 
   /**
-   * Handles the edit action for a label.
+   * Handles the edit action for a label or sub label.
    *
    * @param type The type of label to edit ('label' or 'sub-label').
    * @param id The ID of the label or sub-label to edit.
@@ -144,20 +144,31 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   };
 
   /**
-   * Handles the delete action for a label.
+   * Handles label or sub label deletion actions.
    *
-   * @param id The ID of the label or sub-label to delete.
+   * @param id The ID of the label or sub label to delete.
+   * @param type Type of label to remove ('label' or 'sub-label').
+   * @param parentSubLabelId ID of the parent sub label.
    */
-  const handleDelete = (id: string) => () => {
-    confirmDelete(async () => {
-      const res = await deleteLabel(id);
+  const handleDelete =
+    (id: string, type: 'label' | 'sub-label', parentSubLabelId?: string) => () => {
+      confirmDelete(async () => {
+        const res = await deleteLabel(id);
 
-      if (res) {
-        const updatedLabels = labels.filter((label) => label.id !== id);
-        dispatch(setLabels(updatedLabels));
-      }
-    });
-  };
+        if (res) {
+          const updatedLabels =
+            type === 'label'
+              ? labels.filter((label) => label.id !== id)
+              : labels.map((label) =>
+                  label.id === parentSubLabelId
+                    ? { ...label, subs: label.subs?.filter((sub) => sub.id !== id) }
+                    : label,
+                );
+
+          dispatch(setLabels(updatedLabels));
+        }
+      });
+    };
 
   /**
    * Handles the expand/collapse action for a sub-label list with a check.
@@ -401,7 +412,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   {
                     type: 'deleted',
                     label: 'Delete',
-                    onClick: handleDelete(label.id!),
+                    onClick: handleDelete(label.id!, 'label'),
                   },
                 ]}
               />
@@ -515,7 +526,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                               {
                                 type: 'deleted',
                                 label: 'Delete',
-                                onClick: handleDelete(sub.id),
+                                onClick: handleDelete(sub.id, 'sub-label', sub.parent_id),
                               },
                             ]}
                           />
