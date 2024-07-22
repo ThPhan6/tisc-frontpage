@@ -144,13 +144,20 @@
   }
 }
 
-.main-label-name {
+.main-label-name,
+.sub-label-name {
   width: 100%;
-  text-transform: capitalize;
+  font-size: 14px;
+  font-family: Roboto;
+  line-height: calc(22 / 14);
 
   &:hover {
     font-weight: 400;
   }
+}
+
+.main-label-name {
+  text-transform: capitalize;
 }
 
 .action-menu {
@@ -177,4 +184,36 @@
   &.expanded {
     max-height: 1000px;
   }
+}
+
+.color-checked {
+  color: @primary-color-dark;
+}
+
+.action-menu-container {
+  display: flex;
+  align-items: center;
+}
+
+.label-wrapper {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.sub-label-wrapper {
+  display: flex;
+  align-items: center;
+  margin: 8px 2px 8px 0;
+  padding-left: 16px;
+  cursor: pointer;
+}
+
+.action-sub-label-wrapper {
+  display: flex;
+  gap: 26px;
+  justify-content: flex-end;
+  margin-left: 4px;
 }

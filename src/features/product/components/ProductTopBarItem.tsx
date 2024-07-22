@@ -16,6 +16,7 @@ import { capitalize, sortBy, truncate } from 'lodash';
 
 import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
+import labelStyles from '@/components/CustomCheckbox/styles/index.less';
 import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
 
@@ -253,9 +254,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
    *
    * @param item - The label item object.
    */
-  const handleSelect = (item: DynamicCheckboxValue) => (event: CheckboxChangeEvent) => {
-    event.stopPropagation();
-
+  const handleSelect = (item: DynamicCheckboxValue) => () => {
     setValues((preValues) => {
       const isSelected = preValues.some((value) => value.id === item.id);
 
@@ -301,6 +300,16 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   }, [items]);
 
   /**
+   * Handles the expand/collapse action for a sub-label list with a check.
+   *
+   * @param key The key of the label list to expand/collapse.
+   * @param hasSubLabel The state to check is whether the label has the sub-label or not.
+   */
+  const handleToggleExpandWithCheck = (key: string, hasSubLabel: boolean) => () => {
+    if (hasSubLabel) handleToggleExpand(key);
+  };
+
+  /**
    * Check if any sub labels are selected for a given label.
    *
    * @param labelId - The ID of the label to check.
@@ -311,22 +320,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
     return values.some((value) => value.id === subLabel?.id);
   };
 
-  const mainLabelNameStyles = (labelId: string) => {
-    return {
-      fontWeight: `${
-        expandedKeys.includes(labelId) || isAnySubLabelChecked(labelId) ? '500' : '300'
-      }`,
-      fontSize: '14px',
-      fontFamily: 'Roboto',
-      lineHeight: 'calc(22/14)',
-    };
-  };
-
-  const subLabelNameStyles = (subId: string) => {
-    return {
-      fontWeight: `${values.some((value) => value.id === subId) ? '500' : ''}`,
-    };
-  };
+  const isSubLabelNameSelected = (subId: string) => values.some((value) => value.id === subId);
 
   return visible ? (
     <Menu
@@ -348,7 +342,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
           <div
             key={item.id}
             className={`d-flex flex-between cursor-pointer ${styles.checkboxMenuItem}`}
-            onClick={() => handleToggleExpand(item.id)}
+            onClick={handleToggleExpandWithCheck(item.id, item.subs.length > 0)}
           >
             <Menu.Item
               key={item.id || index}
@@ -359,7 +353,18 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                 return;
               }}
             >
-              <span style={mainLabelNameStyles(item.id)}>{item.name}</span>
+              <span
+                style={{
+                  fontWeight: `${
+                    expandedKeys.includes(item.id) || isAnySubLabelChecked(item.id) ? '500' : '300'
+                  }`,
+                }}
+                className={` ${styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]} ${
+                  labelStyles['main-label-name']
+                }`}
+              >
+                {item.name}
+              </span>
             </Menu.Item>
             <span>{expandedKeys.includes(item.id) ? <DropupIcon /> : <DropdownIcon />}</span>
           </div>
@@ -370,14 +375,22 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                 a.name?.localeCompare(b.name!),
               )
               .map((sub: DynamicCheckboxValue) => (
-                <section key={sub.id} className={`${styles['sub-label-wrapper']}`}>
-                  <h2 className={`${styles['sub-label-name']}`} style={subLabelNameStyles(sub.id!)}>
+                <section
+                  key={sub.id}
+                  className={`${styles['sub-label-wrapper']} `}
+                  onClick={handleSelect(sub)}
+                >
+                  <h2
+                    className={`${styles['sub-label-name']} ${
+                      styles[`${isSubLabelNameSelected(sub.id!) ? 'color-checked' : ''}`]
+                    }`}
+                    style={{
+                      fontWeight: `${values.some((value) => value.id === sub.id) ? '500' : ''}`,
+                    }}
+                  >
                     {sub.name}
                   </h2>
-                  <Checkbox
-                    checked={values?.some((value) => value.id === sub.id)}
-                    onChange={handleSelect(sub)}
-                  />
+                  <Checkbox checked={values?.some((value) => value.id === sub.id)} />
                 </section>
               ))}
         </>
