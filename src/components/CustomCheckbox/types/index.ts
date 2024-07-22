@@ -8,6 +8,8 @@ export type CheckboxValue = {
   disabled?: boolean;
 };
 
+export type LabelType = 'label' | 'sub-label';
+
 export interface CustomCheckboxProps {
   direction?: 'horizontal' | 'vertical';
   options: CheckboxValue[];

@@ -12,7 +12,7 @@ import { useToggleExpand } from '@/helper/hook';
 import { deleteLabel, updateLabel } from '@/services/label.api';
 import { trimStart } from 'lodash';
 
-import { CheckboxValue, CustomCheckboxProps } from './types';
+import { CheckboxValue, CustomCheckboxProps, LabelType } from './types';
 import { RootState } from '@/reducers';
 import { setLabels, setSelectedSubLabels } from '@/reducers/label';
 
@@ -150,25 +150,24 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    * @param type Type of label to remove ('label' or 'sub-label').
    * @param parentSubLabelId ID of the parent sub label.
    */
-  const handleDelete =
-    (id: string, type: 'label' | 'sub-label', parentSubLabelId?: string) => () => {
-      confirmDelete(async () => {
-        const res = await deleteLabel(id);
+  const handleDelete = (id: string, type: LabelType, parentSubLabelId?: string) => () => {
+    confirmDelete(async () => {
+      const res = await deleteLabel(id);
 
-        if (res) {
-          const updatedLabels =
-            type === 'label'
-              ? labels.filter((label) => label.id !== id)
-              : labels.map((label) =>
-                  label.id === parentSubLabelId
-                    ? { ...label, subs: label.subs?.filter((sub) => sub.id !== id) }
-                    : label,
-                );
+      if (res) {
+        const updatedLabels =
+          type === 'label'
+            ? labels.filter((label) => label.id !== id)
+            : labels.map((label) =>
+                label.id === parentSubLabelId
+                  ? { ...label, subs: label.subs?.filter((sub) => sub.id !== id) }
+                  : label,
+              );
 
-          dispatch(setLabels(updatedLabels));
-        }
-      });
-    };
+        dispatch(setLabels(updatedLabels));
+      }
+    });
+  };
 
   /**
    * Handles the expand/collapse action for a sub-label list with a check.
@@ -195,7 +194,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    * @param selectedValue The selected label value.
    */
   const handleEditNameAssigned =
-    (selectedValue: DynamicCheckboxValue, type: 'label' | 'sub-label') => async () => {
+    (selectedValue: DynamicCheckboxValue, type: LabelType) => async () => {
       if (editingValue === '') {
         message.error('Input cannot be empty!');
         return;
@@ -231,31 +230,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   const handleCancel = () => setIsActionMenuDisabled(false);
 
-  const alignCenterStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: '16px',
-    margin: '8px 2px 8px 0',
-    cursor: 'pointer',
-  };
-
-  const flexEndStyles = {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '26px',
-    marginLeft: '4px',
-  };
-
-  const labelWrapperStyles = (labelId: string) => {
-    return {
-      display: 'flex',
-      cursor: 'pointer',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: `${!expandedKeys.includes(labelId) ? '8px' : '0'}`,
-    };
-  };
-
   /**
    * Check if any sub labels are selected for a given label.
    *
@@ -267,19 +241,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     return label?.subs?.some((sub) => selected?.some((el) => el.value === sub.id));
   };
 
-  const mainLabelNameStyles = (labelId: string) => {
-    return {
-      fontWeight: `${expandedKeys.includes(labelId) ? '500' : ''}`,
-    };
-  };
-
   const disableArrowIconStyles = {
     cursor: isActionMenuDisabled ? 'not-allowed' : 'pointer',
-  };
-
-  const actionMenuContainerStyles = {
-    display: 'flex',
-    alignItems: 'center',
   };
 
   const sortedLabels = useMemo(
@@ -352,7 +315,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         sortedLabels.map((label) => (
           <Fragment key={label.id}>
             <section
-              style={labelWrapperStyles(label.id as string)}
+              style={{ marginBottom: `${!expandedKeys.includes(label.id!) ? '8px' : '0'}` }}
+              className={`${style['label-wrapper']}`}
               onClick={handleToggleExpandWithCheck(
                 label.value as string,
                 (label.subs?.length ?? 0) > 0,
@@ -390,7 +354,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 </div>
               ) : (
                 <span
-                  style={mainLabelNameStyles(label.id!)}
+                  style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
                   className={`${style['main-label-name']} ${
                     style[`${isAnySubLabelChecked(label.id!) ? 'color-checked' : ''}`]
                   }`}
@@ -457,11 +421,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     };
 
                     return (
-                      <section
-                        key={sub.id}
-                        style={alignCenterStyles}
-                        className={`${style['sub-label-wrapper']}`}
-                      >
+                      <section key={sub.id} className={`${style['sub-label-wrapper']}`}>
                         {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
                           <div
                             className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}
@@ -514,11 +474,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                           </span>
                         )}
 
-                        <div style={flexEndStyles}>
+                        <div className={`${style['action-sub-label-wrapper']}`}>
                           <ActionMenu
                             className="mono-color"
                             editActionOnMobile={false}
-                            containerStyle={actionMenuContainerStyles}
+                            containerStyle={{ display: 'flex', alignItems: 'center' }}
                             actionItems={[
                               {
                                 type: 'updated',

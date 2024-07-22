@@ -16,6 +16,7 @@ import { capitalize, sortBy, truncate } from 'lodash';
 
 import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
+import labelStyles from '@/components/CustomCheckbox/styles/index.less';
 import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
 
@@ -321,23 +322,6 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
 
   const isSubLabelNameSelected = (subId: string) => values.some((value) => value.id === subId);
 
-  const mainLabelNameStyles = (labelId: string) => {
-    return {
-      fontWeight: `${
-        expandedKeys.includes(labelId) || isAnySubLabelChecked(labelId) ? '500' : '300'
-      }`,
-      fontSize: '14px',
-      fontFamily: 'Roboto',
-      lineHeight: 'calc(22/14)',
-    };
-  };
-
-  const subLabelNameStyles = (subId: string) => {
-    return {
-      fontWeight: `${values.some((value) => value.id === subId) ? '500' : ''}`,
-    };
-  };
-
   return visible ? (
     <Menu
       style={{
@@ -370,8 +354,14 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
               }}
             >
               <span
-                style={mainLabelNameStyles(item.id)}
-                className={` ${styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]}`}
+                style={{
+                  fontWeight: `${
+                    expandedKeys.includes(item.id) || isAnySubLabelChecked(item.id) ? '500' : '300'
+                  }`,
+                }}
+                className={` ${styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]} ${
+                  labelStyles['main-label-name']
+                }`}
               >
                 {item.name}
               </span>
@@ -394,7 +384,9 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                     className={`${styles['sub-label-name']} ${
                       styles[`${isSubLabelNameSelected(sub.id!) ? 'color-checked' : ''}`]
                     }`}
-                    style={subLabelNameStyles(sub.id!)}
+                    style={{
+                      fontWeight: `${values.some((value) => value.id === sub.id) ? '500' : ''}`,
+                    }}
                   >
                     {sub.name}
                   </h2>
