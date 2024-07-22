@@ -299,6 +299,16 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   }, [items]);
 
   /**
+   * Handles the expand/collapse action for a sub-label list with a check.
+   *
+   * @param key The key of the label list to expand/collapse.
+   * @param hasSubLabel The state to check is whether the label has the sub-label or not.
+   */
+  const handleToggleExpandWithCheck = (key: string, hasSubLabel: boolean) => () => {
+    if (hasSubLabel) handleToggleExpand(key);
+  };
+
+  /**
    * Check if any sub labels are selected for a given label.
    *
    * @param labelId - The ID of the label to check.
@@ -348,7 +358,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
           <div
             key={item.id}
             className={`d-flex flex-between cursor-pointer ${styles.checkboxMenuItem}`}
-            onClick={() => handleToggleExpand(item.id)}
+            onClick={handleToggleExpandWithCheck(item.id, item.subs.length > 0)}
           >
             <Menu.Item
               key={item.id || index}

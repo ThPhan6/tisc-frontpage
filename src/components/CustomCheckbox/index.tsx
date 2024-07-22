@@ -174,9 +174,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    * Handles the expand/collapse action for a sub-label list with a check.
    *
    * @param key The key of the label list to expand/collapse.
+   * @param hasSubLabel The state to check is whether the label has the sub-label or not.
    */
-  const handleToggleExpandWithCheck = (key: string) => () => {
-    if (!isActionMenuDisabled) handleToggleExpand(key);
+  const handleToggleExpandWithCheck = (key: string, hasSubLabel: boolean) => () => {
+    if (!isActionMenuDisabled && hasSubLabel) handleToggleExpand(key);
   };
 
   /**
@@ -352,7 +353,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
           <Fragment key={label.id}>
             <section
               style={labelWrapperStyles(label.id as string)}
-              onClick={handleToggleExpandWithCheck(label.value as string)}
+              onClick={handleToggleExpandWithCheck(
+                label.value as string,
+                (label.subs?.length ?? 0) > 0,
+              )}
             >
               {isActionMenuDisabled && editingLabelIdRef.current === label.id ? (
                 <div className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}>

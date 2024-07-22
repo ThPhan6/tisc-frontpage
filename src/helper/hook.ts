@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
 import { useLocation, useModel, useParams } from 'umi';
@@ -110,15 +110,23 @@ export const useGetParamId = () => {
 export const useToggleExpand = () => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
+  useEffect(() => {
+    const savedExpandedKeys = JSON.parse(localStorage.getItem('expandedKeys') || '[]');
+    setExpandedKeys(savedExpandedKeys);
+  }, []);
+
   /**
    * Function to toggle the expanded state of an item.
    *
    * @param key - The key of the item to toggle the expanded state.
    */
   const handleToggleExpand = useCallback((key: string) => {
-    setExpandedKeys((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-    );
+    setExpandedKeys((prev) => {
+      const newExpandedKeys = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      localStorage.setItem('expandedKeys', JSON.stringify(newExpandedKeys));
+
+      return newExpandedKeys;
+    });
   }, []);
 
   return { expandedKeys, handleToggleExpand };
