@@ -288,7 +288,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   {...option}
                   onChange={(e) => {
                     e.stopPropagation();
-                    e.preventDefault();
                     if (additionalSelected && onChangeAdditionalSelected)
                       onChangeAdditionalSelected(option.value.toString(), option, 'remove');
                     onOneChange?.(e);
