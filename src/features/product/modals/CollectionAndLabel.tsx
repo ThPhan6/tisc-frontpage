@@ -489,7 +489,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   const dropDownTextStyles = {
     fontWeight: '600',
     width: 'max-content',
-    color: '#808080',
+    color: !newSubLabel ? '#808080' : '#000',
     fontSize: '14px',
     fontFamily: 'Cormorant-Garamond',
     lineHeight: 'calc(21/14)',
