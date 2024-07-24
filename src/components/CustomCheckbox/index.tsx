@@ -283,8 +283,19 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 >
                   {option.label}
                 </div>
-                <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
-                {additionalSelected && onChangeAdditionalSelected && (
+                <Checkbox
+                  id={`${option.value}_${index}_${randomId}`}
+                  {...option}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (additionalSelected && onChangeAdditionalSelected)
+                      onChangeAdditionalSelected(option.value.toString(), option, 'remove');
+                    onOneChange?.(e);
+                  }}
+                />
+
+                {additionalSelected && onChangeAdditionalSelected ? (
                   <input
                     style={{ marginRight: 4, cursor: 'pointer' }}
                     disabled={!selected?.find((item) => item.value === option.value.toString())}
@@ -293,9 +304,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     name="defaultSelect"
                     value={option.value}
                     checked={additionalSelected.includes(option.value.toString())}
-                    onChange={() => onChangeAdditionalSelected(option.value.toString(), option)}
+                    onChange={() => {
+                      onChangeAdditionalSelected(option.value.toString(), option);
+                    }}
                   />
-                )}
+                ) : null}
               </label>
             ) : (
               <div
@@ -426,7 +439,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                     };
 
                     return (
-                      <section key={sub.id} className={`${style['sub-label-wrapper']}`}>
+                      <section
+                        key={sub.id}
+                        className={`${style['sub-label-wrapper']}`}
+                        onClick={handleCheckboxChangeWithSub}
+                      >
                         {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
                           <div
                             className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}
@@ -506,7 +523,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                             id={`${sub.id}`}
                             checked={temp}
                             disabled={isActionMenuDisabled}
-                            onChange={handleCheckboxChangeWithSub}
                           />
                         </div>
                       </section>
