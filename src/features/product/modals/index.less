@@ -47,12 +47,21 @@
       color: @primary-color-dark;
     }
     :global(.side-container) {
-      width: 33.33%;
-      margin-left: 10px;
-      box-shadow: @border-bottom-light;
+      display: flex;
+      width: 50%;
 
       &:first-child {
-        width: 68%;
+        margin-top: -18px;
+        border-right: 1px solid #000;
+        box-shadow: none;
+      }
+
+      :global(.sub-side-container) {
+        width: 50%;
+
+        &:first-child {
+          margin: 0 16px;
+        }
       }
     }
   }

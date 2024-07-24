@@ -489,7 +489,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   const dropDownTextStyles = {
     fontWeight: '600',
     width: 'max-content',
-    color: '#808080',
+    color: !newSubLabel ? '#808080' : '#000',
     fontSize: '14px',
     fontFamily: 'Cormorant-Garamond',
     lineHeight: 'calc(21/14)',
@@ -568,55 +568,61 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       }}
       extraTopAction={
         <div className={`${styles.boxShadowBottom} d-flex justify-between`}>
-          <div className={'side-container'}>
-            <MainTitle level={3}>Create New Collection</MainTitle>
-            <div className="flex-between flex-grow" style={{ paddingRight: '10px' }}>
-              <CustomInput
-                placeholder="type new collection"
-                value={newOption}
-                onChange={(e) => onChangeCreateNewCollection(e)}
-              />
-              <CustomPlusButton
-                size={18}
-                label="Add"
-                disabled={!newOption}
-                onClick={newOption ? handleCreateCollection : undefined}
-              />
-            </div>
-          </div>
-          <div style={{ borderRight: '1px solid black', marginTop: '-18px' }}></div>
-          <div className={'side-container'}>
-            <MainTitle level={3}>Create New Label</MainTitle>
-            <div className="flex-between flex-grow">
-              <CustomInput
-                placeholder="type new label"
-                value={newLabel}
-                onChange={(e) => onChangeCreateNewLabel(e)}
-              />
-              <CustomPlusButton
-                size={18}
-                label="Add"
-                disabled={!newLabel}
-                onClick={newLabel ? handleCreateLabel : undefined}
-              />
-            </div>
-          </div>
-          <div className={'side-container'}>
-            <MainTitle style={{ marginBottom: '28px' }}></MainTitle>
-            <div className="flex-between flex-grow">
-              <CustomInput
-                placeholder="Add sub-label name"
-                value={newSubLabel}
-                onChange={handleOnChangeCreateNewSubLabel}
-              />
-              <CustomDropDown
-                items={subLabelItems}
-                placement="bottomRight"
-                disabled={!newSubLabel}
-                dropDownStyles={dropDownStyles}
+          <div className={'side-container '}>
+            <div style={{ marginTop: '18px', width: '100%' }}>
+              <MainTitle level={3}>Create New Collection</MainTitle>
+              <div
+                className="flex-between flex-grow border-bottom-light "
+                style={{ marginRight: '16px' }}
               >
-                <span style={dropDownTextStyles}>Add To</span>
-              </CustomDropDown>
+                <CustomInput
+                  placeholder="type new collection name"
+                  value={newOption}
+                  onChange={onChangeCreateNewCollection}
+                />
+                <CustomPlusButton
+                  size={18}
+                  label="Add"
+                  disabled={!newOption}
+                  onClick={newOption ? handleCreateCollection : undefined}
+                />
+              </div>
+            </div>
+          </div>
+          <div className={'side-container'}>
+            <div className={'sub-side-container border-bottom-light'}>
+              <MainTitle level={3}>Create New Label</MainTitle>
+              <div className="flex-between flex-grow">
+                <CustomInput
+                  placeholder="add main-label name"
+                  value={newLabel}
+                  onChange={onChangeCreateNewLabel}
+                />
+                <CustomPlusButton
+                  size={18}
+                  label="Add"
+                  disabled={!newLabel}
+                  onClick={newLabel ? handleCreateLabel : undefined}
+                />
+              </div>
+            </div>
+            <div className={'sub-side-container border-bottom-light'}>
+              <MainTitle style={{ marginBottom: '28px' }}></MainTitle>
+              <div className="flex-between flex-grow">
+                <CustomInput
+                  placeholder="add sub-label name"
+                  value={newSubLabel}
+                  onChange={handleOnChangeCreateNewSubLabel}
+                />
+                <CustomDropDown
+                  items={subLabelItems}
+                  placement="bottomRight"
+                  disabled={!newSubLabel}
+                  dropDownStyles={dropDownStyles}
+                >
+                  <span style={dropDownTextStyles}>Add To</span>
+                </CustomDropDown>
+              </div>
             </div>
           </div>
         </div>
