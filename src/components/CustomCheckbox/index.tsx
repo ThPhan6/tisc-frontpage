@@ -481,7 +481,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
                         <div className={`${style['action-sub-label-wrapper']}`}>
                           <ActionMenu
-                            className="mono-color"
+                            disabled={isActionMenuDisabled}
+                            className={`${modalStyle.marginSpace} ${
+                              isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
+                            } label-action-menu`}
+                            overlayClassName={modalStyle.actionMenuOverlay}
                             editActionOnMobile={false}
                             containerStyle={{ display: 'flex', alignItems: 'center' }}
                             actionItems={[
@@ -501,6 +505,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                           <Checkbox
                             id={`${sub.id}`}
                             checked={temp}
+                            disabled={isActionMenuDisabled}
                             onChange={handleCheckboxChangeWithSub}
                           />
                         </div>
