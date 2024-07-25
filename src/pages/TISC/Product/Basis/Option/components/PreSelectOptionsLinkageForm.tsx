@@ -1,0 +1,126 @@
+import { FC, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { message } from 'antd';
+import { history } from 'umi';
+
+import { useCheckBrandAttributePath } from '../../../BrandAttribute/hook';
+import { useScreen } from '@/helper/common';
+import { useGetParamId } from '@/helper/hook';
+import { getOneBasisOption } from '@/services';
+import { pick, sortBy } from 'lodash';
+
+import store, { useAppSelector } from '@/reducers';
+import { BasisOptionForm } from '@/types';
+
+import { EntryFormWrapper } from '@/components/EntryForm';
+
+import { BranchHeader } from '../../../BrandAttribute/BranchHeader';
+import { setLinkageState } from '../store';
+import style from './Linkage.less';
+import { LinkageOptionDataset } from './linkage/LinkageOptionDataset';
+import { LinkageSummary } from './linkage/LinkageSummary';
+
+export const PreSelectOptionsLinkageForm: FC = () => {
+  const dispatch = useDispatch();
+  const optionId = useGetParamId();
+
+  const { componentPath } = useCheckBrandAttributePath();
+  const { isTablet } = useScreen();
+
+  const options = useAppSelector((state) => state.linkage.options);
+
+  const notSelected = useAppSelector((state) => state.linkage.pickedOptionIds.length === 0);
+
+  useEffect(() => {
+    if (options.length) {
+      return;
+    }
+
+    getOneBasisOption(optionId).then((res) => {
+      if (res) {
+        const newData = sortBy(res.subs as unknown as BasisOptionForm[], 'name').map((el) => ({
+          ...el,
+          subs: sortBy(el.subs, 'name').map((sub) => ({
+            ...sub,
+            subs: sortBy(sub.subs, 'product_id'),
+          })),
+        }));
+
+        dispatch(
+          setLinkageState({
+            groupName: res.name ?? 'N/A',
+            options: newData as any,
+          }),
+        );
+      }
+    });
+  }, [optionId]);
+
+  const handleCancel = () => {
+    history.push(componentPath);
+  };
+
+  const handleSubmit = () => {
+    if (notSelected) {
+      message.error('Please select options');
+      return;
+    }
+    /// save data to history state
+    history.push({
+      state: pick(store.getState().linkage, 'options', 'pickedOptionIds', 'groupName'),
+    });
+  };
+
+  return (
+    <>
+      <BranchHeader containerStyle={{ marginBottom: 8 }} />
+
+      <EntryFormWrapper
+        title="COMPONENT LINKAGE"
+        customClass={style.formContainer}
+        handleCancel={handleCancel}
+        handleSubmit={handleSubmit}
+        submitLabel="Next"
+        lg={24}
+        span={24}
+        contentStyles={{
+          height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          padding: 0,
+          overflow: 'auto hidden',
+        }}
+        customStyles={{ margin: 0 }}
+      >
+        <LinkageSummary />
+
+        <div className={style.contentWrapper}>
+          <div style={{ width: '100%', overflow: 'auto' }}>
+            <div
+              className={style.content}
+              style={{
+                width: '100%',
+                display: 'flex',
+              }}
+            >
+              <div className={style.main}>
+                <div
+                  style={{
+                    paddingRight: 16,
+                    paddingBottom: 16,
+                    width: 'fit-content',
+                    height: 'fit-content',
+                    display: 'flex',
+                  }}
+                >
+                  {options.map((mainOpt, mainOptIdx) => (
+                    <LinkageOptionDataset key={mainOptIdx} mainOption={mainOpt} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </EntryFormWrapper>
+    </>
+  );
+};

@@ -26,7 +26,7 @@ export async function getSpecifiedProductsByBrand(
 ) {
   request(`/api/project-product/get-list-by-brand/${projectId}`, { method: 'GET', params })
     .then((response: { data: GetDataListResponse & { data: SpecifiedProductByBrand[] } }) => {
-      console.log('response', response.data);
+      // console.log('response', response.data);
       const { data, summary } = response.data;
       callback({
         data: data,
@@ -34,7 +34,7 @@ export async function getSpecifiedProductsByBrand(
       });
     })
     .catch((error) => {
-      console.log('error', error);
+      // console.log('error', error);
       hidePageLoading();
       message.error(error.message);
     });
@@ -53,7 +53,7 @@ export async function getSpecifiedProductByMaterial(
       });
     })
     .catch((error) => {
-      console.log('error', error);
+      // console.log('error', error);
       hidePageLoading();
       message.error(error.message);
     });
@@ -73,7 +73,7 @@ export async function getSpecifiedProductBySpace(
       });
     })
     .catch((error) => {
-      console.log('error', error);
+      // console.log('error', error);
       hidePageLoading();
       message.error(error.message);
     });
@@ -94,7 +94,7 @@ export async function updateProductSpecifiedStatus(
       return true;
     })
     .catch((error) => {
-      console.log('updateProductSpecifiedStatus error', error);
+      // console.log('updateProductSpecifiedStatus error', error);
       message.error(getResponseMessage('update', 'specified status', 'failed', error));
       return false;
     });

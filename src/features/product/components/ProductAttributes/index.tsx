@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
+
+import { useGetQueryFromOriginURL } from '@/helper/hook';
 import { getAllAttribute } from '@/services';
 
 import { ProductInfoTab } from './types';
 import { TabItem } from '@/components/Tabs/types';
-import store from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 import { closeProductFooterTab } from '@/reducers/active';
-import { ProductAttributeByType } from '@/types';
+import {
+  EGetAllAttributeType,
+  ProductAttributeByType,
+  ProductAttributeWithSubAdditionByType,
+} from '@/types';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -14,12 +21,26 @@ import { ProductAttributeContainer } from './ProductAttributeContainer';
 import { ProductVendor } from './ProductVendor';
 import styles from './index.less';
 
-const LIST_TAB: TabItem[] = [
-  { tab: 'GENERAL', key: 'general' },
-  { tab: 'FEATURE', key: 'feature' },
-  { tab: 'SPECIFICATION', tabletTabTitle: 'SPECS', key: 'specification' },
-  { tab: 'VENDOR', key: 'vendor' },
-];
+const DEFAULT_ALL_ATTRIBUTE = {
+  general: [],
+  feature: [],
+  specification: [],
+};
+
+export const ProductAttributeComponentContext = createContext<{
+  /// to check already called attributes with sub addtionally
+  isGetAllAttributeFilterByBrand: boolean;
+  setIsGetAllAttributeFilterByBrand: (isGetAllAttributeFilterByBrand: boolean) => void;
+
+  /// attribute with sub additionally and filter by brand
+  attributeListFilterByBrand: ProductAttributeWithSubAdditionByType;
+  setAllAttributeFilterByBrand: (data: ProductAttributeWithSubAdditionByType) => void;
+}>({
+  isGetAllAttributeFilterByBrand: false,
+  setIsGetAllAttributeFilterByBrand: (isGetAllAttributeFilterByBrand: boolean) => null,
+  attributeListFilterByBrand: DEFAULT_ALL_ATTRIBUTE,
+  setAllAttributeFilterByBrand: (data: ProductAttributeWithSubAdditionByType) => null,
+});
 
 interface ProductAttributeComponentProps {
   activeKey: ProductInfoTab;
@@ -31,19 +52,75 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
   setActiveKey,
 }) => {
   const [isReady, setIsReady] = useState(false);
-  const [attribute, setAttribute] = useState<ProductAttributeByType>({
-    general: [],
-    feature: [],
-    specification: [],
-  });
+  /// attribute has none sub, without filter by brand
+  const [attribute, setAttribute] = useState<ProductAttributeByType>(DEFAULT_ALL_ATTRIBUTE);
 
+  const [isGetAllAttributeFilterByBrand, setIsGetAllAttributeFilterByBrand] =
+    useState<boolean>(false);
+
+  const [attributeListFilterByBrand, setAllAttributeFilterByBrand] =
+    useState<ProductAttributeWithSubAdditionByType>(DEFAULT_ALL_ATTRIBUTE);
+
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
+
+  const { details, curAttrGroupCollapseId } = useAppSelector((s) => s.product);
+  const { brand_id: brandId } = details;
+
+  const currentActiveSpecAttributeGroupId =
+    curAttrGroupCollapseId?.[
+      activeKey === 'general'
+        ? 'general_attribute_groups'
+        : activeKey === 'feature'
+        ? 'feature_attribute_groups'
+        : 'specification_attribute_groups'
+    ];
+
+  const isFilterByBrand: boolean = useMemo(() => {
+    if (!currentActiveSpecAttributeGroupId) {
+      return false;
+    }
+
+    return currentActiveSpecAttributeGroupId.indexOf('new') !== -1;
+  }, [currentActiveSpecAttributeGroupId]);
+
+  const LIST_TAB: TabItem[] = [
+    { tab: 'GENERAL', key: 'general', disable: !!projectProductId },
+    { tab: 'FEATURE', key: 'feature', disable: !!projectProductId },
+    { tab: 'SPECIFICATION', tabletTabTitle: 'SPECS', key: 'specification' },
+    { tab: 'VENDOR', key: 'vendor', disable: !!projectProductId },
+  ];
+
+  /// get all attribute without its sub addition
   useEffect(() => {
-    getAllAttribute().then((data) => {
-      setAttribute(data);
+    getAllAttribute(EGetAllAttributeType.NONE_SUB).then((data) => {
+      setAttribute(data as ProductAttributeByType);
+
       setTimeout(() => {
         setIsReady(true);
       }, 200);
     });
+  }, []);
+
+  /// get all attribute with its sub addition
+  useEffect(() => {
+    // if (!isGetAllAttributeFilterByBrand) {
+    //   return;
+    // }
+
+    if (!brandId) {
+      return;
+    }
+
+    getAllAttribute(EGetAllAttributeType.ADD_SUB, brandId ? brandId : undefined).then((data) => {
+      setAllAttributeFilterByBrand(data as ProductAttributeWithSubAdditionByType);
+    });
+  }, [brandId, isFilterByBrand]);
+
+  useEffect(() => {
+    return () => {
+      setIsGetAllAttributeFilterByBrand(false);
+      setAllAttributeFilterByBrand(DEFAULT_ALL_ATTRIBUTE);
+    };
   }, []);
 
   if (!isReady) {
@@ -51,37 +128,46 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
   }
 
   return (
-    <div className={styles.productTabContainer}>
-      <CustomTabs
-        listTab={LIST_TAB}
-        centered={true}
-        tabPosition="top"
-        tabDisplay="space"
-        onChange={(key) => {
-          setActiveKey(key as ProductInfoTab);
-          store.dispatch(closeProductFooterTab());
-        }}
-        activeKey={activeKey}
-      />
-
-      <CustomTabPane active={activeKey === 'general'}>
-        <ProductAttributeContainer attributes={attribute.general} activeKey={'general'} />
-      </CustomTabPane>
-
-      <CustomTabPane active={activeKey === 'feature'}>
-        <ProductAttributeContainer attributes={attribute.feature} activeKey={'feature'} />
-      </CustomTabPane>
-
-      <CustomTabPane active={activeKey === 'specification'}>
-        <ProductAttributeContainer
-          attributes={attribute.specification}
-          activeKey={'specification'}
+    <ProductAttributeComponentContext.Provider
+      value={{
+        isGetAllAttributeFilterByBrand,
+        setIsGetAllAttributeFilterByBrand,
+        attributeListFilterByBrand,
+        setAllAttributeFilterByBrand,
+      }}
+    >
+      <div className={styles.productTabContainer}>
+        <CustomTabs
+          listTab={LIST_TAB}
+          centered={true}
+          tabPosition="top"
+          tabDisplay="space"
+          onChange={(key) => {
+            setActiveKey(key as ProductInfoTab);
+            store.dispatch(closeProductFooterTab());
+          }}
+          activeKey={activeKey}
         />
-      </CustomTabPane>
 
-      <CustomTabPane active={activeKey === 'vendor'}>
-        <ProductVendor />
-      </CustomTabPane>
-    </div>
+        <CustomTabPane active={activeKey === 'general'}>
+          <ProductAttributeContainer attributes={attribute.general} activeKey={'general'} />
+        </CustomTabPane>
+
+        <CustomTabPane active={activeKey === 'feature'}>
+          <ProductAttributeContainer attributes={attribute.feature} activeKey={'feature'} />
+        </CustomTabPane>
+
+        <CustomTabPane active={activeKey === 'specification'}>
+          <ProductAttributeContainer
+            attributes={attribute.specification}
+            activeKey={'specification'}
+          />
+        </CustomTabPane>
+
+        <CustomTabPane active={activeKey === 'vendor'}>
+          <ProductVendor />
+        </CustomTabPane>
+      </div>
+    </ProductAttributeComponentContext.Provider>
   );
 };

@@ -16,15 +16,16 @@ export interface CustomTypography extends React.HTMLAttributes<HTMLParagraphElem
     | 'mono-color-dark'
     | 'mono-color-medium'
     | 'mono-color-light'
-    | 'white';
+    | 'white'
+    | 'pure-black';
 }
 
-export interface BodyTextProps extends CustomTypography {
+export interface BodyTextProps extends Omit<CustomTypography, 'className'> {
   level?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   fontFamily?: 'Roboto' | 'Cormorant-Garamond';
 }
 
-export interface MainTitleProps extends CustomTypography {
+export interface MainTitleProps extends Omit<CustomTypography, 'className'> {
   textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   level?: 1 | 2 | 3 | 4;
 }

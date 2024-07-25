@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import { CheckboxValue, CustomCheckboxProps } from '@/components/CustomCheckbox/types';
-import { CollapseGroup, useCollapseGroupActiveCheck } from '@/reducers/active';
+import { useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -15,7 +15,7 @@ interface CollapseCheckboxListProps extends CustomCheckboxProps {
   containerClass?: string;
   checkboxItemHeight?: string;
   activeKey?: string | string[];
-  groupType?: CollapseGroup;
+  groupType?: string;
   groupIndex?: number; // distinct index for handling active collapse item
 }
 

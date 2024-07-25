@@ -3,14 +3,17 @@ import { useSelector } from 'react-redux';
 
 import servicesReducer from '@/features/services/reducer';
 
+import { autoStepReducer } from './../features/product/reducers/autoStep';
 import { categoryReducer } from '@/features/categories/reducers';
 import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
 import { customResourceReducer } from '@/pages/Designer/CustomResource/reducer';
 
+import { linkageReducer } from './../pages/TISC/Product/Basis/Option/store';
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 import { quotationReducer } from '@/pages/LandingPage/quotionReducer';
+import { componentReducer } from '@/pages/TISC/Product/Basis/Option/componentReducer';
 
 import { activeReducer } from './active';
 import { modalReducer } from './modal';
@@ -33,6 +36,9 @@ const reducers = combineReducers({
   modal: modalReducer,
   active: activeReducer,
   quotation: quotationReducer,
+  linkage: linkageReducer,
+  autoStep: autoStepReducer,
+  component: componentReducer,
 });
 
 const persistConfig = {

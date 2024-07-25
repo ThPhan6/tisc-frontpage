@@ -118,6 +118,56 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   }, [authorCountryData]);
 
   const handleSubmit = () => {
+    if (!data.name) {
+      message.error('Distributor name is required');
+      return;
+    }
+
+    if (!data.country_id) {
+      message.error('Country is required');
+      return;
+    }
+
+    if (!data.address) {
+      message.error('Address is required');
+      return;
+    }
+
+    if (!data.postal_code) {
+      message.error('Postal/Zip Code is required');
+      return;
+    }
+
+    if (!data.first_name) {
+      message.error('First name is required');
+      return;
+    }
+
+    if (!data.last_name) {
+      message.error('Last name is required');
+      return;
+    }
+
+    if (!data.email) {
+      message.error('Work email is required');
+      return;
+    }
+
+    if (!data.phone) {
+      message.error('Work phone is required');
+      return;
+    }
+
+    if (!data.mobile) {
+      message.error('Work mobile is required');
+      return;
+    }
+
+    if (!data.authorized_country_ids?.length) {
+      message.error('Authorized Country is required');
+      return;
+    }
+
     /// check email
     const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
     if (invalidEmail) {
@@ -175,6 +225,22 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
             />
             <InputGroup
+              label="Website"
+              fontLevel={3}
+              onChange={(e) => {
+                onChangeData('website', e.target.value);
+              }}
+              onDelete={() => onChangeData('website', '')}
+              deleteIcon
+              value={data.website}
+              hasBoxShadow
+              placeholder="Website"
+              hasHeight
+              hasPadding
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <InputGroup
               label="Country"
               required
               fontLevel={3}
@@ -190,7 +256,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
             />
             <InputGroup
               label="State / Province"
-              required
               fontLevel={3}
               placeholder="select state / province"
               value={stateData.label}
@@ -205,7 +270,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
             />
             <InputGroup
               label="City / Town"
-              required
               fontLevel={3}
               placeholder="select city / town"
               value={cityData.label}
@@ -297,6 +361,20 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                 onChange={(radioValue) => onChangeData('gender', radioValue.value)}
               />
             </FormGroup>
+            <InputGroup
+              label="Title/Position"
+              fontLevel={3}
+              placeholder="Title/Position"
+              onChange={(e) => onChangeData('position', e.target.value)}
+              value={data.position}
+              hasBoxShadow
+              hasPadding
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onDelete={() => onChangeData('position', '')}
+              deleteIcon
+            />
             <InputGroup
               label="Work Email"
               required

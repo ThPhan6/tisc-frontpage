@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Col, Collapse, Input, Row } from 'antd';
 
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
@@ -52,9 +52,14 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
 export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeValue, value }) => {
   const [presetItem, setPresetItem] = useState<PresetItemValueProp>(presetsValueDefault);
 
+  /// using this state to update preset name
+  const [inputValue, setInputValue] = useState<string>('');
+
   useEffect(() => {
     if (value) {
       setPresetItem({ ...value });
+
+      setInputValue(presetItem.name);
     }
   }, [!isEqual(value, presetItem)]);
 
@@ -69,23 +74,28 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     newSubs.splice(index, 1);
     onChangeValue({ ...presetItem, subs: newSubs });
     if (newSubs.length === 0) {
-      onChangeValue({ ...presetItem, is_collapse: '', subs: newSubs });
+      onChangeValue({ ...presetItem, collapse: '', subs: newSubs });
     }
   };
 
   const handleOnClickAddItem = () => {
     const newSubs = [...presetItem.subs, subPresetDefaultValue];
-    onChangeValue({ ...presetItem, is_collapse: '1', subs: newSubs });
+    onChangeValue({ ...presetItem, collapse: '1', subs: newSubs });
   };
 
+  /* only update state */
   const handleOnChangePresetName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeValue({ ...presetItem, name: e.target.value });
+    setInputValue(e.target.value);
+  };
+  /* update data */
+  const handleBlurPresetName = () => {
+    onChangeValue({ ...presetItem, name: inputValue });
   };
 
   const handleActiveKeyToCollapse = () => {
     onChangeValue({
       ...presetItem,
-      is_collapse: presetItem.is_collapse ? '' : '1',
+      collapse: presetItem.collapse ? '' : '1',
     });
   };
 
@@ -97,14 +107,15 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
             <BodyText
               level={3}
               customClass={
-                isEmpty(presetItem.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
-              }>
+                isEmpty(presetItem.collapse) ? styles.font_weight_300 : styles.font_weight_600
+              }
+            >
               Preset Name
             </BodyText>
             <ArrowIcon
               className={styles.panel_header__field_title_icon}
               style={{
-                transform: `rotate(${isEmpty(presetItem.is_collapse) ? '0' : '180'}deg)`,
+                transform: `rotate(${isEmpty(presetItem.collapse) ? '0' : '180'}deg)`,
               }}
             />
           </div>
@@ -119,9 +130,12 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
             size="small"
             containerClass={styles.panel_header__input_value}
             onChange={handleOnChangePresetName}
-            value={presetItem.name}
+            /* re-render cause to cursor jump to end, using onBlur to fix it */
+            onBlur={handleBlurPresetName}
+            value={inputValue ?? presetItem.name}
             name="Preset_item_input_value"
           />
+
           <ActionDeleteIcon
             className={styles.panel_header__input_delete_icon}
             onClick={handleOnClickDelete}
@@ -133,14 +147,15 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
 
   return (
     <div className={styles.preset}>
-      <Collapse ghost activeKey={presetItem.is_collapse}>
+      <Collapse ghost activeKey={presetItem.collapse}>
         <Collapse.Panel
-          className={`
-           ${styles['customPadding']}
-            ${isEmpty(presetItem.is_collapse) ? styles['bottomMedium'] : styles['bottomBlack']}`}
+          className={`${styles['customPadding']} ${
+            isEmpty(presetItem.collapse) ? styles['bottomMedium'] : styles['bottomBlack']
+          }`}
           header={PanelHeader()}
-          key={presetItem.is_collapse}
-          showArrow={false}>
+          key={presetItem.collapse}
+          showArrow={false}
+        >
           <div>
             {presetItem.subs.map((preset, index) => (
               <div className={styles.form} key={index}>

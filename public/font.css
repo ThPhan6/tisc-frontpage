@@ -22,3 +22,9 @@
   src: url("/fonts/CormorantGaramond-SemiBold.ttf") format("truetype");
   font-weight: 600;
 }
+
+@font-face {
+  font-family: "Cormorant-Garamond";
+  src: url("/fonts/CormorantGaramond-SemiBold.ttf") format("truetype");
+  font-weight: 400;
+}

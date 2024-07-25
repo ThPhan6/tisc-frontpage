@@ -1,7 +1,7 @@
-import { useProductBasicEntryForm } from '../../hook';
+import { ProductBasisFormType, useProductBasicEntryForm } from '../../hook';
 
 const OptionsEntryForm = () => {
-  const { renderProductBasicEntryForm } = useProductBasicEntryForm('options');
+  const { renderProductBasicEntryForm } = useProductBasicEntryForm(ProductBasisFormType.options);
 
   return renderProductBasicEntryForm();
 };

@@ -1,29 +1,34 @@
-import React, { CSSProperties, FC } from 'react';
+import React, { CSSProperties, FC, useContext } from 'react';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
-import { Col, Collapse, Radio, Row, Upload, message } from 'antd';
+import { Collapse, Upload, message } from 'antd';
 
-import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove.svg';
 import DefaultImage from '@/assets/icons/default-option-icon.png';
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DragIcon } from '@/assets/icons/drag-icon.svg';
 
+import { useCheckAttributeForm } from '../../../BrandAttribute/hook';
+import { FormGroupContext, FormOptionGroupHeaderContext } from '../../hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash';
 
-import { BasisOptionSubForm, SubBasisOption } from '@/types';
+import { BasisOptionSubForm, MainBasisOptionSubForm, SubBasisOption } from '@/types';
 
-import { CustomInput } from '@/components/Form/CustomInput';
-import { BodyText } from '@/components/Typography';
+import { EmptyOne } from '@/components/Empty';
 
 import styles from './OptionItem.less';
+import { MainPanelHeader } from './entryForm/MainPanelHeader';
+import { SubPanelHeader } from './entryForm/SubPanelHeader';
+import { SubItemOption } from '@/features/sub-form/SubItem';
 
 export const ImageUpload: FC<{
   onFileChange: (base64: string) => void;
   image?: string;
   style?: CSSProperties;
-}> = ({ style, onFileChange, image }) => {
+}> = ({ style, onFileChange, image, ...props }) => {
   return (
     <Upload
       accept={IMAGE_ACCEPT_TYPES.image}
@@ -41,6 +46,7 @@ export const ImageUpload: FC<{
           });
         return true;
       }}
+      {...props}
     >
       <img
         style={{
@@ -57,154 +63,40 @@ export const ImageUpload: FC<{
   );
 };
 
-interface SubItemOptionProps {
-  is_have_image?: boolean;
-  subItemOption: SubBasisOption;
-  onChange: (subItemOption: SubBasisOption) => void;
-}
-
-const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
-  value_1: '',
-  value_2: '',
-  unit_2: '',
-  unit_1: '',
-  product_id: '',
-};
-
-const SubItemOption: FC<SubItemOptionProps> = ({ is_have_image, subItemOption, onChange }) => {
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({
-      ...subItemOption,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleChangeFileImage = (base64Image: string) => {
-    onChange({
-      ...subItemOption,
-      image: base64Image,
-      isBase64: true,
-    });
-  };
-
-  return (
-    <div className={styles.element}>
-      {is_have_image && (
-        <ImageUpload
-          onFileChange={handleChangeFileImage}
-          image={subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image)}
-        />
-      )}
-
-      <Row className={styles.form_sub__input} gutter={16}>
-        {[1, 2].map((order) => (
-          <Col className={styles.form_input} key={order} span={12}>
-            <BodyText level={3}>O{order}:</BodyText>
-            <CustomInput
-              placeholder="value"
-              name={`value_${order}`}
-              size="small"
-              autoWidth
-              defaultWidth={40}
-              containerClass={styles.form_input__formula}
-              onChange={handleChangeInput}
-              value={subItemOption[`value_${order}`]}
-            />
-            <CustomInput
-              placeholder="unit"
-              name={`unit_${order}`}
-              size="small"
-              autoWidth
-              defaultWidth={30}
-              containerClass={styles.form_input__unit}
-              onChange={handleChangeInput}
-              value={subItemOption[`unit_${order}`]}
-            />
-          </Col>
-        ))}
-        <div
-          style={{
-            margin: '0 8px',
-            height: '36px',
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <span className="product-id-label">Product ID:</span>
-          <CustomInput
-            placeholder="type here"
-            className="product-id-input"
-            fontLevel={6}
-            name="product_id"
-            onChange={handleChangeInput}
-            value={subItemOption.product_id}
-          />
-        </div>
-      </Row>
-    </div>
-  );
-};
-
-interface OptionItemProps {
+interface SubOptionItemProps {
   subOption: BasisOptionSubForm;
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
+  handleCopySubOtionItem?: () => void;
+  dragIcon?: JSX.Element;
 }
 
-export const OptionItem: FC<OptionItemProps> = (props) => {
-  const { subOption, handleChangeSubItem, handleDeleteSubOption } = props;
+export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
+  const {
+    subOption,
+    handleChangeSubItem,
+    handleDeleteSubOption,
+    dragIcon,
+    handleCopySubOtionItem,
+  } = props;
 
-  const handleActiveKeyToCollapse = () => {
-    handleChangeSubItem({
-      ...subOption,
-      is_collapse: subOption.is_collapse ? '' : '1',
-    });
-  };
+  const { isAttribute } = useCheckAttributeForm();
+  const { mode = 'list' } = useContext(FormOptionGroupHeaderContext);
 
-  const handleOnClickUsingImage = () => {
-    handleChangeSubItem({
-      ...subOption,
-      is_have_image: subOption.is_have_image ? false : true,
-    });
-  };
+  const { collapse, setCollapse } = useContext(FormGroupContext);
 
-  const addNewSubOptionItem = () => {
-    /// default open option item list when add new
-    /// add new sub option item
-    handleChangeSubItem({
-      ...subOption,
-      is_collapse: '1',
-      subs: [...subOption.subs, DEFAULT_SUB_OPTION_ITEM],
-    });
-  };
+  const handleDeleteSubItem =
+    (index: number) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+      e.stopPropagation();
 
-  const handleChangeSubOptionName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    /// change subOption name
-    handleChangeSubItem({
-      ...subOption,
-      name: e.target.value,
-    });
-  };
-
-  const handleDeleteSubOptionItem = (index: number) => {
-    const newSubItems = [...subOption.subs];
-    newSubItems.splice(index, 1);
-    handleChangeSubItem({
-      ...subOption,
-      subs: newSubItems,
-    });
-
-    if (newSubItems.length < 1) {
-      /// unactive image if have none sub
+      const newSubItems = [...subOption.subs];
+      newSubItems.splice(index, 1);
       handleChangeSubItem({
         ...subOption,
+        count: newSubItems.length,
         subs: newSubItems,
-        is_have_image: false,
-        is_collapse: '',
       });
-    }
-  };
+    };
 
   const handleChangeSubOptionItem = (changedOptionItem: SubBasisOption, index: number) => {
     const newSubItems = [...subOption.subs];
@@ -215,103 +107,275 @@ export const OptionItem: FC<OptionItemProps> = (props) => {
     });
   };
 
-  const PanelHeader = () => {
-    return (
-      <div className={styles.panel_header}>
-        <div className={styles.panel_header__field}>
-          <div className={styles.panel_header__field_right}>
-            <div className={styles.panel_header__field_title} onClick={handleActiveKeyToCollapse}>
-              <BodyText
-                level={3}
-                customClass={
-                  isEmpty(subOption.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
-                }
-              >
-                Option Name
-              </BodyText>
-              <ArrowIcon
-                className={styles.panel_header__field_title_icon}
-                style={{
-                  transform: `rotate(${isEmpty(subOption.is_collapse) ? '0' : '180'}deg)`,
-                }}
-              />
-            </div>
-            <div
-              className={`
-                ${styles.panel_header__field_image}
-                ${
-                  subOption.is_have_image
-                    ? styles['set-checked-color']
-                    : styles['set-unchecked-color']
-                }`}
-              onClick={handleOnClickUsingImage}
-            >
-              <BodyText fontFamily="Roboto" level={5}>
-                Image
-              </BodyText>
-              <Radio />
-            </div>
-          </div>
-          <CirclePlusIcon
-            className={styles.panel_header__field_add}
-            onClick={addNewSubOptionItem}
-          />
-        </div>
-        <div className={styles.panel_header__input}>
-          <CustomInput
-            placeholder="type option name"
-            name="name"
-            size="small"
-            onChange={handleChangeSubOptionName}
-            value={subOption.name}
-          />
-          <ActionDeleteIcon
-            className={styles.panel_header__input_delete_icon}
-            onClick={handleDeleteSubOption}
-          />
-        </div>
-      </div>
-    );
+  const handleCollapse = () => {
+    const newCollapse: any = cloneDeep(collapse);
+
+    if (newCollapse[subOption.id]) {
+      delete newCollapse[subOption.id];
+    } else {
+      newCollapse[subOption.id] = true;
+    }
+
+    setCollapse(newCollapse);
   };
 
   return (
     <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={subOption.is_collapse!}>
+      <Collapse
+        ghost
+        activeKey={collapse[subOption.id] ? subOption.id : ''}
+        onChange={handleCollapse}
+        // collapsible={
+        //   mode === 'card' &&
+        //   subOption.subs.every((sub) => sub.image?.indexOf('/default/option_default.webp') !== -1)
+        //     ? 'disabled'
+        //     : undefined
+        // }
+      >
         <Collapse.Panel
-          className={
-            isEmpty(subOption.is_collapse)
-              ? styles.active_collapse_panel
-              : styles.unactive_collapse_panel
+          className={collapse[subOption.id] && styles.active_collapse_panel}
+          header={
+            <SubPanelHeader
+              subOption={subOption}
+              handleChangeSubItem={handleChangeSubItem}
+              handleDeleteSubOption={handleDeleteSubOption}
+              handleCopySubOtionItem={handleCopySubOtionItem}
+              dragIcon={dragIcon}
+            />
           }
-          header={PanelHeader()}
-          key={subOption.is_collapse!}
+          key={subOption.id}
           showArrow={false}
         >
-          <div className={styles.sub_wrapper}>
-            {subOption.subs.map((subItemOption, index) => (
-              <div key={index} className={styles.element_input}>
-                <div className={styles.optionItemGroup}>
-                  <div className={styles.form}>
-                    <SubItemOption
-                      is_have_image={subOption.is_have_image}
-                      subItemOption={subItemOption}
-                      onChange={(changedOptionItem) =>
-                        handleChangeSubOptionItem(changedOptionItem, index)
-                      }
+          <div
+            style={{ paddingLeft: 80 }}
+            className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}
+          >
+            {!subOption.subs?.length ? (
+              <EmptyOne />
+            ) : (
+              subOption.subs.map(
+                (subItemOption, index) =>
+                  mode === 'list' ? (
+                    <div
+                      key={index}
+                      className={styles.optionItemGroup}
+                      style={{ paddingTop: index == 0 ? 0 : 16 }}
+                    >
+                      <SubItemOption
+                        subItemOption={subItemOption}
+                        onChange={(changedOptionItem) =>
+                          handleChangeSubOptionItem(changedOptionItem, index)
+                        }
+                      />
+                      <div className="flex-center">
+                        {isAttribute ? (
+                          <DeleteIcon
+                            // className="delete_sub_icon"
+                            onClick={handleDeleteSubItem(index)}
+                            color="#000"
+                            style={{ cursor: 'pointer' }}
+                          />
+                        ) : (
+                          <RemoveIcon
+                            className="delete_sub_icon"
+                            onClick={handleDeleteSubItem(index)}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <img
+                      key={index}
+                      src={showImageUrl(subItemOption.image)}
+                      style={{
+                        width: 64,
+                        height: 64,
+                        objectFit: 'cover',
+                        cursor: 'default',
+                      }}
                     />
-                  </div>
-                  <div className={styles.delete_icon}>
-                    <ActionDeleteIcon
-                      className={styles.panel_header__input_delete_icon}
-                      onClick={() => handleDeleteSubOptionItem(index)}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+                  ),
+                // subItemOption.image &&
+                //   subItemOption.image?.indexOf('/default/option_default.webp') === -1 ? (
+                //   <img
+                //     src={showImageUrl(subItemOption.image)}
+                //     style={{
+                //       width: 64,
+                //       height: 64,
+                //       objectFit: 'cover',
+                //       cursor: 'default',
+                //     }}
+                //   />
+                // ) : null,
+              )
+            )}
           </div>
         </Collapse.Panel>
       </Collapse>
     </div>
+  );
+};
+
+interface MainOptionItemProps {
+  mainOption: MainBasisOptionSubForm;
+  mainOptionIndex: number;
+  handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
+  handleDeleteMainSubOption: () => void;
+  handleCopyMainOption?: (mainOption: MainBasisOptionSubForm) => void;
+}
+
+export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
+  const {
+    mainOption,
+    mainOptionIndex,
+    handleChangeMainSubItem,
+    handleDeleteMainSubOption,
+    handleCopyMainOption,
+  } = props;
+
+  const { collapse, setCollapse, hideDrag } = useContext(FormGroupContext);
+
+  const handleDeleteSubOption = (index: number) => {
+    const newSubItems = [...mainOption.subs];
+    newSubItems.splice(index, 1);
+    handleChangeMainSubItem({
+      ...mainOption,
+      count: newSubItems.length,
+      subs: newSubItems,
+    });
+  };
+
+  const handleChangeSubOptionItem = (changedOptionItem: BasisOptionSubForm, index: number) => {
+    const newSubItems = [...mainOption.subs];
+    newSubItems[index] = changedOptionItem;
+    handleChangeMainSubItem({
+      ...mainOption,
+      subs: newSubItems,
+    });
+  };
+
+  const handleCopySubOtionItem = (subItem: BasisOptionSubForm) => {
+    const newId = uniqueId('new-');
+
+    const newSub: BasisOptionSubForm = {
+      ...subItem,
+      id: `${newId}-${subItem.id}`,
+      subs: subItem.subs.map((opt) => ({
+        ...opt,
+        id: `${newId}-${opt.id}`,
+      })),
+    };
+
+    handleChangeMainSubItem({
+      ...mainOption,
+      count: mainOption.subs.length + 1,
+      subs: [...mainOption.subs, newSub],
+    });
+  };
+
+  const handleCollapse = () => {
+    const newCollapse = cloneDeep(collapse);
+
+    if (newCollapse[mainOption.id]) {
+      delete newCollapse[mainOption.id];
+    } else {
+      newCollapse[mainOption.id] = true;
+    }
+
+    setCollapse(newCollapse);
+  };
+
+  return (
+    <Draggable key={mainOption.id} draggableId={mainOption.id} index={mainOptionIndex}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.draggableProps}>
+          <Droppable droppableId={mainOption.id}>
+            {(droppableProvided) => (
+              <div
+                ref={droppableProvided.innerRef}
+                {...droppableProvided.droppableProps}
+                className={styles.collapseContainer}
+              >
+                <Collapse
+                  ghost
+                  activeKey={collapse[mainOption.id] ? mainOption.id : ''}
+                  onChange={handleCollapse}
+                >
+                  <Collapse.Panel
+                    className={
+                      collapse[mainOption.id]
+                        ? styles.active_collapse_panel
+                        : styles.unactive_collapse_panel
+                    }
+                    header={
+                      <MainPanelHeader
+                        mainOption={mainOption}
+                        handleChangeMainSubItem={handleChangeMainSubItem}
+                        handleDeleteMainSubOption={handleDeleteMainSubOption}
+                        handleCopyMainOption={handleCopyMainOption}
+                      />
+                    }
+                    key={mainOption.id}
+                    showArrow={false}
+                  >
+                    <div
+                      className={styles.main_option}
+                      // style={{ paddingLeft: isAttribute ? 16 : 0 }}
+                    >
+                      {!mainOption.subs.length ? (
+                        <EmptyOne />
+                      ) : (
+                        mainOption.subs.map((subItemOption, index) => (
+                          <Draggable
+                            key={subItemOption.id}
+                            draggableId={subItemOption.id}
+                            index={index}
+                          >
+                            {(mainOptionProvided) => (
+                              <div
+                                ref={mainOptionProvided.innerRef}
+                                {...mainOptionProvided.draggableProps}
+                              >
+                                <SubOptionItem
+                                  subOption={subItemOption}
+                                  handleChangeSubItem={(changedSubs) =>
+                                    handleChangeSubOptionItem(changedSubs, index)
+                                  }
+                                  handleCopySubOtionItem={() => {
+                                    handleCopySubOtionItem({
+                                      ...subItemOption,
+                                      name: `${subItemOption.name} copy`,
+                                    });
+                                  }}
+                                  handleDeleteSubOption={() => handleDeleteSubOption(index)}
+                                  dragIcon={
+                                    hideDrag ? undefined : (
+                                      <div
+                                        {...mainOptionProvided.dragHandleProps}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}
+                                        className="drag-icon flex-start"
+                                      >
+                                        {<DragIcon />}
+                                      </div>
+                                    )
+                                  }
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))
+                      )}
+                    </div>
+                  </Collapse.Panel>
+                </Collapse>
+                {droppableProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      )}
+    </Draggable>
   );
 };

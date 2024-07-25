@@ -213,38 +213,24 @@ const routes = [
               },
             ],
           },
-          {
-            path: PATH.options,
-            name: 'option',
-            routes: [
-              {
-                path: PATH.options,
-                component: './TISC/Product/Basis/Option',
-                hideInMenu: true,
-              },
-              {
-                path: PATH.createOptions,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
-              },
-              {
-                path: PATH.updateOptions,
-                hideInMenu: true,
-                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
-              },
-            ],
-          },
         ],
       },
+
       {
         path: PATH.attribute,
-        name: 'attribute',
+        name: 'Brand Attributes',
         icon: 'attributes-icon.svg',
         access: 'tisc_product_attribute',
         routes: [
           {
+            path: PATH.attribute,
+            component: './TISC/Product/BrandAttribute',
+            hideInMenu: true,
+          },
+          {
             path: PATH.attributeGeneral,
-            name: 'general',
+            name: 'General',
+            hideInMenu: true,
             routes: [
               {
                 path: PATH.attributeGeneral,
@@ -265,7 +251,8 @@ const routes = [
           },
           {
             path: PATH.attributeFeature,
-            name: 'feature',
+            name: 'Feature',
+            hideInMenu: true,
             routes: [
               {
                 path: PATH.attributeFeature,
@@ -286,7 +273,8 @@ const routes = [
           },
           {
             path: PATH.attributeSpecification,
-            name: 'specification',
+            name: 'Specification',
+            hideInMenu: true,
             routes: [
               {
                 path: PATH.attributeSpecification,
@@ -302,6 +290,33 @@ const routes = [
                 path: PATH.attributeSpecificationUpdate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/components/AttributeEntryForm',
+              },
+            ],
+          },
+          {
+            path: PATH.options,
+            name: 'Component',
+            hideInMenu: true,
+            routes: [
+              {
+                path: PATH.options,
+                component: './TISC/Product/Basis/Option',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.createOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
+              },
+              {
+                path: PATH.updateOptions,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
+              },
+              {
+                path: PATH.LinkageDataSet,
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/components/LinkagePage.tsx',
               },
             ],
           },
@@ -896,8 +911,8 @@ const routes = [
   },
 ];
 
-const inject404Routes = (curRoutes) => {
-  return curRoutes.map((route) => {
+const inject404Routes = (curRoutes: any) => {
+  return curRoutes.map((route: any) => {
     if (route.routes) {
       route.routes.push({
         component: './404',

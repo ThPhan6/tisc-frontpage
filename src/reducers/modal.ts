@@ -42,11 +42,15 @@ export type ModalType =
 
   // Brand
   | 'Actions Tasks'
+  | 'Billed Services'
 
   // Design Firm
   | 'Assign Product'
   | 'Market Availability'
-  | 'Inquiry Request';
+  | 'Inquiry Request'
+
+  // Color AI
+  | 'Color AI';
 
 export interface ModalState {
   type: ModalType;

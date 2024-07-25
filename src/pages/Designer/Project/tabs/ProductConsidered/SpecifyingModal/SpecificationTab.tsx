@@ -4,7 +4,9 @@ import { Tooltip } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
+import { useProductAttributeForm } from '@/features/product/components/ProductAttributes/hooks';
 import { getProductById } from '@/features/product/services';
+import { useCheckBrandSpecified } from '@/helper/hook';
 import { getOneCustomProduct } from '@/pages/Designer/Products/CustomLibrary/services';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -30,7 +32,8 @@ const ReferToDesignLabel = () => {
         }
         overlayInnerStyle={{
           width: 197,
-        }}>
+        }}
+      >
         <WarningIcon />
       </Tooltip>
     </Title>
@@ -41,12 +44,19 @@ const SpecifiedSpecificationTab: FC<{
   productId: string;
   referToDesignDocument: boolean;
   customProduct?: boolean;
-}> = ({ productId, customProduct, referToDesignDocument }) => {
+  isSpecified?: boolean;
+}> = ({ productId, customProduct, referToDesignDocument, isSpecified }) => {
+  const isBrandSpecified = useCheckBrandSpecified(!!isSpecified);
+  const { onUnCheckedAllAttributeGroups } = useProductAttributeForm('specification', productId, {
+    isSpecifiedModal: true,
+  });
+
   const checkReferToDesignDocument = () => {
     if (customProduct) {
       store.dispatch(onCheckCustomProductReferToDocument());
     } else {
       store.dispatch(onCheckReferToDesignDocument());
+      onUnCheckedAllAttributeGroups();
     }
   };
 
@@ -61,7 +71,7 @@ const SpecifiedSpecificationTab: FC<{
       if (customProduct) {
         getOneCustomProduct(productId);
       } else {
-        getProductById(productId);
+        getProductById(productId, { isSpecified });
       }
     }
   }, [productId, customProduct]);
@@ -75,6 +85,7 @@ const SpecifiedSpecificationTab: FC<{
         onChange={checkReferToDesignDocument}
         containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
         noPaddingLeft
+        disabled={isBrandSpecified}
       />
 
       {customProduct ? (
@@ -82,10 +93,11 @@ const SpecifiedSpecificationTab: FC<{
       ) : (
         <ProductAttributeContainer
           activeKey="specification"
-          specifying
+          // specifying
           noBorder
           productId={productId}
           isSpecifiedModal
+          isSpecified={isSpecified}
         />
       )}
     </div>

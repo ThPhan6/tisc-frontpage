@@ -1,27 +1,70 @@
-import { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
+import { Popover, message } from 'antd';
+
+import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-18.svg';
+
+import { getLinkedOptionByOptionIds } from '../../services';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
-import { useCheckPermission, useQuery } from '@/helper/hook';
+import {
+  useCheckBrandSpecified,
+  useCheckPermission,
+  useGetQueryFromOriginURL,
+  useQuery,
+} from '@/helper/hook';
+import { showImageUrl, sortObjectArray } from '@/helper/utils';
+import { capitalize, sortBy, trimEnd, uniq } from 'lodash';
 
+import {
+  LinkedOptionDataProps,
+  OptionPreSelectedProps,
+  OptionSelectedProps,
+  PickedOptionProps,
+  setCurAttrGroupCollapse,
+  setLinkedOptionData,
+  setOptionsSelected,
+  setPickedOption,
+  setPreSelectStep,
+  setSlide,
+  setSlideBar,
+  setStep,
+  setStepData,
+} from '../../reducers';
+import { SpecificationType } from '../../types';
 import {
   AttributeSelectedProps,
   ProductAttributeFormInput,
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
 } from '../../types';
-import { ActiveKeyType } from './types';
-import store from '@/reducers';
-import { closeProductFooterTab, useCollapseGroupActiveCheck } from '@/reducers/active';
+import {
+  AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
+  LinkedOptionProps,
+  OptionQuantityProps,
+} from '../../types/autoStep';
+import store, { useAppSelector } from '@/reducers';
+import {
+  closeDimensionWeightGroup,
+  closeProductFooterTab,
+  closeProductInformationGroup,
+} from '@/reducers/active';
+import { ActiveKeyType, SubBasisOption } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
-import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
-import { ProductAttributeSubItem, getConversionText } from './AttributeItem';
+import { AutoStep } from '../AutoStep/AutoStep';
+import { PreSelectStep } from '../AutoStep/PreSelectStep';
+import { getIDFromPreOption, mappingOptionGroups } from '../AutoStep/util';
+import { AttributeOption, ConversionText, GeneralText } from './CommonAttribute';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
+import { ProductAttributeSubItem, getConversionText } from './ProductAttributeSubItem';
 import { SelectAttributeSpecificationChoice } from './SelectAttributeSpecificationChoice';
 import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
 import styles from './index.less';
@@ -40,6 +83,7 @@ interface ProductAttributeGroupProps extends ProductAttributeContainerProps {
   groupIndex: number;
   curProductId: string;
   icon?: JSX.Element;
+  prevAttributeGroupSelectedIds: string[];
 }
 
 export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
@@ -48,44 +92,73 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   attrGroupItem,
   groupIndex,
   attributes,
-  specifying,
+  // specifying,
   noBorder,
   curProductId,
-  isSpecifiedModal,
+  isSpecifiedModal, /// using for both specifing modal on product considered and product specified
+  isSpecified, /// using for specifying modal on product specified
   icon,
+  prevAttributeGroupSelectedIds,
 }) => {
   const isTablet = useScreen().isTablet;
-  const [randomId] = useState<number>(Math.random());
-  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
-    activeKey,
-    randomId, // groupIndex + 1, // Spare index 0 for Dimension & Weight group
-  );
+
+  const {
+    attributeGroupKey,
+    onChangeAttributeItem,
+    onChangeAttributeName,
+    deleteAttributeItem,
+    onCheckedSpecification,
+    onSelectSpecificationOption,
+  } = useProductAttributeForm(activeKey, curProductId, {
+    isSpecifiedModal,
+  });
+
+  // const user = useAppSelector((state) => state.user.user);
+
+  /// Currently, using to tracking brand user accesses to project page
+  const isBrandSpecified = useCheckBrandSpecified(!!isSpecified);
+
+  /// Currently, using to tracking brand user accesses to product detail page from assistance request of project request
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
 
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  // const isDesignerAdmin = useCheckPermission(['Design Admin', 'Design Team']);
   const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
-  const isPublicPage = signature ? true : false;
+  const isPublicPage = !!signature;
+
+  const hideAction = isPublicPage || !!projectProductId;
 
   const [curAttributeSelect, setCurAttributeSelect] = useState<AttributeSelectedProps>(
     ATTRIBUTE_SELECTED_DEFAULT_VALUE,
   );
 
+  const [images, setImages] = useState<any>([]);
   /// for specification choice attribute
   const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
 
   const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
   const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
-  const {
-    onChangeAttributeItem,
-    onChangeAttributeName,
-    deleteAttributeItem,
-    onCheckedSpecification,
-    attributeGroupKey,
-    onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
+  const { curAttrGroupCollapseId, details } = useAppSelector((state) => state.product);
+  const { specifiedDetail } = details;
+  const currentSpecAttributeGroupId = curAttrGroupCollapseId?.['specification_attribute_groups'];
+  const specifiedQuantity = isSpecifiedModal
+    ? specifiedDetail?.specification.attribute_groups?.find(
+        (item) => item.id === currentSpecAttributeGroupId,
+      )?.step_selections?.quantities || {}
+    : {};
+  const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
 
+  // const autoSteps = curStepSelect;
+  const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
+    []) as AutoStepOnAttributeGroupResponse[];
+
+  const showTISCAutoSteps = !hideAction && isEditable;
+  useEffect(() => {
+    console.log(isAttributeGroupSelected);
+  }, []);
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
       let attributeSelected: AttributeSelectedProps = ATTRIBUTE_SELECTED_DEFAULT_VALUE;
@@ -114,8 +187,361 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
   }, [attrGroupItem]);
 
+  const handleOnChangeCollapse = () => {
+    store.dispatch(
+      setCurAttrGroupCollapse({
+        [attributeGroupKey]:
+          curAttrGroupCollapseId?.[attributeGroupKey] === attrGroupItem.id ? '' : attrGroupItem.id,
+      }),
+    );
+
+    store.dispatch(closeProductFooterTab());
+    store.dispatch(closeDimensionWeightGroup());
+    store.dispatch(closeProductInformationGroup());
+  };
+
+  useEffect(() => {
+    if (!attrGroupItem.isChecked) {
+      setImages([]);
+      return;
+    }
+
+    const quantities = isSpecifiedModal
+      ? specifiedQuantity
+      : attrGroupItem.stepSelection?.quantities;
+    const autoStepImages = () => {
+      const quantityKeys = Object.keys(quantities || {});
+      return attrGroupItem?.viewSteps?.map((el, bigIndex) => {
+        const quantityKeysForThisStep = quantityKeys.filter(
+          (key) => key.split(',').length === bigIndex + 1,
+        );
+        const options: OptionQuantityProps[] = [];
+        quantityKeysForThisStep.forEach((key) => {
+          const remodifyKey = key
+            .split(',')
+            .map((item) => `${item.slice(0, -1)}1`)
+            .join(',');
+          const option = el.options.find(
+            (item: any) => item.select_id === remodifyKey,
+          ) as OptionQuantityProps;
+          if (option) {
+            for (let index = 0; index < quantities[key]; index++) {
+              options.push(option);
+            }
+          }
+        });
+
+        return {
+          ...el,
+          options,
+        };
+      });
+    };
+    setImages(autoStepImages());
+  }, [attrGroupItem?.stepSelection?.quantities, specifiedDetail, currentSpecAttributeGroupId]);
+  const handleOpenAutoStepModal = (stepIndex: number) => async () => {
+    if (!curProductId) {
+      message.error('Product ID is required');
+      return;
+    }
+
+    if (!curAttrGroupCollapseId) {
+      message.error('Attribute Group ID is required');
+      return;
+    }
+
+    let curIndex = stepIndex;
+    if (stepIndex === autoSteps.length - 1) {
+      curIndex -= 1;
+    }
+
+    const newSlideBars: string[] = [];
+
+    /// set up data to open modal based on each step
+    const linkedOptionData: LinkedOptionDataProps[] = [];
+    const pickedOption: PickedOptionProps = {};
+    const optionsSelected: OptionSelectedProps = {};
+
+    const firstStep = autoSteps[0];
+    const optionIds = firstStep.options.map((opt) => opt.id);
+
+    let newOptions: LinkedOptionProps | undefined;
+
+    ///* mapping from specfication basis to get step 1 data
+    attributes?.forEach((attr) => {
+      if (newOptions) {
+        return;
+      }
+
+      attr.subs.forEach((el) => {
+        if (newOptions) {
+          return;
+        }
+
+        el.basis?.subs?.forEach((sub) => {
+          if (newOptions) {
+            return;
+          }
+
+          if (optionIds.includes(sub.id)) {
+            newOptions = {
+              id: el.basis.id,
+              name: el.basis.name,
+              subs: (el.basis.subs as unknown as SubBasisOption[]).map((item) => {
+                const opt = autoSteps[0].options.find((o) => o.id === item.id);
+
+                return {
+                  ...item,
+                  replicate: opt?.replicate ?? 0,
+                  sub_id: el.basis.id,
+                  sub_name: el.basis.name,
+                  pre_option: undefined,
+                };
+              }),
+            };
+          }
+        });
+      });
+    });
+
+    if (!newOptions) {
+      message.error('Cannot get first step');
+      return;
+    }
+
+    ///* set picked data for first step
+    linkedOptionData[0] = {
+      pickedData: [newOptions].map((el) => ({
+        ...el,
+        subs: sortObjectArray(
+          el.subs.map((item) => ({
+            ...item,
+            sortField: `${item.value_1}${item.unit_1}${item.value_2}${item.unit_2}`,
+          })),
+          'sortField',
+        ).map((item) => {
+          const { sortField, ...temp } = item;
+          return temp;
+        }),
+      })),
+      linkedData: [],
+    };
+
+    /// list ID of previous option
+    let exceptOptionIds: string[] = [];
+    // Active option ID on left panel to load data to right panel
+    let optionId = '';
+
+    autoSteps.forEach((autoStep, index) => {
+      /// set description
+      newSlideBars.push(autoStep.name);
+
+      // set option picked on right panel
+      optionsSelected[autoStep.order] = {
+        order: autoStep.order,
+        options: autoStep.options,
+      };
+
+      //
+      if (index >= autoSteps.length - 1) {
+        const options = mappingOptionGroups(autoStep.options);
+        linkedOptionData[index] = { pickedData: options, linkedData: [] };
+
+        return;
+      }
+
+      // add all option ID of previous step to prevent duplicate next step
+      if (index <= curIndex && curIndex !== 0) {
+        exceptOptionIds = uniq(exceptOptionIds.concat(autoStep.options.map((option) => option.id)));
+      }
+
+      if (index !== 0) {
+        // set other picked data
+        const options = mappingOptionGroups(autoStep.options);
+        linkedOptionData[index] = { pickedData: options, linkedData: [] };
+      }
+
+      const nextStep = autoSteps[index + 1];
+
+      /// get first option highlighted
+      const { optionId: pickedId, preOptionId } = getIDFromPreOption(
+        nextStep.options[0]?.pre_option,
+      );
+
+      // save highlight left panel
+      pickedOption[index] = {
+        id: pickedId,
+        pre_option: preOptionId,
+      };
+
+      // handle get the ID of previous active option on left panel
+      if (index === curIndex) {
+        if (nextStep) {
+          optionId = pickedId;
+        }
+      }
+    });
+
+    const newLinkedOptionData = [...linkedOptionData];
+
+    // get right panel data from selected options
+    if ((curIndex === 0 && optionId) || (curIndex !== 0 && optionId && exceptOptionIds.length)) {
+      const linkedDataResponse = await getLinkedOptionByOptionIds(
+        optionId,
+        exceptOptionIds.join(','),
+      );
+
+      const nextStep = curIndex + 1;
+
+      newLinkedOptionData[curIndex].linkedData = linkedDataResponse.map((opt) => ({
+        ...opt,
+        subs: opt.subs.map((item) => ({
+          ...item,
+          subs: item.subs.map((sub) => ({
+            ...sub,
+            pre_option: autoSteps[nextStep].options[0].pre_option,
+            pre_option_name: autoSteps[nextStep].options[0].pre_option_name,
+          })),
+        })),
+      }));
+    }
+    store.dispatch(setLinkedOptionData(newLinkedOptionData));
+
+    store.dispatch(setOptionsSelected(optionsSelected));
+
+    store.dispatch(setPickedOption(pickedOption));
+
+    store.dispatch(setSlideBar(newSlideBars));
+
+    store.dispatch(setSlide(curIndex));
+
+    store.dispatch(setStep(curIndex));
+
+    setAutoStepModal(true);
+  };
+
+  const handleOpenPreSelectAutoStepModal = (stepIndex: number) => () => {
+    if (!curProductId) {
+      message.error('Product ID is required');
+      return;
+    }
+
+    if (!curAttrGroupCollapseId) {
+      message.error('Attribute Group ID is required');
+      return;
+    }
+    const slideBars: string[] = [];
+    const pickedOption: PickedOptionProps = {};
+    const optionsSelected: OptionSelectedProps = {};
+    const stepData: OptionPreSelectedProps = {};
+    const newPreSelectStep: OptionPreSelectedProps = {};
+
+    let curStepIndex = stepIndex;
+    if (stepIndex === (attrGroupItem.steps as any[]).length - 1) {
+      --curStepIndex;
+    }
+
+    const newSteps: AutoStepPreSelectOnAttributeGroupResponse[] =
+      attrGroupItem.steps as AutoStepPreSelectOnAttributeGroupResponse[];
+
+    newSteps.forEach((el, index) => {
+      /// update slide bar
+      slideBars.push(el.name);
+
+      /// update origin step data
+      stepData[el.order] = {
+        ...el,
+        options: el.options.map((opt) => ({ ...opt, quantity: 0, yours: 0 })),
+      };
+
+      /* set option selected */
+      optionsSelected[el.order] = {
+        id: el.id,
+        order: el.order,
+        options: el.options.filter((optionItem) => optionItem.quantity > 0),
+      };
+      /* ------------------ */
+
+      /* set option highlighted on left panel */
+      const optHasQuantity = el.options.find((opt) => opt.quantity > 0);
+
+      if (el.order >= 2 && optHasQuantity) {
+        /// set option highlighted is the first option found has quantity
+        const { optionId: pickedId, preOptionId } = getIDFromPreOption(optHasQuantity.pre_option);
+
+        const leftOption = newSteps[index - 1].options.find((opt) =>
+          el.order === 2
+            ? opt.id === pickedId
+            : opt.id === pickedId && opt.pre_option === preOptionId,
+        );
+
+        if (leftOption) {
+          // save highlight left panel
+          pickedOption[el.order - 2] = {
+            id: leftOption.id,
+            pre_option: leftOption.pre_option ?? '',
+            replicate: leftOption.replicate,
+            yours: leftOption.replicate,
+          };
+
+          // set 1st option selected
+          if (el.order === 2) {
+            optionsSelected[1] = {
+              id: newSteps[index - 1].id,
+              order: 1,
+              options: [leftOption],
+            };
+          }
+        }
+      }
+      /* ------------------------------------- */
+
+      /* set current data view on step was clicked */
+      const curPicked = pickedOption[el.order - 2];
+
+      if (index === 0) {
+        newPreSelectStep[el.order] = el;
+      } else if (curPicked?.id) {
+        newPreSelectStep[el.order] = {
+          ...el,
+          options: el.options.every((opt) => opt.quantity === 0)
+            ? []
+            : el.options.filter((opt) => {
+                const { optionId, preOptionId } = getIDFromPreOption(opt.pre_option);
+
+                return el.order > 2
+                  ? curPicked.id === optionId && curPicked.pre_option === preOptionId
+                  : curPicked.id === optionId;
+              }),
+        };
+      }
+      /* --------------------------------------- */
+    });
+
+    /// set options seleted
+    store.dispatch(setOptionsSelected(optionsSelected));
+
+    /// set origin data
+    store.dispatch(setStepData(stepData));
+
+    /// set step data to view
+    store.dispatch(setPreSelectStep(newPreSelectStep));
+
+    // set option highlighted
+    store.dispatch(setPickedOption(pickedOption));
+
+    store.dispatch(setSlideBar(slideBars));
+
+    store.dispatch(setSlide(curStepIndex));
+
+    store.dispatch(setStep(curStepIndex));
+
+    setAutoStepModal(true);
+  };
+
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
+
     if (isTiscAdmin) {
       return isEditable ? (
         <InputGroup
@@ -126,6 +552,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           noWrap
           value={group.name}
           onChange={onChangeAttributeName(grIndex)}
+          readOnly={group.type !== SpecificationType.autoStep}
+          inputClass={group.type === SpecificationType.autoStep ? '' : 'mono-color'}
         />
       ) : (
         <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
@@ -134,7 +562,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       );
     }
 
-    const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
+    const haveOptionAttr =
+      group.attributes.some((el) => el.type === 'Options') || group?.steps?.length;
 
     /// highlighted specification attribute option type is selected
     const attributeSelected: string[] = [];
@@ -154,27 +583,30 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       }
     });
     const attributeSelectedContent = attributeSelected.join('; ');
-
     return (
       <div className={styles.attrGroupTitle}>
-        {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
+        {!hideAction && activeKey === 'specification' && haveOptionAttr ? (
           <div className="flex-between">
-            <div className="flex-start">
+            <div
+              className="flex-start"
+              title={
+                isBrandSpecified && prevAttributeGroupSelectedIds.includes(group.id)
+                  ? 'brand can re-select'
+                  : undefined
+              }
+            >
               <CustomCheckbox
                 options={[{ label: '', value: grIndex }]}
-                selected={
-                  attributeGroup.some((gr) => gr.isChecked && gr.id === group.id) &&
-                  isAttributeGroupSelected
-                    ? [{ label: group.name, value: grIndex }]
-                    : []
-                }
+                selected={group.isChecked ? [{ label: group.name, value: grIndex }] : []}
                 onChange={() => {
-                  onCheckedSpecification(grIndex, isTiscAdmin ? false : true);
+                  onCheckedSpecification(grIndex, !isTiscAdmin);
 
+                  setImages([]);
                   if (curAttributeSelect.groupId && curAttributeSelect.attribute?.id) {
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
                   }
                 }}
+                disabled={!group.isChecked || !!projectProductId}
                 checkboxClass={styles.customLabel}
               />
               <RobotoBodyText level={6}>{group.name}</RobotoBodyText>
@@ -198,14 +630,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     );
   };
 
-  const renderAttributeRowItem = (
-    attribute: ProductAttributeProps,
-    attrIndex: number,
-    groupName: string,
-    isSpecificationOptionSelection?: boolean,
-  ) => {
-    if (isTiscAdmin && isEditable) {
-      if (!attributes) {
+  const renderAttributeRowItem = (attribute: ProductAttributeProps, attrIndex: number) => {
+    if (isEditable) {
+      if (!attrGroupItem?.attributes?.length) {
         return null;
       }
 
@@ -215,7 +642,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           attributeGroup={attributeGroup}
           attributeGroupIndex={groupIndex}
           attributeItemIndex={attrIndex}
-          attributesData={attributes}
+          attributes={attributes ?? []}
           onItemChange={onChangeAttributeItem(groupIndex)}
           onDelete={deleteAttributeItem(groupIndex, attrIndex)}
           activeKey={activeKey}
@@ -236,7 +663,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <tr className={styles.attributeSubItem} key={attribute.id}>
           <td className={styles.attributeName}>
             <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-              <BodyText level={4} customClass={styles.content_type}>
+              <BodyText
+                level={4}
+                customClass={styles.content_type}
+                title={capitalize(attribute.name)}
+              >
                 {attribute.name}
               </BodyText>
             </div>
@@ -257,11 +688,18 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       );
     }
 
+    const group = attributeGroup[groupIndex];
+    const isAttributeSelected = prevAttributeGroupSelectedIds.includes(group.id);
+
     const renderAttributeOption = () => (
       <tr className={styles.attributeSubItem} key={attribute.id}>
         <td className={styles.attributeName}>
           <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText level={4} customClass={styles.content_type}>
+            <BodyText
+              level={4}
+              customClass={styles.content_type}
+              title={capitalize(attribute.name)}
+            >
               {attribute.name}
             </BodyText>
           </div>
@@ -269,8 +707,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
         <td className={styles.attributeDescription}>
           <AttributeOption
-            title={groupName}
-            isPublicPage={isPublicPage}
+            title={attrGroupItem.name}
+            hideSelect={hideAction || (isBrandSpecified && !isAttributeSelected)}
+            labelRowTitle={
+              isBrandSpecified && isAttributeSelected ? 'brand can re-select' : undefined
+            }
             attributeName={attribute.name}
             options={attribute.basis_options ?? []}
             chosenOption={
@@ -282,7 +723,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 : undefined
             }
             setChosenOptions={async (option) => {
-              if ((isTiscAdmin && isEditable) || !option) {
+              if ((isTiscAdmin && isEditable) || !option || chosenOption?.id === option.value) {
                 return;
               }
 
@@ -291,7 +732,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 attribute: attribute,
               });
 
-              setCollapsible([]);
+              // setCollapsible([]);
 
               const specificationGrp = await onSelectSpecificationOption(
                 groupIndex,
@@ -308,11 +749,13 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     );
 
     if (
-      !isSpecificationOptionSelection ||
-      (isSpecificationOptionSelection && attribute.id === curAttributeSelect.attribute?.id)
+      !attrGroupItem.selection ||
+      (attrGroupItem.selection && attribute.id === curAttributeSelect.attribute?.id)
     ) {
       return renderAttributeOption();
     }
+
+    return null;
   };
 
   return (
@@ -320,20 +763,24 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <div className={styles.attributes}>
         <div className={styles.specification}>
           <CustomCollapse
-            activeKey={curActiveKey}
-            onChange={(key) => {
-              onKeyChange(key);
-              store.dispatch(closeProductFooterTab());
-            }}
-            showActiveBoxShadow={!specifying}
+            activeKey={curAttrGroupCollapseId?.[attributeGroupKey] === attrGroupItem.id ? '1' : ''}
+            onChange={handleOnChangeCollapse}
+            showActiveBoxShadow={!isSpecifiedModal}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"
-            arrowAlignRight={specifying}
+            arrowAlignRight={isSpecifiedModal}
             className={isTiscAdmin ? undefined : styles.vendorSection}
             customHeaderClass={`${styles.productAttributeItem} ${
-              specifying ? styles.specifying : ''
+              isSpecifiedModal ? styles.specifying : ''
             }`}
             header={renderCollapseHeader(groupIndex)}
+            collapsible={
+              isBrandSpecified &&
+              attrGroupItem.attributes.every((el) => el.type === 'Options') &&
+              !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)
+                ? 'disabled'
+                : undefined
+            }
           >
             {isEditable && attributes ? (
               <SelectAttributesToGroupRow
@@ -345,7 +792,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             ) : null}
 
-            {isPublicPage ? null : (
+            {hideAction ? null : (
               <SelectAttributeSpecificationChoice
                 activeKey={activeKey}
                 attributeGroup={attributeGroup}
@@ -356,40 +803,226 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 setCurAttributeSelect={setCurAttributeSelect}
                 collapsible={collapsible}
                 setCollapsible={setCollapsible}
-                onCheckedAttributeOption={(isAttrOptChecked) => {
-                  setShowAttributeOptionSelected(isAttrOptChecked);
-                }}
-                onCheckedAttributeGroup={(isAttrGrpChecked) => {
-                  setIsAttributeGroupSelected(isAttrGrpChecked);
-                }}
+                onCheckedAttributeOption={setShowAttributeOptionSelected}
+                onCheckedAttributeGroup={setIsAttributeGroupSelected}
               />
             )}
 
-            {attrGroupItem.attributes.length ? (
-              <div
-                className={`${isSpecifiedModal ? styles.paddingNone : styles.paddingRounded} ${
-                  attrGroupItem.selection && !isTiscAdmin && !isPublicPage
-                    ? styles.paddingWrapper
-                    : styles.colorInput
-                }`}
-              >
+            {attributeGroupKey !== 'specification_attribute_groups' || !autoSteps.length ? null : (
+              <>
                 <table className={styles.table}>
                   <tbody>
-                    {attrGroupItem.attributes.map((attribute, attrIndex) =>
-                      renderAttributeRowItem(
-                        attribute,
-                        attrIndex,
-                        attrGroupItem.name,
-                        attrGroupItem.selection,
-                      ),
-                    )}
+                    {autoSteps.map((step, stepIndex) => {
+                      return (
+                        <React.Fragment key={step.id ?? stepIndex}>
+                          <tr
+                            key={stepIndex}
+                            className={`${hideAction ? 'cursor-default' : 'cursor-pointer'} ${
+                              styles.autoStepTr
+                            }`}
+                            onClick={
+                              hideAction
+                                ? undefined
+                                : showTISCAutoSteps
+                                ? handleOpenAutoStepModal(stepIndex)
+                                : handleOpenPreSelectAutoStepModal(stepIndex)
+                            }
+                          >
+                            <td style={{ width: '20%' }}>
+                              <div className={`${hideAction ? '' : 'flex-between'}`}>
+                                <div className="flex-start flex-grow text-overflow">
+                                  <BodyText
+                                    fontFamily="Cormorant-Garamond"
+                                    level={4}
+                                    style={{
+                                      minWidth: 'fit-content',
+                                      paddingLeft: isSpecifiedModal ? 0 : 16,
+                                      paddingRight: 12,
+                                    }}
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order}
+                                  </BodyText>
+                                  <BodyText fontFamily="Cormorant-Garamond" level={4}>
+                                    {step.name}
+                                  </BodyText>
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ width: '80%' }}>
+                              <div className={`${hideAction ? '' : 'flex-between'}`}>
+                                <div className="flex-start flex-grow text-overflow">
+                                  <BodyText
+                                    fontFamily="Roboto"
+                                    level={7}
+                                    style={{
+                                      minWidth: 'fit-content',
+                                      paddingLeft: isSpecifiedModal ? 0 : 16,
+                                      paddingRight: 12,
+                                    }}
+                                  >
+                                    {images?.[stepIndex]?.options
+                                      .reduce((pre: any, cur: any) => {
+                                        return pre.concat([
+                                          `${cur.value_1} ${cur.unit_1} ${cur.value_2} ${cur.unit_2}`.trim(),
+                                        ]);
+                                      }, [])
+                                      .join(', ')}
+                                  </BodyText>
+                                </div>
+                                {hideAction ? null : (
+                                  <div className="flex-start">
+                                    <ActionRightLeftIcon
+                                      style={{
+                                        marginLeft: 12,
+                                        marginRight: isSpecifiedModal ? 0 : 16,
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {isEditable ? (
+                            <tr
+                              className="border-bottom-light"
+                              style={{ height: 2, width: '100%' }}
+                            />
+                          ) : null}
+                        </React.Fragment>
+                      );
+                    })}
                   </tbody>
                 </table>
-              </div>
-            ) : null}
+
+                {isEditable ? null : (
+                  <div className={styles.stepImages}>
+                    {images?.map((step: any, stepIdx: number) =>
+                      step.options.map((option: any, optionIdx: number) => {
+                        return (
+                          <div
+                            key={`${step.id}_${option.id}_${stepIdx}_${optionIdx}`}
+                            className={`${styles.autoStepOption} ${
+                              isSpecifiedModal ? styles.autoStepOptionSpec : 'autoStepOption'
+                            }`}
+                          >
+                            {optionIdx !== 0 || stepIdx === 0 ? null : (
+                              <div className="plus-icon">
+                                <PlusIcon />
+                              </div>
+                            )}
+                            <Popover
+                              className={`${styles.customPopover}`}
+                              overlayClassName={`${styles.customPopover}`}
+                              content={
+                                <div className="step-text">
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    style={{ whiteSpace: 'nowrap' }}
+                                    color="white"
+                                  >
+                                    {step.order < 10 ? `0${step.order}` : step.order} Step
+                                  </BodyText>
+
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {trimEnd(
+                                      `${option.value_1} ${option.value_2} ${
+                                        option.unit_1 || option.unit_2
+                                          ? `- ${option.unit_1} ${option.unit_2}`
+                                          : ''
+                                      }`,
+                                    )}
+                                  </BodyText>
+                                  <BodyText
+                                    level={7}
+                                    customClass="description"
+                                    fontFamily="Roboto"
+                                    color="white"
+                                  >
+                                    {option.product_id}
+                                  </BodyText>
+                                </div>
+                              }
+                            >
+                              <div className="step-info">
+                                {option.image ? (
+                                  option.image === '/default/option_default.webp' ? (
+                                    <div className={'step-image-text-container'}>
+                                      <div className={'step-image-text'}>{option.product_id}</div>
+                                    </div>
+                                  ) : (
+                                    <img className="step-image" src={showImageUrl(option.image)} />
+                                  )
+                                ) : null}
+                              </div>
+                            </Popover>
+                          </div>
+                        );
+                      }),
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+
+            <div
+              className={`${
+                isSpecifiedModal
+                  ? styles.paddingNone
+                  : (isTiscAdmin && attrGroupItem?.attributes?.length) ||
+                    (attrGroupItem?.attributes?.length && !attrGroupItem.selection)
+                  ? // attrGroupItem?.attributes?.length
+                    styles.paddingRounded
+                  : ''
+              } ${
+                attrGroupItem.selection && !isTiscAdmin && !hideAction
+                  ? styles.paddingWrapper
+                  : styles.colorInput
+              } ${styles.tableContent}`}
+            >
+              <table className={`${styles.table}`}>
+                <tbody>
+                  {attrGroupItem.attributes?.map((attribute, attrIndex) =>
+                    renderAttributeRowItem(attribute, attrIndex),
+                  )}
+                </tbody>
+              </table>
+            </div>
           </CustomCollapse>
         </div>
       </div>
+
+      {attributeGroupKey === 'specification_attribute_groups' || !hideAction ? (
+        showTISCAutoSteps ? (
+          <AutoStep
+            attributeGroup={attributeGroup}
+            attributes={attributes ?? []}
+            visible={autoStepModal}
+            setVisible={setAutoStepModal}
+          />
+        ) : autoStepModal ? (
+          <PreSelectStep
+            visible={autoStepModal}
+            setVisible={setAutoStepModal}
+            updatePreSelect={!isSpecifiedModal}
+            viewStepsDefault={attrGroupItem.viewSteps}
+            quantitiesDefault={
+              !attrGroupItem.isChecked
+                ? {}
+                : isSpecifiedModal
+                ? specifiedQuantity
+                : attrGroupItem.stepSelection?.quantities
+            }
+            isSpecifiedModal={isSpecifiedModal}
+          />
+        ) : null
+      ) : null}
     </div>
   );
 };

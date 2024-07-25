@@ -24,7 +24,7 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
   text_1 = '',
   text_2 = '',
   text_3 = '',
-  text_4,
+  text_4 = '',
   hasBoxShadow = false,
   customClass = '',
 }) => {
@@ -37,10 +37,30 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
       <div className={styles.productInformationContainer}>
         <img src={showImageUrl(image) || ProductPlaceHolderImage} className={styles.productImage} />
         <div className={styles.productInformation}>
-          {text_1 ? <RobotoBodyText level={6}>{text_1}</RobotoBodyText> : null}
-          {text_2 ? <RobotoBodyText level={6}>{text_2}</RobotoBodyText> : null}
-          {text_3 ? <RobotoBodyText level={6}>{text_3}</RobotoBodyText> : null}
-          {text_4 ? <RobotoBodyText level={6}>{text_4}</RobotoBodyText> : null}
+          {text_1 ? (
+            <RobotoBodyText
+              level={6}
+              title={typeof text_1 === 'string' ? text_1 : undefined}
+              style={{ fontWeight: 500 }}
+            >
+              {text_1}
+            </RobotoBodyText>
+          ) : null}
+          {text_2 ? (
+            <RobotoBodyText level={6} title={typeof text_2 === 'string' ? text_2 : undefined}>
+              {text_2}
+            </RobotoBodyText>
+          ) : null}
+          {text_3 ? (
+            <RobotoBodyText level={6} title={typeof text_3 === 'string' ? text_3 : undefined}>
+              {text_3}
+            </RobotoBodyText>
+          ) : null}
+          {text_4 ? (
+            <RobotoBodyText level={6} title={typeof text_4 === 'string' ? text_4 : undefined}>
+              {text_4}
+            </RobotoBodyText>
+          ) : null}
         </div>
       </div>
       {logo ? (

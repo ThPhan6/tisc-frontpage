@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { getProductById } from '@/features/product/services';
 import { getResponseMessage } from '@/helper/common';
 
 import type {
@@ -67,14 +68,19 @@ export async function assignProductToProject(data: {
     data,
   })
     .then(() => {
-      message.success(getResponseMessage('assign', 'product'));
-      closeModal();
-      return true;
+      if (!data.custom_product) {
+        getProductById(data.product_id).then(() => {
+          closeModal();
+          message.success(getResponseMessage('assign', 'product'));
+        });
+      } else {
+        closeModal();
+        message.success(getResponseMessage('assign', 'product'));
+      }
     })
     .catch((error) => {
       console.log('assignProductToProject error', error);
       message.error(getResponseMessage('assign', 'product', 'failed', error));
-      return false;
     });
 }
 

@@ -49,31 +49,33 @@ const ProductDownloadFooter: FC = () => {
         }}
         titlePlaceholder="type file name here"
         valuePlaceholder="paste file URL link here"
+        titleStyles={{ paddingLeft: 16 }}
+        valueStyles={{ paddingLeft: 32 }}
       />
     );
   }
+
   if (isEmpty(downloads)) {
     return <EmptyOne />;
   }
+
   return (
     <div className={styles.downloadFooter}>
       <table>
         {downloads.map((content, index) => {
           return (
             <tr key={content.id || index}>
-              <td className={styles.title}>
+              <td className={styles.title} style={{ width: '95%' }}>
                 <BodyText level={4} customClass={styles.content_title}>
                   {content.title}
                 </BodyText>
               </td>
-              <td className={styles.url}>
-                <a href={content.url} download>
-                  <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
-                    {content.url}
-                  </BodyText>
-                </a>
-              </td>
-              <td className={styles.icon}>
+              {/* <td className={styles.url} style={{ width: '95%' }}>
+                <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
+                  {content.url}
+                </BodyText>
+              </td> */}
+              <td className={styles.icon} style={{ width: '5%' }}>
                 <a href={content.url} target="_blank" download rel="noopener noreferrer">
                   <DownloadIconV2 className={styles.downloadIcon} />
                 </a>

@@ -17,6 +17,8 @@ import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
+import { UserType } from '@/pages/LandingPage/types';
+import { useAppSelector } from '@/reducers';
 
 import { AvailabilityModal } from '../../components/AvailabilityModal';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -30,11 +32,18 @@ interface BrandListProps {
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(1, [4]);
+  useAutoExpandNestedTableColumn(1, [2, 3, 4]);
+
+  const { user } = useAppSelector((state) => state.user);
+
   const [visible, setVisible] = useState<boolean>(false);
 
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, {
+    isSpecified: true,
+  });
+
+  const isBrandUser = user?.type === UserType.Brand;
 
   const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
@@ -43,7 +52,11 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       sorter: { multiple: 1 },
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
-      defaultSortOrder: 'ascend',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+    },
+    {
+      title: 'Image', // image
+      render: () => <div style={{ width: 24 }} />,
     },
     {
       title: 'Collection',
@@ -81,8 +94,21 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Brand',
       noBoxShadow: true,
-      dataIndex: 'brand',
-      align: 'right',
+      // dataIndex: 'brand',
+      // align: 'right',
+      // render: (_v, record) => {
+      //   if (record.images.length) {
+      //     return <LogoIcon logo={record.images[0]} size={24} />;
+      //   }
+
+      //   return null;
+      // },
+    },
+    /// image
+    {
+      title: 'Image',
+      dataIndex: 'image',
+      noBoxShadow: true,
       render: (_v, record) => {
         if (record.images.length) {
           return <LogoIcon logo={record.images[0]} size={24} />;
@@ -96,7 +122,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      render: (_value, record) => record.collection?.name,
+      // render: (_value, record) => <span>{record.collection?.name}</span>,
     },
     {
       title: 'Product',
@@ -111,7 +137,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       onCell: onCellCancelled,
     },
     {
-      title: 'ProductID',
+      title: 'Product ID',
       noBoxShadow: true,
       dataIndex: 'product_id',
       onCell: onCellCancelled,
@@ -142,7 +168,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       align: 'center',
       width: '5%',
       noBoxShadow: true,
-      render: renderActionCell(setSpecifyingProduct, tableRef),
+      render: renderActionCell(setSpecifyingProduct, tableRef, false, !isBrandUser),
     },
   ];
 
@@ -150,16 +176,24 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     <>
       <CustomTable
         footerClass={styles.summaryFooter}
-        columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
+        columns={setDefaultWidthForEachColumn(BrandColumns, 5)}
         extraParams={{ projectId }}
         ref={tableRef}
         hasPagination={false}
         multiSort={{
           brand_order: 'brand_order',
         }}
-        fetchDataFunc={getSpecifiedProductsByBrand}
+        fetchDataFunc={(params, callback) => {
+          getSpecifiedProductsByBrand(
+            {
+              ...params,
+              brand_id: isBrandUser && user.brand?.id ? user.brand.id : undefined,
+            },
+            callback,
+          );
+        }}
         expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(CollectionColumns, 4),
+          columns: setDefaultWidthForEachColumn(CollectionColumns, 5),
           childrenColumnName: 'products',
           level: 2,
         })}

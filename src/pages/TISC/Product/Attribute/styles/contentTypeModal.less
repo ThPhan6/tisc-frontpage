@@ -1,5 +1,7 @@
 @import '~antd/es/style/variable.less';
 
+/* stylelint-disable selector-pseudo-class-parentheses-space-inside */
+
 .contentTypeModalWrapper {
   @height: 48px;
   .contentTypeFooter {
@@ -57,6 +59,13 @@
       }
     }
   }
+
+  :global(.ant-collapse-borderless > .ant-collapse-item:last-child) {
+    border-bottom: 1px solid #d9d9d9;
+  }
+  :global(.ant-collapse-borderless > .ant-collapse-item-active:last-child) {
+    border-bottom: 1px solid #000;
+  }
 }
 
 .contentTypeText {
@@ -66,10 +75,67 @@
 }
 
 .contentTypeOption {
+  :global(.ant-space) {
+    padding-bottom: 0 !important;
+    box-shadow: unset !important;
+  }
+
+  :global(.ant-collapse-item > .ant-collapse-header) {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0;
+  }
+
+  :global(.ant-collapse-borderless > .ant-collapse-item) {
+    background: #fff;
+  }
+
+  :global(
+      .ant-collapse-icon-position-end
+        > .ant-collapse-item
+        > .ant-collapse-header
+        .ant-collapse-arrow
+    ) {
+    right: 0 !important;
+  }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0 0 0 32px !important;
+  }
+
+  :global(.ant-collapse-content-box .ant-collapse-header) {
+    min-height: 36px;
+  }
+
+  :global(.ant-space-item) {
+    min-height: 36px;
+    padding-bottom: 8px;
+    padding-left: 0;
+  }
+
+  :global(.ant-collapse-content-box) {
+    :global(.ant-collapse-item) {
+      border-bottom: unset !important;
+    }
+  }
+
+  :global(.ant-collapse-item.ant-collapse-item-active) {
+    border-bottom: 1px solid #000;
+  }
+
+  :global(.ant-collapse-content-box .ant-collapse-item) {
+    border-bottom: unset;
+    box-shadow: unset;
+  }
+}
+
+.contentTypeModalBody {
   height: 600px;
   max-height: calc(var(--vh) * 100 - 184px);
   padding: 16px 19px 16px 16px;
   overflow: hidden auto;
+  background: #fff;
 
   :global(.ant-space) {
     padding-bottom: 8px;
@@ -78,6 +144,27 @@
   // :global(.ant-space-item) {
   //   min-height: 40px;
   // }
+
+  :global(.conversion-preset-collapse) {
+    :global(.ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
+      right: 0;
+    }
+
+    :global(.ant-collapse-item > .ant-collapse-header) {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0;
+    }
+
+    :global(.ant-collapse-item.ant-collapse-item-active) {
+      border-bottom: unset;
+    }
+
+    :global(.ant-collapse-content-box) {
+      padding: 0;
+    }
+  }
 
   @media screen and (max-width: @screen-sm) {
     padding: 12px;

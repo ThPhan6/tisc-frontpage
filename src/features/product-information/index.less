@@ -1,0 +1,59 @@
+.productInformationContainer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  .viewInfo {
+    :global(.ant-input) {
+      color: #000 !important;
+    }
+  }
+}
+.customFormGroup {
+  :global(label) {
+    width: 25% !important;
+    margin: 0;
+  }
+}
+.customInputGroup {
+  :global(.ant-col-4) {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+  }
+  :global(.ant-col-20) {
+    flex: 0 0 75% !important;
+    max-width: 75% !important;
+  }
+  :global(.ant-input) {
+    padding: 0 !important;
+  }
+}
+.customTextArea {
+  :global(.ant-input) {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    border-bottom-color: #fff;
+    resize: none;
+    &:hover {
+      border-bottom-color: #fff !important;
+    }
+  }
+  textarea {
+    padding: 4px 0;
+  }
+}
+.noPadding {
+  :global(.ant-collapse-content-box) {
+    padding: 0;
+  }
+}
+.productNamePaddingLeft50 {
+  :global(.ant-input) {
+    padding-left: 50px;
+  }
+}
+.productNamePaddingLeft14 {
+  :global(.ant-input) {
+    padding-left: 14px;
+  }
+}

@@ -1,35 +1,41 @@
 import { useCallback } from 'react';
 
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { COMMON_TYPES } from '@/constants/util';
+import { COMMON_TYPES, QUERY_KEY } from '@/constants/util';
 import { message } from 'antd';
+// import { TablePaginationConfig } from 'antd/es/table/interface';
 import { request } from 'umi';
 
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 import {
   setPartialProductDetail,
   setProductList,
   setProductSummary,
   setRelatedProduct,
-} from '../reducers/slices';
+} from '../reducers/product';
 import {
   BrandSummary,
   GetListProductForDesignerRequestParams,
   GroupProductList,
+  ProductAttributeFormInput,
   ProductFormData,
   ProductGetListParameter,
   ProductItem,
   ProductItemValue,
   ProductSummary,
   RelatedCollection,
+  SpecificationType,
 } from '../types';
+// import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
+import { PaginationResponse } from '@/components/Table/types';
 import { SelectSpecificationBodyRequest } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import store from '@/reducers';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
+// import { getAutoStepData } from './autoStep.api';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export async function getProductSummary(brandId: string) {
@@ -103,20 +109,56 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
     });
 };
 
-export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
+export const getProductListForDesigner = async (
+  params: GetListProductForDesignerRequestParams,
+  props?: { isConcat?: boolean },
+) => {
   return request<{
     data?: GroupProductList[];
     brand_summary?: BrandSummary;
     allProducts?: ProductItem[];
+    pagination?: PaginationResponse;
   }>(`/api/product/design/get-list`, {
     method: 'GET',
     params,
   })
-    .then(({ data, brand_summary, allProducts }) => {
-      store.dispatch(setProductList({ data, brandSummary: brand_summary, allProducts }));
+    .then(({ data, brand_summary, allProducts, pagination }) => {
+      const newPagination = {
+        current: pagination?.page || 1,
+        pageSize: pagination ? pagination.page_size : params.pageSize || 20,
+        total: pagination?.total || 0,
+        pageCount: pagination?.page_count || 0,
+      };
+
+      const oldProducts = store.getState().product.list.allProducts;
+
+      if (props?.isConcat) {
+        store.dispatch(
+          setProductList({
+            data,
+            brandSummary: brand_summary,
+            allProducts: oldProducts?.concat(allProducts ?? []),
+            pagination: newPagination,
+          }),
+        );
+      } else {
+        store.dispatch(
+          setProductList({
+            data,
+            brandSummary: brand_summary,
+            allProducts,
+            pagination: newPagination,
+          }),
+        );
+      }
+      return { allProducts, pagination: newPagination };
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
+      return {
+        allProducts: [],
+        pagination: { current: 1, pageSize: 20, total: 0, pageCount: 1 },
+      };
     });
 };
 
@@ -158,21 +200,104 @@ export const likeProductById = async (productId: string) => {
     });
 };
 
-export const getProductById = async (productId: string) => {
+export const getProductById = async (productId: string, props?: { isSpecified?: boolean }) => {
+  showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
+      const specifiedData = store.getState().product.details?.specifiedDetail;
+      const isProductSpecified = !!specifiedData?.id && !!props?.isSpecified;
+
+      const specifiedConfigurationSteps =
+        specifiedData?.specification?.attribute_groups.filter(
+          (el) => el.configuration_steps?.length,
+        ) ?? [];
+
+      const newAttributeGroup: ProductAttributeFormInput[] = [];
+      res.data.specification_attribute_groups.forEach((attr) => {
+        const newRes = attr?.specification_steps?.length ? [...attr.specification_steps] : [];
+
+        const currentSpecifiedConfigurationSteps = isProductSpecified
+          ? specifiedConfigurationSteps.find(
+              (configurationStep) => configurationStep.id === attr.id,
+            )
+          : { configuration_steps: [] };
+
+        const isMappingQuantity = isProductSpecified
+          ? !!currentSpecifiedConfigurationSteps?.configuration_steps?.length
+          : !!attr?.configuration_steps?.length;
+
+        /// mapping quantity
+        if (isMappingQuantity && !!newRes.length) {
+          (isProductSpecified
+            ? currentSpecifiedConfigurationSteps?.configuration_steps
+            : attr.configuration_steps
+          )?.forEach((el) => {
+            if (!attr?.specification_steps?.length) {
+              return;
+            }
+
+            attr?.specification_steps?.forEach((opt, index) => {
+              if (!opt.options.length || el.step_id !== opt.id) {
+                return;
+              }
+
+              newRes[index] = {
+                ...opt,
+                options: opt.options.map((optionItem) => {
+                  if (index === 0) {
+                    return {
+                      ...optionItem,
+                      quantity: el.options.some((o) => o.id === optionItem.id) ? 1 : 0,
+                      yours: optionItem.replicate ?? 0,
+                    };
+                  }
+
+                  const optionFound = el.options.find(
+                    (o) => o.id === optionItem.id && optionItem.pre_option === o.pre_option,
+                  );
+
+                  return {
+                    ...optionItem,
+                    quantity: optionFound ? optionFound.quantity : 0,
+                    yours: optionItem.replicate ?? 0,
+                  };
+                }),
+              };
+            });
+          });
+        }
+        if (attr.type === SpecificationType.attribute || attr.attributes?.length) {
+          newAttributeGroup.push({ ...attr, type: attr.type ?? SpecificationType.attribute });
+        } else if (attr.type === SpecificationType.autoStep || newRes.length) {
+          const quantities = specifiedData?.specification.attribute_groups.find(
+            (el) => el.id === attr.id,
+          )?.step_selections?.quantities;
+          newAttributeGroup.push({
+            ...attr,
+            steps: newRes,
+            isChecked: !props?.isSpecified
+              ? !isEmpty(attr?.stepSelection?.quantities)
+              : !isEmpty(quantities),
+            type: attr.type ?? SpecificationType.autoStep,
+          });
+        }
+      });
+
       store.dispatch(
         setPartialProductDetail({
           ...res.data,
+          specification_attribute_groups: newAttributeGroup,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';
           }) as ['', '', '', ''],
         }),
       );
+      hidePageLoading();
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
     });
@@ -180,15 +305,39 @@ export const getProductById = async (productId: string) => {
 
 export const updateProductCard = async (productId: string, data: ProductFormData) => {
   showPageLoading();
+
   return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
     method: 'PUT',
     data,
   })
     .then((res) => {
       hidePageLoading();
-      getProductById(productId);
+      // getProductById(productId);
+
+      // const attributeGroupId = store.getState().product.curAttrGroupCollapseId;
+      // const currentSpecAttributeGroupId = attributeGroupId?.['specification_attribute_groups'];
+
+      // const isGroupStep = data.specification_attribute_groups.some(
+      //   (group) => group.id === currentSpecAttributeGroupId && group.steps?.length,
+      // );
+
+      // let autoStepData: AutoStepOnAttributeGroupResponse[] = [];
+
+      // if (isGroupStep) {
+      //   autoStepData = currentSpecAttributeGroupId
+      //     ? await getAutoStepData(productId, currentSpecAttributeGroupId)
+      //     : [];
+      // }
+
+      // const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
+      //   autoStepData?.length ? { ...el, steps: autoStepData } : el,
+      // );
+
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
+
       return res.data;
+
+      // return { ...res.data, specification_attribute_groups: newSpecificationAttributeGroup };
     })
     .catch((error) => {
       hidePageLoading();
@@ -278,13 +427,17 @@ export const useSelectProductSpecification = () => {
   return debounceSelectProductSpecification;
 };
 
-export async function getSelectedProductSpecification(productId: string) {
-  return request<{ data: SelectSpecificationBodyRequest }>(
-    `/api/product/${productId}/select-specification/get-list`,
-    {
-      method: 'GET',
-    },
-  )
+export async function getSelectedProductSpecification(
+  productId: string,
+  projectProductId?: string,
+) {
+  const url = projectProductId
+    ? `/api/product/${productId}/select-specification/get-list?${QUERY_KEY.project_product_id}=${projectProductId}`
+    : `/api/product/${productId}/select-specification/get-list`;
+
+  return request<{ data: SelectSpecificationBodyRequest }>(url, {
+    method: 'GET',
+  })
     .then((res) => {
       return res.data;
     })

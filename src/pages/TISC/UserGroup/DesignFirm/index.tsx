@@ -90,6 +90,7 @@ const DesignFirmList: React.FC = () => {
             handleViewDesignFirm(rowRecord.id);
           },
         })}
+        dynamicPageSize
       />
     </PageContainer>
   );

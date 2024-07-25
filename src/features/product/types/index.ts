@@ -1,4 +1,6 @@
-import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { TablePaginationConfig } from 'antd/es/table/interface';
+
+import { ProductDimensionWeight, ProductInformationData } from '@/features/dimension-weight/types';
 import {
   OrderMethod,
   ProductConsiderStatus,
@@ -11,6 +13,13 @@ import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductCon
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
 import { ProductTopBarFilter } from '../components/FilterAndSorter';
+
+import {
+  AutoStepOnAttributeGroupRequest,
+  AutoStepOnAttributeGroupResponse,
+  AutoStepPreSelectOnAttributeGroupResponse,
+  AutoStepPreSelectOptionResponse,
+} from './autoStep';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -59,13 +68,34 @@ export interface AttributeSelectedProps {
   };
 }
 
+export enum SpecificationType {
+  attribute,
+  autoStep,
+}
 export interface ProductAttributeFormInput {
+  id: string;
+  name: string;
+  attributes: ProductAttributeProps[];
+  configuration_steps: AutoStepPreSelectOptionResponse[]; // steps selected
+  specification_steps: AutoStepPreSelectOnAttributeGroupResponse[]; // step data
+  steps?: AutoStepOnAttributeGroupRequest[]; // render UI and using this property to update step
+  viewSteps?: AutoStepOnAttributeGroupRequest[]; // render UI and using this property to update step
+  stepSelection?: any;
+  selection: boolean; // make specification as a choice
+  isChecked?: boolean; // attribute group checked
+  attribute_selected_id?: string;
+  type?: SpecificationType; /// on specification tab
+  defaultPreSelect?: any;
+}
+
+export interface ProductAttributeFormInputWhenCreateStep {
   id: string;
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
   selection: boolean;
   attribute_selected_id?: string;
+  steps?: AutoStepOnAttributeGroupResponse[];
 }
 
 export enum Availability {
@@ -113,14 +143,11 @@ export interface SpecifiedDetail {
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
-  collection?: {
-    id: string;
-    name: string;
-  };
-  categories: {
-    id: string;
-    name: string;
-  }[];
+  brand_id: string;
+  collections: GeneralData[];
+  labels: GeneralData[];
+  collection?: GeneralData;
+  categories: GeneralData[];
   name: string;
   code?: string;
   is_liked?: boolean;
@@ -130,6 +157,7 @@ export interface ProductItem {
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
   dimension_and_weight: ProductDimensionWeight;
+  product_information: ProductInformationData;
   favorites?: number;
   images: string[];
   keywords: ProductKeyword;
@@ -165,14 +193,16 @@ export interface ProductItemValue {
 
 export interface ProductFormData {
   brand_id: string;
-  collection_id: string;
+  collection_ids: string[];
   category_ids: string[];
+  label_ids: string[];
   name: string;
   description: string;
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
   dimension_and_weight: ProductDimensionWeight;
+  product_information: ProductInformationData;
   images: string[];
   keywords: ProductKeyword;
   tips: ProductTipData[];
@@ -181,10 +211,11 @@ export interface ProductFormData {
 }
 export interface RelatedCollection {
   id: string;
-  collection_id: string;
+  collection_ids: string[];
   name: string;
   images: string[];
   created_at: string;
+  isChecking?: boolean;
 }
 
 export interface ProductGetListParameter {
@@ -196,9 +227,11 @@ export interface ProductGetListParameter {
 
 export interface GroupProductList {
   count: number;
-  id: string;
+  id: string; // collection_id
+  type: number;
   name: string;
   products: ProductItem[];
+  description?: string;
   brand_logo?: string;
 }
 
@@ -223,6 +256,7 @@ export interface ProductList {
   sort?: SortParams;
   brandSummary?: BrandSummary;
   allProducts?: ProductItem[];
+  pagination: { pageCount: number } & TablePaginationConfig;
 }
 
 export interface GetListProductForDesignerRequestParams {
@@ -231,6 +265,8 @@ export interface GetListProductForDesignerRequestParams {
   name?: string;
   sort?: string;
   order?: SortOrder;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface ProductCatelogueData {

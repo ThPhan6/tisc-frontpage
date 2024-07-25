@@ -52,15 +52,14 @@ export default defineConfig({
     'mono-color-dark': '#808080',
     'mono-color-medium': '#BFBFBF',
     'mono-color-light': '#E6E6E6',
-
     // box-shadow border
     'border-top': 'inset 0 .7px 0 #000',
     'border-bottom': 'inset 0 -.7px 0 #000',
     'border-left': 'inset .7px 0 0 #000',
     'border-right': 'inset -.7px 0 0 #000',
     'border-all': 'inset 0 0 0 .7px #000',
-    'border-top-light': 'inset 0 .7px 0 rgba(0, 0, 0, 0.3)',
-    'border-bottom-light': 'inset 0 -.7px 0 rgba(0, 0, 0, 0.3)',
+    'border-top-light': 'inset 0 .5px 0 rgba(0, 0, 0, 0.3)',
+    'border-bottom-light': 'inset 0 -.5px 0 rgba(0, 0, 0, 0.3)',
     'border-left-light': 'inset .7px 0 0 rgba(0, 0, 0, 0.3)',
     'border-right-light': 'inset -.7px 0 0 rgba(0, 0, 0, 0.3)',
     'border-all-light': 'inset 0 0 0 .7px rgba(0, 0, 0, 0.3)',
@@ -81,7 +80,7 @@ export default defineConfig({
   // Fast Refresh 热更新
   fastRefresh: {},
   nodeModulesTransform: { type: 'none' },
-  mfsu: {},
+  mfsu: false,
   webpack5: {},
   exportStatic: {},
   define: {
@@ -89,5 +88,7 @@ export default defineConfig({
     STORE_URL: process.env.TISC_FILE_STORE_URL || '',
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
     ENABLE_RECAPTCHA: process.env.ENABLE_RECAPTCHA === 'true',
+    // Can choose other production environments, 'staging | 'demo' | 'prod'
+    AIRWALLEX_ENVIRONMENT: process.env.REACT_APP_AIRWALLEX_ENVIRONMENT || 'demo',
   },
 });

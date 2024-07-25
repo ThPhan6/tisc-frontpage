@@ -19,3 +19,8 @@ export interface ProductDimensionWeight {
   with_diameter: boolean;
   attributes: DimensionWeightItem[];
 }
+
+export type ProductInformationData = {
+  product_name: string;
+  product_id: string;
+};

@@ -8,6 +8,7 @@ import { QUERY_KEY } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
 import {
@@ -18,20 +19,26 @@ import {
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
+import { useGetQueryFromOriginURL, useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
 import { ProductAttributeFormInput, ProductFormData, ProductKeyword } from '../types';
+import { AutoStepOnAttributeGroupResponse } from '../types/autoStep';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
-import { resetProductDetailState, setBrand } from '@/features/product/reducers';
-import { useAppSelector } from '@/reducers';
+import {
+  resetProductDetailState,
+  setBrand,
+  setPartialProductDetail,
+} from '@/features/product/reducers';
+import store, { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
 import { ResponsiveCol } from '@/components/Layout';
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
+import { RobotoBodyText } from '@/components/Typography';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
 import { ProductAttributeComponent } from './ProductAttributes';
@@ -42,16 +49,33 @@ import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
 import Cookies from 'js-cookie';
 
-const filterDataHasIdTypeNumber = (
+const filterNewAttributeGroup = (
   data: ProductAttributeFormInput[],
+  type: ProductInfoTab,
 ): ProductAttributeFormInput[] =>
   data.map((el: any) => {
-    if (el.id && !isNaN(Number(el.id))) {
+    if (el.id.indexOf('new') !== -1) {
+      if (type !== 'specification') {
+        return {
+          name: el?.name || '',
+          attributes: el?.attributes || [],
+          selection: !!el?.selection,
+          steps: el?.steps ?? [],
+        };
+      }
+
       return {
         name: el?.name || '',
         attributes: el?.attributes || [],
-        selection: el?.selection || false,
+        selection: !!el?.selection,
+        steps: el?.steps ?? [],
+        type: el.type,
       };
+    }
+
+    if (type !== 'specification') {
+      delete el?.type;
+      return el;
     }
 
     return el;
@@ -61,10 +85,12 @@ const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
+
   const signature = useQuery().get('signature') || '';
   // set signature  to cookies
   Cookies.set('signature', signature);
-  const isPublicPage = signature ? true : false;
+  const isPublicPage = !!signature;
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
 
@@ -79,7 +105,9 @@ const ProductDetailContainer: React.FC = () => {
 
   const details = useAppSelector((state) => state.product.details);
 
-  const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
+  const [activeKey, setActiveKey] = useState<ProductInfoTab>(
+    projectProductId ? 'specification' : 'general',
+  );
   const [title, setTitle] = useState<string>('');
 
   useEffect(() => {
@@ -111,6 +139,16 @@ const ProductDetailContainer: React.FC = () => {
   }, [details.id, details.brand]);
 
   const onSave = () => {
+    if (!details.categories?.length) {
+      message.error('Please select category');
+      return;
+    }
+
+    if (!details.collections?.length) {
+      message.error('Please select collection');
+      return;
+    }
+
     // check urls is valid
     const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
@@ -123,16 +161,68 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    const productSpecData = filterDataHasIdTypeNumber(details.specification_attribute_groups);
+    const productGeneralData = filterNewAttributeGroup(details.general_attribute_groups, 'feature');
+
+    const productGeneralDataTitle = productGeneralData?.some((el) => !el.name);
+
+    if (productGeneralDataTitle && productGeneralData?.length) {
+      message.error('General attribute title is required');
+      return;
+    }
+
+    const productFeatureData = filterNewAttributeGroup(details.feature_attribute_groups, 'feature');
+
+    const productFeatureDataTitle = productFeatureData?.some((el) => !el.name);
+
+    if (productFeatureDataTitle && productFeatureData?.length) {
+      message.error('Feature attribute title is required');
+      return;
+    }
+
+    const newProductSpecData = filterNewAttributeGroup(
+      details.specification_attribute_groups,
+      'specification',
+    );
+
+    const productSpecDataTitle = newProductSpecData.some((el) => !el.name);
+
+    if (productSpecDataTitle && newProductSpecData?.length) {
+      message.error('Specification attribute title is required');
+      return;
+    }
+
+    const productSpecData: ProductAttributeFormInput[] = newProductSpecData.map((el) => ({
+      ...el,
+      attributes: el?.attributes ?? [],
+      steps: !el?.steps?.length
+        ? []
+        : el.steps.map((step) => {
+            const newStep = { ...step } as AutoStepOnAttributeGroupResponse;
+
+            if (newStep?.id?.indexOf('new') !== -1) {
+              delete (newStep as any).id;
+            }
+
+            const options = newStep.options.map((s) => ({
+              id: s.id,
+              pre_option: s.pre_option,
+              replicate: s?.replicate ?? 0,
+              picked: !!s.picked,
+            }));
+
+            return { name: step.name, order: step.order, options: options };
+          }),
+    }));
 
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
-      collection_id: details.collection?.id || '',
+      collection_ids: details.collections.map((collection) => collection.id),
+      label_ids: details.labels.map((label) => label.id),
       name: details.name.trim(),
       description: details.description.trim(),
-      general_attribute_groups: filterDataHasIdTypeNumber(details.general_attribute_groups),
-      feature_attribute_groups: filterDataHasIdTypeNumber(details.feature_attribute_groups),
+      general_attribute_groups: productGeneralData,
+      feature_attribute_groups: productFeatureData,
       specification_attribute_groups: productSpecData,
       dimension_and_weight: {
         with_diameter: details.dimension_and_weight.with_diameter,
@@ -140,6 +230,7 @@ const ProductDetailContainer: React.FC = () => {
           .filter((el) => (el.conversion_value_1 ? true : false))
           .map((el) => pick(el, 'id', 'conversion_value_1', 'conversion_value_2', 'with_diameter')),
       } as ProductDimensionWeight,
+      product_information: details.product_information,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
         if (image.indexOf('data:image') > -1) {
@@ -168,12 +259,19 @@ const ProductDetailContainer: React.FC = () => {
   const query = useQuery();
 
   const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
+  const newTabFromRequest = query.get(QUERY_KEY.new_tab_from_request);
 
   const handleCloseProductDetail = () => {
+    if (newTabFromRequest) {
+      pushTo(PATH.brandHomePage);
+      return;
+    }
+
     if (!noPreviousPage) {
       history.goBack();
       return;
     }
+
     pushTo(
       getValueByCondition(
         [
@@ -188,22 +286,57 @@ const ProductDetailContainer: React.FC = () => {
 
   const renderHeader = () => {
     if (isTiscUser) {
-      let categorySelected: string = sortBy(details.categories, 'name')
+      const categoriesSelected = sortBy(details.categories, 'name')
         .slice(0, 3)
-        .map((category) => category.name)
-        .join(', ');
+        .map((category) => category);
 
-      if (details.categories.length > 3) {
-        categorySelected += ', ...';
-      }
+      const renderCateLabel = (): any => {
+        if (!categoriesSelected.length) {
+          return (
+            <RobotoBodyText level={4} color="mono-color-medium" style={{ textTransform: 'none' }}>
+              select
+            </RobotoBodyText>
+          );
+        }
+
+        return (
+          <div className="flex-center">
+            {categoriesSelected.map((cate, index) => (
+              <div key={cate.id || index} className="flex-center" style={{ marginRight: 8 }}>
+                <RobotoBodyText level={6}>{cate.name}</RobotoBodyText>
+                <DeleteIcon
+                  className={styles.deleteIcon}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    store.dispatch(
+                      setPartialProductDetail({
+                        categories: details.categories.filter(
+                          (cateChosen) => cateChosen.id !== cate.id,
+                        ),
+                      }),
+                    );
+                  }}
+                />
+              </div>
+            ))}
+            {details.categories.length > 3 ? (
+              <div title={details.categories.map((cate) => cate.name).join(', ')}>...</div>
+            ) : null}
+          </div>
+        );
+      };
 
       return (
         <ProductDetailHeader
           title={'CATEGORY'}
-          label={categorySelected || 'select'}
+          label={renderCateLabel()}
           onSave={throttleAction(onSave)}
           onCancel={handleCloseProductDetail}
-          customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
+          customClass={`${styles.marginBottomSpace} ${
+            categoriesSelected.length ? styles.monoColor : ''
+          }`}
         />
       );
     }

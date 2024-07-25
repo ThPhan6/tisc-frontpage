@@ -43,7 +43,8 @@ export const ProjectListingHeader: FC = ({ children }) => {
             containerClass={styles.customHeader}
           />
         );
-      }}>
+      }}
+    >
       {children}
     </PageContainer>
   );

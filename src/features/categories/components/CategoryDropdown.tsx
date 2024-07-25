@@ -13,6 +13,7 @@ import { capitalize, flatMap, isEmpty, upperCase } from 'lodash';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { CategoryNestedList } from '@/features/categories/types';
 import { useAppSelector } from '@/reducers';
+import { ActiveKeyType } from '@/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 
@@ -23,7 +24,6 @@ interface DropdownCategoryListProps {
   chosenItem?: CheckboxValue[];
   onChange: (value: CheckboxValue[]) => void;
 }
-type ActiveKeyType = string | number | (string | number)[];
 type CheckedCategories = { [key: string]: CheckboxValue[] };
 
 export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {
@@ -148,9 +148,20 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
                     };
                   })}
                   selected={selected}
-                  onChange={(value) =>
-                    setCheckedCategories((prev) => ({ ...prev, [sub.id]: value }))
-                  }
+                  onChange={(value) => {
+                    const otherSelected = selected?.reduce((finalData, selectedItem) => {
+                      if (!sub.subs.find((option) => option.id === selectedItem.value)) {
+                        finalData.push(selectedItem);
+                      }
+                      return finalData;
+                    }, [] as any);
+
+                    if (otherSelected) {
+                      setCheckedCategories({ ...otherSelected, [sub.id]: value });
+                    }
+
+                    // setCheckedCategories((prev) => ({ ...prev, [sub.id]: value }));
+                  }}
                   isCheckboxList
                   heightItem="36px"
                 />

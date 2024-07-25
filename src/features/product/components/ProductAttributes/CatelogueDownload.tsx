@@ -46,12 +46,14 @@ export const CatelogueDownload = () => {
         }}
         titlePlaceholder="type catelogue name here"
         valuePlaceholder="paste file URL link here"
+        titleStyles={{ paddingLeft: 0 }}
+        valueStyles={{ paddingLeft: 16 }}
       />
     );
   }
 
   if (!catelogue_downloads || catelogue_downloads.length === 0) {
-    return <EmptyOne customClass={styles.paddingRounded} />;
+    return <EmptyOne customClass={styles.emptyOne} />;
   }
 
   return (
@@ -59,7 +61,7 @@ export const CatelogueDownload = () => {
       {catelogue_downloads.map((content, index) => {
         return (
           <div className={styles.download_content} key={content.id || index}>
-            <BodyText level={6} fontFamily="Roboto">
+            <BodyText style={{ padding: '4px 16px' }} level={6} fontFamily="Roboto">
               {content.title}
             </BodyText>
             <a href={content.url} download target="_blank" rel="noopener noreferrer">

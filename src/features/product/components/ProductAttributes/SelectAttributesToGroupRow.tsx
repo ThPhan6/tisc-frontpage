@@ -1,22 +1,24 @@
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useContext, useEffect, useState } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
-import { cloneDeep, upperCase } from 'lodash';
+import { capitalize, cloneDeep, flatMap, upperCase } from 'lodash';
 
-import { setPartialProductDetail } from '../../reducers';
-import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
+import { setPartialProductDetail, setStep } from '../../reducers';
+import { ProductAttributeFormInput, ProductAttributeProps, SpecificationType } from '../../types';
 import { ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store from '@/reducers';
-import { ProductAttributes, ProductSubAttributes } from '@/types';
+import { AttributesWithSubAddtionData, ProductAttributes, ProductSubAttributes } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
+import { ProductAttributeComponentContext } from '@/features/product/components/ProductAttributes';
 
+import { AutoStep } from '../AutoStep/AutoStep';
 import styles from './SelectAttributesToGroupRow.less';
 import { SpecificationChoice } from './SpecificationChoice';
 
@@ -26,7 +28,7 @@ const POPOVER_TITLE = {
   specification: 'Select Specification',
 };
 
-interface Props {
+interface SelectAttributesToGroupRowProps {
   activeKey: ProductInfoTab;
   groupItem: ProductAttributeFormInput;
   groupIndex: number;
@@ -34,8 +36,12 @@ interface Props {
   productId: string;
 }
 
-export const SelectAttributesToGroupRow: FC<Props> = memo(
+export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = memo(
   ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
+    const { attributeListFilterByBrand, setIsGetAllAttributeFilterByBrand } = useContext(
+      ProductAttributeComponentContext,
+    );
+
     const [visible, setVisible] = useState(false);
 
     // attributes
@@ -84,8 +90,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
       );
-
-      if (value.length > newAttrGroup[groupIndex].attributes.length) {
+      if (value.length != newAttrGroup[groupIndex].attributes.length) {
         newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
           let selectedAttribute: ProductSubAttributes | undefined;
@@ -112,6 +117,26 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
             activeData.basis_options = previousData.basis_options;
           }
 
+          // title auto fill from attribute sub group
+
+          if (selectedAttribute && selectedAttribute?.id) {
+            if (!selectedAttribute.sub_group_id) {
+              newAttrGroup[groupIndex].name = 'Sub Group';
+            } else {
+              attributeListFilterByBrand[activeKey].forEach((itemSubs: any) => {
+                const subGroupAttrWithName = itemSubs.subs.find(
+                  (sub: any) => sub.id === selectedAttribute?.sub_group_id,
+                );
+                if (subGroupAttrWithName) {
+                  newAttrGroup[groupIndex].name = (subGroupAttrWithName.name || '').replace(
+                    /\w+/g,
+                    capitalize,
+                  );
+                }
+              });
+            }
+          }
+
           const newAttribute: ProductAttributeProps = {
             id: selectedAttribute?.id || '',
             basis_id: selectedAttribute?.basis_id || '',
@@ -123,7 +148,8 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           return newAttribute;
         });
       }
-
+      // close modal
+      setVisible(false);
       /// set selection for each group attribute has attribute option type
       const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
 
@@ -155,7 +181,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       ///
       let description = '';
       /// must found basis
-      if (basis && basis.id) {
+      if (basis?.id) {
         description = basis.name;
         if (!description) {
           /// only conversion don't have name
@@ -168,7 +194,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       }
 
       return (
-        <div className={styles.attributeItemCheckBox}>
+        <div className={`${styles.attributeItemCheckBox} hover-on-row`}>
           <BodyText level={3} customClass="attribute-name">
             {item.name}
           </BodyText>
@@ -179,11 +205,21 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       );
     };
 
+    const handleOpenSelectAttributeModal = () => {
+      setVisible(true);
+
+      setIsGetAllAttributeFilterByBrand(true);
+
+      if (groupItem.type === SpecificationType.autoStep) {
+        store.dispatch(setStep('pre'));
+      }
+    };
+
     return (
       <>
         <div className="attribute-select-group">
           <div className="attribute-select-group-left">
-            <div className="flex-start" onClick={() => setVisible(true)}>
+            <div className="flex-start" onClick={handleOpenSelectAttributeModal}>
               <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
               <SingleRightIcon className="single-right-icon" />
             </div>
@@ -211,22 +247,48 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           <DeleteIcon className="delete-icon" onClick={onDeleteProductAttribute(groupIndex)} />
         </div>
 
-        <Popover
-          title={upperCase(POPOVER_TITLE[activeKey])}
-          visible={visible}
-          setVisible={setVisible}
-          dropdownCheckboxList={attributes.map((item) => ({
-            name: item.name,
-            options: item.subs.map((sub) => ({
-              label: renderCheckBoxLabel(sub),
-              value: sub.id,
-            })),
-          }))}
-          dropdownCheckboxTitle={(data) => data.name}
-          chosenValue={selected}
-          setChosenValue={onSelectValue}
-          secondaryModal
-        />
+        {groupItem.type === SpecificationType.autoStep ? (
+          <AutoStep
+            attributeGroup={attributeGroup}
+            attributes={attributes}
+            visible={visible}
+            setVisible={setVisible}
+          />
+        ) : (
+          <Popover
+            title={upperCase(POPOVER_TITLE[activeKey])}
+            visible={visible}
+            setVisible={setVisible}
+            dropdownCheckboxList={(
+              attributeListFilterByBrand[activeKey] as AttributesWithSubAddtionData[]
+            ).map((item) => ({
+              name: item.name,
+              count: item.subs.length,
+              options: flatMap(
+                item.subs.map((sub) =>
+                  sub.subs.map((el) => ({
+                    label: renderCheckBoxLabel(el),
+                    value: el.id,
+                  })),
+                ),
+              ),
+              subs: item.subs.map((el) => ({
+                name: el.name,
+                count: el.subs.length,
+                options: el.subs.map((sub) => ({
+                  label: renderCheckBoxLabel(sub),
+                  value: sub.id,
+                })),
+              })),
+            }))}
+            dropdownCheckboxTitle={(data) => data.name}
+            chosenValue={selected}
+            onFormSubmit={onSelectValue}
+            secondaryModal
+            collapseLevel="2"
+            width={1152}
+          />
+        )}
       </>
     );
   },

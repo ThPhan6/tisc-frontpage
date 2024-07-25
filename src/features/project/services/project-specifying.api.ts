@@ -115,13 +115,17 @@ export async function updateProductSpecifying(
     data: { ...data, quantity: Number(data.quantity) },
   })
     .then(() => {
-      console.log('updateProductSpecifying', data);
-
       message.success(getResponseMessage('update', 'product specifying'));
       callback();
     })
     .catch((error) => {
       message.error(getResponseMessage('update', 'product specifying', 'failed', error));
-      console.log('updateProductSpecifying error', error);
+      // console.log('updateProductSpecifying error', error);
     });
+}
+export async function getUsedMaterialCodes(considered_product_id: string) {
+  const result = await request(`/api/project-product/${considered_product_id}/used-material-code`, {
+    method: 'GET',
+  });
+  return result;
 }

@@ -49,7 +49,7 @@
   th:nth-child(5),
   th:nth-child(6) {
     > .title {
-      word-spacing: 100vw;
+      // word-spacing: 100vw;
     }
   }
 
@@ -90,9 +90,9 @@
   .groupRoom {
     td {
       position: relative;
-      height: 48px;
+      // height: 48px;
       &:nth-last-child(2) {
-        padding-right: 10px;
+        // padding-right: 10px;
 
         @media screen and (max-width: 576px) {
           padding: 0;
@@ -100,7 +100,12 @@
       }
 
       :global(.ant-checkbox-wrapper) {
-        height: 23px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      :global(.ant-checkbox) {
+        top: unset;
       }
     }
 
@@ -131,13 +136,15 @@
   .rowInfo {
     display: flex;
     flex-direction: row-reverse;
-    align-items: stretch;
+    align-items: center;
     justify-content: space-between;
-    margin: 0 !important;
+    width: 70%;
+    margin: auto;
 
     @media screen and (max-width: 576px) {
       display: flex;
       justify-content: center;
+      width: 100%;
     }
 
     :global(.ant-checkbox + span) {

@@ -27,6 +27,8 @@ export const FormGroup: FC<FormGroupProps> = ({
   messageType = 'normal',
   placementBottomWidth,
   noColon,
+  customClass,
+  labelWidth,
   ...props
 }) => {
   const setFormLayout = () => {
@@ -34,13 +36,18 @@ export const FormGroup: FC<FormGroupProps> = ({
   };
 
   const classNameForm = `${setFormLayout()} ${formClass}`;
+  const lableStyle: any = {};
+  if (labelWidth) {
+    lableStyle.width = labelWidth;
+  }
   return (
-    <div className={classNameForm} {...props}>
+    <div className={`${classNameForm} ${customClass}`} {...props}>
       <label
         className={`${style.label} ${
           layout === 'horizontal' && style['label-margin']
         } ${labelColor}`}
         onClick={onClick}
+        style={lableStyle}
       >
         <BodyText fontFamily="Cormorant-Garamond" level={labelFontSize} customClass={labelColor}>
           {label}

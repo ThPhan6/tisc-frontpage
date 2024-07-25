@@ -1,3 +1,4 @@
+import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
 
 import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
@@ -81,7 +82,9 @@ export const throttleAction = (
   });
 
 export const redirectAfterLogin = (access: any, userType: UserType) => {
-  const routesByUserType = routes.filter((el) => el.access?.includes(ACCESS_BY_TYPE[userType]));
+  const routesByUserType = routes.filter((el: any) =>
+    el.access?.includes(ACCESS_BY_TYPE[userType]),
+  );
 
   const accessableMenu = findFirstAccessibleMenu(0, routesByUserType, access) || '/404';
 
@@ -247,7 +250,7 @@ export const formatCurrencyNumber = (
 export const getEmailMessageError = (email: string, errorMessage: string) => {
   const checkValidEmail = validateEmail(email);
   if (email === '') {
-    return undefined;
+    return MESSAGE_ERROR.EMAIL_REQUIRED;
   }
   return checkValidEmail ? '' : errorMessage;
 };
@@ -338,11 +341,11 @@ export const getSelectedOptions = (options: CheckboxValue[], selectedIds: string
 
 export const setDefaultWidthForEachColumn = (
   table: TableColumnItem<any>[],
-  // excluding column setted width
+  // excluding column set width
   excludedColIndex?: number | number[],
   // set same width for each column
   // default columns are action/status/count
-  // default witdh for these columns are its width have been setted(e.width)
+  // default witdh for these columns are its width have been set(e.width)
   setWidthFor?: { columns?: string[]; colWidth?: number },
   // default width for each columns(default number is 10)
   defaultWidth?: number,
@@ -359,7 +362,7 @@ export const setDefaultWidthForEachColumn = (
       ],
       // set custom column with its width
       [setWidthFor?.columns?.includes(String(e.dataIndex)), setWidthFor?.colWidth || e.width],
-      // default columns with its width have been setted
+      // default columns with its width have been set
       [
         !setWidthFor &&
           ['action', 'status', 'count'].includes(lowerCase(String(e.dataIndex || e.title))),
@@ -400,10 +403,21 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   return result;
 };
 
-export const formatNumber = (number: number) => {
-  return number.toLocaleString(undefined, {
-    maximumFractionDigits: 2,
-  });
+export const formatNumber = (
+  number: number | string | undefined = 0,
+  maximumFractionDigits = 2,
+) => {
+  return number.toLocaleString(undefined, { maximumFractionDigits });
+};
+
+export const formatPercentNumber = (
+  number: number | string,
+  maximumFractionDigits: number = 0,
+  includePercent: boolean = true,
+) => {
+  const result = formatNumber((Number(number) / 100) * 10000, maximumFractionDigits);
+
+  return includePercent ? `${result}%` : result;
 };
 
 export const formatImageIfBase64 = (img: string) =>
@@ -425,4 +439,87 @@ export const checkBrowser = () => {
   }
 
   return { isSafari: safariAgent, isChrome: chromeAgent };
+};
+
+export const checkNil = (value: string | number) =>
+  value === '' || typeof value === null || typeof value === undefined;
+
+export const uniqueArrayBy = (arr: any[], uniqKeys: string[]) => {
+  const obj = Object.create(null);
+
+  return arr.filter((el) => {
+    const key = uniqKeys.map((k) => el[k]).join('|');
+
+    if (!obj[key]) {
+      obj[key] = true;
+      return true;
+    }
+  });
+};
+
+export const findDuplicateBy = (arr: any[], uniqKeys: string[]): any[] => {
+  const dup: any = [];
+  const seen = {};
+
+  arr.forEach((item) => {
+    const key = uniqKeys.map((k) => item[k]).join('|');
+
+    if (seen[key]) {
+      dup.push(item);
+    } else {
+      seen[key] = true;
+    }
+  });
+
+  return dup;
+};
+
+export const sortObjectArray = (items: any[], field: string, order: 'asc' | 'desc' = 'asc') => {
+  const compare = (value1: any, value2: any) => {
+    const item1 = typeof value1[field] === 'string' ? value1[field].toLowerCase() : value1[field];
+
+    const item2 = typeof value2[field] === 'string' ? value2[field].toLowerCase() : value2[field];
+
+    if (order === 'asc') {
+      if (typeof item1 === 'string') {
+        return item1.localeCompare(item2, undefined, { numeric: true, sensitivity: 'base' });
+      }
+    }
+
+    if (typeof item1 === 'string') {
+      return item2.localeCompare(item1, undefined, { numeric: true, sensitivity: 'base' });
+    }
+  };
+
+  return items.sort(compare);
+};
+
+export const getQueryVariableFromOriginURL = (originURL: string): Record<string, string> => {
+  let pairs: string[] = [];
+
+  const vars = originURL.split('&');
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split('?');
+
+    pairs = pairs.concat(pair);
+  }
+
+  const queryPairs = pairs.splice(1, pairs.length - 1);
+
+  let result = {};
+
+  for (const queryPair of queryPairs) {
+    const [key, value] = queryPair.split('=');
+
+    result = { ...result, [key]: value };
+  }
+
+  return result;
+};
+export const removeSpecialChars = (str: string, replaceStr: string = '') => {
+  return str.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, replaceStr);
+};
+
+export const simplizeString = (str: string) => {
+  return removeSpecialChars(str.trim().toLowerCase().replace(/ /g, '-')).replace(/\-+/g, '-');
 };

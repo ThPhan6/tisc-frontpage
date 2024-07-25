@@ -12,11 +12,15 @@ interface ActiveState {
     [key in string]?: number | string;
   };
   productFooter: ProductFooterTabs;
+  dimensionWeight: string | string[];
+  productInformation: string | string[];
 }
 
 const initialState: ActiveState = {
   collapse: {},
   productFooter: '',
+  dimensionWeight: '',
+  productInformation: '',
 };
 
 const activeSlice = createSlice({
@@ -39,14 +43,33 @@ const activeSlice = createSlice({
       state.productFooter = action.payload.tab;
       delete state.collapse[action.payload.infoTab];
     },
+    activeDimensionWeightCollapse: (state, action: PayloadAction<string | string[]>) => {
+      state.dimensionWeight = action.payload;
+    },
+    activeProductInformationCollapse: (state, action: PayloadAction<string | string[]>) => {
+      state.productInformation = action.payload;
+    },
     closeProductFooterTab: (state) => {
       state.productFooter = '';
+    },
+    closeDimensionWeightGroup: (state) => {
+      state.dimensionWeight = '';
+    },
+    closeProductInformationGroup: (state) => {
+      state.productInformation = '';
     },
   },
 });
 
-export const { setActiveCollapseItem, onChangeProductFooterTab, closeProductFooterTab } =
-  activeSlice.actions;
+export const {
+  setActiveCollapseItem,
+  onChangeProductFooterTab,
+  closeProductFooterTab,
+  closeDimensionWeightGroup,
+  activeDimensionWeightCollapse,
+  activeProductInformationCollapse,
+  closeProductInformationGroup,
+} = activeSlice.actions;
 
 export const activeReducer = activeSlice.reducer;
 
@@ -73,6 +96,7 @@ export const useCollapseGroupActiveCheck = (
   activeKey?: string | string[],
 ) => {
   const [collapse, setCollapse] = useState<string | string[]>(); // Use for have activeKey case
+  const [curActive, setCurActive] = useState<string | undefined>();
 
   const activeKeyInState = useAppSelector(collapseSelector(groupType, groupIndex));
 
@@ -92,8 +116,16 @@ export const useCollapseGroupActiveCheck = (
   }, [activeOneInGroup]);
 
   useEffect(() => {
+    if (curActiveKey === '1' || curActiveKey?.[0] === '1') {
+      setCurActive(activeKey as string);
+    } else {
+      setCurActive(undefined);
+    }
+  }, [curActiveKey]);
+
+  useEffect(() => {
     setCollapse(activeKey);
   }, [activeKey]);
 
-  return { curActiveKey, onKeyChange };
+  return { curActiveKey, onKeyChange, curActive };
 };

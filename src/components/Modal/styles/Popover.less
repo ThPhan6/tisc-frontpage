@@ -42,6 +42,12 @@
   }
 }
 
+.titlePositionCenter {
+  :global(.ant-modal-header) {
+    text-align: center;
+  }
+}
+
 .submitButton {
   display: inline-flex;
   svg {
@@ -73,5 +79,21 @@
     padding: 0 12px;
     background-color: #fff;
     box-shadow: @border-top;
+  }
+}
+
+.sidePopover {
+  min-height: 90%;
+  :global(.side-container) {
+    width: 576px;
+
+    &:first-child {
+      margin-bottom: -18px;
+      padding-right: 16px;
+      border-right: 1px solid black;
+    }
+    &:last-child {
+      padding-left: 16px;
+    }
   }
 }

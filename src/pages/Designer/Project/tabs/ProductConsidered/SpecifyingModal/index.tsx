@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
@@ -11,7 +11,8 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
-import { updateProductSpecifying } from '@/features/project/services';
+import { getUsedMaterialCodes, updateProductSpecifying } from '@/features/project/services';
+import { useCheckPermission } from '@/helper/hook';
 
 import { FinishScheduleRequestBody } from './types';
 import { productVariantsSelector, resetProductDetailState } from '@/features/product/reducers';
@@ -37,7 +38,12 @@ interface SpecifyingModalProps {
   projectId: string;
   product: ProductItem;
   reloadTable: () => void;
+  isSpecified?: boolean;
 }
+type UsedMaterialCode = {
+  material_code_id: string;
+  suffix_code: string;
+};
 
 export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   visible,
@@ -45,23 +51,38 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   product,
   projectId,
   reloadTable,
+  isSpecified,
 }) => {
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+
+  const listTab = isBrandUser
+    ? [...ProjectSpecifyTabs].splice(0, ProjectSpecifyTabs.length - 1)
+    : ProjectSpecifyTabs;
+
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-
+  const [usedMaterialCodes, setUsedMaterialCodes] = useState<UsedMaterialCode[]>([]);
   const customProduct = product.specifiedDetail?.custom_product ? true : false;
+
+  const productId = useAppSelector(productVariantsSelector);
+  const isDisableDone = isBrandUser && productId.trim().split(' - ').includes('X');
 
   const productDetail = useAppSelector((state) => state.product.details);
   const customProductDetail = useAppSelector((state) => state.customProduct.details);
   const curProduct = customProduct ? customProductDetail : productDetail;
 
   const specifiedDetail = curProduct.specifiedDetail;
+  const fetchMaterialCodes = async () => {
+    const res = await getUsedMaterialCodes(specifiedDetail?.id || '');
+    setUsedMaterialCodes(res.data);
+  };
+  useEffect(() => {
+    fetchMaterialCodes();
+  }, []);
+  const referToDesignDocument: boolean = specifiedDetail?.specification.is_refer_document || false;
 
-  const referToDesignDocument: boolean = customProduct
-    ? specifiedDetail?.specification.is_refer_document
-    : curProduct.referToDesignDocument;
-  // console.log('specifiedDetail', specifiedDetail);
+  // console.log('productDetail', productDetail);
   // console.log('referToDesignDocument', referToDesignDocument);
 
   const specification_attribute_groups = useAppSelector(
@@ -69,10 +90,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   );
   const brandLocationId: string = customProduct
     ? specifiedDetail?.brand_location_id
-    : curProduct.brand_location_id;
+    : (curProduct as any).brand_location_id;
   const distributorLocationId: string = customProduct
     ? specifiedDetail?.distributor_location_id
-    : curProduct.distributor_location_id;
+    : (curProduct as any).distributor_location_id;
 
   const finishSchedulesData = specifiedDetail?.finish_schedules;
 
@@ -100,6 +121,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
     product.id,
     projectId,
+    isBrandUser,
   );
   const selectedRoomIds = getSelectedRoomIds(selectedRooms);
 
@@ -123,12 +145,22 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Suffix Code is required');
       return;
     }
+
+    const duplicatedMaterialCode = usedMaterialCodes.find(
+      (item) =>
+        item.material_code_id === specifiedDetail.material_code_id &&
+        item.suffix_code === specifiedDetail.suffix_code,
+    );
+    if (duplicatedMaterialCode) {
+      message.error('Duplicated Material Code and Suffix Code.');
+      return;
+    }
     if (!specifiedDetail.description) {
       message.error('Description is required');
       return;
     }
-    if (!brandLocationId) {
-      message.error('Brand location is required');
+    if (!brandLocationId && !distributorLocationId) {
+      message.error('Brand or Distributor is required');
       return;
     }
     if (product.specifiedDetail?.id) {
@@ -156,6 +188,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           suffix_code: specifiedDetail.suffix_code,
           unit_type_id: specifiedDetail.unit_type_id,
           custom_product: customProduct,
+          is_done_assistance_request: true,
         },
         () => {
           reloadTable();
@@ -165,9 +198,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       );
     }
   };
-
-  const productId = useAppSelector(productVariantsSelector);
-
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
@@ -185,9 +215,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         </MainTitle>
       }
       centered
-      width={576}
+      width={1100}
       footer={
         <CustomButton
+          disabled={isDisableDone}
           size="small"
           variant="primary"
           properties="rounded"
@@ -202,14 +233,14 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         image={product.images[0]}
         logo={product.brand?.logo}
         text_1={product.brand?.name}
-        text_2={product.collection?.name}
+        text_2={product.collections.map((collection) => collection.name).join(', ')}
         text_3={product.name}
         text_4={productId === '' ? 'N/A' : productId}
         customClass={styles.customHeader}
       />
 
       <CustomTabs
-        listTab={ProjectSpecifyTabs}
+        listTab={listTab}
         centered={true}
         tabPosition="top"
         tabDisplay="space"
@@ -223,6 +254,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           productId={product.id}
           customProduct={customProduct}
           referToDesignDocument={referToDesignDocument}
+          isSpecified={isSpecified}
         />
       </CustomTabPane>
 
@@ -242,13 +274,15 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         </div>
       </CustomTabPane>
 
-      <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
-        <CodeOrderTab
-          projectProductId={product.specifiedDetail?.id ?? ''}
-          roomIds={selectedRoomIds}
-          customProduct={customProduct}
-        />
-      </CustomTabPane>
+      {isBrandUser ? null : (
+        <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
+          <CodeOrderTab
+            projectProductId={product.specifiedDetail?.id ?? ''}
+            roomIds={selectedRoomIds}
+            customProduct={customProduct}
+          />
+        </CustomTabPane>
+      )}
     </CustomModal>
   );
 };

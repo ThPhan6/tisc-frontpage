@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { message } from 'antd';
 
+import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { ReactComponent as ColorDetectionIcon } from '@/assets/icons/color-palette.svg';
+
+import { getAllProductCategory } from '@/features/categories/services';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { isEmpty, isNull, isUndefined } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { ProductAttributeFormInput } from '../types';
+import { SupportCategories } from '@/features/colorDetection/types';
 import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 import { CollectionRelationType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -19,7 +25,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
-import { CollectionModal } from '../modals/CollectionModal';
+import { CollectionAndLabelModal } from '../modals/CollectionAndLabel';
 import styles from './detail.less';
 
 export const getProductVariant = (specGroup: ProductAttributeFormInput[]): string => {
@@ -47,14 +53,99 @@ export const ProductBasicInfo: React.FC = () => {
   const editable = isTiscAdmin && !isTablet;
 
   const brand = useAppSelector((state) => state.product.brand);
-  const spec = useAppSelector((state) => state.product.details.specification_attribute_groups);
   /// brand and designer
   const productVariant = useAppSelector(productVariantsSelector);
 
-  const { name, description, collection } = useAppSelector((state) => state.product.details);
+  const {
+    name,
+    description,
+    collections,
+    labels,
+    categories,
+    specification_attribute_groups: spec,
+  } = useAppSelector((state) => state.product.details);
+
+  const collectionValue = collections?.length ? collections.map((el) => el.name).join(', ') : '';
+
   const [visible, setVisible] = useState(false);
 
+  const categoryData = useAppSelector((state) => state.category.list);
+  const [isCateSupported, setIsCateSupported] = useState<boolean>();
+
+  const getCategoryData = async () => {
+    await getAllProductCategory();
+  };
+
+  useEffect(() => {
+    getCategoryData();
+  }, []);
+
+  useEffect(() => {
+    let cateSupported = false;
+
+    const categoryIds = categories?.map((el) => el.id);
+
+    /// category supported contains its main or sub or itself's wood/stone
+    categoryData.forEach((mainCate) => {
+      mainCate.subs.forEach((subCate) => {
+        subCate.subs.forEach((item) => {
+          if (categoryIds.includes(item.id)) {
+            if (
+              ''
+                .concat(mainCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .toLowerCase()
+                .includes(SupportCategories.wood) ||
+              ''
+                .concat(mainCate?.name ?? '', subCate?.name ?? '', item?.name ?? '')
+                .toLowerCase()
+                .includes(SupportCategories.stone)
+            ) {
+              cateSupported = true;
+            }
+          }
+        });
+      });
+    });
+
+    setIsCateSupported(cateSupported);
+  }, [categories]);
+
+  const images = useAppSelector((state) => state.product.details.images);
+  const activeColorAI = isTiscAdmin && !!images.length && isCateSupported;
+
   const productId = isTiscAdmin ? getProductVariant(spec) : productVariant;
+
+  const openColorAI = () => {
+    if (activeColorAI) {
+      store.dispatch(openModal({ type: 'Color AI', title: 'COLOUR AI' }));
+      return;
+    }
+
+    if (isTablet) {
+      return;
+    }
+
+    if (!images.length) {
+      message.info('Please upload at least one image');
+      return;
+    }
+
+    if (!isCateSupported) {
+      message.info('Please pick supported category');
+    }
+  };
+
+  const setActiveColorAIIcon = () => {
+    if (isTablet && activeColorAI) {
+      return true;
+    }
+
+    if (activeColorAI) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <>
@@ -79,17 +170,32 @@ export const ProductBasicInfo: React.FC = () => {
           horizontal
           fontLevel={4}
           label="Collection"
+          inputClass="text-overflow"
           placeholder={editable ? 'create or assign from the list' : ''}
           rightIcon={
-            editable ? (
-              <RightLeftIcon
-                className={brand?.id ? 'mono-color' : 'mono-color-medium'}
-                onClick={() => setVisible(true)}
-              />
-            ) : undefined
+            <div className="flex-end">
+              {/* Color detection */}
+              {isTiscAdmin ? (
+                <ColorDetectionIcon
+                  className={setActiveColorAIIcon() ? styles.activeColorIcon : ''}
+                  onClick={openColorAI}
+                  style={{ marginLeft: 14 }}
+                />
+              ) : null}
+
+              {/* Collection */}
+              {editable ? (
+                <RightLeftIcon
+                  className={brand?.id ? 'mono-color' : 'mono-color-medium'}
+                  onClick={() => setVisible(true)}
+                  style={{ marginLeft: 14 }}
+                />
+              ) : null}
+            </div>
           }
           noWrap
-          value={collection?.name ?? ''}
+          inputTitle={collectionValue}
+          value={collectionValue}
           readOnly={editable === false}
           containerClass={!editable ? styles.viewInfo : ''}
         />
@@ -100,9 +206,9 @@ export const ProductBasicInfo: React.FC = () => {
           containerClass={!editable ? styles.viewInfo : ''}
           fontLevel={4}
           label="Product"
-          placeholder={editable ? 'type max.100 characters short description' : ''}
+          placeholder={editable ? 'type max.64 characters short description' : ''}
           readOnly={editable === false}
-          maxLength={100}
+          maxLength={64}
           noWrap
           value={name}
           onChange={(e) => {
@@ -113,24 +219,14 @@ export const ProductBasicInfo: React.FC = () => {
             );
           }}
         />
-        {/* Product ID */}
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
-          label="Product ID"
-          readOnly={true}
-          noWrap
-          value={productId}
-          inputTitle={productId}
-        />
         {/* Description */}
         <FormGroup
           label="Description"
           layout="horizontal"
-          formClass="mb-16"
+          // formClass="mb-16"
           labelFontSize={4}
           noColon
+          labelWidth={75}
         >
           <CustomTextArea
             maxWords={50}
@@ -148,28 +244,65 @@ export const ProductBasicInfo: React.FC = () => {
             autoResize
           />
         </FormGroup>
+        <hr
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            margin: 0,
+            borderTop: 0,
+            borderBottom: '1px solid #cdcdcd',
+          }}
+        />
+        {/* Product ID */}
+        <div style={{ paddingBottom: 6, paddingTop: 8 }}>
+          <InputGroup
+            horizontal
+            fontLevel={4}
+            containerClass={`${styles.inputVariant} ${!editable ? styles.viewInfo : ''}`}
+            label="Selection ID"
+            readOnly={true}
+            noWrap
+            value={productId}
+            inputTitle={productId}
+          />
+        </div>
       </CustomCollapse>
       {editable && brand?.id ? (
-        <CollectionModal
+        <CollectionAndLabelModal
           brandId={brand.id}
           collectionType={CollectionRelationType.Brand}
+          categoryIds={categories?.map((el) => el.id)}
+          isCateSupported={activeColorAI}
           visible={visible}
           setVisible={setVisible}
-          chosenValue={{
-            value: collection?.id || '',
-            label: collection?.name || '',
-          }}
+          chosenValue={collections?.map((el) => ({
+            value: el?.id || '',
+            label: el?.name || '',
+          }))}
           setChosenValue={(selected) => {
-            if (selected) {
-              dispatch(
-                setPartialProductDetail({
-                  collection: {
-                    name: String(selected.label),
-                    id: String(selected.value),
-                  },
-                }),
-              );
-            }
+            dispatch(
+              setPartialProductDetail({
+                collections: selected.map((el) => ({
+                  name: String(el.label),
+                  id: String(el.value),
+                })),
+              }),
+            );
+          }}
+          chosenLabel={labels?.map((el) => ({
+            value: el?.id || '',
+            label: el?.name || '',
+          }))}
+          setChosenLabel={(selected) => {
+            dispatch(
+              setPartialProductDetail({
+                labels: selected.map((el) => ({
+                  name: String(el.label),
+                  id: String(el.value),
+                })),
+              }),
+            );
           }}
         />
       ) : null}

@@ -16,6 +16,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       focusColor,
       borderBottomColor,
       containerClass,
+      containerStyles,
       type,
       status,
       fontLevel,
@@ -50,7 +51,17 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
         setWidth(textWidth);
       }
     }, [props.value]);
-
+    const [cursor, setCursor] = useState<number | null>(null);
+    const defaultRef = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      if (
+        defaultRef.current &&
+        defaultRef.current.tagName === 'INPUT' &&
+        'setSelectionRange' in defaultRef.current
+      ) {
+        defaultRef.current.setSelectionRange(cursor, cursor);
+      }
+    }, [defaultRef, cursor, props.value]);
     const getDisabledTheme = () => {
       if (props.disabled) {
         switch (theme) {
@@ -87,7 +98,10 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       props.prefix || props.suffix ? classNameInputAffix : classNameInputDefault;
 
     return (
-      <div className={`${classNameInput}  ${containerClass}`} style={{ width: '100%' }}>
+      <div
+        className={`${classNameInput ?? ''} ${containerClass}`}
+        style={{ width: '100%', ...containerStyles }}
+      >
         {type === 'password' ? (
           <div style={{ width: '100%' }} className={requiredClassname}>
             <Input.Password type={type} {...props} />
@@ -100,10 +114,11 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
               </span>
             ) : null}
             <Input
-              ref={ref}
+              ref={ref || defaultRef}
               type={type}
               {...props}
               onChange={(e) => {
+                setCursor(e.target.selectionStart);
                 if (inputValidation) {
                   if (!inputValidation(e.target.value)) {
                     return false;
@@ -123,7 +138,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
                 }
                 return true;
               }}
-              className={`${setFontLevel()}  ${props.className ?? ''}`}
+              className={`${setFontLevel()} ${props.className ?? ''}`}
               style={
                 autoWidth
                   ? {

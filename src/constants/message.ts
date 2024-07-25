@@ -119,9 +119,14 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_OPTION_ERROR: 'Create option error',
   DELETE_OPTION_SUCCESS: 'Delete option successfully',
   DELETE_OPTION_ERROR: 'Delete option error',
-  UPDATE_OPTION_SUCCESS: 'Update option successfully',
-  UPDATE_OPTION_ERROR: 'Update option error',
+  UPDATE_OPTION_SUCCESS: 'Update options successfully',
+  UPDATE_OPTION_ERROR: 'Failed to update options',
   GET_ONE_OPTION_ERROR: 'Get one option error',
+  GET_LINKAGE_OPTION_ERROR: 'Get linkage option data error',
+  CREATE_LINKAGE_OPTION_ERROR: 'Failed to create new linkage',
+  CREATE_LINKAGE_OPTION_SUCCESS: 'Created linkage successfully ',
+  UPDATE_LINKAGE_OPTION_ERROR: 'Failed to update linkage',
+  UPDATE_LINKAGE_OPTION_SUCCESS: 'Updated linkage successfully ',
 
   //preset
   CREATE_PRESET_SUCCESS: 'Create preset successfully',
@@ -131,6 +136,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_SUCCESS: 'Update preset successfully',
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
+  COPY_ONE_PRESET_SUCCESS: 'Copy preset successfully',
+  COPY_ONE_PRESET_ERROR: 'Copy preset error',
 
   /// general inquiry
   GET_GENERAL_INQUIRY_SUMMARY_ERROR: 'Failed to get general inquiry summary',
@@ -155,6 +162,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_LIST_ASSIGN_TEAM_SUCCESS: 'Update list assign team successfully',
   UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
   UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
+  COPY_TO_BRAND_SUCCESS: 'Copy to brand successfully',
+  COPY_TO_BRAND_ERROR: 'Failed to copy to brand',
 
   //user-group / design firms
   GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
@@ -201,6 +210,13 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
   DELETE_BRAND_COLLECTION_SUCCESS: 'Delete collection successfully',
   DELETE_BRAND_COLLECTION_ERROR: 'Failed to delete collection',
+  CREATE_LABEL_SUCCESS: 'Create new label successfully',
+  CREATE_LABEL_ERROR: 'Failed to create label',
+  UPDATE_LABEL_SUCCESS: 'Update label successfully',
+  UPDATE_LABEL_ERROR: 'Failed to update label',
+  GET_LABEL_ERROR: 'Failed to get label data',
+  DELETE_LABEL_SUCCESS: 'Delete label successfully',
+  DELETE_LABEL_ERROR: 'Failed to delete label',
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
@@ -342,6 +358,11 @@ export const MESSAGE_NOTIFICATION = {
   SENT_REMIND_SUCCESS: 'Sent reminder to brand successfully',
   MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
   DELETE_SERVICE_SUCCESS: 'Delete service successfully',
+
+  /// billed services // payment intent
+  CREATE_PAYMENT_INTENT_SUCCESS: 'Create payment intent successfully',
+  CREATE_PAYMENT_INTENT_ERROR: 'Failed to create payment intent',
+  UPDATE_PAID_TEMPRORARILY_ERROR: 'Failure to temporarily update paid for payment intent',
 
   //schedule booking
   CREATE_BOOKING_SUCCESS: 'Book a demo successfully',

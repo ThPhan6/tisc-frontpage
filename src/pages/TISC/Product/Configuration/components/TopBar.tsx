@@ -13,7 +13,7 @@ import { getBrandAlphabet } from '@/features/user-group/services';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useQuery } from '@/helper/hook';
-import { updateUrlParams } from '@/helper/utils';
+import { formatNumber, updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -238,27 +238,21 @@ export const TopBar: React.FC = () => {
               }
             />
             <TopBarItem
-              topValue={productSummary?.category_count ?? ''}
+              topValue={formatNumber(productSummary?.category_count) ?? ''}
               disabled={!productSummary}
               bottomValue="Categories"
               cursor="default"
             />
             <TopBarItem
-              topValue={productSummary?.collection_count ?? ''}
+              topValue={formatNumber(productSummary?.collection_count) ?? ''}
               disabled={!productSummary}
               bottomValue="Collections"
               cursor="default"
             />
             <TopBarItem
-              topValue={productSummary?.card_count ?? ''}
+              topValue={formatNumber(productSummary?.card_count) ?? ''}
               disabled={!productSummary}
               bottomValue="Cards"
-              cursor="default"
-            />
-            <TopBarItem
-              topValue={productSummary?.product_count ?? ''}
-              disabled={!productSummary}
-              bottomValue="Products"
               cursor="default"
             />
           </>

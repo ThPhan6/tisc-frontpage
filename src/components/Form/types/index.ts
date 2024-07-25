@@ -8,6 +8,7 @@ import { BodyTextProps, CustomTypography } from '@/components/Typography/types/i
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';
   formClass?: string;
+  customClass?: string;
   optional?: boolean;
   required?: boolean;
   tooltip?: string | JSX.Element;
@@ -35,6 +36,7 @@ export interface FormGroupProps {
     | 'rightBottom';
   style?: CSSProperties;
   noColon?: boolean;
+  labelWidth?: any;
 }
 
 export interface TextFormProps extends FormGroupProps {
@@ -48,6 +50,7 @@ export interface TextFormProps extends FormGroupProps {
 
 export interface CustomInputProps extends InputProps {
   containerClass?: string;
+  containerStyles?: CSSProperties;
   focusColor?: 'primary' | 'secondary' | 'tertiary';
   theme?: 'dark' | 'default';
   borderBottomColor?: 'mono' | 'mono-medium' | 'white' | 'light';
@@ -63,11 +66,13 @@ export interface CustomInputProps extends InputProps {
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {
-  borderBottomColor?: 'mono' | 'mono-medium' | 'light';
+  borderBottomColor?: 'mono' | 'mono-medium' | 'light' | '';
   boxShadow?: boolean;
   autoResize?: boolean;
   customClass?: string;
   maxWords?: number;
+  customStyles?: CSSProperties;
+  styles?: CSSProperties;
 }
 
 export interface PhoneInputProps {

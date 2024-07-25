@@ -19,15 +19,44 @@
     }
   }
 
+  :global(.title) {
+    display: flex;
+    align-items: center;
+    height: 36px;
+  }
+
+  :global(.item-wrapper-custom) {
+    height: 32px;
+    padding-left: 0;
+
+    :global(.item-option-uncheck),
+    :global(.item-option-checked) {
+      flex: 1;
+      margin-right: 0 !important;
+    }
+  }
+
   .paddingLeftNone {
     padding-left: 0;
   }
 
   .boxShadowBottom {
-    box-shadow: @border-bottom-light;
+    // box-shadow: @border-bottom-light;
 
     :global(.ant-input) {
       color: @primary-color-dark;
+    }
+    :global(.side-container) {
+      width: 576px;
+
+      &:first-child {
+        margin-right: 15px;
+        box-shadow: @border-bottom-light;
+      }
+      &:last-child {
+        margin-left: 16px;
+        box-shadow: @border-bottom-light;
+      }
     }
   }
 

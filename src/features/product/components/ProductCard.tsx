@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
-import { Tooltip, TooltipProps } from 'antd';
+import { Spin, Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
@@ -23,29 +26,37 @@ import {
 } from '@/features/product/services';
 import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import {
   deleteCustomProduct,
   duplicateCustomProduct,
   getCustomProductList,
 } from '@/pages/Designer/Products/CustomLibrary/services';
-import { capitalize, truncate } from 'lodash';
+import { deleteCollection, updateCollection } from '@/services';
+import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
+import { setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
+import { CollectionRelationType } from '@/types';
 
+import CustomButton from '@/components/Button/index';
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { loadingSelector } from '@/components/LoadingPage/slices';
+import loadingStyles from '@/components/LoadingPage/styles/index.less';
 import { ActionMenu } from '@/components/TableAction';
-import { BodyText } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { assignProductModalTitle } from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
 import styles from './ProductCard.less';
+import { CheckBoxDropDown } from './ProductTopBarItem';
+import CollectionGallery from '@/features/gallery/CollectionGallery';
 
 interface CollapseProductListProps {
   showBrandLogo?: boolean;
@@ -207,7 +218,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick: handleDeleteProduct,
     },
     {
-      tooltipText: 'Inquiry/Request',
+      tooltipText: 'Make Inquiry/Request',
       show: Boolean(showInquiryRequest && isDesignFirmUser && !isCustomProduct),
       Icon: CommentIcon,
       onClick: () =>
@@ -220,7 +231,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         ),
     },
     {
-      tooltipText: 'Assign Product',
+      tooltipText: 'Assign to Project',
       show: isDesignFirmUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () =>
@@ -267,15 +278,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className={styles.imageWrapper_image}
           />
           <div className={styles.imagePlaceholder}>
-            <BodyText level={5} fontFamily="Roboto">
+            <BodyText level={5} fontFamily="Roboto" style={{ fontSize: 13 }}>
               {product.description}
             </BodyText>
           </div>
         </div>
         <div className={styles.productInfo} onClick={hanldeRedirectURL}>
-          <BodyText level={6} fontFamily="Roboto" customClass="product-description">
-            {product.name || 'N/A'}
-          </BodyText>
+          <div className={styles.productName}>
+            <BodyText level={6} fontFamily="Roboto" customClass="product-description">
+              {product.name || 'N/A'}
+            </BodyText>
+          </div>
           <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
             {product.brand?.name ?? 'N/A'}
           </BodyText>
@@ -359,9 +372,64 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   showInquiryRequest = false,
   hideFavorite = false,
 }) => {
+  const { isMobile } = useScreen();
   const loading = useAppSelector(loadingSelector);
-  const data = useAppSelector((state) => state.product.list.data);
-  const allProducts = useAppSelector((state) => state.product.list.allProducts);
+  const { data, allProducts, filter } = useAppSelector((state) => state.product.list);
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const [collapseKey, setCollapseKey] = useState<number>(-1);
+  const [activeLabels, setActiveLabels] = useState<{ id: string; name: string }[]>([]);
+  const [groups, setGroups] = useState<any>([]);
+  const isOpenGallery = useBoolean(false);
+  const isOpenLabel = useBoolean(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [customLoading, setCustomLoading] = useState(false);
+  console.log(groups);
+  useEffect(() => {
+    if (data) {
+      const activeProducts =
+        activeLabels.length === 0
+          ? data[collapseKey]?.products
+          : data[collapseKey]?.products.filter((product) => {
+              if (
+                activeLabels
+                  .map((label) => label.id)
+                  .every((label) =>
+                    product.labels.map((activeLabel: any) => activeLabel.id).includes(label),
+                  )
+              )
+                return true;
+              return false;
+            });
+
+      const newData = data.map((item, index: number) => {
+        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
+        if (index === collapseKey) {
+          return {
+            ...item,
+            products: activeProducts,
+            labels: temp,
+          };
+        }
+        return { ...item, labels: temp };
+      });
+      setGroups(newData);
+    }
+  }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
+
+  const filterByCategory = filter?.name.toLowerCase() === 'category_id';
+
+  const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!data) {
+      return;
+    }
+    e.stopPropagation();
+
+    const latestData = [...data];
+
+    latestData[index] = { ...latestData[index], description: e.target.value };
+
+    store.dispatch(setProductList({ data: [...latestData] }));
+  };
 
   if (loading) {
     return null;
@@ -370,30 +438,275 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   if (!allProducts?.length && !data?.length) {
     return <EmptyOne />;
   }
-
+  const onChangeGallery = (images: any) => {
+    const newImages = images.map((image: string) => {
+      const parts = image.split('base64,');
+      return parts[1] || image;
+    });
+    setGalleryImages(newImages);
+  };
   return (
     <>
-      {data?.map((group, index) => (
+      {customLoading ? (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      ) : null}
+      {groups?.map((group: any, index: number) => (
         <ActiveOneCustomCollapse
           groupIndex={index}
           groupName="product-group"
           className={styles.productCardCollapse}
-          customHeaderClass={styles.productCardHeaderCollapse}
-          key={group.id || index}
+          customHeaderClass={`${styles.productCardHeaderCollapse} ${
+            (group.description || isTiscAdmin) && !filterByCategory
+              ? styles.productHeaderCollapse
+              : ''
+          }`}
+          expandIcon={undefined}
+          key={index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
+          forceOnKeyChange
+          onChange={() => {
+            isOpenLabel.setValue(false);
+            isOpenGallery.setValue(false);
+            setActiveLabels([]);
+            setCollapseKey(collapseKey === index ? -1 : index);
+          }}
           header={
-            <div className="header-text">
-              <BodyText data-text={`${group.name} (${group.count})`} level={5} fontFamily="Roboto">
-                {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
+            <div style={{ width: '100%' }}>
+              <div className="header-text flex-between text-uppercase">
+                <BodyText
+                  data-text={`${group.name} (${group.count})`}
+                  level={5}
+                  fontFamily="Roboto"
+                >
+                  {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
 
-                {truncate(capitalize(group.name), { length: 40 })}
-                <span className="product-count">({group.count})</span>
-              </BodyText>
+                  {truncate(capitalize(group.name), { length: 40 })}
+                  <span className="product-count">({group.count})</span>
+                </BodyText>
+                <div style={{ marginRight: 16, height: 20 }}>
+                  {collapseKey === index ? <DropupIcon /> : <DropdownIcon />}
+                </div>
+              </div>
             </div>
           }
         >
+          <div style={{ marginBottom: 8, boxShadow: 'rgba(0, 0, 0, 0.5) 1px 1px 3px' }}>
+            {(group.description || isTiscAdmin) && !filterByCategory ? (
+              <div style={{ background: '#fff' }}>
+                <div
+                  className="flex-between"
+                  style={{ minHeight: 40, borderBottom: '1px solid #bfbfbf' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {!isTiscAdmin ? (
+                    <RobotoBodyText level={5} style={{ margin: '8px 16px' }}>
+                      {group.description}
+                    </RobotoBodyText>
+                  ) : (
+                    <CustomTextArea
+                      customStyles={{ width: '100%', marginRight: 8 }}
+                      styles={{
+                        paddingLeft: 16,
+                        paddingTop: 11,
+                        paddingBottom: 11,
+                        overflow: 'hidden',
+                        resize: 'none',
+                      }}
+                      placeholder="type description"
+                      value={group.description}
+                      onChange={onChangeDescription(index)}
+                      borderBottomColor=""
+                      autoResize
+                    />
+                  )}
+                </div>
+              </div>
+            ) : null}
+            {!filterByCategory ? (
+              <div className={styles.galleryContainer}>
+                <div
+                  className={styles.group}
+                  style={{
+                    boxShadow: `0px -0.5px 0px 0px ${
+                      isOpenGallery.value && group.images ? '#bfbfbf' : '#000'
+                    } inset`,
+                  }}
+                >
+                  {(group.description || isTiscAdmin) && !filterByCategory ? (
+                    <div
+                      className={`header-text ${styles.gallery} ${
+                        isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
+                      }`}
+                      onClick={() => {
+                        isOpenGallery.setValue((pre) => !pre);
+                      }}
+                    >
+                      <BodyText level={5} fontFamily="Roboto">
+                        GALLERY
+                      </BodyText>
+                      <div
+                        style={{ marginRight: 16, marginLeft: 8, height: 20, cursor: 'pointer' }}
+                      >
+                        {isOpenGallery.value ? <DropupIcon /> : <DropdownIcon />}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div className={'d-flex'} style={{ alignItems: 'center' }}>
+                    <div
+                      className={`${styles.label} ${
+                        activeLabels[0] || isOpenLabel.value ? styles.active : ''
+                      }`}
+                    >
+                      <CheckBoxDropDown
+                        items={group.labels}
+                        onChange={(values) => {
+                          setActiveLabels(values);
+                        }}
+                        viewAllTop={true}
+                        textCapitalize={false}
+                        placement={'bottomLeft'}
+                        menuStyle={{ height: 'max-content', width: 240 }}
+                        handleChangeDropDownIcon={(visible: boolean) => {
+                          isOpenLabel.setValue(visible);
+                        }}
+                        className={'header-text'}
+                        selected={activeLabels}
+                      >
+                        <span
+                          className={'text-overflow'}
+                          style={{
+                            maxWidth: 150,
+                          }}
+                        >
+                          FILTER BY
+                        </span>
+                      </CheckBoxDropDown>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                      {!isMobile
+                        ? activeLabels.map((activeLabel: any, labelIndex: number) => (
+                            <div className={styles.labelContainer} style={{ padding: 8 }}>
+                              <div
+                                key={labelIndex}
+                                style={{
+                                  borderRadius: 12,
+                                  height: 22,
+                                  paddingLeft: 16,
+                                  paddingRight: 1,
+                                }}
+                                className={'d-flex flex-center'}
+                              >
+                                <span
+                                  className={'text-capitalize'}
+                                  style={{
+                                    paddingRight: 8,
+                                    maxWidth: 150,
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {activeLabel.name}
+                                </span>
+                                <RemoveIcon
+                                  className={styles.removeIcon}
+                                  onClick={() => {
+                                    setActiveLabels(
+                                      activeLabels.filter(
+                                        (item: any) => item.id !== activeLabel.id,
+                                      ),
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ))
+                        : null}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={` ${
+                    isOpenGallery.value ? styles.galleryContentIn : styles.galleryContentOut
+                  }`}
+                  style={{
+                    height: !isTiscAdmin && (!group.images || !group.images[0]) ? 0 : 'unset',
+                    boxShadow: '0px -0.5px 0px 0px #000 inset',
+                  }}
+                >
+                  <CollectionGallery onChangeImages={onChangeGallery} data={group.images} />
+                </div>
+              </div>
+            ) : null}
+            {isTiscAdmin && !filterByCategory ? (
+              <div style={{ background: '#fff' }}>
+                <div
+                  style={{
+                    minHeight: 40,
+                    display: 'flex',
+                    justifyContent: 'end',
+                    alignItems: 'center',
+                  }}
+                >
+                  {isTiscAdmin ? (
+                    <>
+                      <CustomButton
+                        style={{ marginRight: 16, borderRadius: 12 }}
+                        properties={'warning'}
+                        variant={'primary'}
+                        size={'small'}
+                        disabled={group.type === CollectionRelationType.Color}
+                        onClick={() => {
+                          confirmDelete(() => {
+                            deleteCollection(group.id).then(() => {
+                              const brandId = groups[0].products[0].brand?.id || '';
+                              getProductSummary(brandId).then(() => {
+                                const params = {
+                                  brand_id: brandId,
+                                  collection_id: 'all',
+                                } as ProductGetListParameter;
+                                getProductListByBrandId(params);
+                              });
+                            });
+                          });
+                        }}
+                      >
+                        Delete
+                      </CustomButton>
+                      <CustomButton
+                        style={{ marginRight: 16, borderRadius: 12 }}
+                        properties={'standard'}
+                        variant={'primary'}
+                        size={'small'}
+                        onClick={() => {
+                          const brandId = groups[0].products[0].brand?.id || '';
+                          setCustomLoading(true);
+                          updateCollection(group.id, {
+                            name: group.name,
+                            description: group.description,
+                            images: galleryImages,
+                            brand_id: brandId,
+                          }).then(() => {
+                            setCustomLoading(false);
+                          });
+                        }}
+                      >
+                        Save
+                      </CustomButton>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <div className={styles.productCardContainer}>
-            {group.products.map((productItem, itemIndex) => (
+            {group.products.map((productItem: any, itemIndex: number) => (
               <ProductCard
                 key={productItem.id || itemIndex}
                 product={productItem}

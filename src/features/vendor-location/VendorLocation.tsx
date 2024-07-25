@@ -1,8 +1,5 @@
 import { FC, useEffect, useState } from 'react';
 
-import { MESSAGE_ERROR } from '@/constants/message';
-import { message } from 'antd';
-
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
@@ -10,7 +7,6 @@ import { selectProductSpecification } from '../product/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
 import { getCustomDistributorByCompany } from '@/pages/Designer/Products/CustomLibrary/services';
-import { isEmpty } from 'lodash';
 
 import { BrandDetail } from '../user-group/types';
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -118,7 +114,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
-  /// brand and distributor selected have been setted from useProductAttributeForm
+  /// brand and distributor selected have been set from useProductAttributeForm
   const brandLocationId =
     useAppSelector((state) =>
       customProduct
@@ -203,14 +199,18 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
   const handleOnChangeSpecifying = (checked?: RadioValue, isBrand?: boolean) => {
     const newValue = checked?.value ? String(checked.value) : '';
+
     const updateProductDetailFunc = customProduct
       ? updateCustomProductSpecifiedDetail
       : setPartialProductDetail;
+
     const newUpdate =
       locationPopup === 'brand' || isBrand
         ? { brand_location_id: newValue }
         : { distributor_location_id: newValue };
+
     store.dispatch(updateProductDetailFunc(newUpdate));
+
     if (userSelection) {
       selectProductSpecification(productId, newUpdate);
     }
@@ -334,8 +334,14 @@ export const VendorLocation: FC<VendorTabProps> = ({
     noFooter: isTiscAdmin,
     disabledDropDownRadio: isTiscAdmin,
     chosenValue: getChosenValue(),
-    setChosenValue: (checked: any) =>
-      locationPopup ? handleOnChangeSpecifying(checked) : undefined,
+    onFormSubmit: (checked: RadioValue) => {
+      if (locationPopup) {
+        handleOnChangeSpecifying(checked);
+      }
+
+      /// close modal
+      setLocationPopup('');
+    },
   };
 
   return (
@@ -376,9 +382,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader('Distributor Address', chosenDistributorCountry, () => {
-                if (isEmpty(distributorAddresses) && isSpecifying) {
-                  return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
-                }
+                // if (isEmpty(distributorAddresses) && isSpecifying) {
+                //   return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
+                // }
                 setLocationPopup('distributor');
                 handleCollapse('distributor', activeKey);
                 return true;

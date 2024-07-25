@@ -1,9 +1,14 @@
 import React from 'react';
 
 import { ProjectTabKeys } from '../../constants/tab';
+import { PATH } from '@/constants/path';
+import { QUERY_KEY } from '@/constants/util';
 import { useAccess, useHistory } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
+
+import { pushTo } from '@/helper/history';
+import { useGetQueryFromOriginURL } from '@/helper/hook';
 
 import { TabItem } from '@/components/Tabs/types';
 import { ProjectDetailProps } from '@/features/project/types';
@@ -55,7 +60,10 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
   activeOnlyGeneral,
 }) => {
   const accessPermission = useAccess();
+
   const history = useHistory();
+
+  const newTabFromRequest = useGetQueryFromOriginURL(QUERY_KEY.new_tab_from_request);
 
   const ProjectTabs: TabItem[] = [
     {
@@ -80,7 +88,9 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
       tab: 'product specified',
       tabletTabTitle: 'Specified',
       key: ProjectTabKeys.productSpecified,
-      disable: !accessPermission.design_project_product_specified,
+      disable:
+        !accessPermission.design_project_product_specified &&
+        !accessPermission.brand_project_tracking,
     },
   ];
 
@@ -91,6 +101,15 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
       }))
     : ProjectTabs;
 
+  const handleClose = () => {
+    if (newTabFromRequest) {
+      pushTo(PATH.brandHomePage);
+      return;
+    }
+
+    history.goBack();
+  };
+
   return (
     <div className={styles.projectDetaiHeaderWrapper}>
       <div className={styles.projectDetailTitle}>
@@ -100,7 +119,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
           <EmptyProductDataTitle />
         )}
 
-        <CloseIcon onClick={history.goBack} />
+        <CloseIcon onClick={handleClose} />
       </div>
       <CustomTabs
         listTab={listTab}

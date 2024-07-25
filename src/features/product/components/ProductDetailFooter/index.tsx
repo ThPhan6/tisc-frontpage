@@ -1,13 +1,20 @@
 import React, { memo } from 'react';
 
+// import { ReactComponent as ActionLeftIcon } from '@/assets/icons/align-left-icon.svg';
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
 
+import { closeActiveSpecAttributeGroup } from '../../reducers';
 import { ProductInfoTab } from '../ProductAttributes/types';
+// import { onShowRelatedProductByCollection } from '../../reducers';
 import { TabItem } from '@/components/Tabs/types';
 import store, { useAppSelector } from '@/reducers';
-import { ProductFooterTabs, onChangeProductFooterTab } from '@/reducers/active';
+import {
+  ProductFooterTabs,
+  closeDimensionWeightGroup,
+  onChangeProductFooterTab,
+} from '@/reducers/active';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -16,15 +23,35 @@ import { ProductCollection } from './ProductCollection';
 import ProductDownloadFooter from './ProductDownloadFooter';
 import ProductTip from './ProductTip';
 
-const LIST_TAB: TabItem[] = [
-  { tab: 'Collections', key: 'collection', icon: <CollectionIcon /> },
-  { tab: 'Tips', key: 'tip', icon: <TipsIcon /> },
-  { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },
-];
-
 export const ProductDetailFooter: React.FC<{ infoTab: ProductInfoTab }> = memo(({ infoTab }) => {
   const activeKey = useAppSelector((s) => s.active.productFooter);
+  // const relatedProduct = useAppSelector((state) => state.product.relatedProductOnView);
   const visible = infoTab !== 'vendor';
+
+  const LIST_TAB: TabItem[] = [
+    {
+      tab:
+        // relatedProduct?.id && relatedProduct.relatedProductData?.length
+        //   ? relatedProduct.name
+        // :
+        'Collections',
+      key: 'collection',
+      icon: (
+        // relatedProduct?.id && relatedProduct.relatedProductData?.length ? (
+        //   <ActionLeftIcon
+        //     onClick={(e) => {
+        //       e.stopPropagation();
+        //       store.dispatch(onShowRelatedProductByCollection({} as any));
+        //     }}
+        //   />
+        // ) : (
+        <CollectionIcon />
+      ),
+      // ),
+    },
+    { tab: 'Tips', key: 'tip', icon: <TipsIcon /> },
+    { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },
+  ];
 
   return (
     <div className={`${styles.productFooter} ${visible ? '' : styles.hidden}`}>
@@ -33,9 +60,11 @@ export const ProductDetailFooter: React.FC<{ infoTab: ProductInfoTab }> = memo((
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={(tab) =>
-          store.dispatch(onChangeProductFooterTab({ tab: tab as ProductFooterTabs, infoTab }))
-        }
+        onChange={(tab) => {
+          store.dispatch(onChangeProductFooterTab({ tab: tab as ProductFooterTabs, infoTab }));
+          store.dispatch(closeActiveSpecAttributeGroup());
+          store.dispatch(closeDimensionWeightGroup());
+        }}
         activeKey={activeKey}
         hideTitleOnMobile
         outlineOnMobile

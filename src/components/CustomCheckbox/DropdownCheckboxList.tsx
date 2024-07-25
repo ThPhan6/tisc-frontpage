@@ -1,141 +1,216 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { Collapse } from 'antd';
+import { Collapse, Radio } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useDropdropCheckboxList } from '../hook';
 import { isEmpty } from 'lodash';
 
-import type { CheckboxValue } from '@/components/CustomCheckbox/types';
+import type {
+  CheckboxValue,
+  DropdownCheckboxItem,
+  DropdownCheckboxListProps,
+} from '@/components/CustomCheckbox/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 
+import { CollapseLevel2Props } from '../Collapse/Expand';
+import { MainTitle } from '../Typography';
 import styles from './styles/dropdownList.less';
 
-export interface DropdownCheckboxItem {
-  [key: string]: any;
-  margin?: 8 | 12;
-  options: CheckboxValue[];
-}
-type ActiveKeyType = string | number | (string | number)[];
-interface DropdownCheckboxListProps {
-  selected?: CheckboxValue[];
-  chosenItem?: CheckboxValue[];
-  data: DropdownCheckboxItem[];
-  renderTitle?: (data: DropdownCheckboxItem) => string | number | React.ReactNode;
-  onChange?: (value: CheckboxValue[]) => void;
-  noCollapse?: boolean;
-  combinable?: boolean;
-  showCount?: boolean;
-  customClass?: string;
-  canActiveMultiKey?: boolean;
-}
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const {
     data,
     selected,
     onChange,
+    onOneChange,
     renderTitle,
-    chosenItem,
     combinable,
     noCollapse,
     showCount = true,
-    customClass,
-    canActiveMultiKey,
+    customClass = '',
+    isSelectAll,
+    showCollapseIcon,
+    additionalSelected,
+    collapseLevel = '1',
+    onChangeAdditionalSelected,
   } = props;
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
-  useEffect(() => {
-    let activeKeys: number[] = [];
-    data.forEach((item, index) => {
-      const selectedOption = item.options.find((option) => {
-        return chosenItem && chosenItem.find((checked) => option.value === checked.value);
-      });
-      if (selectedOption) {
-        if (combinable) {
-          activeKeys.push(index);
-        } else {
-          activeKeys = [index];
-        }
-      }
-    });
-    setActiveKey(activeKeys);
-  }, [chosenItem]);
+  const {
+    selectAll,
+    curSelect,
+    activeKey,
+    optionKey,
+    handleCollapseMain,
+    handleCollapseOption,
+    handleSelectAll,
+  } = useDropdropCheckboxList(props);
 
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
-    if (renderTitle) {
-      return (
-        <span>
-          {renderTitle(item)}
+    return (
+      <div className="flex-start w-full hover-on-row">
+        <div className="flex-start w-full">
+          {renderTitle?.(item) ?? index}
+
           {showCount ? (
             <span
-              className={styles.dropdownCount}
               style={{
                 marginLeft: item.margin ? item.margin : 8,
               }}
             >
-              ({item.options.length})
+              ({item?.count ?? item?.options?.length ?? 0})
             </span>
           ) : (
             ''
           )}
-        </span>
-      );
-    }
-    return index;
+
+          {showCollapseIcon ? (
+            (
+              typeof activeKey === 'string' || typeof activeKey === 'number'
+                ? String(activeKey) === item?.id ?? String(index)
+                : activeKey.includes(item?.id ?? String(index))
+            ) ? (
+              <div className="flex-start drop-up-icon">
+                <DropupIcon />
+              </div>
+            ) : (
+              <div className="flex-start drop-down-icon">
+                <DropdownIcon />
+              </div>
+            )
+          ) : null}
+        </div>
+
+        {isSelectAll ? (
+          <div
+            className={styles.selectAll}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <Radio
+              className="select-all-radio"
+              checked={
+                selectAll?.includes(item?.id) ||
+                (selected?.length === item.options.length && selectAll?.includes(item?.id))
+              }
+              onClick={handleSelectAll(item, index)}
+            >
+              <MainTitle level={4} customClass="select-label">
+                Select all
+              </MainTitle>
+            </Radio>
+          </div>
+        ) : null}
+        {item.rightHeader}
+      </div>
+    );
   };
+
+  const renderItemCheckbox = (item: DropdownCheckboxItem) => {
+    return (
+      <CustomCheckbox
+        options={item.options}
+        selected={curSelect}
+        isCheckboxList
+        onOneChange={onOneChange}
+        onChange={(changedData) => {
+          let otherSelected: CheckboxValue[] = [];
+
+          if (combinable && selected) {
+            otherSelected = selected.reduce((finalData, selectedItem) => {
+              if (!item.options.find((option) => option.value === selectedItem.value)) {
+                finalData.push(selectedItem);
+              }
+              return finalData;
+            }, [] as CheckboxValue[]);
+          }
+
+          onChange?.([...changedData, ...otherSelected]);
+        }}
+        additionalSelected={additionalSelected}
+        onChangeAdditionalSelected={onChangeAdditionalSelected}
+      />
+    );
+  };
+
+  if (collapseLevel === '1') {
+    return (
+      <Collapse
+        bordered={false}
+        expandIconPosition="right"
+        expandIcon={({ isActive }) =>
+          showCollapseIcon ? undefined : isActive ? <DropupIcon /> : <DropdownIcon />
+        }
+        className={`dropdownList ${isSelectAll ? styles.collapseSelectAll : ''} ${customClass}`}
+        onChange={handleCollapseMain}
+        activeKey={activeKey}
+      >
+        {data.map((item, index) => (
+          <Collapse.Panel
+            header={renderHeader(item, index)}
+            key={item?.id ?? index}
+            collapsible={isEmpty(item.options) || noCollapse ? 'disabled' : undefined}
+            className="site-collapse-custom-panel"
+          >
+            {renderItemCheckbox(item)}
+          </Collapse.Panel>
+        ))}
+      </Collapse>
+    );
+  }
 
   return (
     <Collapse
       bordered={false}
       expandIconPosition="right"
-      expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-      className={`${styles.dropdownList} ${customClass}`}
-      onChange={(keys) => {
-        let newKeys = keys;
-        if (!canActiveMultiKey) {
-          newKeys = typeof keys === 'string' ? keys : [keys[keys.length - 1]];
-        }
-        setActiveKey(newKeys);
-      }}
+      expandIcon={({ isActive }) =>
+        showCollapseIcon ? undefined : isActive ? <DropupIcon /> : <DropdownIcon />
+      }
+      className={`dropdownList dropdownListV2 ${
+        isSelectAll ? styles.collapseSelectAll : ''
+      } ${customClass}`}
+      onChange={handleCollapseMain}
       activeKey={activeKey}
     >
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
-          key={index}
+          key={item?.id ?? index}
           collapsible={isEmpty(item.options) || noCollapse ? 'disabled' : undefined}
           className="site-collapse-custom-panel"
         >
-          <CustomCheckbox
-            options={item.options}
-            selected={
-              selected
-                ? selected.filter((selectedItem) =>
-                    item.options.find((option) => option.value === selectedItem.value),
-                  )
-                : undefined
-            }
-            onChange={(changedData) => {
-              let otherSelected: CheckboxValue[] = [];
-              if (combinable && selected) {
-                otherSelected = selected.reduce((finalData, selectedItem) => {
-                  if (!item.options.find((option) => option.value === selectedItem.value)) {
-                    finalData.push(selectedItem);
-                  }
-                  return finalData;
-                }, [] as CheckboxValue[]);
-              }
-              if (onChange) {
-                onChange([...changedData, ...otherSelected]);
-              }
-            }}
-            isCheckboxList
-          />
+          <Collapse
+            {...CollapseLevel2Props}
+            accordion
+            activeKey={optionKey}
+            onChange={handleCollapseOption}
+            className={`dropdownListLevelTwo`}
+          >
+            {item?.subs?.map((opt: DropdownCheckboxItem, optIndex: number) => (
+              <Collapse.Panel
+                key={opt?.id ?? optIndex}
+                collapsible={opt?.count === 0 || isEmpty(item.subs) ? 'disabled' : undefined}
+                className="site-collapse-custom-panel-level-2"
+                header={
+                  <div className="flex-center hover-on-row">
+                    <span className="text-uppercase">{opt.name}</span>
+                    <span style={{ marginLeft: 8, fontWeight: 300 }}>
+                      ({opt?.count ?? item?.subs?.length ?? 0})
+                    </span>
+                  </div>
+                }
+              >
+                {renderItemCheckbox(opt)}
+              </Collapse.Panel>
+            ))}
+          </Collapse>
         </Collapse.Panel>
       ))}
     </Collapse>
   );
 };
+
 export default DropdownCheckboxList;

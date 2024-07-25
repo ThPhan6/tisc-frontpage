@@ -17,7 +17,11 @@ import { hidePageLoading, showPageLoading } from './../../../../../features/load
 export function getCustomProductList(params?: CustomProductFilter) {
   request<{ data: { products: CustomProductList[] } }>('/api/custom-product/get-list', {
     method: 'GET',
-    params: params,
+    params: {
+      ...params,
+      page: 1,
+      pageSize: 99999,
+    },
   })
     .then((res) => {
       store.dispatch(setCustomProductList(res.data.products));

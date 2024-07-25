@@ -16,6 +16,25 @@
     &:focus {
       box-shadow: none;
     }
+    &::placeholder {
+      color: @mono-color-medium;
+    }
+  }
+  :global(.ant-input[disabled]) {
+    overflow: hidden;
+    color: #000 !important;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: transparent !important;
+    border: none;
+    border-bottom-color: transparent;
+    cursor: default;
+
+    &:hover {
+      border: unset !important;
+      border-color: unset !important;
+      border-right-width: unset !important;
+    }
   }
   :global(.ant-input-textarea-show-count) {
     &::after {

@@ -1,0 +1,50 @@
+.option_form_container {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  margin-bottom: 16px;
+  padding: 0 16px;
+  background: #fff;
+  box-shadow: 0 0.7px 0 #000;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    white-space: nowrap;
+
+    &__title {
+      text-transform: uppercase;
+    }
+
+    &__icon {
+      margin-left: 16px;
+      cursor: pointer;
+
+      path {
+        fill: @mono-color;
+      }
+    }
+
+    :global(.card-icon),
+    :global(.list-icon) {
+      path {
+        // fill: @primary-color-dark;
+        stroke: #000;
+        stroke-width: 1px;
+      }
+    }
+  }
+
+  .input {
+    :global(.ant-input) {
+      color: @primary-color-dark;
+      text-transform: uppercase;
+    }
+  }
+}
