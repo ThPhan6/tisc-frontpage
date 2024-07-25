@@ -1,4 +1,13 @@
-import { ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  Fragment,
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Checkbox, message } from 'antd';
@@ -15,6 +24,7 @@ import { trimStart } from 'lodash';
 import { CheckboxValue, CustomCheckboxProps, LabelType } from './types';
 import { RootState } from '@/reducers';
 import { setLabels, setSelectedSubLabels } from '@/reducers/label';
+import { SubLabel } from '@/types';
 
 import CustomButton from '../Button';
 import { CustomInput } from '../Form/CustomInput';
@@ -49,13 +59,36 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     (selected as DynamicCheckboxValue[]) || [],
   );
 
+  const { expandedKeys, setExpandedKeys, handleToggleExpand } = useToggleExpand();
+
   const { labels } = useSelector((state: RootState) => state.label);
 
   const dispatch = useDispatch();
 
-  const { expandedKeys, handleToggleExpand } = useToggleExpand();
-
   const editingLabelIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const allSubLabels = labels.reduce((pre: SubLabel[], cur) => {
+      return pre.concat(cur.subs!);
+    }, []);
+
+    const selectedParents = checkedItems.map((sub) => {
+      const foundSubLabel = allSubLabels.find((subLabel: SubLabel) => subLabel.id === sub.value);
+      return foundSubLabel?.parent_id;
+    });
+
+    setExpandedKeys((prevExpandedKeys) => {
+      const newExpandedKeys = new Set(prevExpandedKeys);
+
+      selectedParents.forEach((parentId) => {
+        if (parentId && !newExpandedKeys.has(parentId)) {
+          newExpandedKeys.add(parentId);
+        }
+      });
+
+      return Array.from(newExpandedKeys);
+    });
+  }, [JSON.stringify(checkedItems)]);
 
   useEffect(() => {
     if (otherInput && clearOtherInput) {
@@ -123,6 +156,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    * @param sub - The checkbox value object.
    */
   const handleCheckboxChange = (sub: DynamicCheckboxValue) => {
+    if (isActionMenuDisabled) return;
+
     setCheckedItems((pre) =>
       pre.some((preItem) => preItem.value === sub.value)
         ? pre.filter((item) => item.value !== sub.value)
@@ -231,7 +266,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       }
     };
 
-  const handleCancel = () => setIsActionMenuDisabled(false);
+  const handleCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
+    setIsActionMenuDisabled(false);
+  };
 
   /**
    * Check if any sub labels are selected for a given label.
@@ -398,14 +436,22 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
               {expandedKeys.includes(label.id!) ? (
                 <span
-                  style={{ cursor: `${isActionMenuDisabled ? 'not-allowed' : 'cursor'}` }}
+                  style={{
+                    cursor: `${
+                      isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
+                    }`,
+                  }}
                   className={`${style['arrow-icon']}`}
                 >
                   <DropupIcon />
                 </span>
               ) : (
                 <span
-                  style={{ cursor: `${isActionMenuDisabled ? 'not-allowed' : 'cursor'}` }}
+                  style={{
+                    cursor: `${
+                      isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
+                    }`,
+                  }}
                   className={`${style['arrow-icon']}`}
                 >
                   <DropdownIcon />
