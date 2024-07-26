@@ -557,9 +557,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
           <div className={'side-container '}>
             <div className={`side-container-wrapper`}>
               <MainTitle level={3}>Create New Collection</MainTitle>
-              <div
-                className={`flex-between flex-grow border-bottom-light ${styles['collection-input-container']}`}
-              >
+              <div className={`flex-between flex-grow border-bottom-light mr-16`}>
                 <CustomInput
                   placeholder="type new collection name"
                   value={newOption}
@@ -592,7 +590,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
               </div>
             </div>
             <div className={'sub-side-container border-bottom-light'}>
-              <MainTitle customClass={`${styles['main-title']}`}></MainTitle>
+              <MainTitle customClass={`mb-28`}></MainTitle>
               <div className="flex-between flex-grow">
                 <CustomInput
                   placeholder="add sub-label name"
