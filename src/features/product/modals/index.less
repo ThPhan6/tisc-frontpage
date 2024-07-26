@@ -56,6 +56,11 @@
         box-shadow: none;
       }
 
+      :global(.side-container-wrapper) {
+        width: 100%;
+        margin-top: 18px;
+      }
+
       :global(.sub-side-container) {
         width: 50%;
 
@@ -114,4 +119,24 @@
       min-height: 36px;
     }
   }
+}
+
+.dropdown {
+  display: flex;
+
+  &__text {
+    width: max-content;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Cormorant-Garamond';
+    line-height: calc(21 / 14);
+  }
+}
+
+.main-title {
+  margin-bottom: 28px;
+}
+
+.collection-input-container {
+  margin-right: 16px;
 }

@@ -1,7 +1,6 @@
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
 
 import { DropDownProps, Menu, Row } from 'antd';
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import Dropdown from 'antd/es/dropdown';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -16,7 +15,6 @@ import { capitalize, sortBy, truncate } from 'lodash';
 
 import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
-import labelStyles from '@/components/CustomCheckbox/styles/index.less';
 import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
 
@@ -359,8 +357,9 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                     expandedKeys.includes(item.id) || isAnySubLabelChecked(item.id) ? '500' : '300'
                   }`,
                 }}
-                className={` ${styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]} ${
-                  labelStyles['main-label-name']
+                className={`${styles['label-name-width']} ${
+                  styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]
+                } main-label-name text-hover-medium
                 }`}
               >
                 {item.name}
@@ -377,11 +376,11 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
               .map((sub: DynamicCheckboxValue) => (
                 <section
                   key={sub.id}
-                  className={`${styles['sub-label-wrapper']} `}
+                  className={`${styles['sub-label-wrapper']}`}
                   onClick={handleSelect(sub)}
                 >
                   <h2
-                    className={`${styles['sub-label-name']} ${
+                    className={`sub-label-name text-hover-medium ${styles['label-name-width']} ${
                       styles[`${isSubLabelNameSelected(sub.id!) ? 'color-checked' : ''}`]
                     }`}
                     style={{

@@ -404,7 +404,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               ) : (
                 <span
                   style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
-                  className={`${style['main-label-name']} ${
+                  className={`main-label-name w-full text-hover-normal ${
                     style[`${isAnySubLabelChecked(label.id!) ? 'color-checked' : ''}`]
                   }`}
                 >
@@ -533,7 +533,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                           </div>
                         ) : (
                           <span
-                            className={`${style['sub-label-name']} ${
+                            className={`sub-label-name w-full text-hover-normal ${
                               style[`${isSubLabelNameSelected ? 'color-checked' : ''}`]
                             }`}
                           >

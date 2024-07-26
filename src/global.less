@@ -613,7 +613,24 @@ li.ant-menu-submenu {
   display: none;
 }
 
-ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.ant-dropdown-menu-light {
-  width: max-content !important;
-  height: fit-content !important;
+.main-label-name,
+.sub-label-name {
+  overflow: hidden;
+  font-size: 14px;
+  font-family: Roboto;
+  line-height: calc(22 / 14);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.text-hover-normal {
+  &:hover {
+    font-weight: 400;
+  }
+}
+
+.text-hover-medium {
+  &:hover {
+    font-weight: 500;
+  }
 }

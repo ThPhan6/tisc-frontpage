@@ -486,20 +486,6 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
     };
   });
 
-  const dropDownTextStyles = {
-    fontWeight: '600',
-    width: 'max-content',
-    color: !newSubLabel ? '#808080' : '#000',
-    fontSize: '14px',
-    fontFamily: 'Cormorant-Garamond',
-    lineHeight: 'calc(21/14)',
-  };
-
-  const dropDownStyles = {
-    display: 'flex',
-    cursor: !newSubLabel ? 'not-allowed' : 'pointer',
-  };
-
   return (
     <Popover
       title="SELECT COLLECTION & LABEL"
@@ -569,11 +555,10 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       extraTopAction={
         <div className={`${styles.boxShadowBottom} d-flex justify-between`}>
           <div className={'side-container '}>
-            <div style={{ marginTop: '18px', width: '100%' }}>
+            <div className={`side-container-wrapper`}>
               <MainTitle level={3}>Create New Collection</MainTitle>
               <div
-                className="flex-between flex-grow border-bottom-light "
-                style={{ marginRight: '16px' }}
+                className={`flex-between flex-grow border-bottom-light ${styles['collection-input-container']}`}
               >
                 <CustomInput
                   placeholder="type new collection name"
@@ -607,7 +592,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
               </div>
             </div>
             <div className={'sub-side-container border-bottom-light'}>
-              <MainTitle style={{ marginBottom: '28px' }}></MainTitle>
+              <MainTitle customClass={`${styles['main-title']}`}></MainTitle>
               <div className="flex-between flex-grow">
                 <CustomInput
                   placeholder="add sub-label name"
@@ -616,11 +601,19 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                 />
                 <CustomDropDown
                   items={subLabelItems}
+                  menuStyle={{ width: 'max-content', height: 'fit-content' }}
                   placement="bottomRight"
                   disabled={!newSubLabel}
-                  dropDownStyles={dropDownStyles}
+                  className={styles.dropdown}
+                  dropDownStyles={{ cursor: `${!newSubLabel ? 'not-allowed' : 'pointer'}` }}
                 >
-                  <span style={dropDownTextStyles}>Add To</span>
+                  <span
+                    className={`${!newSubLabel ? 'mono-color-dark ' : 'pure-black '} ${
+                      styles.dropdown__text
+                    }`}
+                  >
+                    Add To
+                  </span>
                 </CustomDropDown>
               </div>
             </div>
