@@ -358,7 +358,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                   }`,
                 }}
                 className={`${styles['label-name-width']} ${
-                  styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]
+                  isAnySubLabelChecked(item.id) ? styles['color-checked'] : ''
                 } main-label-name text-hover-medium
                 }`}
               >
@@ -381,7 +381,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                 >
                   <h2
                     className={`sub-label-name text-hover-medium ${styles['label-name-width']} ${
-                      styles[`${isSubLabelNameSelected(sub.id!) ? 'color-checked' : ''}`]
+                      isSubLabelNameSelected(sub.id!) ? styles['color-checked'] : ''
                     }`}
                     style={{
                       fontWeight: `${values.some((value) => value.id === sub.id) ? '500' : ''}`,
@@ -503,7 +503,7 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   showCloseFooter?: boolean;
   handleChangeDropDownIcon?: any;
   dropDownListVisible?: boolean;
-  dropDownStyles: React.CSSProperties;
+  dropDownStyles?: React.CSSProperties;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,

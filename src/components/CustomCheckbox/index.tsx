@@ -405,7 +405,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 <span
                   style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
                   className={`main-label-name w-full text-hover-normal ${
-                    style[`${isAnySubLabelChecked(label.id!) ? 'color-checked' : ''}`]
+                    isAnySubLabelChecked(label.id!) ? style['color-checked'] : ''
                   }`}
                 >
                   {label.name}
@@ -461,7 +461,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
             <div
               className={`${style['expandable-section']} ${
-                expandedKeys.includes(label.id!) ? `${style['expanded']}` : ''
+                expandedKeys.includes(label.id!) ? style['expanded'] : ''
               }`}
             >
               {expandedKeys.includes(label.id as string) &&
@@ -534,7 +534,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                         ) : (
                           <span
                             className={`sub-label-name w-full text-hover-normal ${
-                              style[`${isSubLabelNameSelected ? 'color-checked' : ''}`]
+                              isSubLabelNameSelected ? style['color-checked'] : ''
                             }`}
                           >
                             {sub.name}
@@ -546,7 +546,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                             disabled={isActionMenuDisabled}
                             className={`${modalStyle.marginSpace} ${
                               isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
-                            } label-action-menu`}
+                            }`}
                             overlayClassName={modalStyle.actionMenuOverlay}
                             editActionOnMobile={false}
                             containerStyle={{ display: 'flex', alignItems: 'center' }}
