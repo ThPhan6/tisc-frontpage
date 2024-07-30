@@ -80,7 +80,7 @@ interface FilterItemProps {
 export const FilterItem: React.FC<FilterItemProps> = ({ title, onDelete }) => {
   return (
     <span className={styles.filterItem}>
-      {truncate(capitalize(title), { length: 25 })}
+      {capitalize(title)}
       <DeleteIcon onClick={onDelete} />
     </span>
   );
