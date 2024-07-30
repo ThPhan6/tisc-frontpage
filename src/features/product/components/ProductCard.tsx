@@ -730,6 +730,26 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           />
         ))}
       </div>
+      {/* Scroll to top Button */}
+      <CustomButton
+        style={{
+          position: 'fixed',
+          bottom: 40,
+          right: 20,
+          zIndex: 1,
+        }}
+        properties={'rounded'}
+        variant={'primaryDark'}
+        size={'medium'}
+        onClick={() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        }}
+      >
+        <DropupIcon /> Back To Top
+      </CustomButton>
     </>
   );
 };
