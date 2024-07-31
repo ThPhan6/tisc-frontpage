@@ -89,7 +89,9 @@ export const AttributeOptionLabel: FC<{
                 }
               }}
             />
-            <img src={showImageUrl(option.image)} />
+            {option.image === '/default/option_default.webp' ? null : (
+              <img src={showImageUrl(option.image)} />
+            )}
           </div>
         </Tooltip>
       )}
