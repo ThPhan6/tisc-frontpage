@@ -155,7 +155,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    *
    * @param sub - The checkbox value object.
    */
-  const handleCheckboxChange = (sub: DynamicCheckboxValue) => {
+  const handleCheckboxChange = (sub: DynamicCheckboxValue) => () => {
     if (isActionMenuDisabled) return;
 
     setCheckedItems((pre) =>
@@ -363,7 +363,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       ) : (
         sortedLabels.map((label) => (
           <Fragment key={label.id}>
-            <section
+            <div
               style={{ marginBottom: `${!expandedKeys.includes(label.id!) ? '8px' : '0'}` }}
               className={`${style['label-wrapper']}`}
               onClick={handleToggleExpandWithCheck(
@@ -457,7 +457,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   <DropdownIcon />
                 </span>
               )}
-            </section>
+            </div>
 
             <div
               className={`${style['expandable-section']} ${
@@ -476,18 +476,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       (itemSelected) => itemSelected?.value === sub.id,
                     );
 
-                    const handleCheckboxChangeWithSub = () => {
-                      handleCheckboxChange({
-                        value: sub.id,
-                        label: sub.name,
-                      });
-                    };
-
                     return (
                       <section
                         key={sub.id}
                         className={`${style['sub-label-wrapper']}`}
-                        onClick={handleCheckboxChangeWithSub}
+                        onClick={handleCheckboxChange({ value: sub.id, label: sub.name })}
                       >
                         {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
                           <div
