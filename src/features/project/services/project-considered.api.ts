@@ -68,10 +68,15 @@ export async function assignProductToProject(data: {
     data,
   })
     .then(() => {
-      getProductById(data.product_id).then(() => {
+      if (!data.custom_product) {
+        getProductById(data.product_id).then(() => {
+          closeModal();
+          message.success(getResponseMessage('assign', 'product'));
+        });
+      } else {
         closeModal();
         message.success(getResponseMessage('assign', 'product'));
-      });
+      }
     })
     .catch((error) => {
       console.log('assignProductToProject error', error);
