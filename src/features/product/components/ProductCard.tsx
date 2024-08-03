@@ -9,6 +9,7 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as DoubleupIcon } from '@/assets/icons/double-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
@@ -754,6 +755,29 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           />
         ))}
       </div>
+      {/* Scroll to top Button */}
+      <CustomButton
+        style={{
+          position: 'fixed',
+          bottom: 40,
+          right: 20,
+          zIndex: 1,
+          paddingLeft: 20,
+          paddingRight: 20,
+          borderRadius: 40,
+        }}
+        properties={'rounded'}
+        variant={'primaryDark'}
+        size={'medium'}
+        onClick={() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        }}
+      >
+        <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
+      </CustomButton>
     </>
   );
 };
