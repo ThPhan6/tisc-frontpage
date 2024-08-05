@@ -1,6 +1,7 @@
-import { CSSProperties, FC, useEffect, useState } from 'react';
+import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
 
 import { DropDownProps, Menu, Row } from 'antd';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import Dropdown from 'antd/es/dropdown';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -10,14 +11,16 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useScreen } from '@/helper/common';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useToggleExpand } from '@/helper/hook';
 import { capitalize, sortBy, truncate } from 'lodash';
 
 import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
+import labelStyles from '@/components/CustomCheckbox/styles/index.less';
 import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
 
+import { DynamicCheckboxValue } from '../modals/CollectionAndLabel';
 import styles from './ProductTopBarItem.less';
 
 interface ProductTopBarProps {
@@ -179,7 +182,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
                 }
               }}
               className={`${alignRight ? styles.alignRight : ''} ${
-                textCapitalize ? styles.textCapitalize : styles.text
+                textCapitalize ? styles.text : ''
               } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
               disabled={item?.disabled}
               icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
@@ -204,7 +207,12 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
   );
 };
 interface CheckboxMenuProps {
-  items: { id: string; name: string }[];
+  items: {
+    id: string;
+    name: string;
+    parent_id: string;
+    parent: { id: string; name: string };
+  }[];
   subLevel?: number;
   visible?: boolean;
   onCloseMenu: () => void;
@@ -224,7 +232,11 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   selected,
   visible,
 }) => {
-  const [values, setValues] = useState<{ id: string; name: string }[]>([]);
+  const [values, setValues] = useState<
+    { id: string; name: string; subs?: [{ id: string; name: string }] }[]
+  >([]);
+  const { expandedKeys, handleToggleExpand } = useToggleExpand();
+
   useEffect(() => {
     if (selected) {
       setValues(selected);
@@ -236,20 +248,80 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
     }
     return undefined;
   };
-  const handleSelect = (item: { id: string; name: string }) => (e: any) => {
-    e.stopPropagation();
-    setValues((pre) => {
-      let newValues = pre;
-      if (pre.includes(item)) {
-        newValues = pre.filter((i) => i.id !== item.id);
-        if (onChangeValues) onChangeValues(newValues);
-        return newValues;
-      }
-      newValues = pre.concat([item]);
+
+  /**
+   * Handles the selection of a label item.
+   *
+   * @param item - The label item object.
+   */
+  const handleSelect = (item: DynamicCheckboxValue) => () => {
+    setValues((preValues) => {
+      const isSelected = preValues.some((value) => value.id === item.id);
+
+      const newValues = isSelected
+        ? preValues.filter((value) => value.id !== item.id)
+        : preValues.concat([{ id: item.id!, name: item.name! }]);
+
       if (onChangeValues) onChangeValues(newValues);
       return newValues;
     });
   };
+
+  /**
+   * Function that converts a list of labels into a hierarchical structure.
+   *
+   * @returns List of label objects with corresponding sublabels.
+   */
+  const handleTransformLabelItems = useMemo(() => {
+    return () => {
+      // Create new Map to store label
+      const labelMap = new Map();
+
+      items.forEach((item) => {
+        const { id, name, parent } = item;
+
+        // Check the parentId is exist or not
+        if (!labelMap.has(parent?.id)) {
+          // If doesn't exist, add the object into the labelMap with key is parent.id
+          labelMap.set(parent?.id, {
+            id: parent?.id,
+            name: parent?.name,
+            subs: [],
+          });
+        }
+
+        // Add current item into the subs array with the corresponding object in the labelMap
+        labelMap.get(parent?.id).subs.push({ id, name });
+      });
+
+      // Convert labelMap into an array and sort the elements following the name attribues
+      return Array.from(labelMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    };
+  }, [items]);
+
+  /**
+   * Handles the expand/collapse action for a sub-label list with a check.
+   *
+   * @param key The key of the label list to expand/collapse.
+   * @param hasSubLabel The state to check is whether the label has the sub-label or not.
+   */
+  const handleToggleExpandWithCheck = (key: string, hasSubLabel: boolean) => () => {
+    if (hasSubLabel) handleToggleExpand(key);
+  };
+
+  /**
+   * Check if any sub labels are selected for a given label.
+   *
+   * @param labelId - The ID of the label to check.
+   * @returns True if any sub label is selected, otherwise false.
+   */
+  const isAnySubLabelChecked = (labelId: string) => {
+    const subLabel = items.find((item) => item.id === labelId || item.parent?.id === labelId);
+    return values.some((value) => value.id === subLabel?.id);
+  };
+
+  const isSubLabelNameSelected = (subId: string) => values.some((value) => value.id === subId);
+
   return visible ? (
     <Menu
       style={{
@@ -265,29 +337,64 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
         ...menuStyle,
       }}
     >
-      {items.map((item, index) => {
-        return (
+      {handleTransformLabelItems().map((item, index) => (
+        <>
           <div
+            key={item.id}
             className={`d-flex flex-between cursor-pointer ${styles.checkboxMenuItem}`}
-            onClick={handleSelect(item)}
+            onClick={handleToggleExpandWithCheck(item.id, item.subs.length > 0)}
           >
             <Menu.Item
-              key={item?.id || index}
+              key={item.id || index}
               className={`${styles.checkboxListItem} ${
-                values.includes(item) ? styles.active : ''
+                values?.some((value) => value.id === item.id) ? styles.active : ''
               } text-capitalize`}
               onClick={() => {
                 return;
               }}
             >
-              {item?.name}
+              <span
+                style={{
+                  fontWeight: `${
+                    expandedKeys.includes(item.id) || isAnySubLabelChecked(item.id) ? '500' : '300'
+                  }`,
+                }}
+                className={` ${styles[`${isAnySubLabelChecked(item.id) ? 'color-checked' : ''}`]} ${
+                  labelStyles['main-label-name']
+                }`}
+              >
+                {item.name}
+              </span>
             </Menu.Item>
-            <div style={{ padding: 8 }}>
-              <Checkbox checked={values.includes(item)}></Checkbox>
-            </div>
+            <span>{expandedKeys.includes(item.id) ? <DropupIcon /> : <DropdownIcon />}</span>
           </div>
-        );
-      })}
+          {expandedKeys.includes(item.id) &&
+            item.subs
+              .slice()
+              .sort((a: DynamicCheckboxValue, b: DynamicCheckboxValue) =>
+                a.name?.localeCompare(b.name!),
+              )
+              .map((sub: DynamicCheckboxValue) => (
+                <section
+                  key={sub.id}
+                  className={`${styles['sub-label-wrapper']} `}
+                  onClick={handleSelect(sub)}
+                >
+                  <h2
+                    className={`${styles['sub-label-name']} ${
+                      styles[`${isSubLabelNameSelected(sub.id!) ? 'color-checked' : ''}`]
+                    }`}
+                    style={{
+                      fontWeight: `${values.some((value) => value.id === sub.id) ? '500' : ''}`,
+                    }}
+                  >
+                    {sub.name}
+                  </h2>
+                  <Checkbox checked={values?.some((value) => value.id === sub.id)} />
+                </section>
+              ))}
+        </>
+      ))}
     </Menu>
   ) : null;
 };
@@ -395,8 +502,9 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   nestedMenu?: boolean;
   borderFirstItem?: boolean;
   showCloseFooter?: boolean;
-  handleChangeDropDownIcon: any;
+  handleChangeDropDownIcon?: any;
   dropDownListVisible?: boolean;
+  dropDownStyles: React.CSSProperties;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -415,11 +523,17 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   showCloseFooter,
   handleChangeDropDownIcon,
   dropDownListVisible,
+  disabled = false,
+  dropDownStyles,
   ...props
 }) => {
   const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
   const isMobile = useScreen().isMobile;
   const dropdownVisible = useBoolean(false);
+
+  const handleDropdownClick = (event: React.MouseEvent<HTMLSpanElement>) => {
+    if (disabled) event.stopPropagation();
+  };
 
   const renderNestedMenu = (menuItems: ItemType[]) => {
     return menuItems.map((item) =>
@@ -495,6 +609,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       <Dropdown
         placement="bottomLeft"
         trigger={['click']}
+        disabled={disabled}
         {...props}
         visible={
           dropDownListVisible === true || dropDownListVisible === false
@@ -508,7 +623,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         overlayClassName={`${viewAllTop ? styles.viewAllTop : ''}`}
         overlay={renderContent()}
       >
-        <span {...labelProps} onClick={(e) => e.stopPropagation()}>
+        <span {...labelProps} onClick={handleDropdownClick} style={dropDownStyles}>
           {children}
           {hideDropdownIcon ? null : dropdownVisible.value ? (
             <DropupIcon style={{ marginLeft: 8 }} />

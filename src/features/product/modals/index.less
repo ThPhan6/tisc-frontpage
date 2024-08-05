@@ -47,15 +47,21 @@
       color: @primary-color-dark;
     }
     :global(.side-container) {
-      width: 576px;
+      display: flex;
+      width: 50%;
 
       &:first-child {
-        margin-right: 15px;
-        box-shadow: @border-bottom-light;
+        margin-top: -18px;
+        border-right: 1px solid #000;
+        box-shadow: none;
       }
-      &:last-child {
-        margin-left: 16px;
-        box-shadow: @border-bottom-light;
+
+      :global(.sub-side-container) {
+        width: 50%;
+
+        &:first-child {
+          margin: 0 16px;
+        }
       }
     }
   }
