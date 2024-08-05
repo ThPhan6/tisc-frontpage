@@ -458,7 +458,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
    * @param brand_id - The ID of the brand to assign the sub-label to.
    * @param parent_id - The optional ID of the parent label for the new sub-label.
    */
-  const handleAssignSubLabel = async (brand_id: string, parent_id: string | undefined) => {
+  const handleAssignSubLabel = (brand_id: string, parent_id: string | undefined) => async () => {
     const subLabeldata = { name: newSubLabel || '', brand_id, parent_id };
 
     const res = await createLabel(subLabeldata);
@@ -477,28 +477,12 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   };
 
   const subLabelItems: ItemType[] = labels.map(({ id, name, brand_id }: DynamicCheckboxValue) => {
-    const handleAddSubLabel = () => handleAssignSubLabel(brand_id!, id);
-
     return {
       key: `label-${id}`,
       label: name,
-      onClick: handleAddSubLabel,
+      onClick: handleAssignSubLabel(brand_id!, id),
     };
   });
-
-  const dropDownTextStyles = {
-    fontWeight: '600',
-    width: 'max-content',
-    color: !newSubLabel ? '#808080' : '#000',
-    fontSize: '14px',
-    fontFamily: 'Cormorant-Garamond',
-    lineHeight: 'calc(21/14)',
-  };
-
-  const dropDownStyles = {
-    display: 'flex',
-    cursor: !newSubLabel ? 'not-allowed' : 'pointer',
-  };
 
   return (
     <Popover
@@ -569,12 +553,9 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       extraTopAction={
         <div className={`${styles.boxShadowBottom} d-flex justify-between`}>
           <div className={'side-container '}>
-            <div style={{ marginTop: '18px', width: '100%' }}>
+            <div className={`side-container-wrapper`}>
               <MainTitle level={3}>Create New Collection</MainTitle>
-              <div
-                className="flex-between flex-grow border-bottom-light "
-                style={{ marginRight: '16px' }}
-              >
+              <div className={`flex-between flex-grow border-bottom-light mr-16`}>
                 <CustomInput
                   placeholder="type new collection name"
                   value={newOption}
@@ -607,7 +588,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
               </div>
             </div>
             <div className={'sub-side-container border-bottom-light'}>
-              <MainTitle style={{ marginBottom: '28px' }}></MainTitle>
+              <MainTitle customClass={`mb-28`}></MainTitle>
               <div className="flex-between flex-grow">
                 <CustomInput
                   placeholder="add sub-label name"
@@ -616,11 +597,19 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                 />
                 <CustomDropDown
                   items={subLabelItems}
+                  menuStyle={{ width: 'max-content', height: 'fit-content' }}
                   placement="bottomRight"
                   disabled={!newSubLabel}
-                  dropDownStyles={dropDownStyles}
+                  className={styles.dropdown}
+                  dropDownStyles={{ cursor: `${!newSubLabel ? 'not-allowed' : 'pointer'}` }}
                 >
-                  <span style={dropDownTextStyles}>Add To</span>
+                  <span
+                    className={`${!newSubLabel ? 'mono-color-dark ' : 'pure-black '} ${
+                      styles.dropdown__text
+                    }`}
+                  >
+                    Add To
+                  </span>
                 </CustomDropDown>
               </div>
             </div>

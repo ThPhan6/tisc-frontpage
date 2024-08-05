@@ -597,9 +597,19 @@ li.ant-menu-submenu {
     }
   }
 }
+
+.mr-16 {
+  margin-right: 16px;
+}
+
 .mb-4 {
   margin-bottom: 4px;
 }
+
+.mb-28 {
+  margin-bottom: 28px;
+}
+
 .ant-image-preview-wrap {
   background-color: rgba(0, 0, 0, 0.7);
 }
@@ -613,7 +623,25 @@ li.ant-menu-submenu {
   display: none;
 }
 
-ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.ant-dropdown-menu-light {
-  width: max-content !important;
-  height: fit-content !important;
+.main-label-name,
+.sub-label-name {
+  overflow: hidden;
+  font-size: 14px;
+  font-family: Roboto;
+  line-height: calc(22 / 14);
+  white-space: nowrap;
+  text-transform: capitalize;
+  text-overflow: ellipsis;
+}
+
+.text-hover-normal {
+  &:hover {
+    font-weight: 400;
+  }
+}
+
+.text-hover-medium {
+  &:hover {
+    font-weight: 500;
+  }
 }

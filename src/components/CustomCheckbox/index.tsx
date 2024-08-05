@@ -155,7 +155,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
    *
    * @param sub - The checkbox value object.
    */
-  const handleCheckboxChange = (sub: DynamicCheckboxValue) => {
+  const handleCheckboxChange = (sub: DynamicCheckboxValue) => () => {
     if (isActionMenuDisabled) return;
 
     setCheckedItems((pre) =>
@@ -363,7 +363,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       ) : (
         sortedLabels.map((label) => (
           <Fragment key={label.id}>
-            <section
+            <div
               style={{ marginBottom: `${!expandedKeys.includes(label.id!) ? '8px' : '0'}` }}
               className={`${style['label-wrapper']}`}
               onClick={handleToggleExpandWithCheck(
@@ -404,8 +404,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               ) : (
                 <span
                   style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
-                  className={`${style['main-label-name']} ${
-                    style[`${isAnySubLabelChecked(label.id!) ? 'color-checked' : ''}`]
+                  className={`main-label-name w-full text-hover-normal ${
+                    isAnySubLabelChecked(label.id!) ? style['color-checked'] : ''
                   }`}
                 >
                   {label.name}
@@ -457,11 +457,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   <DropdownIcon />
                 </span>
               )}
-            </section>
+            </div>
 
             <div
               className={`${style['expandable-section']} ${
-                expandedKeys.includes(label.id!) ? `${style['expanded']}` : ''
+                expandedKeys.includes(label.id!) ? style['expanded'] : ''
               }`}
             >
               {expandedKeys.includes(label.id as string) &&
@@ -476,18 +476,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                       (itemSelected) => itemSelected?.value === sub.id,
                     );
 
-                    const handleCheckboxChangeWithSub = () => {
-                      handleCheckboxChange({
-                        value: sub.id,
-                        label: sub.name,
-                      });
-                    };
-
                     return (
                       <section
                         key={sub.id}
                         className={`${style['sub-label-wrapper']}`}
-                        onClick={handleCheckboxChangeWithSub}
+                        onClick={handleCheckboxChange({ value: sub.id, label: sub.name })}
                       >
                         {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
                           <div
@@ -533,8 +526,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                           </div>
                         ) : (
                           <span
-                            className={`${style['sub-label-name']} ${
-                              style[`${isSubLabelNameSelected ? 'color-checked' : ''}`]
+                            className={`sub-label-name w-full text-hover-normal ${
+                              isSubLabelNameSelected ? style['color-checked'] : ''
                             }`}
                           >
                             {sub.name}
@@ -546,7 +539,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                             disabled={isActionMenuDisabled}
                             className={`${modalStyle.marginSpace} ${
                               isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
-                            } label-action-menu`}
+                            }`}
                             overlayClassName={modalStyle.actionMenuOverlay}
                             editActionOnMobile={false}
                             containerStyle={{ display: 'flex', alignItems: 'center' }}
