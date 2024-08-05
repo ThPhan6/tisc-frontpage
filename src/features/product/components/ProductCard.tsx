@@ -445,7 +445,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     if (location.pathname == PATH.designerBrandProduct && !allProducts?.length)
       // First time load to Designer/Brand-Product
       return (
-        <div style={{ textAlign: 'center' }}>
+        <div className={loadingStyles.container}>
           <Spin size="large" />
         </div>
       );
