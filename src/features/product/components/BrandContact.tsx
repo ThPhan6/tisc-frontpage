@@ -35,7 +35,7 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
 }) => {
   const renderContact = (el: ContactDetail) => {
     return (
-      <div style={{ paddingTop: 8 }}>
+      <div style={{ paddingTop: 5 }}>
         <div className={styles.detail_phoneEmail}>
           <RobotoBodyText level={6} customClass={styles.phone}>
             {el.first_name} {el.last_name}
@@ -43,10 +43,12 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
           <RobotoBodyText level={6}>{el.position}</RobotoBodyText>
         </div>
         <div className={styles.detail_phoneEmail}>
-          <RobotoBodyText level={6} customClass={styles.phone}>
-            +{el.phone_code || phone_code} {el.work_phone}
+          <RobotoBodyText level={6} customClass={styles.email}>
+            Email: {el.work_email}
           </RobotoBodyText>
-          <RobotoBodyText level={6}>{el.work_email}</RobotoBodyText>
+          <RobotoBodyText level={6} customClass={styles.phone}>
+            Phone: +{el.phone_code || phone_code} {el.work_phone}
+          </RobotoBodyText>
         </div>
       </div>
     );
