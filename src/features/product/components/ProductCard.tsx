@@ -760,7 +760,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         style={{
           position: 'fixed',
           bottom: 40,
-          right: 20,
+          right: 25,
           zIndex: 1,
           paddingLeft: 20,
           paddingRight: 20,
