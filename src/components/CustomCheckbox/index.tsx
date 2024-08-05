@@ -88,19 +88,16 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
       return Array.from(newExpandedKeys);
     });
-  }, [JSON.stringify(checkedItems)]);
+    if (onChange) onChange(checkedItems);
+
+    dispatch(setSelectedSubLabels(checkedItems.map((item) => String(item.value))));
+  }, [JSON.stringify(checkedItems.map((item) => ({ value: item.value })))]);
 
   useEffect(() => {
     if (otherInput && clearOtherInput) {
       setInputValue('');
     }
   }, [otherInput && clearOtherInput]);
-
-  useEffect(() => {
-    if (onChange) onChange(checkedItems);
-
-    dispatch(setSelectedSubLabels(checkedItems.map((item) => String(item.value))));
-  }, [JSON.stringify(checkedItems)]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const newCheckedValues = [...checkedValues];
