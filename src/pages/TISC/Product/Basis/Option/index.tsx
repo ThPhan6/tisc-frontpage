@@ -7,7 +7,11 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { getProductBasisOptionPaginationForTable, updateBasisOption } from '@/services';
+import {
+  changeIdType,
+  getProductBasisOptionPaginationForTable,
+  updateBasisOption,
+} from '@/services';
 
 import { BrandAttributeParamProps } from '../../BrandAttribute/types';
 import type {
@@ -97,6 +101,15 @@ const BasisOptionList: React.FC = () => {
       });
     });
   };
+
+  const handleChangeIdType = (mainId: string, idFormatType: number) => async () => {
+    const res = await changeIdType(mainId, idFormatType);
+
+    if (!res) return;
+
+    tableRef.current.reload();
+  };
+
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColumn: TableColumnItem<any>[] = [
       {
@@ -168,6 +181,31 @@ const BasisOptionList: React.FC = () => {
     },
     ...getSameColumns(false),
     {
+      title: 'ID Type',
+      dataIndex: 'id_format_type',
+      width: '5%',
+      align: 'center',
+      render: (_, record) => {
+        return (
+          <ActionMenu
+            actionIcon={<span>{record.id_format_type === 0 ? 'Full' : 'Partial'}</span>}
+            actionItems={[
+              {
+                type: 'full',
+                onClick: handleChangeIdType(record.id, 0),
+              },
+              {
+                type: 'partial',
+                onClick: handleChangeIdType(record.id, 1),
+              },
+            ]}
+            interactionType="hover"
+            additionalStyle={{ boxShadow: 'none' }}
+          />
+        );
+      },
+    },
+    {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
@@ -217,6 +255,12 @@ const BasisOptionList: React.FC = () => {
         },
         ...getSameColumns(false),
         {
+          title: 'ID Type',
+          dataIndex: 'id_format_type',
+          width: '5%',
+          align: 'center',
+        },
+        {
           title: 'Action',
           dataIndex: 'action',
           align: 'center',
@@ -238,6 +282,12 @@ const BasisOptionList: React.FC = () => {
           noBoxShadow: true,
         },
         ...getSameColumns(true),
+        {
+          title: 'ID Type',
+          dataIndex: 'id_format_type',
+          width: '5%',
+          align: 'center',
+        },
         {
           title: 'Action',
           dataIndex: 'action',

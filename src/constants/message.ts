@@ -127,6 +127,8 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_LINKAGE_OPTION_SUCCESS: 'Created linkage successfully ',
   UPDATE_LINKAGE_OPTION_ERROR: 'Failed to update linkage',
   UPDATE_LINKAGE_OPTION_SUCCESS: 'Updated linkage successfully ',
+  CHANGE_ID_TYPE_OPTION_SUCCESS: 'Change the ID type successfully',
+  CHANGE_ID_TYPE_OPTION_ERROR: 'Change ID type unsuccessfully',
 
   //preset
   CREATE_PRESET_SUCCESS: 'Create preset successfully',

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { CSSProperties, FC, useState } from 'react';
 
 import { Dropdown } from 'antd';
 import type { DropDownProps, DropdownProps } from 'antd/es/dropdown';
@@ -19,6 +19,7 @@ export type HeaderDropdownProps = {
   placement?: DropdownProps['placement'];
   filterDropdown?: boolean;
   menuDropdown?: boolean;
+  additionalStyle?: CSSProperties;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
@@ -32,9 +33,14 @@ export type MenuIconProps = {
 type MenuHeaderDropdownProps = {
   items: MenuIconProps[];
   onParentClick?: () => void;
+  additionalStyle?: CSSProperties;
 };
 
-export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
+export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({
+  items,
+  additionalStyle,
+  onParentClick,
+}) => {
   const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
     <div
       onClick={(e) => {
@@ -46,6 +52,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
         onClick();
       }}
       className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
+      style={additionalStyle}
     >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
@@ -78,6 +85,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   items = [],
   filterDropdown,
   menuDropdown,
+  additionalStyle,
   ...restProps
 }) => {
   const { isMobile } = useScreen();
@@ -85,7 +93,11 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   const [visible, setVisible] = useState(false);
 
   const content = items ? (
-    <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
+    <MenuHeaderDropdown
+      items={items}
+      additionalStyle={additionalStyle}
+      onParentClick={() => setVisible(false)}
+    />
   ) : (
     <div />
   );

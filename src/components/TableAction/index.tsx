@@ -1,4 +1,4 @@
-import { CSSProperties, FC } from 'react';
+import { CSSProperties, FC, useState } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -29,6 +29,8 @@ export type ActionType =
   | 'logout'
   | 'billing'
   | 'linkage'
+  | 'full'
+  | 'partial'
   | 'compose';
 
 interface ActionFormProps extends HeaderDropdownProps {
@@ -38,11 +40,13 @@ interface ActionFormProps extends HeaderDropdownProps {
   containerStyle?: CSSProperties;
   editActionOnMobile?: boolean;
   disabledOnMobile?: boolean;
+  interactionType?: 'click' | 'hover';
+  additionalStyle?: CSSProperties;
 }
 
 const DEFAULT_ACTION_INFO: {
   [key in ActionType]: {
-    icon: JSX.Element;
+    icon?: JSX.Element;
     label: string;
   };
 } = {
@@ -90,6 +94,12 @@ const DEFAULT_ACTION_INFO: {
     icon: <ComposeIcon />,
     label: 'Compose',
   },
+  full: {
+    label: 'Full',
+  },
+  partial: {
+    label: 'Partial',
+  },
 };
 
 export const ActionMenu: FC<ActionFormProps> = ({
@@ -102,8 +112,12 @@ export const ActionMenu: FC<ActionFormProps> = ({
   containerStyle,
   editActionOnMobile = true,
   disabledOnMobile,
+  interactionType = 'click',
+  additionalStyle,
   ...props
 }) => {
+  const [visible, setVisible] = useState(false);
+
   const isTablet = useScreen().isTablet;
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
@@ -138,6 +152,10 @@ export const ActionMenu: FC<ActionFormProps> = ({
     );
   }
 
+  const handleToggleMouse = () => {
+    if (interactionType === 'hover') setVisible(!visible);
+  };
+
   return (
     <div
       style={containerStyle}
@@ -145,6 +163,8 @@ export const ActionMenu: FC<ActionFormProps> = ({
         e.stopPropagation();
         e.preventDefault();
       }}
+      onMouseEnter={handleToggleMouse}
+      onMouseLeave={handleToggleMouse}
     >
       <HeaderDropdown
         {...props}
@@ -153,6 +173,8 @@ export const ActionMenu: FC<ActionFormProps> = ({
         trigger={trigger}
         placement={placement}
         items={filledActionItems}
+        additionalStyle={additionalStyle}
+        open={interactionType === 'hover' ? visible : undefined}
       >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>
