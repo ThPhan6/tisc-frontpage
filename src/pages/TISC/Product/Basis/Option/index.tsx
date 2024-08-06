@@ -7,7 +7,11 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { getProductBasisOptionPaginationForTable, updateBasisOption } from '@/services';
+import {
+  changeIdType,
+  getProductBasisOptionPaginationForTable,
+  updateBasisOption,
+} from '@/services';
 
 import { BrandAttributeParamProps } from '../../BrandAttribute/types';
 import type {
@@ -22,6 +26,7 @@ import type {
   MainBasisOptionSubForm,
   SubBasisOption,
 } from '@/types';
+import { ProductIDType } from '@/types';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
@@ -97,6 +102,19 @@ const BasisOptionList: React.FC = () => {
       });
     });
   };
+
+  const handleChangeIdType =
+    (mainId: string, idFormatType: ProductIDType, currentIdFormatType: ProductIDType) =>
+    async () => {
+      if (idFormatType === currentIdFormatType) return;
+
+      const res = await changeIdType(mainId, idFormatType);
+
+      if (!res) return;
+
+      tableRef.current.reload();
+    };
+
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColumn: TableColumnItem<any>[] = [
       {
@@ -168,6 +186,31 @@ const BasisOptionList: React.FC = () => {
     },
     ...getSameColumns(false),
     {
+      title: 'ID Type',
+      dataIndex: 'id_format_type',
+      width: '5%',
+      align: 'center',
+      render: (_, record) => (
+        <ActionMenu
+          actionIcon={
+            <span>{record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}</span>
+          }
+          actionItems={[
+            {
+              type: 'full',
+              onClick: handleChangeIdType(record.id, ProductIDType.Full, record.id_format_type),
+            },
+            {
+              type: 'partial',
+              onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
+            },
+          ]}
+          interactionType="hover"
+          additionalStyle={{ boxShadow: 'none' }}
+        />
+      ),
+    },
+    {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
@@ -217,6 +260,12 @@ const BasisOptionList: React.FC = () => {
         },
         ...getSameColumns(false),
         {
+          title: 'ID Type',
+          dataIndex: 'id_format_type',
+          width: '5%',
+          align: 'center',
+        },
+        {
           title: 'Action',
           dataIndex: 'action',
           align: 'center',
@@ -238,6 +287,12 @@ const BasisOptionList: React.FC = () => {
           noBoxShadow: true,
         },
         ...getSameColumns(true),
+        {
+          title: 'ID Type',
+          dataIndex: 'id_format_type',
+          width: '5%',
+          align: 'center',
+        },
         {
           title: 'Action',
           dataIndex: 'action',
