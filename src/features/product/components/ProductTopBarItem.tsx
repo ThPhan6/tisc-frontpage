@@ -374,23 +374,20 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                 a.name?.localeCompare(b.name!),
               )
               .map((sub: DynamicCheckboxValue) => (
-                <section
+                <div
                   key={sub.id}
                   className={`${styles['sub-label-wrapper']}`}
                   onClick={handleSelect(sub)}
                 >
-                  <h2
-                    className={`sub-label-name text-hover-medium ${styles['label-name-width']} ${
-                      isSubLabelNameSelected(sub.id!) ? styles['color-checked'] : ''
-                    }`}
-                    style={{
-                      fontWeight: `${values.some((value) => value.id === sub.id) ? '500' : ''}`,
-                    }}
+                  <span
+                    className={`sub-label-name text-hover-medium mb-7 ${
+                      styles['label-name-width']
+                    } ${isSubLabelNameSelected(sub.id!) ? styles['color-checked'] : ''}`}
                   >
                     {sub.name}
-                  </h2>
+                  </span>
                   <Checkbox checked={values?.some((value) => value.id === sub.id)} />
-                </section>
+                </div>
               ))}
         </>
       ))}
