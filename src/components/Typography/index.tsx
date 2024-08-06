@@ -58,6 +58,14 @@ export const RobotoBodyText: FC<BodyTextProps> = ({ children, ...props }) => {
   );
 };
 
+export const CormorantBodyText: FC<BodyTextProps> = ({ children, ...props }) => {
+  return (
+    <BodyText fontFamily="Cormorant-Garamond" {...props}>
+      {children}
+    </BodyText>
+  );
+};
+
 export const MainTitle: FC<MainTitleProps> = ({
   color = 'mono-color',
   customClass = '',

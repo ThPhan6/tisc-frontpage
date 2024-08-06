@@ -321,6 +321,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 <Checkbox
                   id={`${option.value}_${index}_${randomId}`}
                   {...option}
+                  disabled={
+                    checkboxClass === 'collection-label-list' &&
+                    selected?.find((item) => item.value === option.value.toString())
+                  }
                   onChange={(e) => {
                     e.stopPropagation();
                     if (additionalSelected && onChangeAdditionalSelected)

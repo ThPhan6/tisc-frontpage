@@ -422,7 +422,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                         phone_code={location.phone_code}
                         general_phone={location.general_phone}
                         genernal_email={location.general_email}
-                        hideContact
+                        hideContact={false}
                       />
                     ),
                   };
@@ -452,7 +452,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                         genernal_email={distributor.email}
                         first_name={distributor.first_name}
                         last_name={distributor.last_name}
-                        hideContact
+                        hideContact={false}
                       />
                     ),
                   };

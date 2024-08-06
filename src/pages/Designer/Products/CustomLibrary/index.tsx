@@ -32,6 +32,7 @@ const CustomLibrary: React.FC = () => {
                 name: product.name,
                 brand: { name: product.company_name },
                 description: product.description,
+                collections: [{ id: product.collection_id, name: product.collection_name }],
                 images: [product.image],
               }}
             />

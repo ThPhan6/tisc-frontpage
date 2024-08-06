@@ -91,13 +91,13 @@ const BrandProductListPage: React.FC = () => {
     setSearchCount((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    /// clear all product
-    return () => {
-      dispatch(resetProductState());
-      window.removeEventListener('onscroll', () => {});
-    };
-  }, []);
+  // useEffect(() => {
+  //   /// clear all product
+  //   return () => {
+  //     dispatch(resetProductState());
+  //     window.removeEventListener('onscroll', () => {});
+  //   };
+  // }, []);
 
   const getProductList = async (props: { page: number; isConcat: boolean }) => {
     setIsLoading(true);

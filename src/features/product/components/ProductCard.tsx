@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
 import { Spin, Tooltip, TooltipProps } from 'antd';
+import { useLocation } from 'umi';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as DoubleupIcon } from '@/assets/icons/double-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
@@ -36,7 +38,7 @@ import {
 import { deleteCollection, updateCollection } from '@/services';
 import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
-import { setProductList } from '../reducers';
+import { resetProductState, setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
@@ -383,6 +385,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const isOpenLabel = useBoolean(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customLoading, setCustomLoading] = useState(false);
+  const firstLoad = useBoolean(true);
+  const location = useLocation();
   console.log(groups);
   useEffect(() => {
     if (data) {
@@ -433,6 +437,27 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 
   if (loading) {
     return null;
+  }
+
+  // First time load to Designer/Brand-Product or TISC-Conf
+  // attrb: no filter
+  if (firstLoad.value && typeof filter == 'undefined') {
+    if (location.pathname == PATH.designerBrandProduct && !allProducts?.length)
+      // First time load to Designer/Brand-Product
+      return (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      );
+    else if (location.pathname == PATH.productConfiguration)
+      // First time load to TISC-Conf but login as Designer or Brand previously
+      store.dispatch(resetProductState());
+
+    firstLoad.setValue(false);
+  }
+  // After choosing filter
+  else if (!firstLoad.value && !(typeof filter == 'undefined')) {
+    firstLoad.setValue(true);
   }
 
   if (!allProducts?.length && !data?.length) {
@@ -730,6 +755,29 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           />
         ))}
       </div>
+      {/* Scroll to top Button */}
+      <CustomButton
+        style={{
+          position: 'fixed',
+          bottom: 40,
+          right: 25,
+          zIndex: 1,
+          paddingLeft: 20,
+          paddingRight: 20,
+          borderRadius: 40,
+        }}
+        properties={'rounded'}
+        variant={'primaryDark'}
+        size={'medium'}
+        onClick={() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        }}
+      >
+        <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
+      </CustomButton>
     </>
   );
 };

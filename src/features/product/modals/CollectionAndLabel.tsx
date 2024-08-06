@@ -623,6 +623,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
             Assign bellow collection
           </MainTitle>
         ),
+        customItemClass: 'collection-label-list',
         options: data?.map((item, index) => {
           return {
             disabled: item.disabled || item.editLabel,
@@ -715,6 +716,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
             Assign bellow label
           </MainTitle>
         ),
+        customItemClass: 'collection-label-list',
         options: labels?.map((item, index) => {
           return {
             disabled: item.disabled || item.editLabel,

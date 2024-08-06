@@ -130,7 +130,6 @@ const ShareViaEmail: FC = () => {
       }
     });
   };
-
   return (
     <Popover
       title="Share Via Email"
@@ -142,8 +141,12 @@ const ShareViaEmail: FC = () => {
       <BrandProductBasicHeader
         image={product.images?.[0]}
         logo={product.brand?.logo}
-        text_1={product.brand?.name}
-        text_2={product.collections.map((collection) => collection.name).join(', ')}
+        text_1={product.brand?.name || (product as any).company?.name}
+        text_2={
+          product.collections
+            ? product.collections.map((collection) => collection.name).join(', ')
+            : product.collection?.name
+        }
         text_3={product.name}
         customClass={styles.header}
       />
