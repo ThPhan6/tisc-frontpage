@@ -104,7 +104,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
 
       // Check if there are more than one distinct id_format_type values.
       if (idFormatTypes.size > 1) {
-        message.warn('You have selected attributes with different id_format_type values.');
+        message.warn('Cannot select attributes with multiple ID types!');
         return;
       }
 
