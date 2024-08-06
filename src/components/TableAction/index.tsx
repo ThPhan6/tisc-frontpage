@@ -40,7 +40,6 @@ interface ActionFormProps extends HeaderDropdownProps {
   containerStyle?: CSSProperties;
   editActionOnMobile?: boolean;
   disabledOnMobile?: boolean;
-  interactionType?: 'click' | 'hover';
   additionalStyle?: CSSProperties;
 }
 
@@ -112,12 +111,9 @@ export const ActionMenu: FC<ActionFormProps> = ({
   containerStyle,
   editActionOnMobile = true,
   disabledOnMobile,
-  interactionType = 'click',
   additionalStyle,
   ...props
 }) => {
-  const [visible, setVisible] = useState(false);
-
   const isTablet = useScreen().isTablet;
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
@@ -152,10 +148,6 @@ export const ActionMenu: FC<ActionFormProps> = ({
     );
   }
 
-  const handleToggleMouse = () => {
-    if (interactionType === 'hover') setVisible(!visible);
-  };
-
   return (
     <div
       style={containerStyle}
@@ -163,8 +155,6 @@ export const ActionMenu: FC<ActionFormProps> = ({
         e.stopPropagation();
         e.preventDefault();
       }}
-      onMouseEnter={handleToggleMouse}
-      onMouseLeave={handleToggleMouse}
     >
       <HeaderDropdown
         {...props}
@@ -174,7 +164,6 @@ export const ActionMenu: FC<ActionFormProps> = ({
         placement={placement}
         items={filledActionItems}
         additionalStyle={additionalStyle}
-        visible={interactionType === 'hover' ? visible : undefined}
       >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>

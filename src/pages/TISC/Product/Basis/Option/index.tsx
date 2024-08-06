@@ -205,7 +205,6 @@ const BasisOptionList: React.FC = () => {
               onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
             },
           ]}
-          interactionType="hover"
           additionalStyle={{ boxShadow: 'none' }}
         />
       ),
