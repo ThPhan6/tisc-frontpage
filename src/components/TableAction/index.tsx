@@ -174,7 +174,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
         placement={placement}
         items={filledActionItems}
         additionalStyle={additionalStyle}
-        open={interactionType === 'hover' ? visible : undefined}
+        visible={interactionType === 'hover' ? visible : undefined}
       >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>

@@ -26,6 +26,7 @@ import type {
   MainBasisOptionSubForm,
   SubBasisOption,
 } from '@/types';
+import { ProductIDType } from '@/types';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
@@ -103,7 +104,8 @@ const BasisOptionList: React.FC = () => {
   };
 
   const handleChangeIdType =
-    (mainId: string, idFormatType: number, currentIdFormatType: number) => async () => {
+    (mainId: string, idFormatType: ProductIDType, currentIdFormatType: ProductIDType) =>
+    async () => {
       if (idFormatType === currentIdFormatType) return;
 
       const res = await changeIdType(mainId, idFormatType);
@@ -190,15 +192,17 @@ const BasisOptionList: React.FC = () => {
       align: 'center',
       render: (_, record) => (
         <ActionMenu
-          actionIcon={<span>{record.id_format_type === 0 ? 'Full' : 'Partial'}</span>}
+          actionIcon={
+            <span>{record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}</span>
+          }
           actionItems={[
             {
               type: 'full',
-              onClick: handleChangeIdType(record.id, 0, record.id_format_type),
+              onClick: handleChangeIdType(record.id, ProductIDType.Full, record.id_format_type),
             },
             {
               type: 'partial',
-              onClick: handleChangeIdType(record.id, 1, record.id_format_type),
+              onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
             },
           ]}
           interactionType="hover"
