@@ -34,6 +34,7 @@ export interface BasisOptionListResponseForTable {
   id: string;
   name: string;
   count: number;
+  id_format_type: number;
   subs: SubBasisOption[];
 }
 
