@@ -530,6 +530,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                             className={`sub-label-name w-full text-hover-normal ${
                               isSubLabelNameSelected ? style['color-checked'] : ''
                             }`}
+                            style={{ fontWeight: `${isSubLabelNameSelected ? 500 : ''}` }}
                           >
                             {sub.name}
                           </span>

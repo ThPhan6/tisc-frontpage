@@ -57,12 +57,10 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({
       className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
       style={additionalStyle}
     >
-      <div>
-        {icon ? <div className={styles.icon}>{icon}</div> : null}
-        <BodyText fontFamily="Roboto" level={6} customClass={addtionalTextClass}>
-          {label}
-        </BodyText>
-      </div>
+      {icon ? <div className={styles.icon}>{icon}</div> : null}
+      <BodyText fontFamily="Roboto" level={6} customClass={addtionalTextClass}>
+        {label}
+      </BodyText>
     </div>
   );
 
