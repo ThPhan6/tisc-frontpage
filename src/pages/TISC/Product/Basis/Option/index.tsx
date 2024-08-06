@@ -206,6 +206,7 @@ const BasisOptionList: React.FC = () => {
             },
           ]}
           additionalStyle={{ boxShadow: 'none' }}
+          addtionalTextClass="text-hover-medium"
         />
       ),
     },

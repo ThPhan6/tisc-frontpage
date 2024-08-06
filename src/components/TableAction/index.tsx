@@ -1,4 +1,4 @@
-import { CSSProperties, FC, useState } from 'react';
+import { CSSProperties, FC } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -41,6 +41,7 @@ interface ActionFormProps extends HeaderDropdownProps {
   editActionOnMobile?: boolean;
   disabledOnMobile?: boolean;
   additionalStyle?: CSSProperties;
+  addtionalTextClass?: string;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -112,6 +113,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
   editActionOnMobile = true,
   disabledOnMobile,
   additionalStyle,
+  addtionalTextClass,
   ...props
 }) => {
   const isTablet = useScreen().isTablet;
@@ -164,6 +166,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
         placement={placement}
         items={filledActionItems}
         additionalStyle={additionalStyle}
+        addtionalTextClass={addtionalTextClass}
       >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>

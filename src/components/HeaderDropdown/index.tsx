@@ -20,6 +20,7 @@ export type HeaderDropdownProps = {
   filterDropdown?: boolean;
   menuDropdown?: boolean;
   additionalStyle?: CSSProperties;
+  addtionalTextClass?: string;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
@@ -34,11 +35,13 @@ type MenuHeaderDropdownProps = {
   items: MenuIconProps[];
   onParentClick?: () => void;
   additionalStyle?: CSSProperties;
+  addtionalTextClass?: string;
 };
 
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({
   items,
   additionalStyle,
+  addtionalTextClass,
   onParentClick,
 }) => {
   const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
@@ -55,7 +58,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({
       style={additionalStyle}
     >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
-      <BodyText fontFamily="Roboto" level={6}>
+      <BodyText fontFamily="Roboto" level={6} customClass={addtionalTextClass}>
         {label}
       </BodyText>
     </div>
@@ -86,6 +89,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   filterDropdown,
   menuDropdown,
   additionalStyle,
+  addtionalTextClass,
   ...restProps
 }) => {
   const { isMobile } = useScreen();
@@ -97,6 +101,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
       items={items}
       additionalStyle={additionalStyle}
       onParentClick={() => setVisible(false)}
+      addtionalTextClass={addtionalTextClass}
     />
   ) : (
     <div />
