@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useParams } from 'umi';
 
 import { useCheckBrandAttributePath } from '../../BrandAttribute/hook';
@@ -31,6 +32,7 @@ import { ProductIDType } from '@/types';
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
+import { CustomDropDown } from '@/features/product/components';
 
 import { BranchHeader } from '../../BrandAttribute/BranchHeader';
 
@@ -190,25 +192,33 @@ const BasisOptionList: React.FC = () => {
       dataIndex: 'id_format_type',
       width: '5%',
       align: 'center',
-      render: (_, record) => (
-        <ActionMenu
-          actionIcon={
-            <span>{record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}</span>
-          }
-          actionItems={[
-            {
-              type: 'full',
-              onClick: handleChangeIdType(record.id, ProductIDType.Full, record.id_format_type),
-            },
-            {
-              type: 'partial',
-              onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
-            },
-          ]}
-          additionalStyle={{ boxShadow: 'none' }}
-          addtionalTextClass="text-hover-medium"
-        />
-      ),
+      render: (_, record) => {
+        const idFormatType: ItemType[] = [
+          {
+            key: ProductIDType.Full,
+            label: 'Full',
+            onClick: handleChangeIdType(record.id, ProductIDType.Full, record.id_format_type),
+          },
+
+          {
+            key: ProductIDType.Partial,
+            label: 'Partial',
+            onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
+          },
+        ];
+
+        return (
+          <CustomDropDown
+            arrow
+            items={idFormatType}
+            placement="bottomRight"
+            hideDropdownIcon={true}
+            menuStyle={{ width: '100px', height: 'fit-content', bottom: '0' }}
+          >
+            {record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}
+          </CustomDropDown>
+        );
+      },
     },
     {
       title: 'Action',

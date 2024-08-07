@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { message } from 'antd';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
+
 import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
 import { createLabel, deleteLabel, getLabels, updateLabel } from '@/services/label.api';
@@ -20,6 +22,7 @@ import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import Popover from '@/components/Modal/Popover';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import tableHeaderStyle from '@/components/Table/styles/TableHeader.less';
 import { ActionMenu } from '@/components/TableAction';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components/ProductTopBarItem';
@@ -560,6 +563,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                   placeholder="type new collection name"
                   value={newOption}
                   onChange={onChangeCreateNewCollection}
+                  style={{ fontSize: 14 }}
                 />
                 <CustomPlusButton
                   size={18}
@@ -575,9 +579,10 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
               <MainTitle level={3}>Create New Label</MainTitle>
               <div className="flex-between flex-grow">
                 <CustomInput
-                  placeholder="add main-label name"
+                  placeholder="type main-label name"
                   value={newLabel}
                   onChange={onChangeCreateNewLabel}
+                  style={{ fontSize: 14 }}
                 />
                 <CustomPlusButton
                   size={18}
@@ -588,28 +593,51 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
               </div>
             </div>
             <div className={'sub-side-container border-bottom-light'}>
-              <MainTitle customClass={`mb-28`}></MainTitle>
+              <MainTitle customClass={`mb-24`}></MainTitle>
               <div className="flex-between flex-grow">
                 <CustomInput
-                  placeholder="add sub-label name"
+                  placeholder="type sub-label name"
                   value={newSubLabel}
                   onChange={handleOnChangeCreateNewSubLabel}
+                  style={{ fontSize: 14 }}
                 />
+
                 <CustomDropDown
                   items={subLabelItems}
                   menuStyle={{ width: 'max-content', height: 'fit-content' }}
                   placement="bottomRight"
                   disabled={!newSubLabel}
                   className={styles.dropdown}
+                  hideDropdownIcon
                   dropDownStyles={{ cursor: `${!newSubLabel ? 'not-allowed' : 'pointer'}` }}
                 >
-                  <span
+                  <div
                     className={`${!newSubLabel ? 'mono-color-dark ' : 'pure-black '} ${
                       styles.dropdown__text
                     }`}
                   >
                     Add To
-                  </span>
+                    <div
+                      className={`  ${
+                        !newSubLabel
+                          ? tableHeaderStyle.customContentDisable
+                          : tableHeaderStyle.customContent
+                      } `}
+                    >
+                      <span
+                        style={{ width: 18, height: 18 }}
+                        className={`inline-block ${
+                          !newSubLabel
+                            ? tableHeaderStyle.customButtonDisable
+                            : tableHeaderStyle.customButton
+                        } ${tableHeaderStyle.customContent} 
+                      
+                   `}
+                      >
+                        <PlusIcon />
+                      </span>
+                    </div>
+                  </div>
                 </CustomDropDown>
               </div>
             </div>
@@ -635,7 +663,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
                 } ${item.disabled ? 'cursor-default' : ''} `}
               >
                 {!item.editLabel ? (
-                  <RobotoBodyText level={6}>{item.label}</RobotoBodyText>
+                  <RobotoBodyText level={5}>{item.label}</RobotoBodyText>
                 ) : (
                   <div className={styles.actionBtn} key={String(item.value) || index}>
                     <CustomInput
