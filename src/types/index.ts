@@ -10,3 +10,4 @@ export * from './permission.type';
 export * from './material-code.type';
 export * from './label.type';
 export * from './product-id.type';
+export * from './partners.type';

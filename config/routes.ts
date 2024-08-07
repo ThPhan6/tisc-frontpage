@@ -644,10 +644,23 @@ const routes = [
         ],
       },
       {
+        path: PATH.partners,
+        name: 'brand.partners',
+        icon: 'shaking-hands.svg',
+        access: 'brand_administration_distributor',
+        routes: [
+          {
+            path: PATH.partners,
+            component: './Brand/Adminstration/Partners',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
         path: PATH.distributors,
         name: 'brand.distributor',
         icon: 'distributor-icon.svg',
-        access: 'brand_administration_distributor',
+        access: 'brand_administration_partners',
         routes: [
           {
             path: PATH.distributors,
