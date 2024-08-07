@@ -19,8 +19,6 @@ export type HeaderDropdownProps = {
   placement?: DropdownProps['placement'];
   filterDropdown?: boolean;
   menuDropdown?: boolean;
-  additionalStyle?: CSSProperties;
-  addtionalTextClass?: string;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
@@ -34,16 +32,9 @@ export type MenuIconProps = {
 type MenuHeaderDropdownProps = {
   items: MenuIconProps[];
   onParentClick?: () => void;
-  additionalStyle?: CSSProperties;
-  addtionalTextClass?: string;
 };
 
-export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({
-  items,
-  additionalStyle,
-  addtionalTextClass,
-  onParentClick,
-}) => {
+export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
   const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
     <div
       onClick={(e) => {
@@ -55,10 +46,9 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({
         onClick();
       }}
       className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
-      style={additionalStyle}
     >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
-      <BodyText fontFamily="Roboto" level={6} customClass={addtionalTextClass}>
+      <BodyText fontFamily="Roboto" level={6}>
         {label}
       </BodyText>
     </div>
@@ -88,8 +78,6 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   items = [],
   filterDropdown,
   menuDropdown,
-  additionalStyle,
-  addtionalTextClass,
   ...restProps
 }) => {
   const { isMobile } = useScreen();
@@ -97,12 +85,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   const [visible, setVisible] = useState(false);
 
   const content = items ? (
-    <MenuHeaderDropdown
-      items={items}
-      additionalStyle={additionalStyle}
-      onParentClick={() => setVisible(false)}
-      addtionalTextClass={addtionalTextClass}
-    />
+    <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
   ) : (
     <div />
   );
