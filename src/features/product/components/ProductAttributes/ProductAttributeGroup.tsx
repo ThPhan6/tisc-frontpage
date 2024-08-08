@@ -775,9 +775,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             }`}
             header={renderCollapseHeader(groupIndex)}
             collapsible={
-              isBrandSpecified &&
-              attrGroupItem.attributes.every((el) => el.type === 'Options') &&
-              !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)
+              (isBrandSpecified &&
+                attrGroupItem.attributes.every((el) => el.type === 'Options') &&
+                !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)) ||
+              !attributeGroup.every((attribute) => !attribute.isChecked)
                 ? 'disabled'
                 : undefined
             }
