@@ -282,3 +282,18 @@ export async function upsertLinkageOption() {
       // return [] as LinkageUpsertBody[];
     });
 }
+
+export async function changeIdType(mainId: string, idFormatType: number) {
+  return request(`/api/basis-option/change-id-type/${mainId}`, {
+    method: 'PUT',
+    data: { id_format_type: idFormatType },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CHANGE_ID_TYPE_OPTION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CHANGE_ID_TYPE_OPTION_ERROR);
+      return false;
+    });
+}

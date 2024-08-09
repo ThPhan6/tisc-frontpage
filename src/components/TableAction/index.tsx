@@ -10,6 +10,7 @@ import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as LinkageIcon } from '@/assets/icons/linkage-icon.svg';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
+import { ReactComponent as SquareCDownLeft } from '@/assets/icons/square-c-down-left.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
@@ -18,7 +19,7 @@ import { useScreen } from '@/helper/common';
 import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDropdown';
 import styles from './index.less';
 
-type ActionType =
+export type ActionType =
   | 'specify'
   | 'updated'
   | 'copy'
@@ -29,6 +30,9 @@ type ActionType =
   | 'logout'
   | 'billing'
   | 'linkage'
+  | 'full'
+  | 'partial'
+  | 'move_to'
   | 'compose';
 
 interface ActionFormProps extends HeaderDropdownProps {
@@ -42,7 +46,7 @@ interface ActionFormProps extends HeaderDropdownProps {
 
 const DEFAULT_ACTION_INFO: {
   [key in ActionType]: {
-    icon: JSX.Element;
+    icon?: JSX.Element;
     label: string;
   };
 } = {
@@ -89,6 +93,16 @@ const DEFAULT_ACTION_INFO: {
   compose: {
     icon: <ComposeIcon />,
     label: 'Compose',
+  },
+  move_to: {
+    icon: <SquareCDownLeft />,
+    label: 'Move To',
+  },
+  full: {
+    label: 'Full',
+  },
+  partial: {
+    label: 'Partial',
   },
 };
 

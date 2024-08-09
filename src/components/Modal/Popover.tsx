@@ -218,6 +218,7 @@ const Popover: FC<PopoverProps> = ({
               chosenItem={chosenValue}
               data={leftCheckboxList}
               onChange={setCurrentValue}
+              isExpanded={false}
             />
           </div>
           <div className={'flex-grow side-container'}>
@@ -226,6 +227,7 @@ const Popover: FC<PopoverProps> = ({
               chosenItem={rightChosenValue}
               data={rightCheckboxList}
               onChange={setRightCurrentValue}
+              isExpanded={true}
             />
           </div>
         </div>

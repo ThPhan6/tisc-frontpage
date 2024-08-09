@@ -114,6 +114,7 @@ export interface IUpdateAttributeRequest {
 export interface ProductSubAttributes extends SubAttribute {
   basis: {
     id: string;
+    id_format_type: number;
     type: ProductAttributeType;
     name: string;
     name_1: string;
