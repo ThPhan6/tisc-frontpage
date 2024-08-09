@@ -15,7 +15,7 @@ import { OrderMethod, SpecificationAttributeGroup } from '@/features/project/typ
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
-import { GeneralData } from '@/types';
+import { GeneralData, ProductIDType } from '@/types';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
@@ -364,8 +364,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     el?.attributes?.forEach((attr: any) => {
       attr?.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
-          const dash = opt.option_code === '' ? '' : ' - ';
-          variants += opt.option_code + dash;
+          variants += opt.option_code;
           return true;
         }
         return false;
@@ -398,12 +397,12 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       };
     });
 
+    const seperator = el.id_format_type === ProductIDType.Full ? ', ' : ' - ';
     sortObjectArray(combinedQuantities, 'order_key', 'asc')?.forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
-        const dash = option.product_id === '' ? '' : ' - ';
-        variants += option.product_id + dash;
+        variants += (variants ? seperator : '') + option.product_id;
       }
     });
   });
-  return variants.length > 2 ? variants.slice(0, -2) : variants;
+  return variants;
 });
