@@ -295,16 +295,19 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     [labels],
   );
 
-  const labelItems = (currentSubLabelId: string, labelId: string, brand_id: string) =>
-    labels
-      .filter(({ id }) => id !== labelId)
-      .map((mainLabel) => {
-        return {
-          key: `label-${mainLabel.id}`,
-          label: mainLabel.name,
-          onClick: handleMoveSubLabelToLabel(currentSubLabelId, mainLabel.id!, brand_id),
-        };
-      });
+  const labelItems = useMemo(
+    () => (currentSubLabelId: string, labelId: string, brand_id: string) =>
+      labels
+        .filter(({ id }) => id !== labelId)
+        .map((mainLabel) => {
+          return {
+            key: `label-${mainLabel.id}`,
+            label: mainLabel.name,
+            onClick: handleMoveSubLabelToLabel(currentSubLabelId, mainLabel.id!, brand_id),
+          };
+        }),
+    [labels, handleMoveSubLabelToLabel],
+  );
 
   const getCursorStyle = (label: DynamicCheckboxValue) => {
     if (isActionMenuDisabled) return 'not-allowed';
