@@ -60,3 +60,17 @@ export async function deleteLabel(id: string) {
       return false;
     });
 }
+
+export async function moveSubLabelToLabel(sub_label_id: string, main_label_id: string) {
+  return request<{ data: Label }>(`/api/label/${sub_label_id}/move-to/${main_label_id}`, {
+    method: 'POST',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.MOVE_SUB_LABEL_TO_LABEL_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.MOVE_SUB_LABEL_TO_LABEL_ERROR);
+      return false;
+    });
+}
