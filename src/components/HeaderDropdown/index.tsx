@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { CSSProperties, FC, useState } from 'react';
 
 import { Dropdown } from 'antd';
 import type { DropDownProps, DropdownProps } from 'antd/es/dropdown';
@@ -22,6 +22,7 @@ export type HeaderDropdownProps = {
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
+  additionalStyle?: CSSProperties;
   containerClass?: string;
   label?: string | React.ReactNode;
   icon?: JSX.Element | React.ReactNode;
@@ -35,7 +36,14 @@ type MenuHeaderDropdownProps = {
 };
 
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
-  const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
+  const MenuItem = ({
+    label,
+    icon,
+    onClick,
+    containerClass,
+    disabled,
+    additionalStyle,
+  }: MenuIconProps) => (
     <div
       onClick={(e) => {
         e.stopPropagation();
@@ -46,6 +54,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
         onClick();
       }}
       className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
+      style={additionalStyle}
     >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
@@ -64,6 +73,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
           label={item.label}
           icon={item.icon}
           disabled={item.disabled}
+          additionalStyle={item.additionalStyle}
         />
       ))}
     </div>

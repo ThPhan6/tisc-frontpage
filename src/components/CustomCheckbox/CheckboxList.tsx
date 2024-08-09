@@ -22,9 +22,10 @@ interface CheckboxListProps {
   selected?: CheckboxValue[];
   chosenItem?: CheckboxValue[];
   onChange?: (value: CheckboxValue[]) => void;
+  isExpanded?: boolean;
 }
 
-const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange }) => {
+const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange, isExpanded }) => {
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
   useEffect(() => {
@@ -82,6 +83,7 @@ const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange })
             heightItem="auto"
             checkboxClass={data.customItemClass}
             isCheckboxList
+            isExpanded={isExpanded}
           />
         </div>
       </div>

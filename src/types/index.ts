@@ -9,3 +9,4 @@ export * from './email-auto.type';
 export * from './permission.type';
 export * from './material-code.type';
 export * from './label.type';
+export * from './product-id.type';

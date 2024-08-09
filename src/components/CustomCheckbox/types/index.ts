@@ -8,6 +8,8 @@ export type CheckboxValue = {
   disabled?: boolean;
 };
 
+export type LabelType = 'label' | 'sub-label';
+
 export interface CustomCheckboxProps {
   direction?: 'horizontal' | 'vertical';
   options: CheckboxValue[];
@@ -26,6 +28,7 @@ export interface CustomCheckboxProps {
   chosenItems?: CheckboxValue[];
   additionalSelected?: string[];
   onChangeAdditionalSelected?: (value: string, option?: any, action?: 'add' | 'remove') => void;
+  isExpanded?: boolean;
 }
 
 export interface DropdownCheckboxItem {
