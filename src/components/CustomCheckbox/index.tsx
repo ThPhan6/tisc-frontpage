@@ -18,12 +18,12 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { confirmDelete } from '@/helper/common';
 import { useToggleExpand } from '@/helper/hook';
-import { deleteLabel, moveSubLabelToLabel, updateLabel } from '@/services/label.api';
+import { deleteLabel, getLabels, moveSubLabelToLabel, updateLabel } from '@/services/label.api';
 import { trimStart } from 'lodash';
 
 import { CheckboxValue, CustomCheckboxProps, LabelType } from './types';
 import { RootState } from '@/reducers';
-import { setLabels, setSelectedSubLabels, updateLabelsAfterMove } from '@/reducers/label';
+import { setLabels, setSelectedSubLabels } from '@/reducers/label';
 import { SubLabel } from '@/types';
 
 import { CustomDropDown } from '@/features/product/components';
@@ -273,10 +273,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const handleClickOpenDropdown = (subLabelId: string) => () =>
     setOpenDropdownId(openDropdownId === subLabelId ? null : subLabelId);
 
-  const handleMoveSubLabelToLabel = (subLabelId: string, labelId: string) => async () => {
-    const res = await moveSubLabelToLabel(subLabelId, labelId);
-    if (res) dispatch(updateLabelsAfterMove({ subLabelId, labelId }));
-  };
+  const handleMoveSubLabelToLabel =
+    (subLabelId: string, labelId: string, brand_id: string) => async () => {
+      const res = await moveSubLabelToLabel(subLabelId, labelId);
+      if (res) getLabels(brand_id);
+    };
 
   /**
    * Check if any sub labels are selected for a given label.
@@ -294,16 +295,21 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     [labels],
   );
 
-  const labelItems = (currentSubLabelId: string, labelId: string) =>
+  const labelItems = (currentSubLabelId: string, labelId: string, brand_id: string) =>
     labels
       .filter(({ id }) => id !== labelId)
       .map((mainLabel) => {
         return {
           key: `label-${mainLabel.id}`,
           label: mainLabel.name,
-          onClick: handleMoveSubLabelToLabel(currentSubLabelId, mainLabel.id!),
+          onClick: handleMoveSubLabelToLabel(currentSubLabelId, mainLabel.id!, brand_id),
         };
       });
+
+  const getCursorStyle = (label: DynamicCheckboxValue) => {
+    if (isActionMenuDisabled) return 'not-allowed';
+    return (label.subs?.length ?? 0) > 0 ? 'pointer' : 'not-allowed';
+  };
 
   return (
     <>
@@ -428,7 +434,13 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   </div>
                 ) : (
                   <span
-                    style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
+                    style={{
+                      fontWeight: `${
+                        expandedKeys.includes(label.id!) && (label.subs?.length ?? 0) > 0
+                          ? '500'
+                          : ''
+                      }`,
+                    }}
                     className={`main-label-name w-full text-hover-normal ${
                       isAnySubLabelChecked(label.id!) ? style['color-checked'] : ''
                     }`}
@@ -459,29 +471,14 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   ]}
                 />
 
-                {expandedKeys.includes(label.id!) ? (
-                  <span
-                    style={{
-                      cursor: `${
-                        isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
-                      }`,
-                    }}
-                    className={`${style['arrow-icon']}`}
-                  >
-                    <DropupIcon />
-                  </span>
-                ) : (
-                  <span
-                    style={{
-                      cursor: `${
-                        isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
-                      }`,
-                    }}
-                    className={`${style['arrow-icon']}`}
-                  >
-                    <DropdownIcon />
-                  </span>
-                )}
+                <span
+                  style={{
+                    cursor: getCursorStyle(label),
+                  }}
+                  className={`${style['arrow-icon']}`}
+                >
+                  {expandedKeys.includes(label.id!) ? <DropupIcon /> : <DropdownIcon />}
+                </span>
               </div>
 
               <div
@@ -596,7 +593,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                                         }}
                                         hideDropdownIcon
                                         visible={openDropdownId === sub.id}
-                                        items={labelItems(sub.id, sub.parent_id)}
+                                        items={labelItems(sub.id, sub.parent_id, label.brand_id!)}
                                         onVisibleChange={handleClickOpenDropdown(sub.id)}
                                       >
                                         Move to
