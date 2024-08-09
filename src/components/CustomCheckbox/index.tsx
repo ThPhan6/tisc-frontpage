@@ -18,13 +18,15 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { confirmDelete } from '@/helper/common';
 import { useToggleExpand } from '@/helper/hook';
-import { deleteLabel, updateLabel } from '@/services/label.api';
+import { deleteLabel, moveSubLabelToLabel, updateLabel } from '@/services/label.api';
 import { trimStart } from 'lodash';
 
 import { CheckboxValue, CustomCheckboxProps, LabelType } from './types';
 import { RootState } from '@/reducers';
-import { setLabels, setSelectedSubLabels } from '@/reducers/label';
+import { setLabels, setSelectedSubLabels, updateLabelsAfterMove } from '@/reducers/label';
 import { SubLabel } from '@/types';
+
+import { CustomDropDown } from '@/features/product/components';
 
 import CustomButton from '../Button';
 import { CustomInput } from '../Form/CustomInput';
@@ -58,7 +60,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const [checkedItems, setCheckedItems] = useState<DynamicCheckboxValue[]>(
     (selected as DynamicCheckboxValue[]) || [],
   );
-
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const { expandedKeys, setExpandedKeys, handleToggleExpand } = useToggleExpand();
 
   const { labels } = useSelector((state: RootState) => state.label);
@@ -268,6 +270,14 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     setIsActionMenuDisabled(false);
   };
 
+  const handleClickOpenDropdown = (subLabelId: string) => () =>
+    setOpenDropdownId(openDropdownId === subLabelId ? null : subLabelId);
+
+  const handleMoveSubLabelToLabel = (subLabelId: string, labelId: string) => async () => {
+    const res = await moveSubLabelToLabel(subLabelId, labelId);
+    if (res) dispatch(updateLabelsAfterMove({ subLabelId, labelId }));
+  };
+
   /**
    * Check if any sub labels are selected for a given label.
    *
@@ -284,314 +294,352 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     [labels],
   );
 
-  return (
-    <div
-      className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
-        isCheckboxList && style['item-list-checkbox']
-      } ${style['color-checkbox-checked']} ${checkboxClass}`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {!isExpanded ? (
-        <Checkbox.Group
-          {...props}
-          value={selected?.map((item) => item?.value) ?? []}
-          onChange={onChangeValue}
-        >
-          {options.map((option, index) =>
-            isCheckboxList ? (
-              <label
-                key={`${option.value}_${index}_${randomId}`}
-                className={` ${style['item-wrapper']} ${
-                  chosenItems?.some((el) => el.value === option.value) ? 'item-checkbox-active' : ''
-                } item-wrapper-custom text-capitalize`}
-                style={{ minHeight: heightItem }}
-                htmlFor={`${option.value}_${index}_${randomId}`}
-              >
-                <div
-                  style={{
-                    width: 'calc(100% - 16px)',
-                    marginRight: '16px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                  className={`${getActiveClass(option)}`}
-                >
-                  {option.label}
-                </div>
-                <Checkbox
-                  id={`${option.value}_${index}_${randomId}`}
-                  {...option}
-                  disabled={
-                    checkboxClass === 'collection-label-list' &&
-                    selected?.find((item) => item.value === option.value.toString())
-                  }
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    if (additionalSelected && onChangeAdditionalSelected)
-                      onChangeAdditionalSelected(option.value.toString(), option, 'remove');
-                    onOneChange?.(e);
-                  }}
-                />
+  const labelItems = (currentSubLabelId: string, labelId: string) =>
+    labels
+      .filter(({ id }) => id !== labelId)
+      .map((mainLabel) => {
+        return {
+          key: `label-${mainLabel.id}`,
+          label: mainLabel.name,
+          onClick: handleMoveSubLabelToLabel(currentSubLabelId, mainLabel.id!),
+        };
+      });
 
-                {additionalSelected && onChangeAdditionalSelected ? (
-                  <input
-                    style={{ marginRight: 4, cursor: 'pointer' }}
-                    disabled={!selected?.find((item) => item.value === option.value.toString())}
-                    type="checkbox"
-                    id={option.value.toString()}
-                    name="defaultSelect"
-                    value={option.value}
-                    checked={additionalSelected.includes(option.value.toString())}
-                    onChange={() => {
-                      onChangeAdditionalSelected(option.value.toString(), option);
+  return (
+    <>
+      <div
+        className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
+          isCheckboxList && style['item-list-checkbox']
+        } ${style['color-checkbox-checked']} ${checkboxClass}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {!isExpanded ? (
+          <Checkbox.Group
+            {...props}
+            value={selected?.map((item) => item?.value) ?? []}
+            onChange={onChangeValue}
+          >
+            {options.map((option, index) =>
+              isCheckboxList ? (
+                <label
+                  key={`${option.value}_${index}_${randomId}`}
+                  className={` ${style['item-wrapper']} ${
+                    chosenItems?.some((el) => el.value === option.value)
+                      ? 'item-checkbox-active'
+                      : ''
+                  } item-wrapper-custom text-capitalize`}
+                  style={{ minHeight: heightItem }}
+                  htmlFor={`${option.value}_${index}_${randomId}`}
+                >
+                  <div
+                    style={{
+                      width: 'calc(100% - 16px)',
+                      marginRight: '16px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                    className={`${getActiveClass(option)}`}
+                  >
+                    {option.label}
+                  </div>
+                  <Checkbox
+                    id={`${option.value}_${index}_${randomId}`}
+                    {...option}
+                    disabled={
+                      checkboxClass === 'collection-label-list' &&
+                      selected?.find((item) => item.value === option.value.toString())
+                    }
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      if (additionalSelected && onChangeAdditionalSelected)
+                        onChangeAdditionalSelected(option.value.toString(), option, 'remove');
+                      onOneChange?.(e);
                     }}
                   />
-                ) : null}
-              </label>
-            ) : (
-              <div
-                key={option.value}
-                className={`${style['item-checkbox']} item-wrapper-checkbox`}
-                style={{ minHeight: heightItem }}
-              >
-                <Checkbox {...option} style={{ maxWidth: '100%' }}>
-                  <span className={getActiveClass(option)}>{option.label}</span>
-                </Checkbox>
-              </div>
-            ),
-          )}
-        </Checkbox.Group>
-      ) : (
-        sortedLabels.map((label) => (
-          <Fragment key={label.id}>
-            <div
-              style={{ marginBottom: `${!expandedKeys.includes(label.id!) ? '8px' : '0'}` }}
-              className={`${style['label-wrapper']}`}
-              onClick={handleToggleExpandWithCheck(
-                label.value as string,
-                (label.subs?.length ?? 0) > 0,
-              )}
-            >
-              {isActionMenuDisabled && editingLabelIdRef.current === label.id ? (
-                <div className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}>
-                  <CustomInput
-                    autoFocus={isActionMenuDisabled}
-                    placeholder="type here"
-                    className={modalStyle.paddingLeftNone}
-                    value={editingValue}
-                    onChange={handleOnChangeLabelNameAssigned}
-                  />
-                  <div className={`cursor-default flex-start ${style['btn-action-wrapper']}`}>
-                    <CustomButton
-                      size="small"
-                      variant="primary"
-                      properties="rounded"
-                      buttonClass={modalStyle.btnSize}
-                      onClick={handleEditNameAssigned(label, 'label')}
-                    >
-                      Save
-                    </CustomButton>
-                    <CustomButton
-                      size="small"
-                      variant="primary"
-                      properties="rounded"
-                      buttonClass={modalStyle.btnSize}
-                      onClick={handleCancel}
-                    >
-                      Cancel
-                    </CustomButton>
-                  </div>
+
+                  {additionalSelected && onChangeAdditionalSelected ? (
+                    <input
+                      style={{ marginRight: 4, cursor: 'pointer' }}
+                      disabled={!selected?.find((item) => item.value === option.value.toString())}
+                      type="checkbox"
+                      id={option.value.toString()}
+                      name="defaultSelect"
+                      value={option.value}
+                      checked={additionalSelected.includes(option.value.toString())}
+                      onChange={() => {
+                        onChangeAdditionalSelected(option.value.toString(), option);
+                      }}
+                    />
+                  ) : null}
+                </label>
+              ) : (
+                <div
+                  key={option.value}
+                  className={`${style['item-checkbox']} item-wrapper-checkbox`}
+                  style={{ minHeight: heightItem }}
+                >
+                  <Checkbox {...option} style={{ maxWidth: '100%' }}>
+                    <span className={getActiveClass(option)}>{option.label}</span>
+                  </Checkbox>
                 </div>
-              ) : (
-                <span
-                  style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
-                  className={`main-label-name w-full text-hover-normal ${
-                    isAnySubLabelChecked(label.id!) ? style['color-checked'] : ''
-                  }`}
-                >
-                  {label.name}
-                </span>
-              )}
-
-              <ActionMenu
-                disabled={isActionMenuDisabled}
-                className={`${modalStyle.marginSpace} ${
-                  isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
-                } ${style['action-menu']}`}
-                overlayClassName={modalStyle.actionMenuOverlay}
-                editActionOnMobile={false}
-                actionItems={[
-                  {
-                    type: 'updated',
-                    label: 'Edit',
-                    onClick: handleEditClick(label.id!, label.name as string),
-                  },
-
-                  {
-                    type: 'deleted',
-                    label: 'Delete',
-                    onClick: handleDelete(label.id!, 'label'),
-                  },
-                ]}
-              />
-
-              {expandedKeys.includes(label.id!) ? (
-                <span
-                  style={{
-                    cursor: `${
-                      isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
-                    }`,
-                  }}
-                  className={`${style['arrow-icon']}`}
-                >
-                  <DropupIcon />
-                </span>
-              ) : (
-                <span
-                  style={{
-                    cursor: `${
-                      isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
-                    }`,
-                  }}
-                  className={`${style['arrow-icon']}`}
-                >
-                  <DropdownIcon />
-                </span>
-              )}
-            </div>
-
-            <div
-              className={`${style['expandable-section']} ${
-                expandedKeys.includes(label.id!) ? style['expanded'] : ''
-              }`}
-            >
-              {expandedKeys.includes(label.id as string) &&
-                label.subs &&
-                label.subs
-                  .slice()
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((sub) => {
-                    const temp = selected?.some((preItem) => preItem.value === sub.id);
-
-                    const isSubLabelNameSelected = selected?.some(
-                      (itemSelected) => itemSelected?.value === sub.id,
-                    );
-
-                    return (
-                      <section
-                        key={sub.id}
-                        className={`${style['sub-label-wrapper']}`}
-                        onClick={handleCheckboxChange({ value: sub.id, label: sub.name })}
+              ),
+            )}
+          </Checkbox.Group>
+        ) : (
+          sortedLabels.map((label) => (
+            <Fragment key={label.id}>
+              <div
+                style={{ marginBottom: `${!expandedKeys.includes(label.id!) ? '8px' : '0'}` }}
+                className={`${style['label-wrapper']}`}
+                onClick={handleToggleExpandWithCheck(
+                  label.value as string,
+                  (label.subs?.length ?? 0) > 0,
+                )}
+              >
+                {isActionMenuDisabled && editingLabelIdRef.current === label.id ? (
+                  <div className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}>
+                    <CustomInput
+                      autoFocus={isActionMenuDisabled}
+                      placeholder="type here"
+                      className={modalStyle.paddingLeftNone}
+                      value={editingValue}
+                      onChange={handleOnChangeLabelNameAssigned}
+                    />
+                    <div className={`cursor-default flex-start ${style['btn-action-wrapper']}`}>
+                      <CustomButton
+                        size="small"
+                        variant="primary"
+                        properties="rounded"
+                        buttonClass={modalStyle.btnSize}
+                        onClick={handleEditNameAssigned(label, 'label')}
                       >
-                        {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
-                          <div
-                            className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}
-                          >
-                            <CustomInput
-                              autoFocus={isActionMenuDisabled}
-                              placeholder="type here"
-                              className={modalStyle.paddingLeftNone}
-                              value={editingValue}
-                              onChange={handleOnChangeLabelNameAssigned}
-                            />
+                        Save
+                      </CustomButton>
+                      <CustomButton
+                        size="small"
+                        variant="primary"
+                        properties="rounded"
+                        buttonClass={modalStyle.btnSize}
+                        onClick={handleCancel}
+                      >
+                        Cancel
+                      </CustomButton>
+                    </div>
+                  </div>
+                ) : (
+                  <span
+                    style={{ fontWeight: `${expandedKeys.includes(label.id!) ? '500' : ''}` }}
+                    className={`main-label-name w-full text-hover-normal ${
+                      isAnySubLabelChecked(label.id!) ? style['color-checked'] : ''
+                    }`}
+                  >
+                    {label.name}
+                  </span>
+                )}
+
+                <ActionMenu
+                  disabled={isActionMenuDisabled}
+                  className={`${modalStyle.marginSpace} ${
+                    isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
+                  } ${style['action-menu']}`}
+                  overlayClassName={modalStyle.actionMenuOverlay}
+                  editActionOnMobile={false}
+                  actionItems={[
+                    {
+                      type: 'updated',
+                      label: 'Edit',
+                      onClick: handleEditClick(label.id!, label.name as string),
+                    },
+
+                    {
+                      type: 'deleted',
+                      label: 'Delete',
+                      onClick: handleDelete(label.id!, 'label'),
+                    },
+                  ]}
+                />
+
+                {expandedKeys.includes(label.id!) ? (
+                  <span
+                    style={{
+                      cursor: `${
+                        isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
+                      }`,
+                    }}
+                    className={`${style['arrow-icon']}`}
+                  >
+                    <DropupIcon />
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      cursor: `${
+                        isActionMenuDisabled || label.subs?.length === 0 ? 'not-allowed' : 'cursor'
+                      }`,
+                    }}
+                    className={`${style['arrow-icon']}`}
+                  >
+                    <DropdownIcon />
+                  </span>
+                )}
+              </div>
+
+              <div
+                className={`${style['expandable-section']} ${
+                  expandedKeys.includes(label.id!) ? style['expanded'] : ''
+                }`}
+              >
+                {expandedKeys.includes(label.id as string) &&
+                  label.subs &&
+                  label.subs
+                    .slice()
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((sub) => {
+                      const temp = selected?.some((preItem) => preItem.value === sub.id);
+
+                      const isSubLabelNameSelected = selected?.some(
+                        (itemSelected) => itemSelected?.value === sub.id,
+                      );
+
+                      return (
+                        <section
+                          key={sub.id}
+                          className={`${style['sub-label-wrapper']}`}
+                          onClick={handleCheckboxChange({ value: sub.id, label: sub.name })}
+                        >
+                          {isActionMenuDisabled && editingLabelIdRef.current === sub.id ? (
                             <div
-                              className={`cursor-default flex-start ${style['btn-action-wrapper']}`}
+                              className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}
                             >
-                              <CustomButton
-                                size="small"
-                                variant="primary"
-                                properties="rounded"
-                                buttonClass={modalStyle.btnSize}
-                                onClick={handleEditNameAssigned(
-                                  {
-                                    id: sub.id,
-                                    label: sub.name,
-                                    brand_id: sub.brand_id,
-                                    value: sub.id,
-                                  },
-                                  'sub-label',
-                                )}
+                              <CustomInput
+                                autoFocus={isActionMenuDisabled}
+                                placeholder="type here"
+                                className={modalStyle.paddingLeftNone}
+                                value={editingValue}
+                                onChange={handleOnChangeLabelNameAssigned}
+                              />
+                              <div
+                                className={`cursor-default flex-start ${style['btn-action-wrapper']}`}
                               >
-                                Save
-                              </CustomButton>
-                              <CustomButton
-                                size="small"
-                                variant="primary"
-                                properties="rounded"
-                                buttonClass={modalStyle.btnSize}
-                                onClick={handleCancel}
-                              >
-                                Cancel
-                              </CustomButton>
+                                <CustomButton
+                                  size="small"
+                                  variant="primary"
+                                  properties="rounded"
+                                  buttonClass={modalStyle.btnSize}
+                                  onClick={handleEditNameAssigned(
+                                    {
+                                      id: sub.id,
+                                      label: sub.name,
+                                      brand_id: sub.brand_id,
+                                      value: sub.id,
+                                    },
+                                    'sub-label',
+                                  )}
+                                >
+                                  Save
+                                </CustomButton>
+                                <CustomButton
+                                  size="small"
+                                  variant="primary"
+                                  properties="rounded"
+                                  buttonClass={modalStyle.btnSize}
+                                  onClick={handleCancel}
+                                >
+                                  Cancel
+                                </CustomButton>
+                              </div>
                             </div>
+                          ) : (
+                            <span
+                              className={`sub-label-name w-full text-hover-normal ${
+                                isSubLabelNameSelected ? style['color-checked'] : ''
+                              }`}
+                              style={{ fontWeight: `${isSubLabelNameSelected ? 500 : ''}` }}
+                            >
+                              {sub.name}
+                            </span>
+                          )}
+
+                          <div className={`${style['action-sub-label-wrapper']}`}>
+                            <ActionMenu
+                              disabled={isActionMenuDisabled}
+                              className={`${modalStyle.marginSpace} ${
+                                isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
+                              }`}
+                              overlayClassName={modalStyle.actionMenuOverlay}
+                              onOpenChange={handleClickOpenDropdown(sub.parent_id)}
+                              editActionOnMobile={false}
+                              actionItems={[
+                                {
+                                  type: 'updated',
+                                  label: 'Edit',
+                                  additionalStyle: { boxShadow: 'none' },
+                                  onClick: handleEditClick(sub.id, sub.name),
+                                },
+
+                                {
+                                  type: 'move_to',
+                                  label: (
+                                    <div
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                      }}
+                                    >
+                                      <CustomDropDown
+                                        placement="bottomLeft"
+                                        hideDropdownIcon
+                                        open={openDropdownId === sub.id}
+                                        menu={{ items: labelItems(sub.id, sub.parent_id) }}
+                                        onOpenChange={handleClickOpenDropdown(sub.id)}
+                                      >
+                                        Move to
+                                      </CustomDropDown>
+                                    </div>
+                                  ),
+                                  onClick: handleClickOpenDropdown(sub.id),
+                                },
+
+                                {
+                                  type: 'deleted',
+                                  label: 'Delete',
+                                  onClick: handleDelete(sub.id, 'sub-label', sub.parent_id),
+                                },
+                              ]}
+                            />
+                            <Checkbox
+                              id={`${sub.id}`}
+                              checked={temp}
+                              disabled={isActionMenuDisabled}
+                            />
                           </div>
-                        ) : (
-                          <span
-                            className={`sub-label-name w-full text-hover-normal ${
-                              isSubLabelNameSelected ? style['color-checked'] : ''
-                            }`}
-                            style={{ fontWeight: `${isSubLabelNameSelected ? 500 : ''}` }}
-                          >
-                            {sub.name}
-                          </span>
-                        )}
+                        </section>
+                      );
+                    })}
+              </div>
+            </Fragment>
+          ))
+        )}
 
-                        <div className={`${style['action-sub-label-wrapper']}`}>
-                          <ActionMenu
-                            disabled={isActionMenuDisabled}
-                            className={`${modalStyle.marginSpace} ${
-                              isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
-                            }`}
-                            overlayClassName={modalStyle.actionMenuOverlay}
-                            editActionOnMobile={false}
-                            containerStyle={{ display: 'flex', alignItems: 'center' }}
-                            actionItems={[
-                              {
-                                type: 'updated',
-                                label: 'Edit',
-                                onClick: handleEditClick(sub.id, sub.name),
-                              },
-
-                              {
-                                type: 'deleted',
-                                label: 'Delete',
-                                onClick: handleDelete(sub.id, 'sub-label', sub.parent_id),
-                              },
-                            ]}
-                          />
-                          <Checkbox
-                            id={`${sub.id}`}
-                            checked={temp}
-                            disabled={isActionMenuDisabled}
-                          />
-                        </div>
-                      </section>
-                    );
-                  })}
-            </div>
-          </Fragment>
-        ))
-      )}
-
-      {otherInput && (
-        <div
-          className={`other-field-checkbox ${
-            isCheckboxList ? style['other-field-checkbox-list'] : ''
-          }`}
-        >
-          <Checkbox value="other">
-            <div className={style['input-wrapper']} style={{ height: heightItem }}>
-              Other
-              <CustomInput
-                containerClass={style['other-input']}
-                placeholder={inputPlaceholder}
-                value={inputValue}
-                onChange={onChangeInputValue}
-              />
-            </div>
-          </Checkbox>
-        </div>
-      )}
-    </div>
+        {otherInput && (
+          <div
+            className={`other-field-checkbox ${
+              isCheckboxList ? style['other-field-checkbox-list'] : ''
+            }`}
+          >
+            <Checkbox value="other">
+              <div className={style['input-wrapper']} style={{ height: heightItem }}>
+                Other
+                <CustomInput
+                  containerClass={style['other-input']}
+                  placeholder={inputPlaceholder}
+                  value={inputValue}
+                  onChange={onChangeInputValue}
+                />
+              </div>
+            </Checkbox>
+          </div>
+        )}
+      </div>
+    </>
   );
 };

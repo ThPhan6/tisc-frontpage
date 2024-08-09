@@ -219,7 +219,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_LABEL_ERROR: 'Failed to get label data',
   DELETE_LABEL_SUCCESS: 'Delete label successfully',
   DELETE_LABEL_ERROR: 'Failed to delete label',
-
+  MOVE_SUB_LABEL_TO_LABEL_SUCCESS: 'Move sub-label to another label successfully',
+  MOVE_SUB_LABEL_TO_LABEL_ERROR: 'Move sub-label to another label unsuccessfully',
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
   GET_LIST_AVAILABILITY_GROUP_COLLECTION_ERROR: 'Get list group availability collection error',
