@@ -567,7 +567,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                                 isActionMenuDisabled ? 'mono-color-medium' : 'mono-color'
                               }`}
                               overlayClassName={modalStyle.actionMenuOverlay}
-                              onOpenChange={handleClickOpenDropdown(sub.parent_id)}
+                              onVisibleChange={handleClickOpenDropdown(sub.parent_id)}
                               editActionOnMobile={false}
                               actionItems={[
                                 {
@@ -587,10 +587,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                                     >
                                       <CustomDropDown
                                         placement="bottomLeft"
+                                        menuStyle={{ width: 500 }}
                                         hideDropdownIcon
-                                        open={openDropdownId === sub.id}
+                                        visible={openDropdownId === sub.id}
                                         menu={{ items: labelItems(sub.id, sub.parent_id) }}
-                                        onOpenChange={handleClickOpenDropdown(sub.id)}
+                                        onVisibleChange={handleClickOpenDropdown(sub.id)}
                                       >
                                         Move to
                                       </CustomDropDown>
