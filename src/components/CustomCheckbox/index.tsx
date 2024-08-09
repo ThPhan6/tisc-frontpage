@@ -276,7 +276,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const handleMoveSubLabelToLabel =
     (subLabelId: string, labelId: string, brand_id: string) => async () => {
       const res = await moveSubLabelToLabel(subLabelId, labelId);
-      if (res) getLabels(brand_id);
+
+      if (res) {
+        const updatedLabels = (await getLabels(brand_id)) as DynamicCheckboxValue[];
+        dispatch(setLabels(updatedLabels as DynamicCheckboxValue[]));
+      }
     };
 
   /**
@@ -311,7 +315,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   const getCursorStyle = (label: DynamicCheckboxValue) => {
     if (isActionMenuDisabled) return 'not-allowed';
-    return (label.subs?.length ?? 0) > 0 ? 'pointer' : 'not-allowed';
+    return label.subs?.length === 0 ? 'not-allowed' : 'pointer';
   };
 
   return (
@@ -400,10 +404,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               <div
                 style={{ marginBottom: `${!expandedKeys.includes(label.id!) ? '8px' : '0'}` }}
                 className={`${style['label-wrapper']}`}
-                onClick={handleToggleExpandWithCheck(
-                  label.value as string,
-                  (label.subs?.length ?? 0) > 0,
-                )}
+                onClick={handleToggleExpandWithCheck(label.id!, (label.subs?.length ?? 0) > 0)}
               >
                 {isActionMenuDisabled && editingLabelIdRef.current === label.id ? (
                   <div className={`${modalStyle.actionBtn} ${style['action-menu-wrapper']}`}>
