@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { ContactDetail } from '@/pages/Designer/CustomResource/type';
 
-import { RobotoBodyText } from '@/components/Typography';
+import { CormorantBodyText, RobotoBodyText } from '@/components/Typography';
 
 import styles from './BrandContact.less';
 
@@ -35,7 +35,7 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
 }) => {
   const renderContact = (el: ContactDetail) => {
     return (
-      <div style={{ paddingTop: 8 }}>
+      <div style={{ paddingTop: 5 }}>
         <div className={styles.detail_phoneEmail}>
           <RobotoBodyText level={6} customClass={styles.phone}>
             {el.first_name} {el.last_name}
@@ -43,10 +43,18 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
           <RobotoBodyText level={6}>{el.position}</RobotoBodyText>
         </div>
         <div className={styles.detail_phoneEmail}>
+          <RobotoBodyText level={6} customClass={styles.email}>
+            <CormorantBodyText level={6} customClass={styles.detail_phoneEmail_label}>
+              Email:
+            </CormorantBodyText>
+            {el.work_email}
+          </RobotoBodyText>
           <RobotoBodyText level={6} customClass={styles.phone}>
+            <CormorantBodyText level={6} customClass={styles.detail_phoneEmail_label}>
+              Phone:
+            </CormorantBodyText>
             +{el.phone_code || phone_code} {el.work_phone}
           </RobotoBodyText>
-          <RobotoBodyText level={6}>{el.work_email}</RobotoBodyText>
         </div>
       </div>
     );
