@@ -490,6 +490,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   return (
     <Popover
       title="SELECT COLLECTION & LABEL"
+      notScrollWholeContent
       className={styles.modal}
       visible={visible}
       setVisible={handleCloseModal}
