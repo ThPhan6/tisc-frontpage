@@ -87,6 +87,25 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       const newAttrGroup = cloneDeep(attributeGroup);
 
       const selectedAttrIds = value.map((v) => v.value);
+
+      // // Function to extract the selected attributes from the provided value.
+      // const selectedAttributes = value.flatMap((item) =>
+      //   attributes.flatMap((attr) => attr.subs.filter((sub) => sub.id === item.value)),
+      // );
+
+      // // Create a Set to store the unique id_format_type values of the selected attributes.
+      // const idFormatTypes = new Set(
+      //   selectedAttributes
+      //     .map((attr) => attr.basis?.id_format_type)
+      //     .filter((type) => type !== undefined && type !== null),
+      // );
+
+      // // Check if there are more than one distinct id_format_type values.
+      // if (idFormatTypes.size > 1) {
+      //   message.warn('Cannot select attributes with multiple ID types!');
+      //   return;
+      // }
+
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
       );

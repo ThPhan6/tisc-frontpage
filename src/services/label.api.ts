@@ -32,6 +32,7 @@ export async function createLabel(data: LabelInput) {
       return {} as Label;
     });
 }
+
 export async function updateLabel(labelId: string, props: LabelInput) {
   return request(`/api/label/update/${labelId}`, {
     method: 'PATCH',
@@ -56,6 +57,20 @@ export async function deleteLabel(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_LABEL_ERROR);
+      return false;
+    });
+}
+
+export async function moveSubLabelToLabel(sub_label_id: string, main_label_id: string) {
+  return request<{ data: Label }>(`/api/label/${sub_label_id}/move-to/${main_label_id}`, {
+    method: 'POST',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.MOVE_SUB_LABEL_TO_LABEL_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.MOVE_SUB_LABEL_TO_LABEL_ERROR);
       return false;
     });
 }

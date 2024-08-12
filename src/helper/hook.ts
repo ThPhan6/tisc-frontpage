@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
 import { useLocation, useModel, useParams } from 'umi';
@@ -105,4 +105,23 @@ export const useGetUserRoleFromPathname = () => {
 export const useGetParamId = () => {
   const params = useParams<{ id: string }>();
   return params?.id ?? '';
+};
+
+export const useToggleExpand = () => {
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+
+  /**
+   * Function to toggle the expanded state of an item.
+   *
+   * @param key - The key of the item to toggle the expanded state.
+   */
+  const handleToggleExpand = useCallback((key: string) => {
+    setExpandedKeys((prev) => {
+      if (prev.includes(key)) return prev.filter((id) => id !== key);
+
+      return prev.concat([key]);
+    });
+  }, []);
+
+  return { expandedKeys, setExpandedKeys, handleToggleExpand };
 };
