@@ -1,5 +1,6 @@
 import { SpecificationType } from '@/features/product/types';
 import { OptionQuantityResponse } from '@/features/product/types/autoStep';
+import { ProductIDType } from '@/types';
 
 export interface SelectedSpecAttributte {
   id: string;
@@ -40,6 +41,7 @@ export interface SpecificationAttributeGroup {
   viewSteps?: ViewStepProps[];
   isChecked?: boolean;
   type?: SpecificationType;
+  id_format_type?: ProductIDType;
 }
 export interface SpecificationBodyRequest {
   is_refer_document: boolean;
