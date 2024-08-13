@@ -212,7 +212,7 @@ const Partners = () => {
           <CollapsiblePanel panels={panels} />
           <CustomPlusButton
             onClick={handlePushTo}
-            style={{ margin: '0 16px' }}
+            customClass="my-0 mx-16"
             disabled={!isActiveTab}
           />
         </div>
