@@ -1,7 +1,6 @@
 import { TableColumnProps } from 'antd';
 import { useHistory } from 'umi';
 
-import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { useCheckPartnerActiveTab } from '@/pages/Brand/Adminstration/Partners/hooks/useCheckPartnerActiveTab';
 
 import { TabItem } from '@/components/Tabs/types';
@@ -87,63 +86,62 @@ const Partners = () => {
       title: 'Name',
       dataIndex: 'name',
       sorter: true,
+      width: '5%',
     },
-
     {
       title: 'Country',
       dataIndex: 'country',
       sorter: true,
+      width: '5%',
     },
-
     {
       title: 'City',
       dataIndex: 'city',
       sorter: true,
+      width: '8%',
     },
-
     {
       title: 'Contact',
       dataIndex: 'contact',
+      width: '8%',
     },
-
     {
       title: 'Affiliation',
       dataIndex: 'affiliation',
+      width: '8%',
     },
-
     {
       title: 'Relation',
       dataIndex: 'relation',
+      width: '5%',
     },
-
     {
       title: 'Acquisition',
       dataIndex: 'acquisition',
+      width: '5%',
     },
-
     {
       title: 'Price Rate',
       dataIndex: 'price_rate',
+      width: '5%',
     },
-
     {
       title: 'Authorised Country',
       dataIndex: 'authorised_country',
+      width: '10%',
     },
-
     {
       title: 'Beyond',
       dataIndex: 'beyond',
       align: 'center',
       width: '5%',
     },
-
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: (_value: any, record: any) => {
+      render: () => {
         return (
           <ActionMenu
             actionItems={[
@@ -159,6 +157,36 @@ const Partners = () => {
           />
         );
       },
+    },
+  ];
+
+  const dataSource = [
+    {
+      key: '1',
+      name: 'Company A',
+      country: 'USA',
+      city: 'New York',
+      contact: 'First/last name',
+      affiliation: 'Agent',
+      relation: 'Direct',
+      acquisition: 'Frezze',
+      price_rate: '1.10',
+      authorised_country: 'USA',
+      beyond: 'Allow',
+    },
+
+    {
+      key: '2',
+      name: 'Company B',
+      country: 'Malaysia',
+      city: 'Kuala Lumpur',
+      contact: 'First/last name',
+      affiliation: 'Distributor',
+      relation: 'Indirect',
+      acquisition: 'Inactive',
+      price_rate: '1.20',
+      authorised_country: 'Malaysia',
+      beyond: 'Not Allow',
     },
   ];
 
@@ -180,7 +208,7 @@ const Partners = () => {
           activeKey={selectedTab}
         />
 
-        <div className="d-flex" style={{ background: '#fff', borderBottom: '1px solid #000' }}>
+        <div className="d-flex bg-white border-bottom-black">
           <CollapsiblePanel panels={panels} />
           <CustomPlusButton
             onClick={handlePushTo}
@@ -190,11 +218,7 @@ const Partners = () => {
         </div>
       </div>
 
-      <CustomTable
-        columns={setDefaultWidthForEachColumn(columns, 8)}
-        fetchDataFunc={getLocationPagination}
-        hasPagination
-      />
+      <CustomTable columns={columns} fetchDataFunc={getLocationPagination} hasPagination />
     </>
   );
 };

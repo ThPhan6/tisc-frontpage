@@ -9,8 +9,8 @@ import styles from './index.less';
 
 interface CollapsiblePanelItem {
   id: number;
-  title?: string;
-  headingDropdown?: string;
+  title: string;
+  headingDropdown: string;
   labels: { id: number; label: string }[];
 }
 
@@ -38,26 +38,34 @@ const CollapsiblePanel = ({ panels }: CollapsiblePanelProps) => {
 
           {openPanelIndex === index && (
             <div className={styles.collapsiblePanelContent}>
-              <Dropdown trigger={['click']} placement="topRight">
-                <Menu>
-                  <Menu.Item style={{ padding: 0, marginBottom: 0 }}>
-                    {panel.headingDropdown ? (
-                      <span className={styles.collapsiblePanelContentHeading}>
-                        {panel.headingDropdown}
-                      </span>
-                    ) : null}
-                  </Menu.Item>
-
-                  {panel?.labels?.map((item) => (
-                    <Menu.Item
-                      key={item.id}
-                      style={{ margin: '0' }}
-                      className={styles.collapsiblePanelMenuHeading}
-                    >
-                      {item.label}
+              <Dropdown
+                trigger={['click']}
+                placement="topRight"
+                visible={openPanelIndex === index}
+                onVisibleChange={handleToggleDropdown(index)}
+                overlay={
+                  <Menu className={styles.collapsiblePanelMenu}>
+                    <Menu.Item style={{ padding: 0, marginBottom: 0 }}>
+                      {panel.headingDropdown ? (
+                        <span className={styles.collapsiblePanelContentHeading}>
+                          {panel.headingDropdown}
+                        </span>
+                      ) : null}
                     </Menu.Item>
-                  ))}
-                </Menu>
+
+                    {panel?.labels?.map(({ id, label }) => (
+                      <Menu.Item
+                        key={id}
+                        style={{ margin: '0' }}
+                        className={styles.collapsiblePanelMenuHeading}
+                      >
+                        {label}
+                      </Menu.Item>
+                    ))}
+                  </Menu>
+                }
+              >
+                <span />
               </Dropdown>
             </div>
           )}
