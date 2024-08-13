@@ -233,7 +233,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   const [values, setValues] = useState<
     { id: string; name: string; subs?: [{ id: string; name: string }] }[]
   >([]);
-  const { expandedKeys, handleToggleExpand } = useToggleExpand();
+  const { expandedKeys, handleToggleExpand } = useToggleExpand(true);
 
   useEffect(() => {
     if (selected) {
