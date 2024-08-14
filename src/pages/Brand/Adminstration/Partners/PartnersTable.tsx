@@ -1,10 +1,11 @@
-import { TableColumnProps } from 'antd';
-import { useHistory } from 'umi';
+import { useEffect, useState } from 'react';
 
-import { useCheckPartnerActiveTab } from '@/pages/Brand/Adminstration/Partners/hooks/useCheckPartnerActiveTab';
+import { PATH } from '@/constants/path';
+import { TableColumnProps } from 'antd';
+import { useLocation } from 'umi';
 
 import { TabItem } from '@/components/Tabs/types';
-import { Partners as PartnerAttributes } from '@/types';
+import { Company, CompanyForm } from '@/types';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
 import CustomTable from '@/components/Table';
@@ -12,76 +13,45 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomTabs } from '@/components/Tabs';
-import styles from '@/pages/Brand/Adminstration/Partners/Partners.less';
+import CompanyEntryForm from '@/pages/Brand/Adminstration/Partners/CompanyEntryForm';
+import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
 import { getLocationPagination } from '@/features/locations/api';
 
 export enum PartnerTabKey {
-  companyParnets = 'company',
+  companyPartners = 'company',
   contactPartners = 'contacts',
 }
 
-const Partners = () => {
-  const { push } = useHistory();
-  const { isActiveTab, selectedTab, setSelectedTab } = useCheckPartnerActiveTab();
+const initialCompanyForm: CompanyForm = {
+  name: '',
+  website: '',
+  country: '',
+  province: '',
+  city: '',
+  address: '',
+  postal_code: '',
+  phone: '',
+  email: '',
+  affiliation: '',
+  relation: '',
+  acquisition: '',
+  price_rate: 1.0,
+  authorised_country: '',
+  beyond: '0',
+  remark: '',
+};
 
-  const listTab: TabItem[] = [
-    {
-      tab: 'Companies',
-      tabletTabTitle: 'Companies',
-      key: PartnerTabKey.companyParnets,
-      disable: !isActiveTab,
-    },
+const PartnersTable = () => {
+  const [data, setData] = useState<CompanyForm>(initialCompanyForm);
+  const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
+  const [showEntryForm, setShowEntryForm] = useState(false);
+  const [entryFormType, setEntryFormType] = useState<PartnerTabKey | null>(null);
+  const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(PartnerTabKey.companyPartners);
+  const location = useLocation();
+  const isActiveTab = location.pathname === PATH.brandPartners;
 
-    {
-      tab: 'Contacts',
-      tabletTabTitle: 'Contacts',
-      key: PartnerTabKey.contactPartners,
-      disable: !isActiveTab,
-    },
-  ];
-
-  const handleChangeTab = (activeKey: string) => {
-    location.hash = '#' + activeKey;
-    push(location);
-    setSelectedTab?.(activeKey as PartnerTabKey);
-  };
-
-  const handlePushTo = () => {};
-
-  const panels = [
-    {
-      id: 1,
-      title: 'Affiliation',
-      headingDropdown: 'VIEW ALL',
-      labels: [
-        { id: 1, label: 'Agent' },
-        { id: 2, label: 'Distributor' },
-      ],
-    },
-
-    {
-      id: 2,
-      title: 'Relation',
-      headingDropdown: 'VIEW ALL',
-      labels: [
-        { id: 1, label: 'Direct' },
-        { id: 2, label: 'Indirect' },
-      ],
-    },
-
-    {
-      id: 3,
-      title: 'Acquisition',
-      headingDropdown: 'VIEW ALL',
-      labels: [
-        { id: 1, label: 'Frezze' },
-        { id: 2, label: 'Inactive' },
-      ],
-    },
-  ];
-
-  const columns: TableColumnProps<PartnerAttributes>[] = [
+  const companyColumns: TableColumnProps<Company>[] = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -160,7 +130,69 @@ const Partners = () => {
     },
   ];
 
-  const dataSource = [
+  useEffect(() => {
+    if (isActiveTab) setColumns(companyColumns);
+  }, [isActiveTab, selectedTab]);
+
+  const listTab: TabItem[] = [
+    {
+      tab: 'Companies',
+      tabletTabTitle: 'Companies',
+      key: PartnerTabKey.companyPartners,
+      disable: !isActiveTab,
+    },
+
+    {
+      tab: 'Contacts',
+      tabletTabTitle: 'Contacts',
+      key: PartnerTabKey.contactPartners,
+      disable: !isActiveTab,
+    },
+  ];
+
+  const handlePushTo = () => {
+    setShowEntryForm(true);
+    setEntryFormType(selectedTab!);
+  };
+
+  const handleCloseEntryForm = () => {
+    setShowEntryForm(false);
+    setEntryFormType(null);
+  };
+
+  const panels = [
+    {
+      id: 1,
+      title: 'Affiliation',
+      headingDropdown: 'VIEW ALL',
+      labels: [
+        { id: 1, label: 'Agent' },
+        { id: 2, label: 'Distributor' },
+      ],
+    },
+
+    {
+      id: 2,
+      title: 'Relation',
+      headingDropdown: 'VIEW ALL',
+      labels: [
+        { id: 1, label: 'Direct' },
+        { id: 2, label: 'Indirect' },
+      ],
+    },
+
+    {
+      id: 3,
+      title: 'Acquisition',
+      headingDropdown: 'VIEW ALL',
+      labels: [
+        { id: 1, label: 'Frezze' },
+        { id: 2, label: 'Inactive' },
+      ],
+    },
+  ];
+
+  const companyData = [
     {
       key: '1',
       name: 'Company A',
@@ -174,7 +206,6 @@ const Partners = () => {
       authorised_country: 'USA',
       beyond: 'Allow',
     },
-
     {
       key: '2',
       name: 'Company B',
@@ -190,6 +221,13 @@ const Partners = () => {
     },
   ];
 
+  const handleChangeTab = (activeKey: string) => {
+    setSelectedTab?.(activeKey as PartnerTabKey);
+    if (activeKey === PartnerTabKey.companyPartners) setColumns(companyColumns);
+  };
+
+  console.log(entryFormType);
+
   return (
     <>
       <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
@@ -202,7 +240,7 @@ const Partners = () => {
           tabDisplay="start"
           widthItem="auto"
           className={`${styles.partnerHeaderTab} ${
-            !isActiveTab ? styles.partnerHeaderTabDisabled : ''
+            !isActiveTab || showEntryForm ? styles.partnerHeaderTabDisabled : ''
           }`}
           onChange={handleChangeTab}
           activeKey={selectedTab}
@@ -213,14 +251,18 @@ const Partners = () => {
           <CustomPlusButton
             onClick={handlePushTo}
             customClass="my-0 mx-16"
-            disabled={!isActiveTab}
+            disabled={!isActiveTab || showEntryForm}
           />
         </div>
       </div>
 
-      <CustomTable columns={columns} fetchDataFunc={getLocationPagination} hasPagination />
+      {!showEntryForm ? (
+        <CustomTable columns={columns} fetchDataFunc={getLocationPagination} />
+      ) : entryFormType === PartnerTabKey.companyPartners ? (
+        <CompanyEntryForm onClose={handleCloseEntryForm} data={data} setData={setData} />
+      ) : null}
     </>
   );
 };
 
-export default Partners;
+export default PartnersTable;

@@ -644,14 +644,14 @@ const routes = [
         ],
       },
       {
-        path: PATH.partners,
+        path: PATH.brandPartners,
         name: 'brand.partners',
         icon: 'shaking-hands.svg',
         access: 'brand_administration_partners',
         routes: [
           {
-            path: PATH.partners,
-            component: './Brand/Adminstration/Partners',
+            path: PATH.brandPartners,
+            component: './Brand/Adminstration/Partners/PartnersTable',
             hideInMenu: true,
           },
         ],
