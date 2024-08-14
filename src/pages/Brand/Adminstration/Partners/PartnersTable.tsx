@@ -226,8 +226,6 @@ const PartnersTable = () => {
     if (activeKey === PartnerTabKey.companyPartners) setColumns(companyColumns);
   };
 
-  console.log(entryFormType);
-
   return (
     <>
       <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
