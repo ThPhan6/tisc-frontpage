@@ -23,7 +23,7 @@ import { trimStart } from 'lodash';
 
 import { CheckboxValue, CustomCheckboxProps, LabelType } from './types';
 import { RootState } from '@/reducers';
-import { setLabels, setSelectedSubLabels } from '@/reducers/label';
+import { setLabels } from '@/reducers/label';
 import { SubLabel } from '@/types';
 
 import { CustomDropDown } from '@/features/product/components';
@@ -73,7 +73,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     const allSubLabels = labels.reduce((pre: SubLabel[], cur) => {
       return pre.concat(cur.subs!);
     }, []);
-
+    if (onChange) onChange(checkedItems);
     const selectedParents = checkedItems.map((sub) => {
       const foundSubLabel = allSubLabels.find((subLabel: SubLabel) => subLabel.id === sub.value);
       return foundSubLabel?.parent_id;
@@ -90,9 +90,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
       return Array.from(newExpandedKeys);
     });
-    if (onChange) onChange(checkedItems);
-
-    dispatch(setSelectedSubLabels(checkedItems.map((item) => String(item.value))));
   }, [JSON.stringify(checkedItems.map((item) => ({ value: item.value })))]);
 
   useEffect(() => {

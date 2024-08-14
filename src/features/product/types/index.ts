@@ -146,6 +146,7 @@ export interface ProductItem {
   brand_id: string;
   collections: GeneralData[];
   labels: GeneralData[];
+  label_ids: string[];
   collection?: GeneralData;
   categories: GeneralData[];
   name: string;
