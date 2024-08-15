@@ -778,7 +778,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               (isBrandSpecified &&
                 attrGroupItem.attributes.every((el) => el.type === 'Options') &&
                 !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)) ||
-              !attributeGroup.every((attribute) => !attribute.isChecked)
+              (!attributeGroup.every((attribute) => !attribute.isChecked) &&
+                attributeGroup.find((attribute) => attribute.isChecked)?.id !== attrGroupItem.id)
                 ? 'disabled'
                 : undefined
             }

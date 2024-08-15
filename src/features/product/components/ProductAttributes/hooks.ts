@@ -172,7 +172,6 @@ export const getSpecificationWithSelectedValue = (
       }),
     );
   });
-  console.log('checkedSpecGroup: ', checkedSpecGroup);
   return checkedSpecGroup;
 };
 
