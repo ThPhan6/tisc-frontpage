@@ -361,10 +361,13 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     if (!el.isChecked) {
       return;
     }
+
+    const seperator = el.id_format_type === ProductIDType.Full ? ', ' : ' - ';
+
     el?.attributes?.forEach((attr: any) => {
       attr?.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
-          variants += opt.option_code;
+          variants += (variants ? seperator : '') + opt.option_code;
           return true;
         }
         return false;
@@ -397,7 +400,6 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       };
     });
 
-    const seperator = el.id_format_type === ProductIDType.Full ? ', ' : ' - ';
     sortObjectArray(combinedQuantities, 'order_key', 'asc')?.forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
         variants += (variants ? seperator : '') + option.product_id;
