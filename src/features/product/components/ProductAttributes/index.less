@@ -11,6 +11,9 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
   }
+  :global(.ant-checkbox-disabled .ant-checkbox-inner) {
+    border-color: #000 !important;
+  }
   .attrGroupTitle {
     width: 100%;
     max-width: 100%;
@@ -106,6 +109,15 @@
     :global(.ant-collapse-item-active) {
       box-shadow: none;
     }
+  }
+}
+
+.disableAttribute {
+  :global(.ant-checkbox-disabled .ant-checkbox-inner) {
+    border-color: #d9d9d9 !important;
+  }
+  p {
+    color: #d9d9d9 !important;
   }
 }
 
