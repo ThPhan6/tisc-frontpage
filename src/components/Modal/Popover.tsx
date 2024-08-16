@@ -91,6 +91,7 @@ export interface PopoverProps {
   maskClosable?: boolean;
 
   width?: string | number;
+  notScrollWholeContent?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -129,6 +130,7 @@ const Popover: FC<PopoverProps> = ({
   width,
   cancelSaveFooter,
   collapseLevel,
+  notScrollWholeContent,
 }) => {
   const { isMobile } = useScreen();
 
@@ -404,7 +406,7 @@ const Popover: FC<PopoverProps> = ({
         footer={noFooter ? null : renderButtonFooter()}
         className={`${styles.customPopover} ${className ?? ''} ${
           titlePosition === 'center' ? styles.titlePositionCenter : ''
-        }`}
+        } ${notScrollWholeContent ? styles['customPopover-notScroll'] : ''}`}
       >
         {extraTopAction}
         {renderChildren()}
