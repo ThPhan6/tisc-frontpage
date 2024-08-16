@@ -528,6 +528,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
               return;
             }
 
+            const check = data.subs.find((el) => el.id === subId);
+            if (!check) {
+              pushTo(FORM_CONFIG[type].path);
+            }
+
             newData = removeOtherSubOptions(newData, subId as string);
           }
           setData(newData);
