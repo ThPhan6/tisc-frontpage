@@ -150,6 +150,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       )?.step_selections?.quantities || {}
     : {};
   const [autoStepModal, setAutoStepModal] = useState<boolean>(false);
+  const isCheckedAttribute =
+    attributeGroup.find((attribute) => attribute.isChecked)?.id === attrGroupItem.id;
 
   // const autoSteps = curStepSelect;
   const autoSteps = (sortBy(attrGroupItem?.steps, (o) => o.order) ??
@@ -772,12 +774,17 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             className={isTiscAdmin ? undefined : styles.vendorSection}
             customHeaderClass={`${styles.productAttributeItem} ${
               isSpecifiedModal ? styles.specifying : ''
+            } ${
+              !attributeGroup.every((attribute) => !attribute.isChecked) && !isCheckedAttribute
+                ? styles.disableAttribute
+                : ''
             }`}
             header={renderCollapseHeader(groupIndex)}
             collapsible={
-              isBrandSpecified &&
-              attrGroupItem.attributes.every((el) => el.type === 'Options') &&
-              !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)
+              (isBrandSpecified &&
+                attrGroupItem.attributes.every((el) => el.type === 'Options') &&
+                !prevAttributeGroupSelectedIds.includes(attrGroupItem.id)) ||
+              (!attributeGroup.every((attribute) => !attribute.isChecked) && !isCheckedAttribute)
                 ? 'disabled'
                 : undefined
             }
