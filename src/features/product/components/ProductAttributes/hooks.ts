@@ -91,6 +91,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
           specState.push({
             id: gr.id,
             attributes: attributeGroup,
+            id_format_type: gr.id_format_type,
           });
         }
 
@@ -105,6 +106,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
             step_selections: gr.stepSelection.quantities,
             /// default each attribute group has attributes property is empty array
             attributes: [],
+            id_format_type: gr.id_format_type,
           });
         }
       }
@@ -115,6 +117,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
         specState.push({
           id: gr.id,
           attributes: attributeGroup,
+          id_format_type: gr.id_format_type,
         });
       }
 
@@ -128,6 +131,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
           step_selections: gr.stepSelection?.quantities,
           /// default each attribute group has attributes property is empty array
           attributes: [],
+          id_format_type: gr.id_format_type,
         });
       }
     }
@@ -220,6 +224,7 @@ export const useProductAttributeForm = (
       const found = specifiedDetail?.specification.attribute_groups.find(
         (group) => group.id === item.id,
       );
+      console.log('found: ', found);
       return {
         ...item,
         isChecked: found?.isChecked,

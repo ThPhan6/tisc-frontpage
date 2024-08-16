@@ -538,11 +538,15 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
           if (el.id !== currentSpecAttributeGroupId) {
             return el;
           }
+          const idFormatType = details.specification_attribute_groups.find(
+            (group) => group.id === currentSpecAttributeGroupId,
+          )?.id_format_type;
           return {
             ...el,
             viewSteps,
             isChecked: true,
             step_selections: { quantities: newQuantities },
+            id_format_type: idFormatType,
           };
         })
         .filter((item) => !isEmpty(item));
