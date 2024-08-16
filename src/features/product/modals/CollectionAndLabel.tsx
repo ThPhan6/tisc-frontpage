@@ -11,7 +11,11 @@ import { createCollection, deleteCollection, getCollections, updateCollection } 
 import { createLabel, deleteLabel, getLabels, updateLabel } from '@/services/label.api';
 import { trimEnd, trimStart } from 'lodash';
 
-import { onShowRelatedProductByCollection, setRelatedProduct } from '../reducers';
+import {
+  onShowRelatedProductByCollection,
+  setPartialProductDetail,
+  setRelatedProduct,
+} from '../reducers';
 import { RelatedCollection } from '../types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store, { RootState, useAppSelector } from '@/reducers';
@@ -490,6 +494,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   return (
     <Popover
       title="SELECT COLLECTION & LABEL"
+      notScrollWholeContent
       className={styles.modal}
       visible={visible}
       setVisible={handleCloseModal}
@@ -541,6 +546,11 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         handleCloseModal(!visible);
       }}
       setRightChosenValue={(selectedItem) => {
+        dispatch(
+          setPartialProductDetail({
+            label_ids: selectedItem.map((item: any) => String(item.value)),
+          }),
+        );
         setChosenLabel(
           labels
             .map((el) => {

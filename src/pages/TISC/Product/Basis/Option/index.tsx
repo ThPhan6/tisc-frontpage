@@ -187,39 +187,39 @@ const BasisOptionList: React.FC = () => {
       },
     },
     ...getSameColumns(false),
-    {
-      title: 'ID Type',
-      dataIndex: 'id_format_type',
-      width: '5%',
-      align: 'center',
-      render: (_, record) => {
-        const idFormatType: ItemType[] = [
-          {
-            key: ProductIDType.Full,
-            label: 'Full',
-            onClick: handleChangeIdType(record.id, ProductIDType.Full, record.id_format_type),
-          },
+    // {
+    //   title: 'ID Type',
+    //   dataIndex: 'id_format_type',
+    //   width: '5%',
+    //   align: 'center',
+    //   render: (_, record) => {
+    //     const idFormatType: ItemType[] = [
+    //       {
+    //         key: ProductIDType.Full,
+    //         label: 'Full',
+    //         onClick: handleChangeIdType(record.id, ProductIDType.Full, record.id_format_type),
+    //       },
 
-          {
-            key: ProductIDType.Partial,
-            label: 'Partial',
-            onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
-          },
-        ];
+    //       {
+    //         key: ProductIDType.Partial,
+    //         label: 'Partial',
+    //         onClick: handleChangeIdType(record.id, ProductIDType.Partial, record.id_format_type),
+    //       },
+    //     ];
 
-        return (
-          <CustomDropDown
-            arrow
-            items={idFormatType}
-            placement="bottomRight"
-            hideDropdownIcon={true}
-            menuStyle={{ width: '100px', height: 'fit-content', bottom: '0' }}
-          >
-            {record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}
-          </CustomDropDown>
-        );
-      },
-    },
+    //     return (
+    //       <CustomDropDown
+    //         arrow
+    //         items={idFormatType}
+    //         placement="bottomRight"
+    //         hideDropdownIcon={true}
+    //         menuStyle={{ width: '100px', height: 'fit-content', bottom: '0' }}
+    //       >
+    //         {record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}
+    //       </CustomDropDown>
+    //     );
+    //   },
+    // },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -269,12 +269,12 @@ const BasisOptionList: React.FC = () => {
           },
         },
         ...getSameColumns(false),
-        {
-          title: 'ID Type',
-          dataIndex: 'id_format_type',
-          width: '5%',
-          align: 'center',
-        },
+        // {
+        //   title: 'ID Type',
+        //   dataIndex: 'id_format_type',
+        //   width: '5%',
+        //   align: 'center',
+        // },
         {
           title: 'Action',
           dataIndex: 'action',
@@ -297,12 +297,12 @@ const BasisOptionList: React.FC = () => {
           noBoxShadow: true,
         },
         ...getSameColumns(true),
-        {
-          title: 'ID Type',
-          dataIndex: 'id_format_type',
-          width: '5%',
-          align: 'center',
-        },
+        // {
+        //   title: 'ID Type',
+        //   dataIndex: 'id_format_type',
+        //   width: '5%',
+        //   align: 'center',
+        // },
         {
           title: 'Action',
           dataIndex: 'action',

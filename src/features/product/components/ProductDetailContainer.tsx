@@ -110,7 +110,7 @@ const ProductDetailContainer: React.FC = () => {
   );
   const [title, setTitle] = useState<string>('');
 
-  const selectedSubLabels = useAppSelector((state) => state.label.selectedSubLabels);
+  const selectedSubLabels = useAppSelector((state) => state.product.details.label_ids);
 
   useEffect(() => {
     if (brandId) {

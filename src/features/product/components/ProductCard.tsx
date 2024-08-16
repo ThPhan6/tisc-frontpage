@@ -406,7 +406,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             });
 
       const newData = data.map((item, index: number) => {
-        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'name');
+        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'id');
         if (index === collapseKey) {
           return {
             ...item,

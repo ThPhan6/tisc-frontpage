@@ -41,6 +41,11 @@
     }
   }
 }
+.customPopover-notScroll {
+  :global(.ant-modal-body) {
+    overflow: hidden;
+  }
+}
 
 .titlePositionCenter {
   :global(.ant-modal-header) {
@@ -83,9 +88,13 @@
 }
 
 .sidePopover {
+  height: calc(100% - 76px);
   min-height: 90%;
+  overflow: hidden;
   :global(.side-container) {
     width: 50%;
+    height: 100%;
+    overflow: scroll;
 
     &:first-child {
       margin-bottom: -18px;

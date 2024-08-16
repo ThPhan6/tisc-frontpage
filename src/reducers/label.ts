@@ -18,11 +18,8 @@ const labelReducer = createSlice({
     setLabels(state, action: PayloadAction<DynamicCheckboxValue[]>) {
       state.labels = action.payload;
     },
-    setSelectedSubLabels(state, action: PayloadAction<string[]>) {
-      state.selectedSubLabels = action.payload;
-    },
   },
 });
 
-export const { setLabels, setSelectedSubLabels } = labelReducer.actions;
+export const { setLabels } = labelReducer.actions;
 export default labelReducer.reducer;
