@@ -307,7 +307,7 @@ export const productSpecificationSelector = (state: RootState) => {
             },
             [],
           );
-          const newAttributes = attributeGroup.attributes.map((attribute: any) => {
+          const newAttributes = attributeGroup.attributes?.map((attribute: any) => {
             const foundAttribute = allNormalAttribute.find((el: any) => el.id === attribute.id);
             return {
               ...attribute,
