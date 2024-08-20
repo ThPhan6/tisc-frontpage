@@ -119,7 +119,8 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
   const renderDiameterToggle = () => {
     if (
-      (activeCollapse && (activeCollapse?.[0] == '' || activeCollapse == '')) ||
+      (activeCollapse &&
+        ((activeCollapse[0] == '' && activeCollapse.length === 0) || activeCollapse == '')) ||
       (!curActiveKey && curActiveKey?.length === 0)
     )
       return null;

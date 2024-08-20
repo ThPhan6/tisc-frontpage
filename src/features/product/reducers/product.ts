@@ -15,7 +15,7 @@ import { OrderMethod, SpecificationAttributeGroup } from '@/features/project/typ
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
-import { GeneralData } from '@/types';
+import { GeneralData, ProductIDType } from '@/types';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
@@ -307,7 +307,7 @@ export const productSpecificationSelector = (state: RootState) => {
             },
             [],
           );
-          const newAttributes = attributeGroup.attributes.map((attribute: any) => {
+          const newAttributes = attributeGroup.attributes?.map((attribute: any) => {
             const foundAttribute = allNormalAttribute.find((el: any) => el.id === attribute.id);
             return {
               ...attribute,
@@ -361,11 +361,13 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     if (!el.isChecked) {
       return;
     }
+
+    const seperator = el.id_format_type === ProductIDType.Full ? ', ' : ' - ';
+
     el?.attributes?.forEach((attr: any) => {
       attr?.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
-          const dash = opt.option_code === '' ? '' : ' - ';
-          variants += opt.option_code + dash;
+          variants += (variants ? seperator : '') + opt.option_code;
           return true;
         }
         return false;
@@ -400,10 +402,9 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
 
     sortObjectArray(combinedQuantities, 'order_key', 'asc')?.forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
-        const dash = option.product_id === '' ? '' : ' - ';
-        variants += option.product_id + dash;
+        variants += (variants ? seperator : '') + option.product_id;
       }
     });
   });
-  return variants.length > 2 ? variants.slice(0, -2) : variants;
+  return variants;
 });

@@ -107,7 +107,7 @@ export const useGetParamId = () => {
   return params?.id ?? '';
 };
 
-export const useToggleExpand = () => {
+export const useToggleExpand = (singleExpand = false) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
   /**
@@ -115,13 +115,16 @@ export const useToggleExpand = () => {
    *
    * @param key - The key of the item to toggle the expanded state.
    */
-  const handleToggleExpand = useCallback((key: string) => {
-    setExpandedKeys((prev) => {
-      if (prev.includes(key)) return prev.filter((id) => id !== key);
-
-      return prev.concat([key]);
-    });
-  }, []);
+  const handleToggleExpand = useCallback(
+    (key: string) => {
+      setExpandedKeys((prev) => {
+        if (singleExpand) return prev.includes(key) ? [] : [key];
+        if (prev.includes(key)) return prev.filter((id) => id !== key);
+        return prev.concat([key]);
+      });
+    },
+    [singleExpand],
+  );
 
   return { expandedKeys, setExpandedKeys, handleToggleExpand };
 };

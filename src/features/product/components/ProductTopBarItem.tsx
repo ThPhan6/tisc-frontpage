@@ -11,7 +11,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { useBoolean, useToggleExpand } from '@/helper/hook';
-import { capitalize, sortBy, truncate } from 'lodash';
+import { capitalize, sortBy } from 'lodash';
 
 import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
@@ -233,7 +233,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
   const [values, setValues] = useState<
     { id: string; name: string; subs?: [{ id: string; name: string }] }[]
   >([]);
-  const { expandedKeys, handleToggleExpand } = useToggleExpand();
+  const { expandedKeys, handleToggleExpand } = useToggleExpand(true);
 
   useEffect(() => {
     if (selected) {
@@ -313,9 +313,13 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
    * @param labelId - The ID of the label to check.
    * @returns True if any sub label is selected, otherwise false.
    */
+  const twoLevelsLabelData = handleTransformLabelItems();
   const isAnySubLabelChecked = (labelId: string) => {
-    const subLabel = items.find((item) => item.id === labelId || item.parent?.id === labelId);
-    return values.some((value) => value.id === subLabel?.id);
+    const foundMainLabel = twoLevelsLabelData.find((item) => item.id === labelId);
+
+    return values.some((value) =>
+      foundMainLabel.subs.some((subLabel: any) => subLabel.id === value.id),
+    );
   };
 
   const isSubLabelNameSelected = (subId: string) => values.some((value) => value.id === subId);

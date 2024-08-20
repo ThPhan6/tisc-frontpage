@@ -6,3 +6,4 @@ export * from './collection.api';
 export * from './inspirational-quotes.api';
 export * from './email-auto.api';
 export * from './department.api';
+export * from './label.api';

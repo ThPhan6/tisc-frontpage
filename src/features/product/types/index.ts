@@ -10,7 +10,7 @@ import {
 } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
-import { ConversionSubValueProps, GeneralData } from '@/types';
+import { ConversionSubValueProps, GeneralData, ProductIDType } from '@/types';
 
 import { ProductTopBarFilter } from '../components/FilterAndSorter';
 
@@ -86,6 +86,7 @@ export interface ProductAttributeFormInput {
   attribute_selected_id?: string;
   type?: SpecificationType; /// on specification tab
   defaultPreSelect?: any;
+  id_format_type?: ProductIDType;
 }
 
 export interface ProductAttributeFormInputWhenCreateStep {
@@ -146,6 +147,7 @@ export interface ProductItem {
   brand_id: string;
   collections: GeneralData[];
   labels: GeneralData[];
+  label_ids: string[];
   collection?: GeneralData;
   categories: GeneralData[];
   name: string;
