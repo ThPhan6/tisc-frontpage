@@ -27,6 +27,7 @@ export interface CustomRadioProps {
   stickyTopItem?: boolean;
   optionStyle?: CSSProperties;
   disabled?: boolean;
+  additionalOtherClass?: string;
 }
 
 export interface DropdownRadioItem {

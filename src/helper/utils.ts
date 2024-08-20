@@ -530,7 +530,7 @@ export const validateRequiredFields = <T>(
   requiredFields: { field: keyof T; messageField: string }[],
 ) => {
   for (const { field, messageField } of requiredFields) {
-    if (!data[field]) {
+    if (data[field] === null) {
       messageAntd.error(messageField);
       return false;
     }

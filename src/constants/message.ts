@@ -154,6 +154,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
+  GET_LIST_COMMON_PARTNER_TYPE_ERROR: 'Get list common partner type error',
 
   /// user group
   // brand
@@ -371,6 +372,10 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
   CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',
   UPDATE_BOOKING_SUCCESS: 'Update booking successfully',
+
+  // partner
+  CREATE_PARTNER_COMPANY_SUCCESS: 'Create partner company successfully',
+  CREATE_PARTNER_COMPANY_ERROR: 'Create partner company unsuccessfully',
 };
 
 export const MESSAGE_TOOLTIP = {

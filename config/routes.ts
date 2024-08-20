@@ -654,6 +654,11 @@ const routes = [
             component: './Brand/Adminstration/Partners/PartnersTable',
             hideInMenu: true,
           },
+          {
+            path: PATH.brandCreatePartners,
+            component: './Brand/Adminstration/Partners/CompanyEntryForm',
+            hideInMenu: true,
+          },
         ],
       },
       {

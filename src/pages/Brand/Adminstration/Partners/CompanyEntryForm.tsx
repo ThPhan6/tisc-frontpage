@@ -1,50 +1,121 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { PATH } from '@/constants/path';
+
+import { pushTo } from '@/helper/history';
 import { validateRequiredFields } from '@/helper/utils';
+import { createPartner } from '@/services';
 
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { TabItem } from '@/components/Tabs/types';
+import { RootState, useAppSelector } from '@/reducers';
 import { CompanyForm } from '@/types';
 
+import CollapsiblePanel from '@/components/CollapsiblePanel';
 import { CustomRadio } from '@/components/CustomRadio';
+import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { CustomTabs } from '@/components/Tabs';
 import { Title } from '@/components/Typography';
+import AuthorizedCountryModal from '@/features/distributors/components/AuthorizedCountryModal';
+import CityModal from '@/features/locations/components/CityModal';
+import CountryModal from '@/features/locations/components/CountryModal';
+import StateModal from '@/features/locations/components/StateModal';
+import { PartnerTabKey } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
-const coverageBeyondOptions = [
-  { label: 'Not Allow', value: '0' },
-  { label: 'Allow', value: '1' },
-];
+import { showPageLoading } from '@/features/loading/loading';
 
-interface CompanyEntryFormProps {
-  data: CompanyForm;
-  onClose: () => void;
-  setData: React.Dispatch<React.SetStateAction<CompanyForm>>;
+enum CoverageBeyond {
+  NotAllow = 'Not Allow',
+  Allow = 'Allow',
 }
 
-const CompanyEntryForm = ({ data, onClose, setData }: CompanyEntryFormProps) => {
+const coverageBeyondOptions = [
+  { label: CoverageBeyond.NotAllow, value: false },
+  { label: CoverageBeyond.Allow, value: true },
+];
+
+type ModalType =
+  | ''
+  | 'city'
+  | 'state'
+  | 'country'
+  | 'affiliation'
+  | 'relation'
+  | 'acquisition'
+  | 'authorizedCountry';
+
+const initialCompanyForm: CompanyForm = {
+  name: '',
+  website: '',
+  country_name: '',
+  province: '',
+  city_name: '',
+  address: '',
+  postal_code: '',
+  phone: '',
+  email: '',
+  affiliation_name: '',
+  affiliation_id: '',
+  relation_name: '',
+  relation_id: '',
+  acquisition_name: '',
+  acquisition_id: '',
+  price_rate: null,
+  authorized_country_name: '',
+  coverage_beyond: false,
+  remark: '',
+  city_id: '',
+  authorized_countries: [],
+  authorized_country_ids: [],
+  country_id: '',
+  state_id: '',
+};
+
+const CompanyEntryForm = () => {
+  const [data, setData] = useState<CompanyForm>(initialCompanyForm);
+
   const [countryData, setCountryData] = useState({
     label: '',
     value: '',
     phoneCode: '00',
   });
 
-  const getRequiredFields = (): { field: keyof CompanyForm; messageField: string }[] => [
-    { field: 'name', messageField: 'Company name is required' },
-    { field: 'country', messageField: 'Country is required' },
-    { field: 'province', messageField: 'Province / State is required' },
-    { field: 'city', messageField: 'City is required' },
-    { field: 'address', messageField: 'Address is required' },
-    { field: 'postal_code', messageField: 'Postal / Zip Code is required' },
-    { field: 'phone', messageField: 'Phone number is required' },
-    { field: 'email', messageField: 'Email is required' },
-    { field: 'affiliation', messageField: 'Affiliation is required' },
-    { field: 'relation', messageField: 'Relation is required' },
-    { field: 'acquisition', messageField: 'Acquisition is required' },
-    { field: 'price_rate', messageField: 'Price rate is required' },
-    { field: 'authorised_country', messageField: 'Authorised country is required' },
-    { field: 'beyond', messageField: 'Coverage beyond is required' },
+  const [isOpenModal, setIsOpenModal] = useState<ModalType>('');
+  const [stateData, setStateData] = useState({ label: '', value: data.state_id });
+  const [cityData, setCityData] = useState({ label: '', value: data.city_id });
+  const [authorCountryData, setAuthorCountryData] = useState<CheckboxValue[]>(
+    data?.authorized_countries?.map((country) => {
+      return {
+        label: country.name,
+        value: country.id,
+      };
+    }),
+  );
+  const { association } = useAppSelector((state: RootState) => state.partner);
+  const isActiveTab = location.pathname === PATH.brandPartners;
+
+  const listTab: TabItem[] = [
+    {
+      tab: 'Companies',
+      tabletTabTitle: 'Companies',
+      key: PartnerTabKey.companyPartners,
+      disable: !isActiveTab,
+    },
+
+    {
+      tab: 'Contacts',
+      tabletTabTitle: 'Contacts',
+      key: PartnerTabKey.contactPartners,
+      disable: !isActiveTab,
+    },
   ];
 
   const handleOnChange = <K extends keyof CompanyForm>(fieldName: K, fieldValue: CompanyForm[K]) =>
@@ -53,208 +124,389 @@ const CompanyEntryForm = ({ data, onClose, setData }: CompanyEntryFormProps) => 
       [fieldName]: fieldValue,
     });
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (countryData.value !== '') handleOnChange('country_id', countryData.value);
+  }, [countryData]);
+
+  useEffect(() => {
+    handleOnChange('state_id', stateData.value);
+  }, [stateData]);
+
+  useEffect(() => {
+    handleOnChange('city_id', cityData.value);
+  }, [cityData]);
+
+  useEffect(() => {
+    if (authorCountryData) {
+      handleOnChange(
+        'authorized_country_ids',
+        authorCountryData.map((item) => item.value) as string[],
+      );
+    }
+  }, [authorCountryData]);
+
+  const getRequiredFields = (): { field: keyof CompanyForm; messageField: string }[] => [
+    { field: 'name', messageField: 'Company name is required' },
+    { field: 'country_id', messageField: 'Country is required' },
+    { field: 'state_id', messageField: 'Province / State is required' },
+    { field: 'city_id', messageField: 'City is required' },
+    { field: 'address', messageField: 'Address is required' },
+    { field: 'postal_code', messageField: 'Postal / Zip Code is required' },
+    { field: 'phone', messageField: 'Phone number is required' },
+    { field: 'email', messageField: 'Email is required' },
+    { field: 'affiliation_id', messageField: 'Affiliation is required' },
+    { field: 'relation_id', messageField: 'Relation is required' },
+    { field: 'acquisition_id', messageField: 'Acquisition is required' },
+    { field: 'price_rate', messageField: 'Price rate is required' },
+    { field: `authorized_country_ids`, messageField: 'Authorised country is required' },
+    { field: 'coverage_beyond', messageField: 'Coverage beyond is required' },
+  ];
+
+  const handleCloseEntryForm = () => pushTo(PATH.brandPartners);
+
+  const handleSubmit = async () => {
     const requiredFields = getRequiredFields();
     if (!validateRequiredFields(data, requiredFields)) return;
+
+    showPageLoading();
+
+    const res = await createPartner({ ...data });
+    if (res) handleCloseEntryForm();
   };
 
+  const handleSetModalVisible = (visible: boolean) => (visible ? ' undefined' : setIsOpenModal(''));
+
+  const handleToggleModal = (type: ModalType) => () => setIsOpenModal(type);
+
+  const panels = [
+    {
+      id: 1,
+      title: 'Affiliation',
+    },
+    {
+      id: 2,
+      title: 'Relation',
+    },
+    {
+      id: 3,
+      title: 'Acquisition',
+    },
+  ];
+
   return (
-    <EntryFormWrapper
-      customClass="max-h-708 max-w-572"
-      handleCancel={onClose}
-      handleSubmit={handleSubmit}
-    >
-      <Title level={8} customClass="py-10 mb-16 bottom-border-inset-black">
-        COMPANY PROFILE
-      </Title>
-      <InputGroup
-        label="Name"
-        required
-        fontLevel={3}
-        hasPadding
-        hasBoxShadow
-        hasHeight
-        value={data.name}
-        placeholder="channel partner company name"
-        onChange={(event) => handleOnChange('name', event.target.value)}
-      />
-      <InputGroup
-        label="Website"
-        fontLevel={3}
-        hasPadding
-        hasHeight
-        hasBoxShadow
-        value={data.website}
-        placeholder="paste site URL link here"
-        onChange={(event) => handleOnChange('website', event.target.value)}
-      />
-      <InputGroup
-        label="Country"
-        required
-        fontLevel={3}
-        hasPadding
-        hasHeight
-        hasBoxShadow
-        rightIcon
-        value={data.country}
-        placeholder="select country"
-        onChange={(event) => handleOnChange('country', event.target.value)}
-      />
-      <InputGroup
-        label="State / Province"
-        required
-        fontLevel={3}
-        hasPadding
-        hasHeight
-        hasBoxShadow
-        rightIcon
-        value={data.province}
-        placeholder="select state / province"
-        onChange={(event) => handleOnChange('province', event.target.value)}
-      />
-      <InputGroup
-        label="City / Town"
-        required
-        fontLevel={3}
-        hasHeight
-        hasPadding
-        hasBoxShadow
-        rightIcon
-        value={data.city}
-        placeholder="select city / town"
-        onChange={(event) => handleOnChange('city', event.target.value)}
-      />
-      <FormGroup label="Address" required layout="vertical">
-        <CustomTextArea
-          maxLength={120}
-          showCount
-          boxShadow
-          placeholder="unit #, street / road name"
-          value={data.address}
-          name="address"
-          onChange={(event) => handleOnChange('address', event.target.value)}
+    <>
+      <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <div className="d-flex">
+        <CustomTabs
+          listTab={listTab}
+          centered
+          tabPosition="top"
+          tabDisplay="start"
+          widthItem="auto"
+          className={`${styles.partnerHeaderTab} ${
+            !isActiveTab ? styles.partnerHeaderTabDisabled : ''
+          }`}
         />
-      </FormGroup>
-      <InputGroup
-        label="Postal / Zip Code"
-        required
-        fontLevel={3}
-        placeholder="postal / zip code"
-        hasBoxShadow
-        hasPadding
-        hasHeight
-        colorPrimaryDark
-        colorRequired="tertiary"
-        value={data.postal_code}
-        name="postal_code"
-        onChange={(event) => handleOnChange('postal_code', event.target.value)}
-      />
-      <FormGroup label="General Phone" required layout="vertical">
-        <PhoneInput
-          phonePlaceholder="area code / number"
-          onChange={(value) => handleOnChange('phone', value.phoneNumber)}
-          codeReadOnly
-          value={{
-            zoneCode: countryData.phoneCode,
-            phoneNumber: data.phone,
-          }}
+
+        <div className="d-flex bg-white border-bottom-black">
+          <CollapsiblePanel panels={panels} disabled={true} />
+          <CustomPlusButton customClass="my-0 mx-16" disabled={true} />
+        </div>
+      </div>
+
+      <EntryFormWrapper
+        customClass="max-h-708 max-w-572"
+        handleCancel={handleCloseEntryForm}
+        handleSubmit={handleSubmit}
+      >
+        <Title level={8} customClass="py-10 mb-16 bottom-border-inset-black">
+          COMPANY PROFILE
+        </Title>
+        <InputGroup
+          label="Name"
+          required
+          fontLevel={3}
+          hasPadding
+          hasBoxShadow
+          hasHeight
+          value={data.name}
+          placeholder="channel partner company name"
+          onChange={(event) => handleOnChange('name', event.target.value)}
         />
-      </FormGroup>
-      <InputGroup
-        label="General Email"
-        required
-        fontLevel={3}
-        hasHeight
-        hasPadding
-        hasBoxShadow
-        rightIcon
-        placeholder="general email address"
-        value={data.email}
-        onChange={(event) => handleOnChange('phone', event.target.value)}
+        <InputGroup
+          label="Website"
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          value={data.website}
+          placeholder="paste site URL link here"
+          onChange={(event) => handleOnChange('website', event.target.value)}
+        />
+        <InputGroup
+          label="Country"
+          required
+          fontLevel={3}
+          placeholder="select country"
+          value={countryData.label}
+          hasBoxShadow
+          hasPadding
+          rightIcon
+          hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
+          onRightIconClick={handleToggleModal('country')}
+        />
+        <InputGroup
+          label="State / Province"
+          required
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          rightIcon
+          value={stateData.label}
+          placeholder="select state / province"
+          onRightIconClick={handleToggleModal('state')}
+          colorPrimaryDark
+          colorRequired="tertiary"
+          disabled={countryData.value === ''}
+        />
+        <InputGroup
+          label="City / Town"
+          required
+          fontLevel={3}
+          hasHeight
+          hasPadding
+          hasBoxShadow
+          rightIcon
+          value={cityData.label}
+          placeholder="select city / town"
+          onChange={(event) => handleOnChange('city_name', event.target.value)}
+          onRightIconClick={handleToggleModal('city')}
+          colorPrimaryDark
+          colorRequired="tertiary"
+          disabled={stateData.value === ''}
+        />
+        <FormGroup label="Address" required layout="vertical">
+          <CustomTextArea
+            maxLength={120}
+            showCount
+            boxShadow
+            placeholder="unit #, street / road name"
+            value={data.address}
+            name="address"
+            onChange={(event) => handleOnChange('address', event.target.value)}
+          />
+        </FormGroup>
+        <InputGroup
+          label="Postal / Zip Code"
+          required
+          fontLevel={3}
+          placeholder="postal / zip code"
+          hasBoxShadow
+          hasPadding
+          hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.postal_code}
+          name="postal_code"
+          onChange={(event) => handleOnChange('postal_code', event.target.value)}
+        />
+        <FormGroup label="General Phone" required layout="vertical">
+          <PhoneInput
+            phonePlaceholder="area code / number"
+            onChange={(value) => handleOnChange('phone', value.phoneNumber)}
+            value={{
+              zoneCode: countryData.phoneCode,
+              phoneNumber: data.phone,
+            }}
+          />
+        </FormGroup>
+        <InputGroup
+          label="General Email"
+          required
+          fontLevel={3}
+          hasHeight
+          hasPadding
+          hasBoxShadow
+          placeholder="general email address"
+          value={data.email}
+          onChange={(event) => handleOnChange('email', event.target.value)}
+        />
+
+        <Title level={8} customClass="py-10 my-16 bottom-border-inset-black">
+          ACCOUNT PROFILE
+        </Title>
+        <FormGroup label="Affiliation" required layout="vertical">
+          <CollapseRadioList
+            options={
+              association?.affiliation?.map((item) => {
+                return {
+                  label: item.name,
+                  value: item.id,
+                };
+              }) || []
+            }
+            placeholder={'select from list'}
+            additonalOptionsStyle={{ marginBottom: 10 }}
+            additionalOtherClass="mb-10"
+            otherInput
+            checked={data.affiliation_id}
+            onChange={(radioValue) => {
+              if (radioValue.value === 'other') {
+                handleOnChange('affiliation_id', radioValue.label as string);
+                return;
+              }
+              handleOnChange('affiliation_id', radioValue.value as string);
+            }}
+          />
+        </FormGroup>
+        <FormGroup label="Relation" required layout="vertical">
+          <CollapseRadioList
+            options={
+              association?.relation?.map((item) => {
+                return {
+                  label: item.name,
+                  value: item.id,
+                };
+              }) || []
+            }
+            placeholder={'select from list'}
+            additonalOptionsStyle={{ marginBottom: 10 }}
+            additionalOtherClass="mb-10"
+            otherInput
+            checked={data.relation_id}
+            onChange={(radioValue) => {
+              if (radioValue.value === 'other') {
+                handleOnChange('relation_id', radioValue.label as string);
+                return;
+              }
+              handleOnChange('relation_id', radioValue.value as string);
+            }}
+          />
+        </FormGroup>
+        <FormGroup label="Acquisition" required layout="vertical">
+          <CollapseRadioList
+            options={
+              association?.acquisition?.map((item) => {
+                let className = '';
+                switch (item.name) {
+                  case 'Active':
+                    className = 'indigo-dark-variant';
+                    break;
+                  case 'Inactive':
+                    className = 'red-magenta';
+                    break;
+                  case 'Freeze':
+                    className = 'orange';
+                    break;
+                  default:
+                    className = '';
+                }
+
+                return {
+                  label: <span className={`${className}`}>{item.name}</span>,
+                  value: item.id,
+                };
+              }) || []
+            }
+            placeholder={'select from list'}
+            additonalOptionsStyle={{ marginBottom: 10 }}
+            additionalOtherClass="mb-10"
+            otherInput
+            checked={data.acquisition_id}
+            onChange={(radioValue) => {
+              if (radioValue.value === 'other') {
+                handleOnChange('acquisition_id', radioValue.label as string);
+                return;
+              }
+              handleOnChange('acquisition_id', radioValue.value as string);
+            }}
+          />
+        </FormGroup>
+        <InputGroup
+          label="Price Rate"
+          required
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          colorPrimaryDark={true}
+          value={data.price_rate!}
+          onChange={(event) => handleOnChange('price_rate', Number(event.target.value))}
+        />
+        <InputGroup
+          label="Authorized Country"
+          required
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          rightIcon
+          placeholder="select country"
+          value={authorCountryData.map((item) => item.label).join(', ')}
+          onChange={(event) => handleOnChange('authorized_country_name', event.target.value)}
+          onRightIconClick={handleToggleModal('authorizedCountry')}
+        />
+        <FormGroup
+          label="Coverage Beyond"
+          required={true}
+          layout="vertical"
+          formClass="border-bottom-light pb-8"
+        >
+          <CustomRadio
+            options={coverageBeyondOptions}
+            value={data.coverage_beyond}
+            onChange={(radioValue) =>
+              handleOnChange('coverage_beyond', radioValue.value as boolean)
+            }
+          />
+        </FormGroup>
+        <FormGroup label="Remark" layout="vertical">
+          <CustomTextArea
+            value={data.remark}
+            maxLength={240}
+            showCount
+            boxShadow
+            placeholder="input text"
+            onChange={(event) => handleOnChange('remark', event.target.value)}
+          />
+        </FormGroup>
+      </EntryFormWrapper>
+
+      <CountryModal
+        visible={isOpenModal === 'country'}
+        setVisible={handleSetModalVisible}
+        chosenValue={countryData}
+        setChosenValue={setCountryData}
+        hasGlobal={false}
       />
 
-      <Title level={8} customClass="py-10 my-16 bottom-border-inset-black">
-        ACCOUNT PROFILE
-      </Title>
-      <InputGroup
-        label="Affilitation"
-        required
-        fontLevel={3}
-        hasPadding
-        hasBoxShadow
-        hasHeight
-        placeholder="select from the list"
-        value={data.affiliation}
-        onChange={(event) => handleOnChange('affiliation', event.target.value)}
+      <StateModal
+        countryId={data.country_id}
+        visible={isOpenModal === 'state'}
+        setVisible={handleSetModalVisible}
+        chosenValue={stateData}
+        setChosenValue={setStateData}
       />
-      <InputGroup
-        label="Relation"
-        required
-        fontLevel={3}
-        hasPadding
-        hasBoxShadow
-        hasHeight
-        placeholder="select from the list"
-        value={data.relation}
-        onChange={(event) => handleOnChange('relation', event.target.value)}
+
+      <CityModal
+        stateId={data.state_id}
+        countryId={data.country_id}
+        visible={isOpenModal === 'city'}
+        setVisible={handleSetModalVisible}
+        chosenValue={cityData}
+        setChosenValue={setCityData}
       />
-      <InputGroup
-        label="Acquisition"
-        required
-        fontLevel={3}
-        hasPadding
-        hasHeight
-        hasBoxShadow
-        placeholder="select from the list"
-        value={data.acquisition}
-        onChange={(event) => handleOnChange('acquisition', event.target.value)}
+
+      <AuthorizedCountryModal
+        visible={isOpenModal === 'authorizedCountry'}
+        setVisible={handleSetModalVisible}
+        chosenValue={authorCountryData}
+        setChosenValue={setAuthorCountryData}
       />
-      <InputGroup
-        label="Price Rate"
-        required
-        fontLevel={3}
-        hasPadding
-        hasHeight
-        hasBoxShadow
-        colorPrimaryDark={true}
-        value={data.price_rate}
-        onChange={(event) => handleOnChange('price_rate', event.target.value)}
-      />
-      <InputGroup
-        label="Authorized Country"
-        required
-        fontLevel={3}
-        hasPadding
-        hasHeight
-        hasBoxShadow
-        rightIcon
-        placeholder="select country"
-        value={data.authorised_country}
-        onChange={(event) => handleOnChange('authorised_country', event.target.value)}
-      />
-      <FormGroup
-        label="Coverage Beyond"
-        required={true}
-        layout="vertical"
-        formClass="border-bottom-light pb-8"
-      >
-        <CustomRadio
-          options={coverageBeyondOptions}
-          value={data.beyond}
-          onChange={(radioValue) => handleOnChange('beyond', radioValue.value as string)}
-        />
-      </FormGroup>
-      <FormGroup label="Remark" layout="vertical">
-        <CustomTextArea
-          value={data.remark}
-          maxLength={240}
-          showCount
-          boxShadow
-          placeholder="input text"
-          onChange={(event) => handleOnChange('remark', event.target.value)}
-        />
-      </FormGroup>
-    </EntryFormWrapper>
+    </>
   );
 };
 

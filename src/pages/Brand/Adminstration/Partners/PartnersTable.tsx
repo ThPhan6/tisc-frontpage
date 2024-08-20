@@ -1,55 +1,64 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { TableColumnProps } from 'antd';
 import { useLocation } from 'umi';
 
-import { TabItem } from '@/components/Tabs/types';
-import { Company, CompanyForm } from '@/types';
+import { pushTo } from '@/helper/history';
+import { getCommonPartnerTypes, getListPartnerCompanies } from '@/services';
 
-import CollapsiblePanel from '@/components/CollapsiblePanel';
+import { TabItem } from '@/components/Tabs/types';
+import { RootState, useAppSelector } from '@/reducers';
+import { setAssociation } from '@/reducers/partner';
+import { Company } from '@/types';
+
+import CollapsiblePanel, { CollapsiblePanelItem } from '@/components/CollapsiblePanel';
 import CustomTable from '@/components/Table';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomTabs } from '@/components/Tabs';
-import CompanyEntryForm from '@/pages/Brand/Adminstration/Partners/CompanyEntryForm';
 import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
-
-import { getLocationPagination } from '@/features/locations/api';
 
 export enum PartnerTabKey {
   companyPartners = 'company',
   contactPartners = 'contacts',
 }
 
-const initialCompanyForm: CompanyForm = {
-  name: '',
-  website: '',
-  country: '',
-  province: '',
-  city: '',
-  address: '',
-  postal_code: '',
-  phone: '',
-  email: '',
-  affiliation: '',
-  relation: '',
-  acquisition: '',
-  price_rate: 1.0,
-  authorised_country: '',
-  beyond: '0',
-  remark: '',
-};
+export interface CommonPartnerType {
+  affiliation: {
+    id: string;
+    name: string;
+  }[];
+  relation: {
+    id: string;
+    name: string;
+  }[];
+  acquisition: {
+    id: string;
+    name: string;
+  }[];
+}
 
 const PartnersTable = () => {
-  const [data, setData] = useState<CompanyForm>(initialCompanyForm);
   const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
   const [showEntryForm, setShowEntryForm] = useState(false);
-  const [entryFormType, setEntryFormType] = useState<PartnerTabKey | null>(null);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(PartnerTabKey.companyPartners);
   const location = useLocation();
   const isActiveTab = location.pathname === PATH.brandPartners;
+  const { association } = useAppSelector((state: RootState) => state.partner);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleGetCommonPartnerTypeList = async () => {
+      const res = await getCommonPartnerTypes();
+      if (res) dispatch(setAssociation(res));
+    };
+
+    handleGetCommonPartnerTypeList();
+  }, []);
 
   const companyColumns: TableColumnProps<Company>[] = [
     {
@@ -60,13 +69,13 @@ const PartnersTable = () => {
     },
     {
       title: 'Country',
-      dataIndex: 'country',
+      dataIndex: 'country_name',
       sorter: true,
       width: '5%',
     },
     {
       title: 'City',
-      dataIndex: 'city',
+      dataIndex: 'city_name',
       sorter: true,
       width: '8%',
     },
@@ -77,18 +86,30 @@ const PartnersTable = () => {
     },
     {
       title: 'Affiliation',
-      dataIndex: 'affiliation',
+      dataIndex: 'affiliation_name',
       width: '8%',
     },
     {
       title: 'Relation',
-      dataIndex: 'relation',
+      dataIndex: 'relation_name',
       width: '5%',
     },
     {
       title: 'Acquisition',
-      dataIndex: 'acquisition',
+      dataIndex: 'acquisition_name',
       width: '5%',
+      render: (_, record) => {
+        switch (record.acquisition_name) {
+          case 'Active':
+            return <span className="indigo-dark-variant">Active</span>;
+          case 'Inactive':
+            return <span className="red-magenta">Inactive</span>;
+          case 'Freeze':
+            return <span className="orange">Freeze</span>;
+          default:
+            return '';
+        }
+      },
     },
     {
       title: 'Price Rate',
@@ -97,14 +118,15 @@ const PartnersTable = () => {
     },
     {
       title: 'Authorised Country',
-      dataIndex: 'authorised_country',
+      dataIndex: 'authorized_country_name',
       width: '10%',
     },
     {
       title: 'Beyond',
-      dataIndex: 'beyond',
+      dataIndex: 'coverage_beyond',
       align: 'center',
       width: '5%',
+      render: (_, record) => (record.coverage_beyond ? 'Allow' : 'Not Allow'),
     },
     {
       title: 'Action',
@@ -151,75 +173,61 @@ const PartnersTable = () => {
   ];
 
   const handlePushTo = () => {
+    pushTo(PATH.brandCreatePartners);
     setShowEntryForm(true);
-    setEntryFormType(selectedTab!);
   };
 
-  const handleCloseEntryForm = () => {
-    setShowEntryForm(false);
-    setEntryFormType(null);
+  const panels = (): CollapsiblePanelItem[] => {
+    return [
+      {
+        id: 1,
+        title: 'Affiliation',
+        headingDropdown: 'VIEW ALL',
+        labels:
+          association?.affiliation.map((item) => ({
+            id: item.id,
+            label: item.name,
+          })) || [],
+      },
+      {
+        id: 2,
+        title: 'Relation',
+        headingDropdown: 'VIEW ALL',
+        labels:
+          association?.relation.map((item) => ({
+            id: item.id,
+            label: item.name,
+          })) || [],
+      },
+      {
+        id: 3,
+        title: 'Acquisition',
+        headingDropdown: 'VIEW ALL',
+        labels:
+          association?.acquisition.map((item) => {
+            let className = '';
+            switch (item.name) {
+              case 'Active':
+                className = 'indigo-dark-variant';
+                break;
+              case 'Inactive':
+                className = 'red-magenta';
+                break;
+              case 'Freeze':
+                className = 'orange';
+                break;
+              default:
+                className = '';
+            }
+
+            return {
+              id: item.id,
+              label: <span className={`${className}`}>{item.name}</span>,
+            };
+          }) || [],
+      },
+    ];
   };
-
-  const panels = [
-    {
-      id: 1,
-      title: 'Affiliation',
-      headingDropdown: 'VIEW ALL',
-      labels: [
-        { id: 1, label: 'Agent' },
-        { id: 2, label: 'Distributor' },
-      ],
-    },
-
-    {
-      id: 2,
-      title: 'Relation',
-      headingDropdown: 'VIEW ALL',
-      labels: [
-        { id: 1, label: 'Direct' },
-        { id: 2, label: 'Indirect' },
-      ],
-    },
-
-    {
-      id: 3,
-      title: 'Acquisition',
-      headingDropdown: 'VIEW ALL',
-      labels: [
-        { id: 1, label: 'Frezze' },
-        { id: 2, label: 'Inactive' },
-      ],
-    },
-  ];
-
-  const companyData = [
-    {
-      key: '1',
-      name: 'Company A',
-      country: 'USA',
-      city: 'New York',
-      contact: 'First/last name',
-      affiliation: 'Agent',
-      relation: 'Direct',
-      acquisition: 'Frezze',
-      price_rate: '1.10',
-      authorised_country: 'USA',
-      beyond: 'Allow',
-    },
-    {
-      key: '2',
-      name: 'Company B',
-      country: 'Malaysia',
-      city: 'Kuala Lumpur',
-      contact: 'First/last name',
-      affiliation: 'Distributor',
-      relation: 'Indirect',
-      acquisition: 'Inactive',
-      price_rate: '1.20',
-      authorised_country: 'Malaysia',
-      beyond: 'Not Allow',
-    },
-  ];
 
   const handleChangeTab = (activeKey: string) => {
     setSelectedTab?.(activeKey as PartnerTabKey);
@@ -245,7 +253,7 @@ const PartnersTable = () => {
         />
 
         <div className="d-flex bg-white border-bottom-black">
-          <CollapsiblePanel panels={panels} />
+          <CollapsiblePanel panels={panels()} />
           <CustomPlusButton
             onClick={handlePushTo}
             customClass="my-0 mx-16"
@@ -254,11 +262,7 @@ const PartnersTable = () => {
         </div>
       </div>
 
-      {!showEntryForm ? (
-        <CustomTable columns={columns} fetchDataFunc={getLocationPagination} />
-      ) : entryFormType === PartnerTabKey.companyPartners ? (
-        <CompanyEntryForm onClose={handleCloseEntryForm} data={data} setData={setData} />
-      ) : null}
+      <CustomTable columns={columns} fetchDataFunc={getListPartnerCompanies} hasPagination />
     </>
   );
 };
