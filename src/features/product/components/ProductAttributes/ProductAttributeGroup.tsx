@@ -996,7 +996,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               <table className={`${styles.table}`}>
                 <tbody>
                   {[...attrGroupItem.attributes]
-                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .sort((a, b) => a.name?.localeCompare(b.name))
                     .map((attribute, attrIndex) => renderAttributeRowItem(attribute, attrIndex))}
                 </tbody>
               </table>
