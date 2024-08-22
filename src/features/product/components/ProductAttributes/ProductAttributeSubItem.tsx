@@ -69,14 +69,29 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const isSpecification = activeKey === 'specification';
-  const attributeItems = attributeGroup[attributeGroupIndex].attributes;
-  const attributeItem = attributeGroup[attributeGroupIndex].attributes[attributeItemIndex];
+
+  const allSubAttributes = attributes.reduce((pre, cur: any) => {
+    return pre.concat(cur.subs);
+  }, []);
+
+  const mappedNameData = [...attributeGroup[attributeGroupIndex].attributes].map((attribute) => {
+    const foundAttributeData: any = allSubAttributes.find((item: any) => item.id === attribute.id);
+    return {
+      ...attribute,
+      name: foundAttributeData?.name || '',
+    };
+  });
+
+  const attributeItems = mappedNameData.sort((a, b) =>
+    a.name > b.name ? 1 : a.name < b.name ? -1 : 0,
+  );
+
+  const attributeItem = attributeItems[attributeItemIndex];
 
   const [visible, setVisible] = useState<boolean>(false);
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   const [curAttributeData, setCurAtttributeData] = useState<any>();
-
   /// using for option have type Text and Conversion
   const [selected, setSelected] = useState<RadioValue>({
     label: attributeItem?.text ?? '',
@@ -148,7 +163,6 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         }
       });
     });
-
     setCurAtttributeData(currentAttribute);
 
     setBasisOptions(currentAttribute.basis?.subs);
