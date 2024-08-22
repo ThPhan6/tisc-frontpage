@@ -102,12 +102,6 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
           .filter((type) => type !== undefined && type !== null),
       );
 
-      // Check if there are more than one distinct id_format_type values.
-      if (idFormatTypes.size > 1) {
-        message.warn('Cannot select attributes with multiple ID types!');
-        return;
-      }
-
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
       );
