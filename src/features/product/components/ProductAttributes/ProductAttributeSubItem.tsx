@@ -174,7 +174,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
 
     const newAttributes = [...attributeGroup];
-    const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
+    const newItemAttributes = attributeItems;
 
     newItemAttributes[attributeItemIndex] = {
       ...newItemAttributes[attributeItemIndex],
@@ -200,7 +200,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
 
     const newAttributes = [...attributeGroup];
-    const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
+    const newItemAttributes = attributeItems;
 
     const activeBasisOptions = basisOptionSelected.map((itemSelected) => {
       const changedBasisOption = basisOptions?.find((option) => option?.id === itemSelected.value);
