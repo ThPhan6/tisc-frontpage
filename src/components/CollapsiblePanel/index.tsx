@@ -27,6 +27,11 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
     setOpenPanelIndex(openPanelIndex === index ? null : index);
   };
 
+  const handleAction = (action: () => void) => () => {
+    action();
+    setOpenPanelIndex(null);
+  };
+
   return (
     <>
       {panels?.map((panel, index) => (
@@ -57,7 +62,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                   <Menu className={styles.collapsiblePanelMenu}>
                     <Menu.Item
                       style={{ padding: 0, marginBottom: 0 }}
-                      onClick={panel.headingDropdown?.headingOnClick}
+                      onClick={handleAction(panel.headingDropdown?.headingOnClick ?? (() => {}))}
                     >
                       {panel.headingDropdown ? (
                         <span className={styles.collapsiblePanelContentHeading}>
@@ -71,7 +76,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                         key={id}
                         style={{ margin: '0' }}
                         className={styles.collapsiblePanelMenuHeading}
-                        onClick={labelAction}
+                        onClick={handleAction(labelAction)}
                       >
                         {label}
                       </Menu.Item>
