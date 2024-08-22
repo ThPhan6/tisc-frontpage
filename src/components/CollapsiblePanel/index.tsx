@@ -10,8 +10,8 @@ import styles from './index.less';
 export interface CollapsiblePanelItem {
   id: number;
   title: string;
-  headingDropdown?: string;
-  labels?: { id: string; label: ReactNode }[];
+  headingDropdown?: { label: ReactNode; headingOnClick: () => void };
+  labels?: { id: string; label: ReactNode; labelAction: () => void }[];
 }
 
 interface CollapsiblePanelProps {
@@ -55,19 +55,23 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                 onVisibleChange={handleToggleDropdown(index)}
                 overlay={
                   <Menu className={styles.collapsiblePanelMenu}>
-                    <Menu.Item style={{ padding: 0, marginBottom: 0 }}>
+                    <Menu.Item
+                      style={{ padding: 0, marginBottom: 0 }}
+                      onClick={panel.headingDropdown?.headingOnClick}
+                    >
                       {panel.headingDropdown ? (
                         <span className={styles.collapsiblePanelContentHeading}>
-                          {panel.headingDropdown}
+                          {panel.headingDropdown.label}
                         </span>
                       ) : null}
                     </Menu.Item>
 
-                    {panel?.labels?.map(({ id, label }) => (
+                    {panel?.labels?.map(({ id, label, labelAction }) => (
                       <Menu.Item
                         key={id}
                         style={{ margin: '0' }}
                         className={styles.collapsiblePanelMenuHeading}
+                        onClick={labelAction}
                       >
                         {label}
                       </Menu.Item>

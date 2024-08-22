@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
@@ -41,6 +41,8 @@ export interface CommonPartnerType {
   }[];
 }
 
+export type FilterType = 'affiliation' | 'relation' | 'acquisition';
+
 const PartnersTable = () => {
   const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
   const [showEntryForm, setShowEntryForm] = useState(false);
@@ -48,6 +50,13 @@ const PartnersTable = () => {
   const location = useLocation();
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { association } = useAppSelector((state: RootState) => state.partner);
+  const [filters, setFilters] = useState<{
+    affiliation_id?: string;
+    relation_id?: string;
+    acquisition_id?: string;
+  }>({});
+
+  const tableRef = useRef<any>();
 
   const dispatch = useDispatch();
 
@@ -59,6 +68,10 @@ const PartnersTable = () => {
 
     handleGetCommonPartnerTypeList();
   }, []);
+
+  useEffect(() => {
+    tableRef.current.reloadWithFilter();
+  }, [filters]);
 
   const companyColumns: TableColumnProps<Company>[] = [
     {
@@ -177,32 +190,54 @@ const PartnersTable = () => {
     setShowEntryForm(true);
   };
 
+  const handleFilterChange = (type: FilterType, id?: string) => () => {
+    if (id === '') {
+      setFilters({});
+      return;
+    }
+
+    setFilters({
+      [`${type}_id`]: id,
+    });
+  };
+
   const panels = (): CollapsiblePanelItem[] => {
     return [
       {
         id: 1,
         title: 'Affiliation',
-        headingDropdown: 'VIEW ALL',
+        headingDropdown: {
+          label: 'VIEW ALL',
+          headingOnClick: handleFilterChange('affiliation', ''),
+        },
         labels:
           association?.affiliation.map((item) => ({
             id: item.id,
             label: item.name,
+            labelAction: handleFilterChange('affiliation', item.id),
           })) || [],
       },
       {
         id: 2,
         title: 'Relation',
-        headingDropdown: 'VIEW ALL',
+        headingDropdown: {
+          label: 'VIEW ALL',
+          headingOnClick: handleFilterChange('affiliation', ''),
+        },
         labels:
           association?.relation.map((item) => ({
             id: item.id,
             label: item.name,
+            labelAction: handleFilterChange('relation', item.id),
           })) || [],
       },
       {
         id: 3,
         title: 'Acquisition',
-        headingDropdown: 'VIEW ALL',
+        headingDropdown: {
+          label: 'VIEW ALL',
+          headingOnClick: handleFilterChange('affiliation', ''),
+        },
         labels:
           association?.acquisition.map((item) => {
             let className = '';
@@ -223,6 +258,7 @@ const PartnersTable = () => {
             return {
               id: item.id,
               label: <span className={`${className}`}>{item.name}</span>,
+              labelAction: handleFilterChange('acquisition', item.id),
             };
           }) || [],
       },
@@ -262,7 +298,14 @@ const PartnersTable = () => {
         </div>
       </div>
 
-      <CustomTable columns={columns} fetchDataFunc={getListPartnerCompanies} hasPagination />
+      <CustomTable
+        columns={columns}
+        fetchDataFunc={getListPartnerCompanies}
+        hasPagination
+        ref={tableRef}
+        extraParams={{ filter: filters }}
+        autoLoad={false}
+      />
     </>
   );
 };

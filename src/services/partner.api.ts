@@ -46,7 +46,7 @@ export const getListPartnerCompanies = (
 };
 
 export const getCommonPartnerTypes = async () => {
-  return request<{ data: CommonPartnerType }>(`/api/setting/common-partner-type`)
+  return request<{ data: CommonPartnerType }>(`/api/setting/partner-common-type`)
     .then((response) => response.data)
     .catch((error) => {
       message.error(
