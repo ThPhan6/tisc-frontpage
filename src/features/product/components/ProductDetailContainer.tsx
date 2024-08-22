@@ -220,7 +220,7 @@ const ProductDetailContainer: React.FC = () => {
       return pre.concat(cur.subs);
     }, []);
 
-    const filteredSubLabels = selectedSubLabels.filter((id) =>
+    const filteredSubLabels = selectedSubLabels?.filter((id) =>
       allSubLabels.find((item: any) => item.id === id),
     );
 
