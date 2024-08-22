@@ -70,23 +70,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
   const isSpecification = activeKey === 'specification';
 
-  const allSubAttributes = attributes.reduce((pre, cur: any) => {
-    return pre.concat(cur.subs);
-  }, []);
-
-  const mappedNameData = [...attributeGroup[attributeGroupIndex].attributes].map((attribute) => {
-    const foundAttributeData: any = allSubAttributes.find((item: any) => item.id === attribute.id);
-    return {
-      ...attribute,
-      name: foundAttributeData?.name || '',
-    };
-  });
-
-  const attributeItems = mappedNameData.sort((a, b) =>
-    a.name > b.name ? 1 : a.name < b.name ? -1 : 0,
-  );
-
-  const attributeItem = attributeItems[attributeItemIndex];
+  const attributeItems = attributeGroup[attributeGroupIndex].attributes;
+  const attributeItem = attributeGroup[attributeGroupIndex].attributes[attributeItemIndex];
 
   const [visible, setVisible] = useState<boolean>(false);
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
@@ -174,7 +159,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
 
     const newAttributes = [...attributeGroup];
-    const newItemAttributes = attributeItems;
+    const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
 
     newItemAttributes[attributeItemIndex] = {
       ...newItemAttributes[attributeItemIndex],
@@ -200,7 +185,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
 
     const newAttributes = [...attributeGroup];
-    const newItemAttributes = attributeItems;
+    const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
 
     const activeBasisOptions = basisOptionSelected.map((itemSelected) => {
       const changedBasisOption = basisOptions?.find((option) => option?.id === itemSelected.value);
