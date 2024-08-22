@@ -6,6 +6,7 @@ import { QUERY_KEY } from '@/constants/util';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission, useGetQueryFromOriginURL } from '@/helper/hook';
+import { sortObjectArray } from '@/helper/utils';
 import { cloneDeep, countBy, isEmpty, uniqueId } from 'lodash';
 
 import {
@@ -224,13 +225,19 @@ export const useProductAttributeForm = (
       const found = specifiedDetail?.specification.attribute_groups.find(
         (group) => group.id === item.id,
       );
-      console.log('found: ', found);
       return {
         ...item,
         isChecked: found?.isChecked,
       };
     });
   }
+  //sort attribute items
+  attributeGroup = attributeGroup.map((group) => {
+    return {
+      ...group,
+      attributes: sortObjectArray([...group.attributes], 'name', 'asc'),
+    };
+  });
   const attributeGroupKey: AttributeGroupKey =
     attributeType === 'general'
       ? 'general_attribute_groups'
