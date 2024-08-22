@@ -55,7 +55,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
 
     /// get checked from current option select
     useEffect(() => {
-      checked.setValue(isOptionType);
+      // checked.setValue(isOptionType);
     }, [isOptionType]);
 
     /// get checked from data on first loading
@@ -172,13 +172,10 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       // close modal
       setVisible(false);
       /// set selection for each group attribute has attribute option type
-      const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
-
-      checked.setValue(isNewAttributeHasOptionType);
 
       newAttrGroup[groupIndex] = {
         ...newAttrGroup[groupIndex],
-        selection: isNewAttributeHasOptionType,
+        selection: checked.value,
       };
 
       /// to rearrange attribute has type option to top
