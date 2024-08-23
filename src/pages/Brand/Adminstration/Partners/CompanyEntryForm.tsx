@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
 
+import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
-import { validateRequiredFields } from '@/helper/utils';
-import { createPartner } from '@/services';
+import { useGetParamId } from '@/helper/hook';
+import {
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  messageError,
+  messageErrorType,
+  validateRequiredFields,
+} from '@/helper/utils';
+import { createPartner, getPartner, updatePartner } from '@/services';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { TabItem } from '@/components/Tabs/types';
@@ -53,6 +61,7 @@ type ModalType =
   | 'authorizedCountry';
 
 const initialCompanyForm: CompanyForm = {
+  id: '',
   name: '',
   website: '',
   country_name: '',
@@ -77,6 +86,8 @@ const initialCompanyForm: CompanyForm = {
   authorized_country_ids: [],
   country_id: '',
   state_id: '',
+  state_name: '',
+  phone_code: '',
 };
 
 const CompanyEntryForm = () => {
@@ -84,7 +95,7 @@ const CompanyEntryForm = () => {
 
   const [countryData, setCountryData] = useState({
     label: '',
-    value: '',
+    value: data.country_id,
     phoneCode: '00',
   });
 
@@ -101,6 +112,8 @@ const CompanyEntryForm = () => {
   );
   const { association } = useAppSelector((state: RootState) => state.partner);
   const isActiveTab = location.pathname === PATH.brandPartners;
+  const partnerId = useGetParamId();
+  const isUpdate = partnerId ? true : false;
 
   const listTab: TabItem[] = [
     {
@@ -123,6 +136,17 @@ const CompanyEntryForm = () => {
       ...data,
       [fieldName]: fieldValue,
     });
+
+  useEffect(() => {
+    if (partnerId) {
+      const handleFetchPartnerInfo = async () => {
+        const res = await getPartner(partnerId);
+        if (res) setData(res);
+      };
+
+      handleFetchPartnerInfo();
+    }
+  }, [partnerId]);
 
   useEffect(() => {
     if (countryData.value !== '') handleOnChange('country_id', countryData.value);
@@ -170,6 +194,11 @@ const CompanyEntryForm = () => {
 
     showPageLoading();
 
+    if (isUpdate) {
+      await updatePartner(partnerId, { ...data });
+      return;
+    }
+
     const res = await createPartner({ ...data });
     if (res) handleCloseEntryForm();
   };
@@ -192,6 +221,41 @@ const CompanyEntryForm = () => {
       title: 'Acquisition',
     },
   ];
+
+  const getFormClass = (placeholder: string) =>
+    placeholder === 'select from list' ? '' : `${styles.partnerAssociations}`;
+
+  const generatePlaceholder = (
+    items: { id: string; name: string }[],
+    checkedValue: string | undefined,
+    defaultName: string,
+  ) => {
+    const selectedItem = items.find((item) => item.id === checkedValue);
+    return selectedItem ? selectedItem.name : defaultName || 'select from list';
+  };
+
+  const countryMergedData = {
+    label: data.country_name,
+    value: data.country_id,
+    phoneCode: data.phone_code,
+  };
+
+  const stateMergedData = {
+    label: data.state_name,
+    value: data.state_id,
+  };
+
+  const cityMergedData = {
+    label: data.city_name,
+    value: data.city_id,
+  };
+
+  const authouCountryMergedData = data?.authorized_country_ids?.map((id) => {
+    return {
+      label: data.authorized_country_name,
+      value: id,
+    };
+  });
 
   return (
     <>
@@ -232,6 +296,7 @@ const CompanyEntryForm = () => {
           value={data.name}
           placeholder="channel partner company name"
           onChange={(event) => handleOnChange('name', event.target.value)}
+          deleteIcon
         />
         <InputGroup
           label="Website"
@@ -242,13 +307,14 @@ const CompanyEntryForm = () => {
           value={data.website}
           placeholder="paste site URL link here"
           onChange={(event) => handleOnChange('website', event.target.value)}
+          deleteIcon
         />
         <InputGroup
           label="Country"
           required
           fontLevel={3}
           placeholder="select country"
-          value={countryData.label}
+          value={!isUpdate ? countryData.label : data.country_name}
           hasBoxShadow
           hasPadding
           rightIcon
@@ -265,12 +331,12 @@ const CompanyEntryForm = () => {
           hasHeight
           hasBoxShadow
           rightIcon
-          value={stateData.label}
+          value={!isUpdate ? stateData.label : data.state_name}
           placeholder="select state / province"
           onRightIconClick={handleToggleModal('state')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={countryData.value === ''}
+          disabled={(countryData.value || data.country_id) === ''}
         />
         <InputGroup
           label="City / Town"
@@ -280,13 +346,13 @@ const CompanyEntryForm = () => {
           hasPadding
           hasBoxShadow
           rightIcon
-          value={cityData.label}
+          value={!isUpdate ? cityData.label : data.city_name}
           placeholder="select city / town"
           onChange={(event) => handleOnChange('city_name', event.target.value)}
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={stateData.value === ''}
+          disabled={(stateData.value || data.state_id) === ''}
         />
         <FormGroup label="Address" required layout="vertical">
           <CustomTextArea
@@ -312,15 +378,19 @@ const CompanyEntryForm = () => {
           value={data.postal_code}
           name="postal_code"
           onChange={(event) => handleOnChange('postal_code', event.target.value)}
+          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
+          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
+          deleteIcon
         />
         <FormGroup label="General Phone" required layout="vertical">
           <PhoneInput
             phonePlaceholder="area code / number"
             onChange={(value) => handleOnChange('phone', value.phoneNumber)}
             value={{
-              zoneCode: countryData.phoneCode,
+              zoneCode: !isUpdate ? countryData.phoneCode : data.phone_code,
               phoneNumber: data.phone,
             }}
+            deleteIcon
           />
         </FormGroup>
         <InputGroup
@@ -333,12 +403,26 @@ const CompanyEntryForm = () => {
           placeholder="general email address"
           value={data.email}
           onChange={(event) => handleOnChange('email', event.target.value)}
+          deleteIcon
+          message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
         <Title level={8} customClass="py-10 my-16 bottom-border-inset-black">
           ACCOUNT PROFILE
         </Title>
-        <FormGroup label="Affiliation" required layout="vertical">
+        <FormGroup
+          label="Affiliation"
+          required
+          layout="vertical"
+          formClass={`${styles.association} ${getFormClass(
+            generatePlaceholder(
+              association?.affiliation || [],
+              data.affiliation_id,
+              data.affiliation_name,
+            ),
+          )}`}
+        >
           <CollapseRadioList
             options={
               association?.affiliation?.map((item) => {
@@ -348,7 +432,11 @@ const CompanyEntryForm = () => {
                 };
               }) || []
             }
-            placeholder={'select from list'}
+            placeholder={generatePlaceholder(
+              association?.affiliation || [],
+              data.affiliation_id,
+              data.affiliation_name,
+            )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
             otherInput
@@ -362,7 +450,14 @@ const CompanyEntryForm = () => {
             }}
           />
         </FormGroup>
-        <FormGroup label="Relation" required layout="vertical">
+        <FormGroup
+          label="Relation"
+          required
+          layout="vertical"
+          formClass={`${styles.association} ${getFormClass(
+            generatePlaceholder(association?.relation || [], data.relation_id, data.relation_name),
+          )}`}
+        >
           <CollapseRadioList
             options={
               association?.relation?.map((item) => {
@@ -372,7 +467,11 @@ const CompanyEntryForm = () => {
                 };
               }) || []
             }
-            placeholder={'select from list'}
+            placeholder={generatePlaceholder(
+              association?.relation || [],
+              data.relation_id,
+              data.relation_name,
+            )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
             otherInput
@@ -386,7 +485,18 @@ const CompanyEntryForm = () => {
             }}
           />
         </FormGroup>
-        <FormGroup label="Acquisition" required layout="vertical">
+        <FormGroup
+          label="Acquisition"
+          required
+          layout="vertical"
+          formClass={`${styles.association} ${getFormClass(
+            generatePlaceholder(
+              association?.acquisition || [],
+              data.acquisition_id,
+              data.acquisition_name,
+            ),
+          )}`}
+        >
           <CollapseRadioList
             options={
               association?.acquisition?.map((item) => {
@@ -411,7 +521,11 @@ const CompanyEntryForm = () => {
                 };
               }) || []
             }
-            placeholder={'select from list'}
+            placeholder={generatePlaceholder(
+              association?.acquisition || [],
+              data.acquisition_id,
+              data.acquisition_name,
+            )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
             otherInput
@@ -443,10 +557,13 @@ const CompanyEntryForm = () => {
           hasPadding
           hasHeight
           hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
           rightIcon
           placeholder="select country"
-          value={authorCountryData.map((item) => item.label).join(', ')}
-          onChange={(event) => handleOnChange('authorized_country_name', event.target.value)}
+          value={
+            authorCountryData.map((item) => item.label).join(', ') || data.authorized_country_name
+          }
           onRightIconClick={handleToggleModal('authorizedCountry')}
         />
         <FormGroup
@@ -478,7 +595,7 @@ const CompanyEntryForm = () => {
       <CountryModal
         visible={isOpenModal === 'country'}
         setVisible={handleSetModalVisible}
-        chosenValue={countryData}
+        chosenValue={!isUpdate ? countryData : countryMergedData}
         setChosenValue={setCountryData}
         hasGlobal={false}
       />
@@ -487,7 +604,7 @@ const CompanyEntryForm = () => {
         countryId={data.country_id}
         visible={isOpenModal === 'state'}
         setVisible={handleSetModalVisible}
-        chosenValue={stateData}
+        chosenValue={!isUpdate ? stateData : stateMergedData}
         setChosenValue={setStateData}
       />
 
@@ -496,14 +613,14 @@ const CompanyEntryForm = () => {
         countryId={data.country_id}
         visible={isOpenModal === 'city'}
         setVisible={handleSetModalVisible}
-        chosenValue={cityData}
+        chosenValue={!isUpdate ? cityData : cityMergedData}
         setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
         visible={isOpenModal === 'authorizedCountry'}
         setVisible={handleSetModalVisible}
-        chosenValue={authorCountryData}
+        chosenValue={!isUpdate ? authorCountryData : authouCountryMergedData}
         setChosenValue={setAuthorCountryData}
       />
     </>

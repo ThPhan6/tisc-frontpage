@@ -5,8 +5,9 @@ import { PATH } from '@/constants/path';
 import { TableColumnProps } from 'antd';
 import { useLocation } from 'umi';
 
+import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { getCommonPartnerTypes, getListPartnerCompanies } from '@/services';
+import { deletePartner, getCommonPartnerTypes, getListPartnerCompanies } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
@@ -45,7 +46,6 @@ export type FilterType = 'affiliation' | 'relation' | 'acquisition';
 
 const PartnersTable = () => {
   const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
-  const [showEntryForm, setShowEntryForm] = useState(false);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(PartnerTabKey.companyPartners);
   const location = useLocation();
   const isActiveTab = location.pathname === PATH.brandPartners;
@@ -72,6 +72,16 @@ const PartnersTable = () => {
   useEffect(() => {
     tableRef.current.reloadWithFilter();
   }, [filters]);
+
+  const handleDeletePartner = (id: string) => () => {
+    confirmDelete(async () => {
+      const res = await deletePartner(id);
+      if (res) tableRef.current.reload();
+    });
+  };
+
+  const handlePushToUpdate = (id: string) => () =>
+    pushTo(PATH.brandUpdatePartner.replace(':id', id));
 
   const companyColumns: TableColumnProps<Company>[] = [
     {
@@ -146,17 +156,17 @@ const PartnersTable = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_, record) => {
         return (
           <ActionMenu
             actionItems={[
               {
                 type: 'updated',
-                onClick: () => {},
+                onClick: handlePushToUpdate(record.id),
               },
               {
                 type: 'deleted',
-                onClick: () => {},
+                onClick: handleDeletePartner(record.id),
               },
             ]}
           />
@@ -185,10 +195,7 @@ const PartnersTable = () => {
     },
   ];
 
-  const handlePushTo = () => {
-    pushTo(PATH.brandCreatePartners);
-    setShowEntryForm(true);
-  };
+  const handlePushTo = () => pushTo(PATH.brandCreatePartners);
 
   const handleFilterChange = (type: FilterType, id?: string) => () => {
     if (id === '') {
@@ -282,7 +289,7 @@ const PartnersTable = () => {
           tabDisplay="start"
           widthItem="auto"
           className={`${styles.partnerHeaderTab} ${
-            !isActiveTab || showEntryForm ? styles.partnerHeaderTabDisabled : ''
+            !isActiveTab ? styles.partnerHeaderTabDisabled : ''
           }`}
           onChange={handleChangeTab}
           activeKey={selectedTab}
@@ -293,7 +300,7 @@ const PartnersTable = () => {
           <CustomPlusButton
             onClick={handlePushTo}
             customClass="my-0 mx-16"
-            disabled={!isActiveTab || showEntryForm}
+            disabled={!isActiveTab}
           />
         </div>
       </div>

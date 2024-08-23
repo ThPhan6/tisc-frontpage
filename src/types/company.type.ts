@@ -1,7 +1,9 @@
 export interface Company {
+  id: string;
   name: string;
   country_name: string;
   city_name: string;
+  state_name: string;
   contact: string;
   affiliation_name: string;
   affiliation_id: string;
@@ -19,6 +21,7 @@ export interface CompanyForm extends Omit<Company, 'contact'> {
   province: string;
   address: string;
   postal_code: string;
+  phone_code: string;
   phone: string;
   email: string;
   remark: string;

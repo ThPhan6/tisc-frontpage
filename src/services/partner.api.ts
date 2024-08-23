@@ -56,6 +56,15 @@ export const getCommonPartnerTypes = async () => {
     });
 };
 
+export const getPartner = async (id: string) => {
+  return request<{ data: CompanyForm }>(`/api/partner/get-one/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_PARTNER_ERROR);
+      return null;
+    });
+};
+
 export const createPartner = async (data: CompanyForm) => {
   return request<{ data: CompanyForm }>(`/api/partner/create-partner`, {
     method: 'POST',
@@ -72,3 +81,29 @@ export const createPartner = async (data: CompanyForm) => {
       return undefined;
     });
 };
+
+export async function updatePartner(id: string, data: CompanyForm) {
+  return request<boolean>(`/api/partner/update/${id}`, { method: 'PUT', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_PARTNER_COMPANY_SUCCESS);
+      hidePageLoading();
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PARTNER_COMPANY_ERROR);
+      hidePageLoading();
+      return false;
+    });
+}
+
+export async function deletePartner(id: string) {
+  return request<boolean>(`/api/partner/delete/${id}`, { method: 'DELETE' })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_PARTNER_COMPANY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_PARTNER_COMPANY_ERROR);
+      return false;
+    });
+}
