@@ -224,7 +224,6 @@ export const useProductAttributeForm = (
       const found = specifiedDetail?.specification.attribute_groups.find(
         (group) => group.id === item.id,
       );
-      console.log('found: ', found);
       return {
         ...item,
         isChecked: found?.isChecked,

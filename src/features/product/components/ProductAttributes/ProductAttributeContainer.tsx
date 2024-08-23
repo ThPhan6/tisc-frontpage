@@ -6,6 +6,7 @@ import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId } from '@/helper/hook';
+import { sortObjectArray } from '@/helper/utils';
 
 import { closeActiveSpecAttributeGroup, setPartialProductDetail } from '../../reducers';
 import { ProductInfoTab } from './types';
@@ -66,6 +67,25 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     isSpecifiedModal,
     isGetProductSpecification: true, // except specifying modal
     isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
+  });
+  //sort attribute items
+  const allSubAttributes = attributes?.reduce((pre, cur: any) => {
+    return pre.concat(cur.subs);
+  }, []);
+  const sortedAttributeGroup = attributeGroup.map((group) => {
+    const mappedNameData = [...group.attributes].map((attribute) => {
+      const foundAttributeData: any = allSubAttributes?.find(
+        (item: any) => item.id === attribute.id,
+      );
+      return {
+        ...attribute,
+        name: foundAttributeData?.name || '',
+      };
+    });
+    return {
+      ...group,
+      attributes: sortObjectArray([...mappedNameData], 'name', 'asc'),
+    };
   });
   const brandSpecifiedDetails = useAppSelector((state) => state.product.brandSpecifiedDetails);
   const { specification } = brandSpecifiedDetails;
@@ -150,9 +170,9 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
         }}
       />
 
-      {!attributeGroup?.length ? null : (
+      {!sortedAttributeGroup?.length ? null : (
         <DragDropContainer onDragEnd={onDragEnd}>
-          {attributeGroup.map((attrGroupItem, groupIndex) => (
+          {sortedAttributeGroup.map((attrGroupItem, groupIndex) => (
             <Draggable
               key={attrGroupItem.id}
               draggableId={attrGroupItem.id || String(groupIndex)}
@@ -163,7 +183,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
                   <ProductAttributeGroup
                     key={attrGroupItem.id}
                     activeKey={activeKey}
-                    attributeGroup={attributeGroup}
+                    attributeGroup={sortedAttributeGroup}
                     attrGroupItem={attrGroupItem}
                     prevAttributeGroupSelectedIds={prevAttributeGroupSelectedIds}
                     groupIndex={groupIndex}
@@ -193,7 +213,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
       {isEditable && attributeGroupKey === 'specification_attribute_groups' ? (
         <AutoStep
-          attributeGroup={attributeGroup}
+          attributeGroup={sortedAttributeGroup}
           attributes={attributes ?? []}
           visible={autoStepPopup}
           setVisible={setAutoStepPopup}
