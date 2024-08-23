@@ -63,7 +63,43 @@ const PartnersTable = () => {
   useEffect(() => {
     const handleGetCommonPartnerTypeList = async () => {
       const res = await getCommonPartnerTypes();
-      if (res) dispatch(setAssociation(res));
+      if (res) {
+        const sortedAffiliation = res.affiliation.sort((a, b) =>
+          a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
+        );
+
+        const sortedRelation = res.relation.sort((a, b) =>
+          a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
+        );
+
+        const acquisitionOrder = [
+          'Leads',
+          'Awareness',
+          'Interests',
+          'Negotiation',
+          'Active',
+          'Freeze',
+          'Inactive',
+        ];
+        const sortedAcquisition = res.acquisition.sort((a, b) => {
+          const indexA = acquisitionOrder.indexOf(a.name);
+          const indexB = acquisitionOrder.indexOf(b.name);
+
+          if (indexA === -1) return 1;
+          if (indexB === -1) return -1;
+
+          return indexA - indexB;
+        });
+
+        const sortedRes = {
+          ...res,
+          affiliation: sortedAffiliation,
+          relation: sortedRelation,
+          acquisition: sortedAcquisition,
+        };
+
+        dispatch(setAssociation(sortedRes));
+      }
     };
 
     handleGetCommonPartnerTypeList();

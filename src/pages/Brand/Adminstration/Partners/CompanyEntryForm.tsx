@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -12,11 +13,12 @@ import {
   messageErrorType,
   validateRequiredFields,
 } from '@/helper/utils';
-import { createPartner, getPartner, updatePartner } from '@/services';
+import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
+import { setAssociation } from '@/reducers/partner';
 import { CompanyForm } from '@/types';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
@@ -92,6 +94,11 @@ const initialCompanyForm: CompanyForm = {
 
 const CompanyEntryForm = () => {
   const [data, setData] = useState<CompanyForm>(initialCompanyForm);
+  const [initSelectedAssociation, setInitSelectedAssociation] = useState({
+    affiliation_id: '',
+    relation_id: '',
+    acquisition_id: '',
+  });
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -102,6 +109,7 @@ const CompanyEntryForm = () => {
   const [isOpenModal, setIsOpenModal] = useState<ModalType>('');
   const [stateData, setStateData] = useState({ label: '', value: data.state_id });
   const [cityData, setCityData] = useState({ label: '', value: data.city_id });
+  const [acquisitionOther, setAcquisitionOther] = useState('');
   const [authorCountryData, setAuthorCountryData] = useState<CheckboxValue[]>(
     data?.authorized_countries?.map((country) => {
       return {
@@ -113,6 +121,7 @@ const CompanyEntryForm = () => {
   const { association } = useAppSelector((state: RootState) => state.partner);
   const isActiveTab = location.pathname === PATH.brandPartners;
   const partnerId = useGetParamId();
+  const dispatch = useDispatch();
   const isUpdate = partnerId ? true : false;
 
   const listTab: TabItem[] = [
@@ -138,10 +147,28 @@ const CompanyEntryForm = () => {
     });
 
   useEffect(() => {
+    if (acquisitionOther === '') {
+      setData((pre) => ({
+        ...pre,
+        affiliation_id: initSelectedAssociation.affiliation_id,
+        relation_id: initSelectedAssociation.relation_id,
+        acquisition_id: initSelectedAssociation.acquisition_id,
+      }));
+    }
+  }, [acquisitionOther]);
+
+  useEffect(() => {
     if (partnerId) {
       const handleFetchPartnerInfo = async () => {
         const res = await getPartner(partnerId);
-        if (res) setData(res);
+        if (res) {
+          setData(res);
+          setInitSelectedAssociation({
+            affiliation_id: res.affiliation_id,
+            relation_id: res.relation_id,
+            acquisition_id: res.acquisition_id,
+          });
+        }
       };
 
       handleFetchPartnerInfo();
@@ -168,6 +195,51 @@ const CompanyEntryForm = () => {
       );
     }
   }, [authorCountryData]);
+
+  useEffect(() => {
+    const handleGetCommonPartnerTypeList = async () => {
+      const res = await getCommonPartnerTypes();
+      if (res) {
+        const sortedAffiliation = res.affiliation.sort((a, b) =>
+          a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
+        );
+
+        const sortedRelation = res.relation.sort((a, b) =>
+          a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
+        );
+
+        const acquisitionOrder = [
+          'Leads',
+          'Awareness',
+          'Interests',
+          'Negotiation',
+          'Active',
+          'Freeze',
+          'Inactive',
+        ];
+        const sortedAcquisition = res.acquisition.sort((a, b) => {
+          const indexA = acquisitionOrder.indexOf(a.name);
+          const indexB = acquisitionOrder.indexOf(b.name);
+
+          if (indexA === -1) return 1;
+          if (indexB === -1) return -1;
+
+          return indexA - indexB;
+        });
+
+        const sortedRes = {
+          ...res,
+          affiliation: sortedAffiliation,
+          relation: sortedRelation,
+          acquisition: sortedAcquisition,
+        };
+
+        dispatch(setAssociation(sortedRes));
+      }
+    };
+
+    handleGetCommonPartnerTypeList();
+  }, []);
 
   const getRequiredFields = (): { field: keyof CompanyForm; messageField: string }[] => [
     { field: 'name', messageField: 'Company name is required' },
@@ -231,7 +303,11 @@ const CompanyEntryForm = () => {
     defaultName: string,
   ) => {
     const selectedItem = items.find((item) => item.id === checkedValue);
-    return selectedItem ? selectedItem.name : defaultName || 'select from list';
+    return selectedItem
+      ? selectedItem.name
+      : acquisitionOther
+      ? acquisitionOther
+      : defaultName || 'select from list';
   };
 
   const countryMergedData = {
@@ -435,7 +511,7 @@ const CompanyEntryForm = () => {
             placeholder={generatePlaceholder(
               association?.affiliation || [],
               data.affiliation_id,
-              data.affiliation_name,
+              data.affiliation_name || data.affiliation_id,
             )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
@@ -444,6 +520,7 @@ const CompanyEntryForm = () => {
             onChange={(radioValue) => {
               if (radioValue.value === 'other') {
                 handleOnChange('affiliation_id', radioValue.label as string);
+                setAcquisitionOther(radioValue.label as string);
                 return;
               }
               handleOnChange('affiliation_id', radioValue.value as string);
@@ -470,7 +547,7 @@ const CompanyEntryForm = () => {
             placeholder={generatePlaceholder(
               association?.relation || [],
               data.relation_id,
-              data.relation_name,
+              data.relation_name || data.relation_id,
             )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
@@ -479,6 +556,7 @@ const CompanyEntryForm = () => {
             onChange={(radioValue) => {
               if (radioValue.value === 'other') {
                 handleOnChange('relation_id', radioValue.label as string);
+                setAcquisitionOther(radioValue.label as string);
                 return;
               }
               handleOnChange('relation_id', radioValue.value as string);
@@ -533,6 +611,7 @@ const CompanyEntryForm = () => {
             onChange={(radioValue) => {
               if (radioValue.value === 'other') {
                 handleOnChange('acquisition_id', radioValue.label as string);
+                setAcquisitionOther(radioValue.label as string);
                 return;
               }
               handleOnChange('acquisition_id', radioValue.value as string);
