@@ -1,3 +1,5 @@
+import { ProductIDType } from '@/types';
+
 export interface OptionReplicateRequest {
   id?: string;
   replicate: number;
@@ -85,6 +87,7 @@ export interface OptionQuantityProps {
   sub_name: string;
   select_id: string;
   index: number;
+  id_format_type?: ProductIDType;
 }
 
 export interface AutoStepPreSelectOptionProps {
