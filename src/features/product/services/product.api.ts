@@ -274,8 +274,27 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           const quantities = specifiedData?.specification.attribute_groups.find(
             (el) => el.id === attr.id,
           )?.step_selections?.quantities;
+          const newViewSteps = attr.viewSteps.map((viewStep: any) => {
+            const foundSpecStep = attr.specification_steps.find(
+              (specStep: any) => specStep.id === viewStep.id,
+            );
+            const newOptions = viewStep?.options.map((option: any) => {
+              const foundOption = foundSpecStep.options.find(
+                (specOption: any) => specOption.id === option.id,
+              );
+              return {
+                ...option,
+                id_format_type: foundOption.id_format_type,
+              };
+            });
+            return {
+              ...viewStep,
+              options: newOptions,
+            };
+          });
           newAttributeGroup.push({
             ...attr,
+            viewSteps: newViewSteps,
             steps: newRes,
             isChecked: !props?.isSpecified
               ? !isEmpty(attr?.stepSelection?.quantities)

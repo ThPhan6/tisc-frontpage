@@ -55,7 +55,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
 
     /// get checked from current option select
     useEffect(() => {
-      checked.setValue(isOptionType);
+      // checked.setValue(isOptionType);
     }, [isOptionType]);
 
     /// get checked from data on first loading
@@ -101,12 +101,6 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
           .map((attr) => attr.basis?.id_format_type)
           .filter((type) => type !== undefined && type !== null),
       );
-
-      // Check if there are more than one distinct id_format_type values.
-      if (idFormatTypes.size > 1) {
-        message.warn('Cannot select attributes with multiple ID types!');
-        return;
-      }
 
       newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
         selectedAttrIds.includes(attr.id),
@@ -172,13 +166,10 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       // close modal
       setVisible(false);
       /// set selection for each group attribute has attribute option type
-      const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
-
-      checked.setValue(isNewAttributeHasOptionType);
 
       newAttrGroup[groupIndex] = {
         ...newAttrGroup[groupIndex],
-        selection: isNewAttributeHasOptionType,
+        selection: checked.value,
       };
 
       /// to rearrange attribute has type option to top

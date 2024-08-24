@@ -109,7 +109,7 @@ const ProductDetailContainer: React.FC = () => {
     projectProductId ? 'specification' : 'general',
   );
   const [title, setTitle] = useState<string>('');
-
+  const { labels } = useAppSelector((state) => state.label);
   const selectedSubLabels = useAppSelector((state) => state.product.details.label_ids);
 
   useEffect(() => {
@@ -216,11 +216,19 @@ const ProductDetailContainer: React.FC = () => {
           }),
     }));
 
+    const allSubLabels = labels.reduce((pre, cur: any) => {
+      return pre.concat(cur.subs);
+    }, []);
+
+    const filteredSubLabels = selectedSubLabels?.filter((id) =>
+      allSubLabels.find((item: any) => item.id === id),
+    );
+
     const data: ProductFormData = {
       brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
       collection_ids: details.collections.map((collection) => collection.id),
-      label_ids: selectedSubLabels,
+      label_ids: filteredSubLabels,
       name: details.name.trim(),
       description: details.description.trim(),
       general_attribute_groups: productGeneralData,

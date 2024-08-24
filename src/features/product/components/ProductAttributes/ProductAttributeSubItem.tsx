@@ -69,6 +69,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const isSpecification = activeKey === 'specification';
+
   const attributeItems = attributeGroup[attributeGroupIndex].attributes;
   const attributeItem = attributeGroup[attributeGroupIndex].attributes[attributeItemIndex];
 
@@ -76,7 +77,6 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   const [curAttributeData, setCurAtttributeData] = useState<any>();
-
   /// using for option have type Text and Conversion
   const [selected, setSelected] = useState<RadioValue>({
     label: attributeItem?.text ?? '',
@@ -148,7 +148,6 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         }
       });
     });
-
     setCurAtttributeData(currentAttribute);
 
     setBasisOptions(currentAttribute.basis?.subs);

@@ -73,7 +73,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     const allSubLabels = labels.reduce((pre: SubLabel[], cur) => {
       return pre.concat(cur.subs!);
     }, []);
-    if (onChange) onChange(checkedItems);
     const selectedParents = checkedItems.map((sub) => {
       const foundSubLabel = allSubLabels.find((subLabel: SubLabel) => subLabel.id === sub.value);
       return foundSubLabel?.parent_id;
@@ -154,11 +153,15 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const handleCheckboxChange = (sub: DynamicCheckboxValue) => () => {
     if (isActionMenuDisabled) return;
 
-    setCheckedItems((pre) =>
-      pre.some((preItem) => preItem.value === sub.value)
+    setCheckedItems((pre) => {
+      const temp = pre.some((preItem) => preItem.value === sub.value)
         ? pre.filter((item) => item.value !== sub.value)
-        : pre.concat([sub]),
-    );
+        : pre.concat([sub]);
+      if (onChange) {
+        onChange(temp);
+      }
+      return temp;
+    });
   };
 
   /**
@@ -355,10 +358,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   <Checkbox
                     id={`${option.value}_${index}_${randomId}`}
                     {...option}
-                    disabled={
-                      checkboxClass === 'collection-label-list' &&
-                      selected?.find((item) => item.value === option.value.toString())
-                    }
                     onChange={(e) => {
                       e.stopPropagation();
                       if (additionalSelected && onChangeAdditionalSelected)
