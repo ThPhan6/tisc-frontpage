@@ -525,12 +525,21 @@ export const simplizeString = (str: string) => {
   return removeSpecialChars(str.trim().toLowerCase().replace(/ /g, '-')).replace(/\-+/g, '-');
 };
 
+export const isEmpty = <T>(value: T) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === 'string' && value.trim() === '') ||
+    (Array.isArray(value) && value.length === 0)
+  );
+};
+
 export const validateRequiredFields = <T>(
   data: T,
   requiredFields: { field: keyof T; messageField: string }[],
 ) => {
   for (const { field, messageField } of requiredFields) {
-    if (data[field] === null) {
+    if (isEmpty(data[field])) {
       messageAntd.error(messageField);
       return false;
     }

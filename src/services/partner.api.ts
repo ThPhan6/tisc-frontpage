@@ -83,16 +83,16 @@ export const createPartner = async (data: CompanyForm) => {
 };
 
 export async function updatePartner(id: string, data: CompanyForm) {
-  return request<boolean>(`/api/partner/update/${id}`, { method: 'PUT', data })
-    .then(() => {
+  return request<{ data: CompanyForm }>(`/api/partner/update/${id}`, { method: 'PUT', data })
+    .then((res) => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_PARTNER_COMPANY_SUCCESS);
       hidePageLoading();
-      return true;
+      return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PARTNER_COMPANY_ERROR);
       hidePageLoading();
-      return false;
+      return null;
     });
 }
 
