@@ -644,6 +644,29 @@ const routes = [
         ],
       },
       {
+        path: PATH.brandPartners,
+        name: 'brand.partners',
+        icon: 'shaking-hands.svg',
+        access: 'brand_administration_partners',
+        routes: [
+          {
+            path: PATH.brandPartners,
+            component: './Brand/Adminstration/Partners/PartnersTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandCreatePartners,
+            component: './Brand/Adminstration/Partners/CompanyEntryForm',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandUpdatePartner,
+            component: './Brand/Adminstration/Partners/CompanyEntryForm',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
         path: PATH.distributors,
         name: 'brand.distributor',
         icon: 'distributor-icon.svg',
