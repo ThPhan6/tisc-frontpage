@@ -71,16 +71,18 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                       ) : null}
                     </Menu.Item>
 
-                    {panel?.labels?.map(({ id, label, labelAction }) => (
-                      <Menu.Item
-                        key={id}
-                        style={{ margin: '0' }}
-                        className={styles.collapsiblePanelMenuHeading}
-                        onClick={handleAction(labelAction)}
-                      >
-                        {label}
-                      </Menu.Item>
-                    ))}
+                    <div className={`${styles.collapsiblePanelMenuHeadingContainer}`}>
+                      {panel?.labels?.map(({ id, label, labelAction }) => (
+                        <Menu.Item
+                          key={id}
+                          style={{ margin: '0', background: '#fff' }}
+                          className={styles.collapsiblePanelMenuHeading}
+                          onClick={handleAction(labelAction)}
+                        >
+                          <span className={styles.collapsiblePanelMenuHeadingLabel}>{label}</span>
+                        </Menu.Item>
+                      ))}
+                    </div>
                   </Menu>
                 }
               >

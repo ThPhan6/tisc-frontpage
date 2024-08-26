@@ -15,7 +15,6 @@ import {
 } from '@/helper/utils';
 import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
 
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
 import { setAssociation } from '@/reducers/partner';
@@ -89,7 +88,7 @@ const initialCompanyForm: CompanyForm = {
   country_id: '',
   state_id: '',
   state_name: '',
-  phone_code: '',
+  phone_code: '00',
 };
 
 const CompanyEntryForm = () => {
@@ -99,25 +98,13 @@ const CompanyEntryForm = () => {
     relation_id: '',
     acquisition_id: '',
   });
-
-  const [countryData, setCountryData] = useState({
-    label: '',
-    value: data.country_id,
-    phoneCode: '00',
-  });
-
   const [isOpenModal, setIsOpenModal] = useState<ModalType>('');
-  const [stateData, setStateData] = useState({ label: '', value: data.state_id });
-  const [cityData, setCityData] = useState({ label: '', value: data.city_id });
-  const [acquisitionOther, setAcquisitionOther] = useState('');
-  const [authorCountryData, setAuthorCountryData] = useState<CheckboxValue[]>(
-    data?.authorized_countries?.map((country) => {
-      return {
-        label: country.name,
-        value: country.id,
-      };
-    }),
-  );
+  const [clearOther, setClearOther] = useState(false);
+  const [associationOther, setAssociationOther] = useState({
+    affiliation: '',
+    relation: '',
+    acquisition: '',
+  });
   const { association } = useAppSelector((state: RootState) => state.partner);
   const isActiveTab = location.pathname === PATH.brandPartners;
   const partnerId = useGetParamId();
@@ -147,7 +134,11 @@ const CompanyEntryForm = () => {
     });
 
   useEffect(() => {
-    if (acquisitionOther === '') {
+    if (
+      associationOther.affiliation === '' &&
+      associationOther.relation === '' &&
+      associationOther.acquisition === ''
+    ) {
       setData((pre) => ({
         ...pre,
         affiliation_id: initSelectedAssociation.affiliation_id,
@@ -155,97 +146,74 @@ const CompanyEntryForm = () => {
         acquisition_id: initSelectedAssociation.acquisition_id,
       }));
     }
-  }, [acquisitionOther]);
+  }, [associationOther]);
+
+  const handleFetchPartnerInfo = async () => {
+    const res = await getPartner(partnerId);
+    if (res) {
+      setData(res);
+      setInitSelectedAssociation({
+        affiliation_id: res.affiliation_id,
+        relation_id: res.relation_id,
+        acquisition_id: res.acquisition_id,
+      });
+    }
+  };
 
   useEffect(() => {
     if (partnerId) {
-      const handleFetchPartnerInfo = async () => {
-        const res = await getPartner(partnerId);
-        if (res) {
-          setData(res);
-          setInitSelectedAssociation({
-            affiliation_id: res.affiliation_id,
-            relation_id: res.relation_id,
-            acquisition_id: res.acquisition_id,
-          });
-        }
-      };
-
       handleFetchPartnerInfo();
     }
   }, [partnerId]);
 
-  useEffect(() => {
-    if (countryData.value !== '') handleOnChange('country_id', countryData.value);
-  }, [countryData]);
-
-  useEffect(() => {
-    handleOnChange('state_id', stateData.value);
-  }, [stateData]);
-
-  useEffect(() => {
-    handleOnChange('city_id', cityData.value);
-  }, [cityData]);
-
-  useEffect(() => {
-    if (authorCountryData) {
-      handleOnChange(
-        'authorized_country_ids',
-        authorCountryData.map((item) => item.value) as string[],
+  const handleGetCommonPartnerTypeList = async () => {
+    const res = await getCommonPartnerTypes();
+    if (res) {
+      const sortedAffiliation = res.affiliation.sort((a, b) =>
+        a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
       );
+
+      const sortedRelation = res.relation.sort((a, b) =>
+        a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
+      );
+
+      const acquisitionOrder = [
+        'Leads',
+        'Awareness',
+        'Interests',
+        'Negotiation',
+        'Active',
+        'Freeze',
+        'Inactive',
+      ];
+      const sortedAcquisition = res.acquisition.sort((a, b) => {
+        const indexA = acquisitionOrder.indexOf(a.name);
+        const indexB = acquisitionOrder.indexOf(b.name);
+
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+
+        return indexA - indexB;
+      });
+
+      const sortedRes = {
+        ...res,
+        affiliation: sortedAffiliation,
+        relation: sortedRelation,
+        acquisition: sortedAcquisition,
+      };
+
+      dispatch(setAssociation(sortedRes));
     }
-  }, [authorCountryData]);
+  };
 
   useEffect(() => {
-    const handleGetCommonPartnerTypeList = async () => {
-      const res = await getCommonPartnerTypes();
-      if (res) {
-        const sortedAffiliation = res.affiliation.sort((a, b) =>
-          a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
-        );
-
-        const sortedRelation = res.relation.sort((a, b) =>
-          a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
-        );
-
-        const acquisitionOrder = [
-          'Leads',
-          'Awareness',
-          'Interests',
-          'Negotiation',
-          'Active',
-          'Freeze',
-          'Inactive',
-        ];
-        const sortedAcquisition = res.acquisition.sort((a, b) => {
-          const indexA = acquisitionOrder.indexOf(a.name);
-          const indexB = acquisitionOrder.indexOf(b.name);
-
-          if (indexA === -1) return 1;
-          if (indexB === -1) return -1;
-
-          return indexA - indexB;
-        });
-
-        const sortedRes = {
-          ...res,
-          affiliation: sortedAffiliation,
-          relation: sortedRelation,
-          acquisition: sortedAcquisition,
-        };
-
-        dispatch(setAssociation(sortedRes));
-      }
-    };
-
     handleGetCommonPartnerTypeList();
   }, []);
 
   const getRequiredFields = (): { field: keyof CompanyForm; messageField: string }[] => [
     { field: 'name', messageField: 'Company name is required' },
     { field: 'country_id', messageField: 'Country is required' },
-    { field: 'state_id', messageField: 'Province / State is required' },
-    { field: 'city_id', messageField: 'City is required' },
     { field: 'address', messageField: 'Address is required' },
     { field: 'postal_code', messageField: 'Postal / Zip Code is required' },
     { field: 'phone', messageField: 'Phone number is required' },
@@ -260,14 +228,41 @@ const CompanyEntryForm = () => {
 
   const handleCloseEntryForm = () => pushTo(PATH.brandPartners);
 
+  const handleChangeLocationData =
+    (type: 'country' | 'state' | 'city') =>
+    (locationData: { value: string; label: string; phoneCode?: string }) => {
+      setData((pre) => ({
+        ...pre,
+        [`${type}_id`]: locationData.value,
+        [`${type}_name`]: locationData.label,
+        phone_code: type === 'country' ? locationData.phoneCode || '00' : pre.phone_code,
+      }));
+    };
+
+  const handleChangeAuthorizationData = (
+    authorizeCountryData: { value: string; label: string }[],
+  ) => {
+    setData((pre) => ({
+      ...pre,
+      authorized_country_ids: authorizeCountryData.map((item) => item.value),
+      authorized_country_name: authorizeCountryData.map((item) => item.label).join(', '),
+    }));
+  };
+
   const handleSubmit = async () => {
     const requiredFields = getRequiredFields();
     if (!validateRequiredFields(data, requiredFields)) return;
 
     showPageLoading();
+    setClearOther(true);
 
     if (isUpdate) {
-      await updatePartner(partnerId, { ...data });
+      const res = await updatePartner(partnerId, { ...data });
+      if (res) {
+        setData(res);
+        setClearOther(false);
+        await handleGetCommonPartnerTypeList();
+      }
       return;
     }
 
@@ -301,37 +296,15 @@ const CompanyEntryForm = () => {
     items: { id: string; name: string }[],
     checkedValue: string | undefined,
     defaultName: string,
+    otherAssociation: string,
   ) => {
     const selectedItem = items.find((item) => item.id === checkedValue);
     return selectedItem
       ? selectedItem.name
-      : acquisitionOther
-      ? acquisitionOther
+      : otherAssociation
+      ? otherAssociation
       : defaultName || 'select from list';
   };
-
-  const countryMergedData = {
-    label: data.country_name,
-    value: data.country_id,
-    phoneCode: data.phone_code,
-  };
-
-  const stateMergedData = {
-    label: data.state_name,
-    value: data.state_id,
-  };
-
-  const cityMergedData = {
-    label: data.city_name,
-    value: data.city_id,
-  };
-
-  const authouCountryMergedData = data?.authorized_country_ids?.map((id) => {
-    return {
-      label: data.authorized_country_name,
-      value: id,
-    };
-  });
 
   return (
     <>
@@ -390,7 +363,7 @@ const CompanyEntryForm = () => {
           required
           fontLevel={3}
           placeholder="select country"
-          value={!isUpdate ? countryData.label : data.country_name}
+          value={data.country_name}
           hasBoxShadow
           hasPadding
           rightIcon
@@ -401,34 +374,32 @@ const CompanyEntryForm = () => {
         />
         <InputGroup
           label="State / Province"
-          required
           fontLevel={3}
           hasPadding
           hasHeight
           hasBoxShadow
           rightIcon
-          value={!isUpdate ? stateData.label : data.state_name}
+          value={data.state_name}
           placeholder="select state / province"
           onRightIconClick={handleToggleModal('state')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={(countryData.value || data.country_id) === ''}
+          disabled={data.country_id === ''}
         />
         <InputGroup
           label="City / Town"
-          required
           fontLevel={3}
           hasHeight
           hasPadding
           hasBoxShadow
           rightIcon
-          value={!isUpdate ? cityData.label : data.city_name}
+          value={data.city_name}
           placeholder="select city / town"
           onChange={(event) => handleOnChange('city_name', event.target.value)}
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={(stateData.value || data.state_id) === ''}
+          disabled={(data.country_id || data.state_id) === ''}
         />
         <FormGroup label="Address" required layout="vertical">
           <CustomTextArea
@@ -463,7 +434,7 @@ const CompanyEntryForm = () => {
             phonePlaceholder="area code / number"
             onChange={(value) => handleOnChange('phone', value.phoneNumber)}
             value={{
-              zoneCode: !isUpdate ? countryData.phoneCode : data.phone_code,
+              zoneCode: data.phone_code,
               phoneNumber: data.phone,
             }}
             deleteIcon
@@ -496,6 +467,7 @@ const CompanyEntryForm = () => {
               association?.affiliation || [],
               data.affiliation_id,
               data.affiliation_name,
+              associationOther.affiliation,
             ),
           )}`}
         >
@@ -512,19 +484,24 @@ const CompanyEntryForm = () => {
               association?.affiliation || [],
               data.affiliation_id,
               data.affiliation_name || data.affiliation_id,
+              associationOther.affiliation,
             )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
-            otherInput
+            otherInput={true}
             checked={data.affiliation_id}
             onChange={(radioValue) => {
               if (radioValue.value === 'other') {
                 handleOnChange('affiliation_id', radioValue.label as string);
-                setAcquisitionOther(radioValue.label as string);
+                setAssociationOther((prev) => ({
+                  ...prev,
+                  affiliation: radioValue.label as string,
+                }));
                 return;
               }
               handleOnChange('affiliation_id', radioValue.value as string);
             }}
+            clearOtherInput={clearOther}
           />
         </FormGroup>
         <FormGroup
@@ -532,7 +509,12 @@ const CompanyEntryForm = () => {
           required
           layout="vertical"
           formClass={`${styles.association} ${getFormClass(
-            generatePlaceholder(association?.relation || [], data.relation_id, data.relation_name),
+            generatePlaceholder(
+              association?.relation || [],
+              data.relation_id,
+              data.relation_name,
+              associationOther.relation,
+            ),
           )}`}
         >
           <CollapseRadioList
@@ -548,19 +530,24 @@ const CompanyEntryForm = () => {
               association?.relation || [],
               data.relation_id,
               data.relation_name || data.relation_id,
+              associationOther.relation,
             )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
-            otherInput
+            otherInput={true}
             checked={data.relation_id}
             onChange={(radioValue) => {
               if (radioValue.value === 'other') {
                 handleOnChange('relation_id', radioValue.label as string);
-                setAcquisitionOther(radioValue.label as string);
+                setAssociationOther((prev) => ({
+                  ...prev,
+                  relation: radioValue.label as string,
+                }));
                 return;
               }
               handleOnChange('relation_id', radioValue.value as string);
             }}
+            clearOtherInput={clearOther}
           />
         </FormGroup>
         <FormGroup
@@ -572,6 +559,7 @@ const CompanyEntryForm = () => {
               association?.acquisition || [],
               data.acquisition_id,
               data.acquisition_name,
+              associationOther.acquisition,
             ),
           )}`}
         >
@@ -603,22 +591,28 @@ const CompanyEntryForm = () => {
               association?.acquisition || [],
               data.acquisition_id,
               data.acquisition_name,
+              associationOther.acquisition,
             )}
             additonalOptionsStyle={{ marginBottom: 10 }}
             additionalOtherClass="mb-10"
-            otherInput
+            otherInput={true}
             checked={data.acquisition_id}
             onChange={(radioValue) => {
               if (radioValue.value === 'other') {
                 handleOnChange('acquisition_id', radioValue.label as string);
-                setAcquisitionOther(radioValue.label as string);
+                setAssociationOther((prev) => ({
+                  ...prev,
+                  acquisition: radioValue.label as string,
+                }));
                 return;
               }
               handleOnChange('acquisition_id', radioValue.value as string);
             }}
+            clearOtherInput={clearOther}
           />
         </FormGroup>
         <InputGroup
+          type="number"
           label="Price Rate"
           required
           fontLevel={3}
@@ -627,6 +621,7 @@ const CompanyEntryForm = () => {
           hasBoxShadow
           colorPrimaryDark={true}
           value={data.price_rate!}
+          step="0.1"
           onChange={(event) => handleOnChange('price_rate', Number(event.target.value))}
         />
         <InputGroup
@@ -640,9 +635,7 @@ const CompanyEntryForm = () => {
           colorRequired="tertiary"
           rightIcon
           placeholder="select country"
-          value={
-            authorCountryData.map((item) => item.label).join(', ') || data.authorized_country_name
-          }
+          value={data.authorized_country_name}
           onRightIconClick={handleToggleModal('authorizedCountry')}
         />
         <FormGroup
@@ -674,8 +667,8 @@ const CompanyEntryForm = () => {
       <CountryModal
         visible={isOpenModal === 'country'}
         setVisible={handleSetModalVisible}
-        chosenValue={!isUpdate ? countryData : countryMergedData}
-        setChosenValue={setCountryData}
+        chosenValue={{ value: data.country_id, label: data.country_name }}
+        setChosenValue={handleChangeLocationData('country')}
         hasGlobal={false}
       />
 
@@ -683,8 +676,8 @@ const CompanyEntryForm = () => {
         countryId={data.country_id}
         visible={isOpenModal === 'state'}
         setVisible={handleSetModalVisible}
-        chosenValue={!isUpdate ? stateData : stateMergedData}
-        setChosenValue={setStateData}
+        chosenValue={{ value: data.state_id, label: data.state_name }}
+        setChosenValue={handleChangeLocationData('state')}
       />
 
       <CityModal
@@ -692,15 +685,17 @@ const CompanyEntryForm = () => {
         countryId={data.country_id}
         visible={isOpenModal === 'city'}
         setVisible={handleSetModalVisible}
-        chosenValue={!isUpdate ? cityData : cityMergedData}
-        setChosenValue={setCityData}
+        chosenValue={{ value: data.city_id, label: data.city_name }}
+        setChosenValue={handleChangeLocationData('city')}
       />
 
       <AuthorizedCountryModal
         visible={isOpenModal === 'authorizedCountry'}
         setVisible={handleSetModalVisible}
-        chosenValue={!isUpdate ? authorCountryData : authouCountryMergedData}
-        setChosenValue={setAuthorCountryData}
+        chosenValue={data.authorized_country_ids.map((countryId) => ({
+          value: countryId,
+        }))}
+        setChosenValue={handleChangeAuthorizationData}
       />
     </>
   );
