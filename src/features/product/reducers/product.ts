@@ -320,12 +320,31 @@ export const productSpecificationSelector = (state: RootState) => {
           const found = state.product.details.specification_attribute_groups.find(
             (item) => item.id === attributeGroup.id,
           );
+          const newViewSteps = found?.viewSteps?.map((viewStep: any) => {
+            const foundSpecStep = found.specification_steps.find(
+              (specStep: any) => specStep.id === viewStep.id,
+            );
+            const newOptions = viewStep?.options?.map((option: any) => {
+              const foundOption = foundSpecStep?.options?.find(
+                (specOption: any) => specOption.id === option.id,
+              );
+              return {
+                ...option,
+                id_format_type: foundOption?.id_format_type,
+              };
+            });
+            return {
+              ...viewStep,
+              options: newOptions,
+            };
+          });
+
           return {
             ...attributeGroup,
             isChecked: true,
             attributes: newAttributes,
             stepSelection: attributeGroup.step_selections,
-            viewSteps: found?.viewSteps,
+            viewSteps: newViewSteps,
           };
         },
       )
@@ -362,11 +381,12 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       return;
     }
 
-    const seperator = el.id_format_type === ProductIDType.Full ? ', ' : ' - ';
-
+    let prevFormat = -1;
     el?.attributes?.forEach((attr: any) => {
       attr?.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
+          const seperator = prevFormat == 0 ? ', ' : opt.id_format_type == 0 ? ', ' : ' - ';
+          prevFormat = opt.id_format_type;
           variants += (variants ? seperator : '') + opt.option_code;
           return true;
         }
@@ -378,10 +398,12 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
         cur.options.map((item: any, index: number) => ({
           id: item.id,
           product_id: item.product_id,
+          id_format_type: item.id_format_type,
           order_key: `${cur.order}_${index}`,
         })),
       );
     }, []);
+    // console.log('el.viewSteps: ', el.viewSteps);
     // For remove the items that not pair in the linkage data anymore
     const specificationAllOptions: string[] = el.viewSteps?.reduce((pre: any, cur: any) => {
       return pre.concat(cur.options.map((item: any) => item.id));
@@ -396,12 +418,16 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
       return {
         ...item,
         product_id: found?.product_id,
+        id_format_type: found?.id_format_type,
         order_key: found?.order_key,
       };
     });
 
+    prevFormat = -1;
     sortObjectArray(combinedQuantities, 'order_key', 'asc')?.forEach((option: any) => {
       for (let q = 0; q < option.quantity; q++) {
+        const seperator = prevFormat == 0 ? ', ' : option.id_format_type == 0 ? ', ' : ' - ';
+        prevFormat = option.id_format_type;
         variants += (variants ? seperator : '') + option.product_id;
       }
     });

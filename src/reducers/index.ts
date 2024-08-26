@@ -18,6 +18,7 @@ import { componentReducer } from '@/pages/TISC/Product/Basis/Option/componentRed
 import { activeReducer } from './active';
 import labelReducer from './label';
 import { modalReducer } from './modal';
+import partnerReducer from './partner';
 import summaryReducer from './summary';
 import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
@@ -30,6 +31,7 @@ const reducers = combineReducers({
   category: categoryReducer,
   user: userReducer,
   label: labelReducer,
+  partner: partnerReducer,
   project: projectReducer,
   loading: loadingActionReducer,
   summary: summaryReducer,

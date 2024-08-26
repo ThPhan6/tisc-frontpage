@@ -1,5 +1,6 @@
 import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
+import { message as messageAntd } from 'antd';
 
 import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
 
@@ -522,4 +523,26 @@ export const removeSpecialChars = (str: string, replaceStr: string = '') => {
 
 export const simplizeString = (str: string) => {
   return removeSpecialChars(str.trim().toLowerCase().replace(/ /g, '-')).replace(/\-+/g, '-');
+};
+
+export const isEmpty = <T>(value: T) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === 'string' && value.trim() === '') ||
+    (Array.isArray(value) && value.length === 0)
+  );
+};
+
+export const validateRequiredFields = <T>(
+  data: T,
+  requiredFields: { field: keyof T; messageField: string }[],
+) => {
+  for (const { field, messageField } of requiredFields) {
+    if (isEmpty(data[field])) {
+      messageAntd.error(messageField);
+      return false;
+    }
+  }
+  return true;
 };

@@ -146,6 +146,10 @@ export const PATH = {
   brandTeamProfile: '/brand/adminstration/team-profiles',
   brandCreateTeamProfile: '/brand/adminstration/team-profiles/create',
   brandUpdateTeamProfile: '/brand/adminstration/team-profiles/update/:id',
+  /// partners
+  brandPartners: '/brand/adminstration/partners',
+  brandCreatePartners: '/brand/adminstration/partners/create',
+  brandUpdatePartner: '/brand/adminstration/partners/:id',
 
   //brand billed services
   brandBilledServices: '/brand/adminstration/billed-services',

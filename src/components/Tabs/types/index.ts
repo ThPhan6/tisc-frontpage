@@ -20,4 +20,5 @@ export interface CustomTabsProps extends TabsProps {
   hideTitleOnMobile?: boolean;
   hideTitleOnTablet?: boolean;
   outlineOnMobile?: boolean;
+  isShowCollapsiblePanel?: boolean;
 }

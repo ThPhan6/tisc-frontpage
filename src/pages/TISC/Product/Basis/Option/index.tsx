@@ -215,7 +215,11 @@ const BasisOptionList: React.FC = () => {
             hideDropdownIcon={true}
             menuStyle={{ width: '100px', height: 'fit-content', bottom: '0' }}
           >
-            {record.id_format_type === ProductIDType.Full ? 'Full' : 'Partial'}
+            {record.id_format_type !== undefined && record.id_format_type !== null
+              ? record.id_format_type === ProductIDType.Full
+                ? 'Full'
+                : 'Partial'
+              : null}
           </CustomDropDown>
         );
       },
