@@ -19,7 +19,6 @@
 .collapsiblePanelContentHeading,
 .collapsiblePanelMenuHeading,
 .collapsiblePanelTitle {
-  color: #000;
   font-weight: 300;
   font-size: 12px;
   font-family: Roboto;
@@ -93,10 +92,11 @@
 .collapsiblePanelMenu {
   position: absolute;
   left: 18px;
-  min-width: 136px;
+  max-width: 136px;
 }
 
 .collapsiblePanelMenuHeadingContainer {
+  max-height: 288px;
   overflow: hidden;
 
   &:hover {

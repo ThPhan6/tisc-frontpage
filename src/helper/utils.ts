@@ -2,7 +2,8 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
 import { message as messageAntd } from 'antd';
 
-import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
+import { getCommonPartnerTypes } from '@/services';
+import { isEmpty, isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
@@ -525,24 +526,63 @@ export const simplizeString = (str: string) => {
   return removeSpecialChars(str.trim().toLowerCase().replace(/ /g, '-')).replace(/\-+/g, '-');
 };
 
-export const isEmpty = <T>(value: T) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === 'string' && value.trim() === '') ||
-    (Array.isArray(value) && value.length === 0)
-  );
-};
-
 export const validateRequiredFields = <T>(
   data: T,
   requiredFields: { field: keyof T; messageField: string }[],
 ) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   for (const { field, messageField } of requiredFields) {
     if (isEmpty(data[field])) {
       messageAntd.error(messageField);
       return false;
     }
+
+    if (field === 'email' && !emailRegex.test(String(data[field]))) {
+      messageAntd.error('Invalid email format');
+      return false;
+    }
   }
+
   return true;
+};
+
+export const handleGetCommonPartnerTypeList = async () => {
+  const res = await getCommonPartnerTypes();
+  if (res) {
+    const sortedAffiliation = res.affiliation.sort((a, b) =>
+      a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
+    );
+
+    const sortedRelation = res.relation.sort((a, b) =>
+      a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
+    );
+
+    const acquisitionOrder = [
+      'Leads',
+      'Awareness',
+      'Interests',
+      'Negotiation',
+      'Active',
+      'Freeze',
+      'Inactive',
+    ];
+    const sortedAcquisition = res.acquisition.sort((a, b) => {
+      const indexA = acquisitionOrder.indexOf(a.name);
+      const indexB = acquisitionOrder.indexOf(b.name);
+
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+
+      return indexA - indexB;
+    });
+
+    return {
+      ...res,
+      affiliation: sortedAffiliation,
+      relation: sortedRelation,
+      acquisition: sortedAcquisition,
+    };
+  }
+  return null;
 };

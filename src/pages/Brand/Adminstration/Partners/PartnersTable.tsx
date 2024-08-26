@@ -7,7 +7,8 @@ import { useLocation } from 'umi';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { deletePartner, getCommonPartnerTypes, getListPartnerCompanies } from '@/services';
+import { handleGetCommonPartnerTypeList } from '@/helper/utils';
+import { deletePartner, getListPartnerCompanies } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
@@ -61,48 +62,12 @@ const PartnersTable = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const handleGetCommonPartnerTypeList = async () => {
-      const res = await getCommonPartnerTypes();
-      if (res) {
-        const sortedAffiliation = res.affiliation.sort((a, b) =>
-          a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
-        );
-
-        const sortedRelation = res.relation.sort((a, b) =>
-          a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
-        );
-
-        const acquisitionOrder = [
-          'Leads',
-          'Awareness',
-          'Interests',
-          'Negotiation',
-          'Active',
-          'Freeze',
-          'Inactive',
-        ];
-        const sortedAcquisition = res.acquisition.sort((a, b) => {
-          const indexA = acquisitionOrder.indexOf(a.name);
-          const indexB = acquisitionOrder.indexOf(b.name);
-
-          if (indexA === -1) return 1;
-          if (indexB === -1) return -1;
-
-          return indexA - indexB;
-        });
-
-        const sortedRes = {
-          ...res,
-          affiliation: sortedAffiliation,
-          relation: sortedRelation,
-          acquisition: sortedAcquisition,
-        };
-
-        dispatch(setAssociation(sortedRes));
-      }
+    const sortedCommonPartnerTypeList = async () => {
+      const sorted = await handleGetCommonPartnerTypeList();
+      dispatch(setAssociation(sorted));
     };
 
-    handleGetCommonPartnerTypeList();
+    sortedCommonPartnerTypeList();
   }, []);
 
   useEffect(() => {

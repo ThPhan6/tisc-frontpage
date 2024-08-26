@@ -9,11 +9,12 @@ import { useGetParamId } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
+  handleGetCommonPartnerTypeList,
   messageError,
   messageErrorType,
   validateRequiredFields,
 } from '@/helper/utils';
-import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
+import { createPartner, getPartner, updatePartner } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
@@ -166,49 +167,13 @@ const CompanyEntryForm = () => {
     }
   }, [partnerId]);
 
-  const handleGetCommonPartnerTypeList = async () => {
-    const res = await getCommonPartnerTypes();
-    if (res) {
-      const sortedAffiliation = res.affiliation.sort((a, b) =>
-        a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
-      );
-
-      const sortedRelation = res.relation.sort((a, b) =>
-        a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
-      );
-
-      const acquisitionOrder = [
-        'Leads',
-        'Awareness',
-        'Interests',
-        'Negotiation',
-        'Active',
-        'Freeze',
-        'Inactive',
-      ];
-      const sortedAcquisition = res.acquisition.sort((a, b) => {
-        const indexA = acquisitionOrder.indexOf(a.name);
-        const indexB = acquisitionOrder.indexOf(b.name);
-
-        if (indexA === -1) return 1;
-        if (indexB === -1) return -1;
-
-        return indexA - indexB;
-      });
-
-      const sortedRes = {
-        ...res,
-        affiliation: sortedAffiliation,
-        relation: sortedRelation,
-        acquisition: sortedAcquisition,
-      };
-
-      dispatch(setAssociation(sortedRes));
-    }
+  const sortedCommonPartnerTypeList = async () => {
+    const sorted = await handleGetCommonPartnerTypeList();
+    dispatch(setAssociation(sorted));
   };
 
   useEffect(() => {
-    handleGetCommonPartnerTypeList();
+    sortedCommonPartnerTypeList();
   }, []);
 
   const getRequiredFields = (): { field: keyof CompanyForm; messageField: string }[] => [
@@ -261,7 +226,7 @@ const CompanyEntryForm = () => {
       if (res) {
         setData(res);
         setClearOther(false);
-        await handleGetCommonPartnerTypeList();
+        await sortedCommonPartnerTypeList();
       }
       return;
     }
@@ -395,7 +360,6 @@ const CompanyEntryForm = () => {
           rightIcon
           value={data.city_name}
           placeholder="select city / town"
-          onChange={(event) => handleOnChange('city_name', event.target.value)}
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"

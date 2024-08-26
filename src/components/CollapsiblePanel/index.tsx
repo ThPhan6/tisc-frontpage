@@ -39,14 +39,21 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
           className={`${styles.collapsiblePanel} ${disabled ? 'cursor-disabled' : ''}`}
           key={panel.id}
         >
-          <div className={styles.collapsiblePanelHeader} onClick={handleToggleDropdown(index)}>
+          <div className={styles.collapsiblePanelHeader}>
             {panel.title && (
-              <span className={`${styles.collapsiblePanelTitle} ${disabled ? 'grey' : ''}`}>
+              <span
+                className={`${styles.collapsiblePanelTitle} ${
+                  disabled ? 'grey' : 'pure-black'
+                } text-capitalize`}
+              >
                 {panel.title}
               </span>
             )}
 
-            <span className={styles.collapsiblePanelIcon}>
+            <span
+              className={`${styles.collapsiblePanelIcon} ${disabled ? 'grey' : 'pure-black'}`}
+              onClick={handleToggleDropdown(index)}
+            >
               {openPanelIndex === index ? <DropupIcon /> : <DropdownIcon />}
             </span>
           </div>
@@ -65,7 +72,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                       onClick={handleAction(panel.headingDropdown?.headingOnClick ?? (() => {}))}
                     >
                       {panel.headingDropdown ? (
-                        <span className={styles.collapsiblePanelContentHeading}>
+                        <span className={`${styles.collapsiblePanelContentHeading} text-uppercase`}>
                           {panel.headingDropdown.label}
                         </span>
                       ) : null}
@@ -79,7 +86,11 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                           className={styles.collapsiblePanelMenuHeading}
                           onClick={handleAction(labelAction)}
                         >
-                          <span className={styles.collapsiblePanelMenuHeadingLabel}>{label}</span>
+                          <span
+                            className={`${styles.collapsiblePanelMenuHeadingLabel} text-capitalize`}
+                          >
+                            {label}
+                          </span>
                         </Menu.Item>
                       ))}
                     </div>
