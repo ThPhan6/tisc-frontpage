@@ -63,8 +63,11 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
 
   const projectProductId = useGetQueryFromOriginURL(QUERY_KEY.project_product_id);
 
-  const { details, curAttrGroupCollapseId } = useAppSelector((s) => s.product);
-  const { brand_id: brandId } = details;
+  const { details, curAttrGroupCollapseId, brand } = useAppSelector((s) => s.product);
+  let { brand_id: brandId } = details;
+  if (!brandId) {
+    brandId = brand?.id as string;
+  }
 
   const currentActiveSpecAttributeGroupId =
     curAttrGroupCollapseId?.[

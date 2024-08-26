@@ -27,6 +27,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   stickyTopItem,
   optionStyle,
   disabled,
+  additionalOtherClass = '',
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -124,7 +125,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
           {otherInput && (
             <div className={`${isRadioList ? style['other-field-radio-list'] : ''}`}>
               <Radio value={'other'}>
-                <div className={style['input-wrapper']}>
+                <div className={`${style['input-wrapper']} ${additionalOtherClass}`}>
                   Other{' '}
                   <CustomInput
                     containerClass={style['other-input']}
