@@ -294,7 +294,7 @@ const CompanyEntryForm = () => {
       </div>
 
       <EntryFormWrapper
-        customClass="max-h-708 max-w-572"
+        customClass="w-full max-h-769"
         handleCancel={handleCloseEntryForm}
         handleSubmit={handleSubmit}
       >
@@ -311,6 +311,7 @@ const CompanyEntryForm = () => {
           value={data.name}
           placeholder="channel partner company name"
           onChange={(event) => handleOnChange('name', event.target.value)}
+          onDelete={() => handleOnChange('name', '')}
           deleteIcon
         />
         <InputGroup
@@ -322,6 +323,7 @@ const CompanyEntryForm = () => {
           value={data.website}
           placeholder="paste site URL link here"
           onChange={(event) => handleOnChange('website', event.target.value)}
+          onDelete={() => handleOnChange('website', '')}
           deleteIcon
         />
         <InputGroup
@@ -390,6 +392,7 @@ const CompanyEntryForm = () => {
           value={data.postal_code}
           name="postal_code"
           onChange={(event) => handleOnChange('postal_code', event.target.value)}
+          onDelete={() => handleOnChange('postal_code', '')}
           message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
           messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
           deleteIcon
@@ -403,6 +406,7 @@ const CompanyEntryForm = () => {
               phoneNumber: data.phone,
             }}
             deleteIcon
+            codeReadOnly
           />
         </FormGroup>
         <InputGroup
@@ -415,6 +419,7 @@ const CompanyEntryForm = () => {
           placeholder="general email address"
           value={data.email}
           onChange={(event) => handleOnChange('email', event.target.value)}
+          onDelete={() => handleOnChange('email', '')}
           deleteIcon
           message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
           messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
@@ -588,6 +593,8 @@ const CompanyEntryForm = () => {
           value={data.price_rate!}
           step="0.1"
           onChange={(event) => handleOnChange('price_rate', Number(event.target.value))}
+          onDelete={() => handleOnChange('price_rate', 0)}
+          deleteIcon
         />
         <InputGroup
           label="Authorized Country"

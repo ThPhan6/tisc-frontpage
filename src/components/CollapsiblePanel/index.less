@@ -5,11 +5,6 @@
   padding: 0 12px;
 }
 
-.collapsiblePanelMenuItem {
-  margin: 0 12px;
-  padding: 0;
-}
-
 .collapsiblePanelHeader {
   position: relative;
   display: flex;
@@ -26,11 +21,14 @@
   letter-spacing: 0.24px;
 }
 
+.collapsiblePanelTitle {
+  margin-bottom: 0;
+}
+
 .collapsiblePanelTitle,
 .collapsiblePanelMenuHeadingLabel {
   overflow: hidden;
   white-space: nowrap;
-  text-transform: capitalize;
   text-overflow: ellipsis;
 }
 
@@ -58,10 +56,6 @@
 }
 
 .collapsiblePanelContent {
-  position: absolute;
-  top: 39px;
-  right: 50px;
-  z-index: 1;
   width: 160px;
 }
 
@@ -90,7 +84,8 @@
 
 .collapsiblePanelMenu {
   position: absolute;
-  left: 18px;
+  top: 38px;
+  right: 50px;
   width: 136px;
 }
 

@@ -297,7 +297,7 @@ const PartnersTable = () => {
           activeKey={selectedTab}
         />
 
-        <div className="d-flex bg-white border-bottom-black">
+        <div className="d-flex bg-white border-bottom-black h-40">
           <CollapsiblePanel panels={panels()} />
           <CustomPlusButton
             onClick={handlePushTo}
