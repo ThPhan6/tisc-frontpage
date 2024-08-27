@@ -530,19 +530,27 @@ export const validateRequiredFields = <T>(
   data: T,
   requiredFields: { field: keyof T; messageField: string }[],
 ) => {
-  for (const { field, messageField } of requiredFields) {
-    if (isEmpty(data[field])) {
-      messageAntd.error(messageField);
-      return false;
+  let check = true;
+  requiredFields.forEach((requiredField) => {
+    if (
+      typeof data[requiredField.field] === 'number' ||
+      typeof data[requiredField.field] === 'boolean'
+    ) {
+      return;
     }
 
-    if (field === 'email' && !REGEX_EMAIL.test(String(data[field]))) {
+    if (isEmpty(data[requiredField.field])) {
+      messageAntd.error(requiredField.messageField);
+      check = false;
+    }
+
+    if (requiredField.field === 'email' && !REGEX_EMAIL.test(String(data[requiredField.field]))) {
       messageAntd.error('Invalid email format');
-      return false;
+      check = false;
     }
-  }
+  });
 
-  return true;
+  return check;
 };
 
 export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) => {
