@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { Input } from 'antd';
 
 import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
@@ -16,7 +15,6 @@ import {
   validateRequiredFields,
 } from '@/helper/utils';
 import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
-import { trimStart } from 'lodash';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
