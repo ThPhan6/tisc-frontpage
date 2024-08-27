@@ -2,12 +2,13 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
 import { message as messageAntd } from 'antd';
 
-import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
+import { isEmpty, isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { TableColumnItem } from '@/components/Table/types';
 import { UserType } from '@/pages/LandingPage/types';
+import { CommonPartnerType } from '@/types';
 
 import routes from '../../config/routes';
 import { pushTo } from './history';
@@ -525,15 +526,6 @@ export const simplizeString = (str: string) => {
   return removeSpecialChars(str.trim().toLowerCase().replace(/ /g, '-')).replace(/\-+/g, '-');
 };
 
-export const isEmpty = <T>(value: T) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === 'string' && value.trim() === '') ||
-    (Array.isArray(value) && value.length === 0)
-  );
-};
-
 export const validateRequiredFields = <T>(
   data: T,
   requiredFields: { field: keyof T; messageField: string }[],
@@ -543,6 +535,51 @@ export const validateRequiredFields = <T>(
       messageAntd.error(messageField);
       return false;
     }
+
+    if (field === 'email' && !REGEX_EMAIL.test(String(data[field]))) {
+      messageAntd.error('Invalid email format');
+      return false;
+    }
   }
+
   return true;
+};
+
+export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) => {
+  if (data) {
+    const sortedAffiliation = data.affiliation.sort((a, b) =>
+      a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
+    );
+
+    const sortedRelation = data.relation.sort((a, b) =>
+      a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
+    );
+
+    const acquisitionOrder = [
+      'Leads',
+      'Awareness',
+      'Interests',
+      'Negotiation',
+      'Active',
+      'Freeze',
+      'Inactive',
+    ];
+    const sortedAcquisition = data.acquisition.sort((a, b) => {
+      const indexA = acquisitionOrder.indexOf(a.name);
+      const indexB = acquisitionOrder.indexOf(b.name);
+
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+
+      return indexA - indexB;
+    });
+
+    return {
+      ...data,
+      affiliation: sortedAffiliation,
+      relation: sortedRelation,
+      acquisition: sortedAcquisition,
+    };
+  }
+  return null;
 };

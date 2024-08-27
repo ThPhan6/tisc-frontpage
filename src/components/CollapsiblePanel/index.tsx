@@ -21,15 +21,22 @@ interface CollapsiblePanelProps {
 
 const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) => {
   const [openPanelIndex, setOpenPanelIndex] = useState<number | null>(null);
+  const [isVisibleChange, setIsVisibleChange] = useState(false);
 
   const handleToggleDropdown = (index: number) => () => {
     if (disabled) return;
     setOpenPanelIndex(openPanelIndex === index ? null : index);
   };
 
+  const handleVisibleChange = () => {
+    if (disabled) return;
+    setIsVisibleChange(!isVisibleChange);
+  };
+
   const handleAction = (action: () => void) => () => {
     action();
     setOpenPanelIndex(null);
+    setIsVisibleChange(false);
   };
 
   return (
@@ -41,12 +48,16 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
         >
           <div className={styles.collapsiblePanelHeader} onClick={handleToggleDropdown(index)}>
             {panel.title && (
-              <span className={`${styles.collapsiblePanelTitle} ${disabled ? 'grey' : ''}`}>
+              <span
+                className={`${styles.collapsiblePanelTitle} ${
+                  disabled ? 'grey' : 'pure-black'
+                } text-capitalize`}
+              >
                 {panel.title}
               </span>
             )}
 
-            <span className={styles.collapsiblePanelIcon}>
+            <span className={`${styles.collapsiblePanelIcon} ${disabled ? 'grey' : 'pure-black'}`}>
               {openPanelIndex === index ? <DropupIcon /> : <DropdownIcon />}
             </span>
           </div>
@@ -57,7 +68,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                 trigger={['click']}
                 placement="topRight"
                 visible={openPanelIndex === index}
-                onVisibleChange={handleToggleDropdown(index)}
+                onVisibleChange={handleVisibleChange}
                 overlay={
                   <Menu className={styles.collapsiblePanelMenu}>
                     <Menu.Item
@@ -65,7 +76,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                       onClick={handleAction(panel.headingDropdown?.headingOnClick ?? (() => {}))}
                     >
                       {panel.headingDropdown ? (
-                        <span className={styles.collapsiblePanelContentHeading}>
+                        <span className={`${styles.collapsiblePanelContentHeading} text-uppercase`}>
                           {panel.headingDropdown.label}
                         </span>
                       ) : null}
@@ -79,7 +90,11 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                           className={styles.collapsiblePanelMenuHeading}
                           onClick={handleAction(labelAction)}
                         >
-                          <span className={styles.collapsiblePanelMenuHeadingLabel}>{label}</span>
+                          <span
+                            className={`${styles.collapsiblePanelMenuHeadingLabel} text-capitalize`}
+                          >
+                            {label}
+                          </span>
                         </Menu.Item>
                       ))}
                     </div>
