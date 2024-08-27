@@ -547,13 +547,30 @@ export const validateRequiredFields = <T>(
 
 export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) => {
   if (data) {
-    const sortedAffiliation = data.affiliation.sort((a, b) =>
-      a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
-    );
+    const affiliationOrder = ['Agent', 'Distributor'];
+    const relationOrder = ['Direct', 'Indirect'];
 
-    const sortedRelation = data.relation.sort((a, b) =>
-      a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
-    );
+    const sortedAffiliation = data.affiliation.sort((a, b) => {
+      const indexA = affiliationOrder.indexOf(a.name);
+      const indexB = affiliationOrder.indexOf(b.name);
+
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+
+      return indexA - indexB;
+    });
+
+    const sortedRelation = data.relation.sort((a, b) => {
+      const indexA = relationOrder.indexOf(a.name);
+      const indexB = relationOrder.indexOf(b.name);
+
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+
+      return indexA - indexB;
+    });
 
     const acquisitionOrder = [
       'Leads',
