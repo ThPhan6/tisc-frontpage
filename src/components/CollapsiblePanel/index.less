@@ -5,11 +5,6 @@
   padding: 0 12px;
 }
 
-.collapsiblePanelMenuItem {
-  margin: 0 12px;
-  padding: 0;
-}
-
 .collapsiblePanelHeader {
   position: relative;
   display: flex;
@@ -19,7 +14,6 @@
 .collapsiblePanelContentHeading,
 .collapsiblePanelMenuHeading,
 .collapsiblePanelTitle {
-  color: #000;
   font-weight: 300;
   font-size: 12px;
   font-family: Roboto;
@@ -27,13 +21,15 @@
   letter-spacing: 0.24px;
 }
 
-.collapsiblePanelMenuHeading {
-  &Label {
-    overflow: hidden;
-    white-space: nowrap;
-    text-transform: capitalize;
-    text-overflow: ellipsis;
-  }
+.collapsiblePanelTitle {
+  margin-bottom: 0;
+}
+
+.collapsiblePanelTitle,
+.collapsiblePanelMenuHeadingLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .collapsiblePanelContentHeading {
@@ -60,10 +56,6 @@
 }
 
 .collapsiblePanelContent {
-  position: absolute;
-  top: 39px;
-  right: 50px;
-  z-index: 1;
   width: 160px;
 }
 
@@ -92,14 +84,16 @@
 
 .collapsiblePanelMenu {
   position: absolute;
-  left: 18px;
-  min-width: 136px;
+  top: 38px;
+  right: 50px;
+  width: 136px;
 }
 
 .collapsiblePanelMenuHeadingContainer {
+  max-height: 288px;
   overflow: hidden;
 
   &:hover {
-    overflow: scroll;
+    overflow-y: auto;
   }
 }
