@@ -91,6 +91,7 @@ export interface PhoneInputProps {
 export type PhoneInputValueProp = {
   zoneCode: string;
   phoneNumber: string;
+  priceRate?: number;
 };
 
 export interface StatusProps {

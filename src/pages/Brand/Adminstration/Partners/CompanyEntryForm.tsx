@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { Input } from 'antd';
 
 import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
@@ -15,6 +16,7 @@ import {
   validateRequiredFields,
 } from '@/helper/utils';
 import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
+import { trimStart } from 'lodash';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
@@ -79,7 +81,7 @@ const initialCompanyForm: CompanyForm = {
   relation_id: '',
   acquisition_name: '',
   acquisition_id: '',
-  price_rate: null,
+  price_rate: '',
   authorized_country_name: '',
   coverage_beyond: false,
   remark: '',
@@ -215,15 +217,22 @@ const CompanyEntryForm = () => {
     }));
   };
 
+  const convertData = (formData: CompanyForm) => {
+    return {
+      ...formData,
+      price_rate: parseFloat(formData.price_rate.toString()),
+    };
+  };
+
   const handleSubmit = async () => {
     const requiredFields = getRequiredFields();
-    if (!validateRequiredFields(data, requiredFields)) return;
-
+    const check = validateRequiredFields(data, requiredFields);
+    if (!check) return;
     showPageLoading();
     setClearOther(true);
 
     if (isUpdate) {
-      const res = await updatePartner(partnerId, { ...data });
+      const res = await updatePartner(partnerId, convertData(data));
       if (res) {
         setData(res);
         setClearOther(false);
@@ -273,7 +282,7 @@ const CompanyEntryForm = () => {
   };
 
   return (
-    <>
+    <div>
       <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
       <div className="d-flex">
         <CustomTabs
@@ -294,9 +303,12 @@ const CompanyEntryForm = () => {
       </div>
 
       <EntryFormWrapper
-        customClass="w-full max-h-769"
+        customClass="w-full"
         handleCancel={handleCloseEntryForm}
         handleSubmit={handleSubmit}
+        contentStyles={{
+          height: 'calc(var(--vh) * 100 - 289px)',
+        }}
       >
         <Title level={8} customClass="py-10 mb-16 bottom-border-inset-black">
           COMPANY PROFILE
@@ -308,6 +320,8 @@ const CompanyEntryForm = () => {
           hasPadding
           hasBoxShadow
           hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
           value={data.name}
           placeholder="channel partner company name"
           onChange={(event) => handleOnChange('name', event.target.value)}
@@ -320,6 +334,8 @@ const CompanyEntryForm = () => {
           hasPadding
           hasHeight
           hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
           value={data.website}
           placeholder="paste site URL link here"
           onChange={(event) => handleOnChange('website', event.target.value)}
@@ -397,10 +413,11 @@ const CompanyEntryForm = () => {
           messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
           deleteIcon
         />
-        <FormGroup label="General Phone" required layout="vertical">
+        <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
           <PhoneInput
             phonePlaceholder="area code / number"
             onChange={(value) => handleOnChange('phone', value.phoneNumber)}
+            containerClass={styles.phoneInputCustom}
             value={{
               zoneCode: data.phone_code,
               phoneNumber: data.phone,
@@ -416,6 +433,8 @@ const CompanyEntryForm = () => {
           hasHeight
           hasPadding
           hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
           placeholder="general email address"
           value={data.email}
           onChange={(event) => handleOnChange('email', event.target.value)}
@@ -582,18 +601,35 @@ const CompanyEntryForm = () => {
           />
         </FormGroup>
         <InputGroup
-          type="number"
+          label="Postal / Zip Code"
+          required
+          fontLevel={3}
+          placeholder="postal / zip code"
+          hasBoxShadow
+          hasPadding
+          hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.postal_code}
+          name="postal_code"
+          onChange={(event) => handleOnChange('postal_code', event.target.value)}
+          onDelete={() => handleOnChange('postal_code', '')}
+          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
+          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
+          deleteIcon
+        />
+        <InputGroup
           label="Price Rate"
           required
           fontLevel={3}
+          hasBoxShadow
           hasPadding
           hasHeight
-          hasBoxShadow
           colorPrimaryDark={true}
-          value={data.price_rate!}
-          step="0.1"
-          onChange={(event) => handleOnChange('price_rate', Number(event.target.value))}
-          onDelete={() => handleOnChange('price_rate', 0)}
+          value={data.price_rate}
+          name="price_rate"
+          onChange={(event) => handleOnChange('price_rate', event.target.value)}
+          onDelete={() => handleOnChange('price_rate', '')}
           deleteIcon
         />
         <InputGroup
@@ -669,7 +705,7 @@ const CompanyEntryForm = () => {
         }))}
         setChosenValue={handleChangeAuthorizationData}
       />
-    </>
+    </div>
   );
 };
 

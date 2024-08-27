@@ -24,12 +24,15 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
 
   const handleToggleDropdown =
     (index: number) => (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      if (disabled) return;
       event.preventDefault();
       setOpenPanelIndex(index);
     };
 
-  const handleVisibleChange = (index: number) => () =>
+  const handleVisibleChange = (index: number) => () => {
+    if (disabled) return;
     setOpenPanelIndex(openPanelIndex === index ? null : index);
+  };
 
   const handleAction = (action: () => void) => () => {
     action();
