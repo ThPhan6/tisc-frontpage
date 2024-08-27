@@ -11,7 +11,7 @@ export interface Company {
   relation_id: string;
   acquisition_name: string;
   acquisition_id: string;
-  price_rate: number | null;
+  price_rate: number | string;
   authorized_country_name: string;
   coverage_beyond: boolean;
 }

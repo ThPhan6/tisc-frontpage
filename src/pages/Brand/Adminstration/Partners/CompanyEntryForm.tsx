@@ -9,6 +9,7 @@ import { useGetParamId } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
+  handleGetCommonPartnerTypeList,
   messageError,
   messageErrorType,
   validateRequiredFields,
@@ -78,7 +79,7 @@ const initialCompanyForm: CompanyForm = {
   relation_id: '',
   acquisition_name: '',
   acquisition_id: '',
-  price_rate: null,
+  price_rate: '',
   authorized_country_name: '',
   coverage_beyond: false,
   remark: '',
@@ -166,49 +167,14 @@ const CompanyEntryForm = () => {
     }
   }, [partnerId]);
 
-  const handleGetCommonPartnerTypeList = async () => {
+  const sortedCommonPartnerTypeList = async () => {
     const res = await getCommonPartnerTypes();
-    if (res) {
-      const sortedAffiliation = res.affiliation.sort((a, b) =>
-        a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
-      );
-
-      const sortedRelation = res.relation.sort((a, b) =>
-        a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
-      );
-
-      const acquisitionOrder = [
-        'Leads',
-        'Awareness',
-        'Interests',
-        'Negotiation',
-        'Active',
-        'Freeze',
-        'Inactive',
-      ];
-      const sortedAcquisition = res.acquisition.sort((a, b) => {
-        const indexA = acquisitionOrder.indexOf(a.name);
-        const indexB = acquisitionOrder.indexOf(b.name);
-
-        if (indexA === -1) return 1;
-        if (indexB === -1) return -1;
-
-        return indexA - indexB;
-      });
-
-      const sortedRes = {
-        ...res,
-        affiliation: sortedAffiliation,
-        relation: sortedRelation,
-        acquisition: sortedAcquisition,
-      };
-
-      dispatch(setAssociation(sortedRes));
-    }
+    const sorted = handleGetCommonPartnerTypeList(res);
+    dispatch(setAssociation(sorted));
   };
 
   useEffect(() => {
-    handleGetCommonPartnerTypeList();
+    sortedCommonPartnerTypeList();
   }, []);
 
   const getRequiredFields = (): { field: keyof CompanyForm; messageField: string }[] => [
@@ -249,19 +215,26 @@ const CompanyEntryForm = () => {
     }));
   };
 
+  const convertData = (formData: CompanyForm) => {
+    return {
+      ...formData,
+      price_rate: parseFloat(formData.price_rate.toString()),
+    };
+  };
+
   const handleSubmit = async () => {
     const requiredFields = getRequiredFields();
-    if (!validateRequiredFields(data, requiredFields)) return;
-
+    const check = validateRequiredFields(data, requiredFields);
+    if (!check) return;
     showPageLoading();
     setClearOther(true);
 
     if (isUpdate) {
-      const res = await updatePartner(partnerId, { ...data });
+      const res = await updatePartner(partnerId, convertData(data));
       if (res) {
         setData(res);
         setClearOther(false);
-        await handleGetCommonPartnerTypeList();
+        await sortedCommonPartnerTypeList();
       }
       return;
     }
@@ -307,7 +280,7 @@ const CompanyEntryForm = () => {
   };
 
   return (
-    <>
+    <div>
       <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
       <div className="d-flex">
         <CustomTabs
@@ -328,9 +301,12 @@ const CompanyEntryForm = () => {
       </div>
 
       <EntryFormWrapper
-        customClass="max-h-708 max-w-572"
+        customClass="w-full"
         handleCancel={handleCloseEntryForm}
         handleSubmit={handleSubmit}
+        contentStyles={{
+          height: 'calc(var(--vh) * 100 - 289px)',
+        }}
       >
         <Title level={8} customClass="py-10 mb-16 bottom-border-inset-black">
           COMPANY PROFILE
@@ -342,9 +318,12 @@ const CompanyEntryForm = () => {
           hasPadding
           hasBoxShadow
           hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
           value={data.name}
           placeholder="channel partner company name"
           onChange={(event) => handleOnChange('name', event.target.value)}
+          onDelete={() => handleOnChange('name', '')}
           deleteIcon
         />
         <InputGroup
@@ -353,9 +332,12 @@ const CompanyEntryForm = () => {
           hasPadding
           hasHeight
           hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
           value={data.website}
           placeholder="paste site URL link here"
           onChange={(event) => handleOnChange('website', event.target.value)}
+          onDelete={() => handleOnChange('website', '')}
           deleteIcon
         />
         <InputGroup
@@ -395,7 +377,6 @@ const CompanyEntryForm = () => {
           rightIcon
           value={data.city_name}
           placeholder="select city / town"
-          onChange={(event) => handleOnChange('city_name', event.target.value)}
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"
@@ -425,19 +406,22 @@ const CompanyEntryForm = () => {
           value={data.postal_code}
           name="postal_code"
           onChange={(event) => handleOnChange('postal_code', event.target.value)}
+          onDelete={() => handleOnChange('postal_code', '')}
           message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
           messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
           deleteIcon
         />
-        <FormGroup label="General Phone" required layout="vertical">
+        <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
           <PhoneInput
             phonePlaceholder="area code / number"
             onChange={(value) => handleOnChange('phone', value.phoneNumber)}
+            containerClass={styles.phoneInputCustom}
             value={{
               zoneCode: data.phone_code,
               phoneNumber: data.phone,
             }}
             deleteIcon
+            codeReadOnly
           />
         </FormGroup>
         <InputGroup
@@ -447,9 +431,12 @@ const CompanyEntryForm = () => {
           hasHeight
           hasPadding
           hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
           placeholder="general email address"
           value={data.email}
           onChange={(event) => handleOnChange('email', event.target.value)}
+          onDelete={() => handleOnChange('email', '')}
           deleteIcon
           message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
           messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
@@ -612,17 +599,36 @@ const CompanyEntryForm = () => {
           />
         </FormGroup>
         <InputGroup
-          type="number"
+          label="Postal / Zip Code"
+          required
+          fontLevel={3}
+          placeholder="postal / zip code"
+          hasBoxShadow
+          hasPadding
+          hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.postal_code}
+          name="postal_code"
+          onChange={(event) => handleOnChange('postal_code', event.target.value)}
+          onDelete={() => handleOnChange('postal_code', '')}
+          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
+          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
+          deleteIcon
+        />
+        <InputGroup
           label="Price Rate"
           required
           fontLevel={3}
+          hasBoxShadow
           hasPadding
           hasHeight
-          hasBoxShadow
           colorPrimaryDark={true}
-          value={data.price_rate!}
-          step="0.1"
-          onChange={(event) => handleOnChange('price_rate', Number(event.target.value))}
+          value={data.price_rate}
+          name="price_rate"
+          onChange={(event) => handleOnChange('price_rate', event.target.value)}
+          onDelete={() => handleOnChange('price_rate', '')}
+          deleteIcon
         />
         <InputGroup
           label="Authorized Country"
@@ -697,7 +703,7 @@ const CompanyEntryForm = () => {
         }))}
         setChosenValue={handleChangeAuthorizationData}
       />
-    </>
+    </div>
   );
 };
 

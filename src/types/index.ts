@@ -11,3 +11,4 @@ export * from './material-code.type';
 export * from './label.type';
 export * from './product-id.type';
 export * from './company.type';
+export * from './common-partner-type';
