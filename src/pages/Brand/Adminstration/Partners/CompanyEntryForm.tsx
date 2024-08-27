@@ -14,7 +14,7 @@ import {
   messageErrorType,
   validateRequiredFields,
 } from '@/helper/utils';
-import { createPartner, getPartner, updatePartner } from '@/services';
+import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
@@ -168,7 +168,8 @@ const CompanyEntryForm = () => {
   }, [partnerId]);
 
   const sortedCommonPartnerTypeList = async () => {
-    const sorted = await handleGetCommonPartnerTypeList();
+    const res = await getCommonPartnerTypes();
+    const sorted = handleGetCommonPartnerTypeList(res);
     dispatch(setAssociation(sorted));
   };
 

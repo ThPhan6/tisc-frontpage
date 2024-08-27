@@ -2,13 +2,13 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { SORT_ORDER } from '@/constants/util';
 import { message as messageAntd } from 'antd';
 
-import { getCommonPartnerTypes } from '@/services';
 import { isEmpty, isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { TableColumnItem } from '@/components/Table/types';
 import { UserType } from '@/pages/LandingPage/types';
+import { CommonPartnerType } from '@/types';
 
 import routes from '../../config/routes';
 import { pushTo } from './history';
@@ -530,15 +530,13 @@ export const validateRequiredFields = <T>(
   data: T,
   requiredFields: { field: keyof T; messageField: string }[],
 ) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   for (const { field, messageField } of requiredFields) {
     if (isEmpty(data[field])) {
       messageAntd.error(messageField);
       return false;
     }
 
-    if (field === 'email' && !emailRegex.test(String(data[field]))) {
+    if (field === 'email' && !REGEX_EMAIL.test(String(data[field]))) {
       messageAntd.error('Invalid email format');
       return false;
     }
@@ -547,14 +545,13 @@ export const validateRequiredFields = <T>(
   return true;
 };
 
-export const handleGetCommonPartnerTypeList = async () => {
-  const res = await getCommonPartnerTypes();
-  if (res) {
-    const sortedAffiliation = res.affiliation.sort((a, b) =>
+export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) => {
+  if (data) {
+    const sortedAffiliation = data.affiliation.sort((a, b) =>
       a.name === 'Agent' ? -1 : b.name === 'Agent' ? 1 : 0,
     );
 
-    const sortedRelation = res.relation.sort((a, b) =>
+    const sortedRelation = data.relation.sort((a, b) =>
       a.name === 'Direct' ? -1 : b.name === 'Direct' ? 1 : 0,
     );
 
@@ -567,7 +564,7 @@ export const handleGetCommonPartnerTypeList = async () => {
       'Freeze',
       'Inactive',
     ];
-    const sortedAcquisition = res.acquisition.sort((a, b) => {
+    const sortedAcquisition = data.acquisition.sort((a, b) => {
       const indexA = acquisitionOrder.indexOf(a.name);
       const indexB = acquisitionOrder.indexOf(b.name);
 
@@ -578,7 +575,7 @@ export const handleGetCommonPartnerTypeList = async () => {
     });
 
     return {
-      ...res,
+      ...data,
       affiliation: sortedAffiliation,
       relation: sortedRelation,
       acquisition: sortedAcquisition,

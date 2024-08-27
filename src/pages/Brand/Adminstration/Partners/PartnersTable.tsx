@@ -8,7 +8,7 @@ import { useLocation } from 'umi';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { handleGetCommonPartnerTypeList } from '@/helper/utils';
-import { deletePartner, getListPartnerCompanies } from '@/services';
+import { deletePartner, getCommonPartnerTypes, getListPartnerCompanies } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
@@ -63,7 +63,8 @@ const PartnersTable = () => {
 
   useEffect(() => {
     const sortedCommonPartnerTypeList = async () => {
-      const sorted = await handleGetCommonPartnerTypeList();
+      const res = await getCommonPartnerTypes();
+      const sorted = handleGetCommonPartnerTypeList(res);
       dispatch(setAssociation(sorted));
     };
 

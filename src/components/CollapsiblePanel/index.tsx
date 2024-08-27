@@ -21,15 +21,22 @@ interface CollapsiblePanelProps {
 
 const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) => {
   const [openPanelIndex, setOpenPanelIndex] = useState<number | null>(null);
+  const [isVisibleChange, setIsVisibleChange] = useState(false);
 
   const handleToggleDropdown = (index: number) => () => {
     if (disabled) return;
     setOpenPanelIndex(openPanelIndex === index ? null : index);
   };
 
+  const handleVisibleChange = () => {
+    if (disabled) return;
+    setIsVisibleChange(!isVisibleChange);
+  };
+
   const handleAction = (action: () => void) => () => {
     action();
     setOpenPanelIndex(null);
+    setIsVisibleChange(false);
   };
 
   return (
@@ -39,7 +46,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
           className={`${styles.collapsiblePanel} ${disabled ? 'cursor-disabled' : ''}`}
           key={panel.id}
         >
-          <div className={styles.collapsiblePanelHeader}>
+          <div className={styles.collapsiblePanelHeader} onClick={handleToggleDropdown(index)}>
             {panel.title && (
               <span
                 className={`${styles.collapsiblePanelTitle} ${
@@ -50,10 +57,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
               </span>
             )}
 
-            <span
-              className={`${styles.collapsiblePanelIcon} ${disabled ? 'grey' : 'pure-black'}`}
-              onClick={handleToggleDropdown(index)}
-            >
+            <span className={`${styles.collapsiblePanelIcon} ${disabled ? 'grey' : 'pure-black'}`}>
               {openPanelIndex === index ? <DropupIcon /> : <DropdownIcon />}
             </span>
           </div>
@@ -64,7 +68,7 @@ const CollapsiblePanel = ({ disabled = false, panels }: CollapsiblePanelProps) =
                 trigger={['click']}
                 placement="topRight"
                 visible={openPanelIndex === index}
-                onVisibleChange={handleToggleDropdown(index)}
+                onVisibleChange={handleVisibleChange}
                 overlay={
                   <Menu className={styles.collapsiblePanelMenu}>
                     <Menu.Item

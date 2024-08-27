@@ -26,13 +26,12 @@
   letter-spacing: 0.24px;
 }
 
-.collapsiblePanelMenuHeading {
-  &Label {
-    overflow: hidden;
-    white-space: nowrap;
-    text-transform: capitalize;
-    text-overflow: ellipsis;
-  }
+.collapsiblePanelTitle,
+.collapsiblePanelMenuHeadingLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-transform: capitalize;
+  text-overflow: ellipsis;
 }
 
 .collapsiblePanelContentHeading {
@@ -92,7 +91,7 @@
 .collapsiblePanelMenu {
   position: absolute;
   left: 18px;
-  max-width: 136px;
+  width: 136px;
 }
 
 .collapsiblePanelMenuHeadingContainer {
@@ -100,6 +99,6 @@
   overflow: hidden;
 
   &:hover {
-    overflow: scroll;
+    overflow-y: auto;
   }
 }
