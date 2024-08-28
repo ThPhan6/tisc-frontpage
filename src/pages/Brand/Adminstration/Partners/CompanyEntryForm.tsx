@@ -293,8 +293,8 @@ const CompanyEntryForm = () => {
             <CormorantBodyText customClass="common-cormorant-garamond-text">
               Affiliation
             </CormorantBodyText>{' '}
-            label defines the nature of the business activities with the
-            <mark className="bg-orange rounded-4">partner</mark> company. The default list is{' '}
+            label defines the nature of the business activities with the partner company. The
+            default list is{' '}
             <CormorantBodyText customClass="common-cormorant-garamond-text">
               Agent
             </CormorantBodyText>{' '}
