@@ -44,6 +44,7 @@ export interface CommonPartnerType {
 }
 
 export type FilterType = 'affiliation' | 'relation' | 'acquisition';
+export type FilterKeys = 'affiliation_id' | 'relation_id' | 'acquisition_id';
 
 const PartnersTable = () => {
   const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
@@ -51,11 +52,7 @@ const PartnersTable = () => {
   const location = useLocation();
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<{
-    affiliation_id?: string;
-    relation_id?: string;
-    acquisition_id?: string;
-  }>({});
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string>>>({});
 
   const tableRef = useRef<any>();
 
@@ -102,17 +99,17 @@ const PartnersTable = () => {
       title: 'City',
       dataIndex: 'city_name',
       sorter: true,
-      width: '8%',
+      width: '5%',
     },
     {
       title: 'Contact',
       dataIndex: 'contact',
-      width: '8%',
+      width: '5%',
     },
     {
       title: 'Affiliation',
       dataIndex: 'affiliation_name',
-      width: '8%',
+      width: '5%',
     },
     {
       title: 'Relation',
@@ -144,7 +141,7 @@ const PartnersTable = () => {
     {
       title: 'Authorised Country',
       dataIndex: 'authorized_country_name',
-      width: '10%',
+      width: '40%',
     },
     {
       title: 'Beyond',
@@ -298,7 +295,11 @@ const PartnersTable = () => {
         />
 
         <div className="d-flex bg-white border-bottom-black h-40">
-          <CollapsiblePanel panels={panels()} />
+          <CollapsiblePanel
+            panels={panels()}
+            filters={filters}
+            onRemoveFilter={handleFilterChange}
+          />
           <CustomPlusButton
             onClick={handlePushTo}
             customClass="my-0 mx-16"

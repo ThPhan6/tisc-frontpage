@@ -79,7 +79,7 @@ const initialCompanyForm: CompanyForm = {
   relation_id: '',
   acquisition_name: '',
   acquisition_id: '',
-  price_rate: '',
+  price_rate: '1.00',
   authorized_country_name: '',
   coverage_beyond: false,
   remark: '',
@@ -473,8 +473,8 @@ const CompanyEntryForm = () => {
               data.affiliation_name || data.affiliation_id,
               associationOther.affiliation,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.affiliation_id}
             onChange={(radioValue) => {
@@ -519,8 +519,8 @@ const CompanyEntryForm = () => {
               data.relation_name || data.relation_id,
               associationOther.relation,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.relation_id}
             onChange={(radioValue) => {
@@ -580,8 +580,8 @@ const CompanyEntryForm = () => {
               data.acquisition_name,
               associationOther.acquisition,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.acquisition_id}
             onChange={(radioValue) => {
@@ -598,24 +598,6 @@ const CompanyEntryForm = () => {
             clearOtherInput={clearOther}
           />
         </FormGroup>
-        <InputGroup
-          label="Postal / Zip Code"
-          required
-          fontLevel={3}
-          placeholder="postal / zip code"
-          hasBoxShadow
-          hasPadding
-          hasHeight
-          colorPrimaryDark
-          colorRequired="tertiary"
-          value={data.postal_code}
-          name="postal_code"
-          onChange={(event) => handleOnChange('postal_code', event.target.value)}
-          onDelete={() => handleOnChange('postal_code', '')}
-          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
-          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
-          deleteIcon
-        />
         <InputGroup
           label="Price Rate"
           required
