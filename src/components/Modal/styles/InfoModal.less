@@ -1,0 +1,62 @@
+.info_modal {
+  :global(.ant-modal-header) {
+    padding: 16px;
+    border-bottom: none;
+    box-shadow: 0 0.5px 0 0 #000;
+  }
+
+  :global(.ant-modal-close-x) {
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: #000;
+    }
+  }
+
+  :global(.ant-modal-body) {
+    padding: 16px;
+  }
+
+  &_title {
+    font-weight: 600;
+    font-size: 16px;
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    line-height: calc(24 / 16);
+    letter-spacing: 0.32px;
+  }
+
+  &_content {
+    padding: 8px 12px;
+    box-shadow: 0 0.5px 0 0 rgba(0, 0, 0, 0.3);
+
+    &:first-child {
+      padding-top: 16px;
+      padding-bottom: 8px;
+    }
+
+    &:last-child {
+      margin-bottom: 16px;
+    }
+
+    &_heading {
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: calc(21 / 14);
+      letter-spacing: 0.28px;
+    }
+
+    &_description {
+      max-width: 512px;
+      font-weight: 300;
+      font-size: 12px;
+      font-family: 'Roboto';
+      line-height: calc(20 / 12);
+      letter-spacing: 0.24px;
+    }
+  }
+}
