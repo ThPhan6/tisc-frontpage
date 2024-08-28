@@ -207,7 +207,7 @@ const PartnersTable = () => {
     });
   };
 
-  const panels = (): CollapsiblePanelItem[] => {
+  const generatePanels = (): CollapsiblePanelItem[] => {
     return [
       {
         id: 1,
@@ -296,7 +296,7 @@ const PartnersTable = () => {
 
         <div className="d-flex bg-white border-bottom-black h-40">
           <CollapsiblePanel
-            panels={panels()}
+            panels={generatePanels()}
             filters={filters}
             onRemoveFilter={handleFilterChange}
           />
