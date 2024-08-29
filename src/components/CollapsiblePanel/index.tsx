@@ -57,6 +57,8 @@ const CollapsiblePanel = ({
       }
     };
 
+  const isCursorPointer = () => (!disabled ? 'pointer' : 'not-allowed');
+
   return (
     <>
       {panels.map((panel, index) => {
@@ -70,7 +72,7 @@ const CollapsiblePanel = ({
             placement="topRight"
             visible={openPanelIndex === index}
             onVisibleChange={handleVisibleChange(index)}
-            className={`${styles.collapsiblePanel} ${disabled ? 'cursor-disabled' : ''}`}
+            className={`${styles.collapsiblePanel}`}
             overlay={
               <Menu className={styles.collapsiblePanelMenu}>
                 <Menu.Item
@@ -103,7 +105,11 @@ const CollapsiblePanel = ({
               </Menu>
             }
           >
-            <section onClick={handleToggleDropdown(index)} className="d-flex items-center">
+            <section
+              onClick={handleToggleDropdown(index)}
+              className="d-flex items-center"
+              style={{ cursor: `${isCursorPointer()}` }}
+            >
               <h2
                 className={`${styles.collapsiblePanelTitle} ${
                   disabled ? 'grey' : 'pure-black'
