@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
@@ -29,10 +31,11 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
+import InfoModal from '@/components/Modal/InfoModal';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CustomTabs } from '@/components/Tabs';
-import { Title } from '@/components/Typography';
+import { CormorantBodyText, Title } from '@/components/Typography';
 import AuthorizedCountryModal from '@/features/distributors/components/AuthorizedCountryModal';
 import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
@@ -54,6 +57,7 @@ const coverageBeyondOptions = [
 
 type ModalType =
   | ''
+  | 'info'
   | 'city'
   | 'state'
   | 'country'
@@ -79,7 +83,7 @@ const initialCompanyForm: CompanyForm = {
   relation_id: '',
   acquisition_name: '',
   acquisition_id: '',
-  price_rate: '',
+  price_rate: '1.00',
   authorized_country_name: '',
   coverage_beyond: false,
   remark: '',
@@ -215,7 +219,7 @@ const CompanyEntryForm = () => {
     }));
   };
 
-  const convertData = (formData: CompanyForm) => {
+  const normalizePriceRate = (formData: CompanyForm) => {
     return {
       ...formData,
       price_rate: parseFloat(formData.price_rate.toString()),
@@ -230,7 +234,7 @@ const CompanyEntryForm = () => {
     setClearOther(true);
 
     if (isUpdate) {
-      const res = await updatePartner(partnerId, convertData(data));
+      const res = await updatePartner(partnerId, normalizePriceRate(data));
       if (res) {
         setData(res);
         setClearOther(false);
@@ -239,7 +243,7 @@ const CompanyEntryForm = () => {
       return;
     }
 
-    const res = await createPartner({ ...data });
+    const res = await createPartner(normalizePriceRate(data));
     if (res) handleCloseEntryForm();
   };
 
@@ -247,20 +251,23 @@ const CompanyEntryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsOpenModal(type);
 
-  const panels = [
-    {
-      id: 1,
-      title: 'Affiliation',
-    },
-    {
-      id: 2,
-      title: 'Relation',
-    },
-    {
-      id: 3,
-      title: 'Acquisition',
-    },
-  ];
+  const panels = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'Affiliation',
+      },
+      {
+        id: 2,
+        title: 'Relation',
+      },
+      {
+        id: 3,
+        title: 'Acquisition',
+      },
+    ],
+    [],
+  );
 
   const getFormClass = (placeholder: string) =>
     placeholder === 'select from list' ? '' : `${styles.partnerAssociations}`;
@@ -279,9 +286,133 @@ const CompanyEntryForm = () => {
       : defaultName || 'select from list';
   };
 
+  const accountProfileInfo = {
+    title: 'ACCOUNT PROFILE',
+    content: [
+      {
+        id: 1,
+        heading: 'Affiliation',
+        description: (
+          <>
+            The{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Affiliation
+            </CormorantBodyText>{' '}
+            label defines the nature of the business activities with the partner company. The
+            default list is{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Agent
+            </CormorantBodyText>{' '}
+            and{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Distributor
+            </CormorantBodyText>
+            , but you could always add a new definition.
+          </>
+        ),
+      },
+      {
+        id: 2,
+        heading: 'Relation',
+        description: (
+          <>
+            The{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Relation
+            </CormorantBodyText>{' '}
+            label refers to the connections and interactions between various entities involved in
+            business activities. The default list is{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Direct
+            </CormorantBodyText>{' '}
+            and{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Indirect
+            </CormorantBodyText>
+            , but you could always add a new definition.
+          </>
+        ),
+      },
+      {
+        id: 3,
+        heading: 'Acquisition',
+        description: (
+          <>
+            The{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Acquisition
+            </CormorantBodyText>{' '}
+            label refers to the process of acquiring new customers for the business through sales
+            activities. Leads, Awareness, Interests and Negotiation define the different steps of
+            the process.
+            <div>
+              <span className="indigo-dark-variant mr-8 font-medium">Active</span> The Active label
+              give partners full access to the product list and pricing model.
+            </div>
+            <div>
+              <span className="orange mr-8 font-medium">Freeze</span> The Freeze label temporarily
+              freezes the usage of the pricing model for quotations.
+            </div>
+            <div>
+              <span className="text-14 mr-8 font-medium red-magenta">Inactive</span> An Inactive
+              label terminates access to all functions, but partners profile remains.
+            </div>
+          </>
+        ),
+      },
+      {
+        id: 4,
+        heading: 'Price Rate',
+        description: (
+          <>
+            The{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Price Rate
+            </CormorantBodyText>
+            , defaulting at 1.00, sets the profit margin preference for your partners. The rate will
+            multiply by the product base rate and then be converted to the product unit rate for
+            each of your partners. Noted 1.00 price rate equals to 100 in percentage weight.
+          </>
+        ),
+      },
+      {
+        id: 5,
+        heading: 'Authorized Country',
+        description: (
+          <>
+            The{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Authorized Country
+            </CormorantBodyText>{' '}
+            highlights the distribution rights under the contract between the brand company and
+            channel partner.
+          </>
+        ),
+      },
+      {
+        id: 6,
+        heading: 'Coverage Beyond',
+        description: (
+          <>
+            The brand company could extend the unauthorized country territory rights by selecting
+            the{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Allow
+            </CormorantBodyText>{' '}
+            or{' '}
+            <CormorantBodyText customClass="common-cormorant-garamond-text">
+              Not Allow
+            </CormorantBodyText>{' '}
+            button. This change might impact product search and display options.
+          </>
+        ),
+      },
+    ],
+  };
+
   return (
     <div>
-      <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
       <div className="d-flex">
         <CustomTabs
           listTab={listTab}
@@ -380,7 +511,7 @@ const CompanyEntryForm = () => {
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={(data.country_id || data.state_id) === ''}
+          disabled={data.state_id === ''}
         />
         <FormGroup label="Address" required layout="vertical">
           <CustomTextArea
@@ -442,8 +573,13 @@ const CompanyEntryForm = () => {
           messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
-        <Title level={8} customClass="py-10 my-16 bottom-border-inset-black">
+        <Title
+          level={8}
+          customClass="py-10 my-16 bottom-border-inset-black cursor-pointer d-flex items-center"
+          onClick={handleToggleModal('info')}
+        >
           ACCOUNT PROFILE
+          <WarningIcon className="ml-8" />
         </Title>
         <FormGroup
           label="Affiliation"
@@ -473,8 +609,8 @@ const CompanyEntryForm = () => {
               data.affiliation_name || data.affiliation_id,
               associationOther.affiliation,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.affiliation_id}
             onChange={(radioValue) => {
@@ -519,8 +655,8 @@ const CompanyEntryForm = () => {
               data.relation_name || data.relation_id,
               associationOther.relation,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.relation_id}
             onChange={(radioValue) => {
@@ -580,8 +716,8 @@ const CompanyEntryForm = () => {
               data.acquisition_name,
               associationOther.acquisition,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.acquisition_id}
             onChange={(radioValue) => {
@@ -598,24 +734,6 @@ const CompanyEntryForm = () => {
             clearOtherInput={clearOther}
           />
         </FormGroup>
-        <InputGroup
-          label="Postal / Zip Code"
-          required
-          fontLevel={3}
-          placeholder="postal / zip code"
-          hasBoxShadow
-          hasPadding
-          hasHeight
-          colorPrimaryDark
-          colorRequired="tertiary"
-          value={data.postal_code}
-          name="postal_code"
-          onChange={(event) => handleOnChange('postal_code', event.target.value)}
-          onDelete={() => handleOnChange('postal_code', '')}
-          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
-          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
-          deleteIcon
-        />
         <InputGroup
           label="Price Rate"
           required
@@ -702,6 +820,13 @@ const CompanyEntryForm = () => {
           value: countryId,
         }))}
         setChosenValue={handleChangeAuthorizationData}
+      />
+
+      <InfoModal
+        isOpen={isOpenModal === 'info'}
+        onCancel={handleToggleModal('')}
+        title={accountProfileInfo.title}
+        content={accountProfileInfo.content}
       />
     </div>
   );
