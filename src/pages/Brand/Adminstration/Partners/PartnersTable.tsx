@@ -141,7 +141,7 @@ const PartnersTable = () => {
     {
       title: 'Authorised Country',
       dataIndex: 'authorized_country_name',
-      width: '40%',
+      width: '45%',
     },
     {
       title: 'Beyond',
@@ -196,12 +196,12 @@ const PartnersTable = () => {
 
   const handlePushTo = () => pushTo(PATH.brandCreatePartners);
 
-  const handleFilterChange = (type: FilterType, id?: string | null) => () => {
+  const handleFilterChange = (type: FilterType, id?: string) => () => {
     if (filters[`${type}_id`] === id) return;
 
     if (id === '') {
       setFilters({
-        [`${type}_id`]: null,
+        [`${type}_id`]: '',
       });
       return;
     }
@@ -218,7 +218,7 @@ const PartnersTable = () => {
         title: 'Affiliation',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', null),
+          headingOnClick: handleFilterChange('affiliation', ''),
         },
         labels:
           association?.affiliation.map((item) => ({
@@ -232,7 +232,7 @@ const PartnersTable = () => {
         title: 'Relation',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', null),
+          headingOnClick: handleFilterChange('affiliation', ''),
         },
         labels:
           association?.relation.map((item) => ({
@@ -246,7 +246,7 @@ const PartnersTable = () => {
         title: 'Acquisition',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', null),
+          headingOnClick: handleFilterChange('affiliation', ''),
         },
         labels:
           association?.acquisition.map((item) => {

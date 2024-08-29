@@ -215,7 +215,7 @@ const CompanyEntryForm = () => {
     }));
   };
 
-  const convertData = (formData: CompanyForm) => {
+  const normalizePriceRate = (formData: CompanyForm) => {
     return {
       ...formData,
       price_rate: parseFloat(formData.price_rate.toString()),
@@ -230,7 +230,7 @@ const CompanyEntryForm = () => {
     setClearOther(true);
 
     if (isUpdate) {
-      const res = await updatePartner(partnerId, convertData(data));
+      const res = await updatePartner(partnerId, normalizePriceRate(data));
       if (res) {
         setData(res);
         setClearOther(false);
@@ -239,7 +239,7 @@ const CompanyEntryForm = () => {
       return;
     }
 
-    const res = await createPartner(convertData(data));
+    const res = await createPartner(normalizePriceRate(data));
     if (res) handleCloseEntryForm();
   };
 
