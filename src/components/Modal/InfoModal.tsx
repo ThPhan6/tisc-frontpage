@@ -15,7 +15,11 @@ const InfoModal = ({ isOpen, title, onCancel, content }: InfoModalProps) => {
   return (
     <CustomModal
       className={styles.info_modal}
-      title={<h2 className={`${styles.info_modal_title} my-0`}>{title}</h2>}
+      title={
+        <>
+          <CormorantBodyText customClass={`${styles.info_modal_title}`}>{title}</CormorantBodyText>
+        </>
+      }
       visible={isOpen}
       onCancel={onCancel}
       footer={null}
@@ -25,7 +29,11 @@ const InfoModal = ({ isOpen, title, onCancel, content }: InfoModalProps) => {
           <CormorantBodyText customClass={`${styles.info_modal_content_heading}`}>
             {item.heading}
           </CormorantBodyText>
-          <BodyText level={4} customClass={`${styles.info_modal_content_description}`}>
+          <BodyText
+            fontFamily="Roboto"
+            level={6}
+            customClass={`${styles.info_modal_content_description}`}
+          >
             {item.description}
           </BodyText>
         </section>

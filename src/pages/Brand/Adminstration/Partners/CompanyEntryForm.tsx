@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+
 import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
 import {
@@ -342,8 +344,7 @@ const CompanyEntryForm = () => {
             the process.
             <div>
               <span className="indigo-dark-variant mr-8 font-medium">Active</span> The Active label
-              give<mark className="bg-yellow rounded-4">partner</mark> full access to the product
-              list and pricing model.
+              give partners full access to the product list and pricing model.
             </div>
             <div>
               <span className="orange mr-8 font-medium">Freeze</span> The Freeze label temporarily
@@ -351,8 +352,7 @@ const CompanyEntryForm = () => {
             </div>
             <div>
               <span className="text-14 mr-8 font-medium red-magenta">Inactive</span> An Inactive
-              label terminates access to all functions, but
-              <mark className="bg-yellow rounded-4">partner</mark> profile remains.
+              label terminates access to all functions, but partners profile remains.
             </div>
           </>
         ),
@@ -366,11 +366,9 @@ const CompanyEntryForm = () => {
             <CormorantBodyText customClass="common-cormorant-garamond-text">
               Price Rate
             </CormorantBodyText>
-            , defaulting at 1.00, sets the profit margin preference for your
-            <mark className="bg-yellow rounded-4">partner</mark>. The rate will multiply by the
-            product base rate and then be converted to the product unit rate for each of your
-            <mark className="bg-yellow rounded-4">partner</mark>. Noted 1.00 price rate equals to
-            100 in percentage weight.
+            , defaulting at 1.00, sets the profit margin preference for your partners. The rate will
+            multiply by the product base rate and then be converted to the product unit rate for
+            each of your partners. Noted 1.00 price rate equals to 100 in percentage weight.
           </>
         ),
       },
@@ -384,7 +382,7 @@ const CompanyEntryForm = () => {
               Authorized Country
             </CormorantBodyText>{' '}
             highlights the distribution rights under the contract between the brand company and
-            channel<mark className="bg-yellow rounded-4">partner</mark>.
+            channel partner.
           </>
         ),
       },
@@ -572,11 +570,13 @@ const CompanyEntryForm = () => {
           messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
-        <Title level={8} customClass="py-10 my-16 bottom-border-inset-black">
+        <Title
+          level={8}
+          customClass="py-10 my-16 bottom-border-inset-black cursor-pointer d-flex items-center"
+          onClick={handleToggleModal('info')}
+        >
           ACCOUNT PROFILE
-          <span className="mx-16 text-16 cursor-pointer" onClick={handleToggleModal('info')}>
-            &#9432;
-          </span>
+          <WarningIcon className="ml-8" />
         </Title>
         <FormGroup
           label="Affiliation"
