@@ -17,7 +17,7 @@ import { Company } from '@/types';
 
 import CollapsiblePanel, { CollapsiblePanelItem } from '@/components/CollapsiblePanel';
 import CustomTable from '@/components/Table';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomTabs } from '@/components/Tabs';
@@ -278,7 +278,7 @@ const PartnersTable = () => {
 
   return (
     <>
-      <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
 
       <div className="d-flex">
         <CustomTabs

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, memo, useState } from 'react';
 
 import { Dropdown, Menu } from 'antd';
 
@@ -145,4 +145,4 @@ const CollapsiblePanel = ({
   );
 };
 
-export default CollapsiblePanel;
+export default memo(CollapsiblePanel);

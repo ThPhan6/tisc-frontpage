@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
@@ -29,7 +29,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CustomTabs } from '@/components/Tabs';
 import { Title } from '@/components/Typography';
@@ -247,20 +247,23 @@ const CompanyEntryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsOpenModal(type);
 
-  const panels = [
-    {
-      id: 1,
-      title: 'Affiliation',
-    },
-    {
-      id: 2,
-      title: 'Relation',
-    },
-    {
-      id: 3,
-      title: 'Acquisition',
-    },
-  ];
+  const panels = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'Affiliation',
+      },
+      {
+        id: 2,
+        title: 'Relation',
+      },
+      {
+        id: 3,
+        title: 'Acquisition',
+      },
+    ],
+    [],
+  );
 
   const getFormClass = (placeholder: string) =>
     placeholder === 'select from list' ? '' : `${styles.partnerAssociations}`;
@@ -281,7 +284,7 @@ const CompanyEntryForm = () => {
 
   return (
     <div>
-      <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
       <div className="d-flex">
         <CustomTabs
           listTab={listTab}
