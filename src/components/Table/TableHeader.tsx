@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 import { useScreen } from '@/helper/common';
 
@@ -27,3 +27,5 @@ export const TableHeader: FC<TableHeaderProps> = ({ title, rightAction, customCl
     </div>
   );
 };
+
+export const MemorizeTableHeader = memo(TableHeader);
