@@ -17,7 +17,7 @@ import { Company } from '@/types';
 
 import CollapsiblePanel, { CollapsiblePanelItem } from '@/components/CollapsiblePanel';
 import CustomTable from '@/components/Table';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomTabs } from '@/components/Tabs';
@@ -44,6 +44,7 @@ export interface CommonPartnerType {
 }
 
 export type FilterType = 'affiliation' | 'relation' | 'acquisition';
+export type FilterKeys = 'affiliation_id' | 'relation_id' | 'acquisition_id';
 
 const PartnersTable = () => {
   const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
@@ -51,11 +52,7 @@ const PartnersTable = () => {
   const location = useLocation();
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<{
-    affiliation_id?: string;
-    relation_id?: string;
-    acquisition_id?: string;
-  }>({});
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string>>>({});
 
   const tableRef = useRef<any>();
 
@@ -102,17 +99,17 @@ const PartnersTable = () => {
       title: 'City',
       dataIndex: 'city_name',
       sorter: true,
-      width: '8%',
+      width: '5%',
     },
     {
       title: 'Contact',
       dataIndex: 'contact',
-      width: '8%',
+      width: '5%',
     },
     {
       title: 'Affiliation',
       dataIndex: 'affiliation_name',
-      width: '8%',
+      width: '5%',
     },
     {
       title: 'Relation',
@@ -144,7 +141,7 @@ const PartnersTable = () => {
     {
       title: 'Authorised Country',
       dataIndex: 'authorized_country_name',
-      width: '10%',
+      width: '45%',
     },
     {
       title: 'Beyond',
@@ -200,8 +197,12 @@ const PartnersTable = () => {
   const handlePushTo = () => pushTo(PATH.brandCreatePartners);
 
   const handleFilterChange = (type: FilterType, id?: string) => () => {
+    if (filters[`${type}_id`] === id) return;
+
     if (id === '') {
-      setFilters({});
+      setFilters({
+        [`${type}_id`]: '',
+      });
       return;
     }
 
@@ -210,7 +211,7 @@ const PartnersTable = () => {
     });
   };
 
-  const panels = (): CollapsiblePanelItem[] => {
+  const generatePanels = (): CollapsiblePanelItem[] => {
     return [
       {
         id: 1,
@@ -281,7 +282,7 @@ const PartnersTable = () => {
 
   return (
     <>
-      <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
 
       <div className="d-flex">
         <CustomTabs
@@ -298,7 +299,11 @@ const PartnersTable = () => {
         />
 
         <div className="d-flex bg-white border-bottom-black h-40">
-          <CollapsiblePanel panels={panels()} />
+          <CollapsiblePanel
+            panels={generatePanels()}
+            filters={filters}
+            onRemoveFilter={handleFilterChange}
+          />
           <CustomPlusButton
             onClick={handlePushTo}
             customClass="my-0 mx-16"

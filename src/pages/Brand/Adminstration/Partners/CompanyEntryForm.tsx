@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
@@ -31,8 +31,8 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import InfoModal from '@/components/Modal/InfoModal';
-import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CustomTabs } from '@/components/Tabs';
 import { CormorantBodyText, Title } from '@/components/Typography';
@@ -83,7 +83,7 @@ const initialCompanyForm: CompanyForm = {
   relation_id: '',
   acquisition_name: '',
   acquisition_id: '',
-  price_rate: '',
+  price_rate: '1.00',
   authorized_country_name: '',
   coverage_beyond: false,
   remark: '',
@@ -219,7 +219,7 @@ const CompanyEntryForm = () => {
     }));
   };
 
-  const convertData = (formData: CompanyForm) => {
+  const normalizePriceRate = (formData: CompanyForm) => {
     return {
       ...formData,
       price_rate: parseFloat(formData.price_rate.toString()),
@@ -234,7 +234,7 @@ const CompanyEntryForm = () => {
     setClearOther(true);
 
     if (isUpdate) {
-      const res = await updatePartner(partnerId, convertData(data));
+      const res = await updatePartner(partnerId, normalizePriceRate(data));
       if (res) {
         setData(res);
         setClearOther(false);
@@ -243,7 +243,7 @@ const CompanyEntryForm = () => {
       return;
     }
 
-    const res = await createPartner({ ...data });
+    const res = await createPartner(normalizePriceRate(data));
     if (res) handleCloseEntryForm();
   };
 
@@ -251,20 +251,23 @@ const CompanyEntryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsOpenModal(type);
 
-  const panels = [
-    {
-      id: 1,
-      title: 'Affiliation',
-    },
-    {
-      id: 2,
-      title: 'Relation',
-    },
-    {
-      id: 3,
-      title: 'Acquisition',
-    },
-  ];
+  const panels = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'Affiliation',
+      },
+      {
+        id: 2,
+        title: 'Relation',
+      },
+      {
+        id: 3,
+        title: 'Acquisition',
+      },
+    ],
+    [],
+  );
 
   const getFormClass = (placeholder: string) =>
     placeholder === 'select from list' ? '' : `${styles.partnerAssociations}`;
@@ -409,7 +412,7 @@ const CompanyEntryForm = () => {
 
   return (
     <div>
-      <TableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
       <div className="d-flex">
         <CustomTabs
           listTab={listTab}
@@ -508,7 +511,7 @@ const CompanyEntryForm = () => {
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={(data.country_id || data.state_id) === ''}
+          disabled={data.state_id === ''}
         />
         <FormGroup label="Address" required layout="vertical">
           <CustomTextArea
@@ -606,8 +609,8 @@ const CompanyEntryForm = () => {
               data.affiliation_name || data.affiliation_id,
               associationOther.affiliation,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.affiliation_id}
             onChange={(radioValue) => {
@@ -652,8 +655,8 @@ const CompanyEntryForm = () => {
               data.relation_name || data.relation_id,
               associationOther.relation,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.relation_id}
             onChange={(radioValue) => {
@@ -713,8 +716,8 @@ const CompanyEntryForm = () => {
               data.acquisition_name,
               associationOther.acquisition,
             )}
-            additonalOptionsStyle={{ marginBottom: 10 }}
-            additionalOtherClass="mb-10"
+            additonalOptionsStyle={{ marginBottom: 10, paddingLeft: 16 }}
+            additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.acquisition_id}
             onChange={(radioValue) => {
@@ -731,24 +734,6 @@ const CompanyEntryForm = () => {
             clearOtherInput={clearOther}
           />
         </FormGroup>
-        <InputGroup
-          label="Postal / Zip Code"
-          required
-          fontLevel={3}
-          placeholder="postal / zip code"
-          hasBoxShadow
-          hasPadding
-          hasHeight
-          colorPrimaryDark
-          colorRequired="tertiary"
-          value={data.postal_code}
-          name="postal_code"
-          onChange={(event) => handleOnChange('postal_code', event.target.value)}
-          onDelete={() => handleOnChange('postal_code', '')}
-          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
-          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
-          deleteIcon
-        />
         <InputGroup
           label="Price Rate"
           required
