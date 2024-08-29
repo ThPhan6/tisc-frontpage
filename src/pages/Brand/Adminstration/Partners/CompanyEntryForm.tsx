@@ -239,7 +239,7 @@ const CompanyEntryForm = () => {
       return;
     }
 
-    const res = await createPartner({ ...data });
+    const res = await createPartner(convertData(data));
     if (res) handleCloseEntryForm();
   };
 
@@ -383,7 +383,7 @@ const CompanyEntryForm = () => {
           onRightIconClick={handleToggleModal('city')}
           colorPrimaryDark
           colorRequired="tertiary"
-          disabled={(data.country_id || data.state_id) === ''}
+          disabled={data.state_id === ''}
         />
         <FormGroup label="Address" required layout="vertical">
           <CustomTextArea
