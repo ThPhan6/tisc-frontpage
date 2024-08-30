@@ -3,17 +3,24 @@ import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { TableColumnProps } from 'antd';
-import { useLocation } from 'umi';
+import { useHistory, useLocation, useParams } from 'umi';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { useQuery } from '@/helper/hook';
 import { handleGetCommonPartnerTypeList } from '@/helper/utils';
-import { deletePartner, getCommonPartnerTypes, getListPartnerCompanies } from '@/services';
+import {
+  deletePartner,
+  getCommonPartnerTypes,
+  getListPartnerCompanies,
+  getListPartnerContacts,
+} from '@/services';
+import { isEmpty } from 'lodash';
 
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
 import { setAssociation } from '@/reducers/partner';
-import { Company } from '@/types';
+import { Company, Contact, PartnerContactStatus } from '@/types';
 
 import CollapsiblePanel, { CollapsiblePanelItem } from '@/components/CollapsiblePanel';
 import CustomTable from '@/components/Table';
@@ -25,7 +32,7 @@ import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
 export enum PartnerTabKey {
   companyPartners = 'company',
-  contactPartners = 'contacts',
+  contactPartners = 'contact',
 }
 
 export interface CommonPartnerType {
@@ -44,17 +51,25 @@ export interface CommonPartnerType {
 }
 
 export type FilterType = 'affiliation' | 'relation' | 'acquisition';
-export type FilterKeys = 'affiliation_id' | 'relation_id' | 'acquisition_id';
+export type FilterKeys = 'affiliation_id' | 'relation_id' | 'acquisition_id' | 'status';
 
 const PartnersTable = () => {
-  const [columns, setColumns] = useState<TableColumnProps<Company>[]>([]);
-  const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(PartnerTabKey.companyPartners);
+  const query = useQuery();
+  const queryTab = query.get('tab');
+
+  const [columns, setColumns] = useState<TableColumnProps<Company | Contact>[]>([]);
+  const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(
+    !isEmpty(queryTab) ? (queryTab as PartnerTabKey) : PartnerTabKey.companyPartners,
+  );
   const location = useLocation();
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string>>>({});
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
+  const isTabCompany = selectedTab === PartnerTabKey.companyPartners ? true : false;
+  const history = useHistory();
 
   const tableRef = useRef<any>();
+  const initialLoad = useRef(true);
 
   const dispatch = useDispatch();
 
@@ -67,6 +82,15 @@ const PartnersTable = () => {
 
     sortedCommonPartnerTypeList();
   }, []);
+
+  useEffect(() => {
+    if (initialLoad.current) {
+      initialLoad.current = false;
+      return;
+    }
+
+    tableRef.current.reload();
+  }, [selectedTab]);
 
   useEffect(() => {
     tableRef.current.reloadWithFilter();
@@ -137,6 +161,7 @@ const PartnersTable = () => {
       title: 'Price Rate',
       dataIndex: 'price_rate',
       width: '5%',
+      render: (_, record) => parseFloat(record.price_rate?.toString()).toFixed(2),
     },
     {
       title: 'Authorised Country',
@@ -174,9 +199,95 @@ const PartnersTable = () => {
     },
   ];
 
+  const contactColumns: TableColumnProps<Contact>[] = [
+    {
+      title: 'Full Name',
+      dataIndex: 'fullname',
+      sorter: true,
+      width: '5%',
+    },
+    {
+      title: 'Company',
+      dataIndex: 'company_name',
+      sorter: true,
+      width: '5%',
+    },
+    {
+      title: 'Country',
+      dataIndex: 'country_name',
+      sorter: true,
+      width: '5%',
+    },
+    {
+      title: 'Title/Position',
+      dataIndex: 'position',
+      width: '5%',
+    },
+    {
+      title: 'Work Email',
+      dataIndex: 'email',
+      width: '5%',
+    },
+    {
+      title: 'Work Phone',
+      dataIndex: 'phone',
+      width: '5%',
+    },
+    {
+      title: 'Work Mobile',
+      dataIndex: 'mobile',
+      width: '5%',
+    },
+    {
+      title: 'Activation',
+      dataIndex: 'status',
+      align: 'center',
+      width: '5%',
+      render: (_, record) => {
+        switch (record.status) {
+          case PartnerContactStatus.Uninitiate:
+            return 'Uninitiate';
+          case PartnerContactStatus.Pending:
+            return 'Pending';
+          case PartnerContactStatus.Activated:
+            return 'Activated';
+          default:
+            return '';
+        }
+      },
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      align: 'center',
+      width: '5%',
+      render: (_, record) => {
+        return (
+          <ActionMenu
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => {},
+              },
+              {
+                type: 'deleted',
+                onClick: () => {},
+              },
+            ]}
+          />
+        );
+      },
+    },
+  ];
+
   useEffect(() => {
-    if (isActiveTab) setColumns(companyColumns);
-  }, [isActiveTab, selectedTab]);
+    if (isTabCompany) {
+      setColumns(companyColumns as TableColumnProps<Company | Contact>[]);
+      return;
+    }
+
+    setColumns(contactColumns as TableColumnProps<Company | Contact>[]);
+  }, [selectedTab]);
 
   const listTab: TabItem[] = [
     {
@@ -194,7 +305,13 @@ const PartnersTable = () => {
     },
   ];
 
-  const handlePushTo = () => pushTo(PATH.brandCreatePartners);
+  const handlePushTo = () => {
+    const path = isTabCompany ? PATH.brandCreatePartnerCompany : PATH.brandCreatePartnerContact;
+    history.push({
+      pathname: path,
+      state: { selectedTab },
+    });
+  };
 
   const handleFilterChange = (type: FilterType, id?: string) => () => {
     if (filters[`${type}_id`] === id) return;
@@ -211,7 +328,24 @@ const PartnersTable = () => {
     });
   };
 
-  const generatePanels = (): CollapsiblePanelItem[] => {
+  const handleFilterStatus = (value?: PartnerContactStatus) => () => {
+    if (filters['status'] === value) return;
+
+    if (
+      value === PartnerContactStatus.Activated ||
+      value === PartnerContactStatus.Pending ||
+      value === PartnerContactStatus.Uninitiate
+    ) {
+      setFilters({
+        status: value,
+      });
+      return;
+    }
+
+    setFilters({});
+  };
+
+  const generateAssociation = (): CollapsiblePanelItem[] => {
     return [
       {
         id: 1,
@@ -275,9 +409,37 @@ const PartnersTable = () => {
     ];
   };
 
+  const generateStatus: CollapsiblePanelItem[] = [
+    {
+      id: 1,
+      title: 'Activation',
+      headingDropdown: {
+        label: 'VIEW ALL',
+        headingOnClick: handleFilterStatus(),
+      },
+      labels: [
+        {
+          id: PartnerContactStatus.Uninitiate.toString(),
+          label: 'Uninitiate',
+          labelAction: handleFilterStatus(PartnerContactStatus.Uninitiate),
+        },
+        {
+          id: PartnerContactStatus.Pending.toString(),
+          label: 'Pending',
+          labelAction: handleFilterStatus(PartnerContactStatus.Pending),
+        },
+        {
+          id: PartnerContactStatus.Activated.toString(),
+          label: 'Activated',
+          labelAction: handleFilterStatus(PartnerContactStatus.Activated),
+        },
+      ],
+    },
+  ];
+
   const handleChangeTab = (activeKey: string) => {
-    setSelectedTab?.(activeKey as PartnerTabKey);
-    if (activeKey === PartnerTabKey.companyPartners) setColumns(companyColumns);
+    setSelectedTab(activeKey as PartnerTabKey);
+    pushTo(`${PATH.brandPartners}?tab=${activeKey}`);
   };
 
   return (
@@ -300,7 +462,7 @@ const PartnersTable = () => {
 
         <div className="d-flex bg-white border-bottom-black h-40">
           <CollapsiblePanel
-            panels={generatePanels()}
+            panels={isTabCompany ? generateAssociation() : generateStatus}
             filters={filters}
             onRemoveFilter={handleFilterChange}
           />
@@ -314,7 +476,7 @@ const PartnersTable = () => {
 
       <CustomTable
         columns={columns}
-        fetchDataFunc={getListPartnerCompanies}
+        fetchDataFunc={isTabCompany ? getListPartnerCompanies : getListPartnerContacts}
         hasPagination
         ref={tableRef}
         extraParams={{ filter: filters }}

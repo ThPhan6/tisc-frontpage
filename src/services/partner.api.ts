@@ -7,11 +7,11 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { Company, CompanyForm } from '@/types';
+import { Company, CompanyForm, ContactForm } from '@/types';
 
 import { CommonPartnerType } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
 
-import { hidePageLoading } from '@/features/loading/loading';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface PartnerCompanyResponse {
   data: {
@@ -32,6 +32,31 @@ export const getListPartnerCompanies = (
       const { partners, pagination } = response.data;
       callback({
         data: partners,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+      });
+    })
+    .catch((error) => {
+      message.error(error.message);
+      hidePageLoading();
+    });
+};
+
+export const getListPartnerContacts = (
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) => {
+  request(`/api/partner-contact/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response: any) => {
+      const { partner_contacts, pagination } = response.data;
+      callback({
+        data: partner_contacts,
         pagination: {
           current: pagination.page,
           pageSize: pagination.page_size,
@@ -77,6 +102,25 @@ export const createPartner = async (data: CompanyForm) => {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PARTNER_COMPANY_ERROR);
+      hidePageLoading();
+      return undefined;
+    });
+};
+
+export const createPartnerContact = async (data: ContactForm) => {
+  showPageLoading();
+
+  return request<{ data: ContactForm }>(`/api/partner-contact/create`, {
+    method: 'POST',
+    data,
+  })
+    .then((response) => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_PARTNER_CONTACT_SUCCESS);
+      hidePageLoading();
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PARTNER_CONTACT_ERROR);
       hidePageLoading();
       return undefined;
     });

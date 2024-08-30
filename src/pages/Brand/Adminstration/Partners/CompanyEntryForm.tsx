@@ -31,8 +31,8 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import InfoModal from '@/components/Modal/InfoModal';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CustomTabs } from '@/components/Tabs';
 import { CormorantBodyText, Title } from '@/components/Typography';
@@ -132,11 +132,15 @@ const CompanyEntryForm = () => {
     },
   ];
 
-  const handleOnChange = <K extends keyof CompanyForm>(fieldName: K, fieldValue: CompanyForm[K]) =>
+  const handleOnChange = <K extends keyof CompanyForm>(
+    fieldName: K,
+    fieldValue: CompanyForm[K],
+  ) => {
     setData({
       ...data,
       [fieldName]: fieldValue,
     });
+  };
 
   useEffect(() => {
     if (
@@ -196,7 +200,7 @@ const CompanyEntryForm = () => {
     { field: 'coverage_beyond', messageField: 'Coverage beyond is required' },
   ];
 
-  const handleCloseEntryForm = () => pushTo(PATH.brandPartners);
+  const handleCloseEntryForm = () => pushTo(`${PATH.brandPartners}?tab=comapny`);
 
   const handleChangeLocationData =
     (type: 'country' | 'state' | 'city') =>

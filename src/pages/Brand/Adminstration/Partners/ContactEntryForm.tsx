@@ -1,0 +1,344 @@
+import { useMemo, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { useLocation } from 'umi';
+
+import { pushTo } from '@/helper/history';
+import {
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  validateRequiredFields,
+} from '@/helper/utils';
+import { createPartnerContact } from '@/services';
+
+import { TabItem } from '@/components/Tabs/types';
+import { ContactForm } from '@/types';
+
+import CollapsiblePanel from '@/components/CollapsiblePanel';
+import { CustomRadio } from '@/components/CustomRadio';
+import { EntryFormWrapper } from '@/components/EntryForm';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { Status } from '@/components/Form/Status';
+import CompanyModal from '@/components/Modal/CompanyModal';
+import { MemorizeTableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { CustomTabs } from '@/components/Tabs';
+import { Title } from '@/components/Typography';
+import { PartnerTabKey } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
+
+enum Gender {
+  Male = 'Male',
+  Female = 'Female',
+}
+
+const genderOptions = [
+  { label: Gender.Male, value: true },
+  { label: Gender.Female, value: false },
+];
+
+const initialContactForm: ContactForm = {
+  id: '',
+  firstname: '',
+  lastname: '',
+  gender: true,
+  linkedin: '',
+  company_name: '',
+  partner_company_id: '',
+  email: '',
+  phone: '',
+  mobile: '',
+  country_name: '',
+  position: '',
+  remark: '',
+  status: 0,
+  phone_code: '00',
+};
+
+const ContactEntryForm = () => {
+  const [data, setData] = useState<ContactForm>(initialContactForm);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const isActiveTab = location.pathname === PATH.brandPartners;
+  const { state } = useLocation();
+  const selectedTab = state?.selectedTab;
+
+  const listTab: TabItem[] = [
+    {
+      tab: 'Companies',
+      tabletTabTitle: 'Companies',
+      key: PartnerTabKey.companyPartners,
+      disable: !isActiveTab,
+    },
+
+    {
+      tab: 'Contacts',
+      tabletTabTitle: 'Contacts',
+      key: PartnerTabKey.contactPartners,
+      disable: !isActiveTab,
+    },
+  ];
+
+  const getRequiredFields = (): { field: keyof ContactForm; messageField: string }[] => [
+    { field: 'firstname', messageField: 'First name is required' },
+    { field: 'lastname', messageField: 'Last name is required' },
+    { field: 'gender', messageField: 'Gender is required' },
+    { field: 'partner_company_id', messageField: 'Company is required' },
+    { field: 'position', messageField: 'Title / Position is required' },
+    { field: 'email', messageField: 'Work Email is required' },
+    { field: 'phone', messageField: 'Work Phone is required' },
+    { field: 'mobile', messageField: 'Work mobile is required' },
+  ];
+
+  const handleCloseEntryForm = () => {
+    pushTo(`${PATH.brandPartners}?tab=contact`);
+  };
+
+  const handleSubmit = async () => {
+    const requiredFields = getRequiredFields();
+    if (!validateRequiredFields(data, requiredFields)) return;
+
+    const res = await createPartnerContact(data);
+    if (res) handleCloseEntryForm();
+  };
+
+  const handleToggleModal = () => setIsOpenModal(!isOpenModal);
+
+  const panels = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'Activation',
+      },
+    ],
+    [],
+  );
+
+  const handleOnChange = <K extends keyof ContactForm>(
+    fieldName: K,
+    fieldValue: ContactForm[K],
+  ) => {
+    setData({
+      ...data,
+      [fieldName]: fieldValue,
+    });
+  };
+
+  const handleOnChangeCompanyData = (companyData: {
+    value: string;
+    label: string;
+    country: string;
+    phoneCode: string;
+  }) => {
+    setData((prevData) => ({
+      ...prevData,
+      partner_company_id: companyData.value,
+      company_name: companyData.label,
+      country_name: companyData.country,
+      phone_code: companyData.phoneCode,
+    }));
+  };
+
+  return (
+    <>
+      <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
+      <div className="d-flex">
+        <CustomTabs
+          listTab={listTab}
+          centered
+          tabPosition="top"
+          tabDisplay="start"
+          widthItem="auto"
+          className={`${styles.partnerHeaderTab} ${
+            !isActiveTab ? styles.partnerHeaderTabDisabled : ''
+          }`}
+          activeKey={selectedTab}
+        />
+
+        <div className="d-flex bg-white border-bottom-black">
+          <CollapsiblePanel panels={panels} disabled={true} />
+          <CustomPlusButton customClass="my-0 mx-16" disabled={true} />
+        </div>
+      </div>
+
+      <EntryFormWrapper
+        customClass="w-full"
+        handleCancel={handleCloseEntryForm}
+        handleSubmit={handleSubmit}
+        contentStyles={{
+          height: 'calc(var(--vh) * 100 - 289px)',
+        }}
+      >
+        <Title level={8} customClass="py-10 mb-16 bottom-border-inset-black">
+          PERSONAL PROFILE
+        </Title>
+        <InputGroup
+          label="First Name"
+          required
+          fontLevel={3}
+          hasPadding
+          hasBoxShadow
+          hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.firstname}
+          placeholder="member first name"
+          onChange={(event) => handleOnChange('firstname', event.target.value)}
+          onDelete={() => handleOnChange('firstname', '')}
+          deleteIcon
+        />
+        <InputGroup
+          label="Last Name"
+          required
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.lastname}
+          placeholder="member last name"
+          onChange={(event) => handleOnChange('lastname', event.target.value)}
+          onDelete={() => handleOnChange('lastname', '')}
+          deleteIcon
+        />
+        <FormGroup
+          label="Gender"
+          required={true}
+          layout="vertical"
+          formClass="border-bottom-light pb-8"
+        >
+          <CustomRadio
+            options={genderOptions}
+            value={data.gender}
+            onChange={(radioValue) => handleOnChange('gender', radioValue.value as boolean)}
+          />
+        </FormGroup>
+        <InputGroup
+          label="Linkedin"
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.linkedin}
+          placeholder="copy/paste personal Linkedin URL link"
+          onChange={(event) => handleOnChange('linkedin', event.target.value)}
+          onDelete={() => handleOnChange('linkedin', '')}
+          deleteIcon
+        />
+
+        <Title level={8} customClass="py-10 my-16 bottom-border-inset-black">
+          WORKPLACE PROFILE
+        </Title>
+        <InputGroup
+          label="Comapny"
+          required
+          fontLevel={3}
+          placeholder={'select from the list'}
+          value={data.company_name}
+          hasBoxShadow
+          hasPadding
+          rightIcon
+          hasHeight
+          colorPrimaryDark
+          colorRequired="tertiary"
+          onRightIconClick={handleToggleModal}
+        />
+        <InputGroup
+          label="Title / Position"
+          required
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.position}
+          placeholder="member title/position"
+          onChange={(event) => handleOnChange('position', event.target.value)}
+          onDelete={() => handleOnChange('position', '')}
+          deleteIcon
+        />
+        <InputGroup
+          label="Work Email"
+          required
+          fontLevel={3}
+          hasPadding
+          hasHeight
+          hasBoxShadow
+          colorPrimaryDark
+          colorRequired="tertiary"
+          value={data.email}
+          placeholder="user work email"
+          onChange={(event) => handleOnChange('email', event.target.value)}
+          onDelete={() => handleOnChange('email', '')}
+          deleteIcon
+          message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
+        />
+        <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
+          <PhoneInput
+            phonePlaceholder="area code / member"
+            onChange={(value) => handleOnChange('phone', value.phoneNumber)}
+            containerClass={styles.phoneInputCustom}
+            value={{
+              zoneCode: data.phone_code,
+              phoneNumber: data.phone,
+            }}
+            deleteIcon
+            codeReadOnly
+          />
+        </FormGroup>
+        <FormGroup label="Work Mobile" required layout="vertical" formClass={styles.formGroup}>
+          <PhoneInput
+            phonePlaceholder="area code / member"
+            onChange={(value) => handleOnChange('mobile', value.phoneNumber)}
+            containerClass={styles.phoneInputCustom}
+            value={{
+              zoneCode: data.phone_code,
+              phoneNumber: data.mobile,
+            }}
+            deleteIcon
+            codeReadOnly
+          />
+        </FormGroup>
+        <Status
+          value={data.status}
+          onClick={() => {}}
+          label="Status"
+          buttonName="Send Invite"
+          text_1="Activated"
+          text_2="uninitiate"
+          disabled={true}
+        />
+        <FormGroup label="Remark" layout="vertical">
+          <CustomTextArea
+            value={data.remark}
+            maxLength={240}
+            showCount
+            boxShadow
+            placeholder="input text"
+            onChange={(event) => handleOnChange('remark', event.target.value)}
+          />
+        </FormGroup>
+      </EntryFormWrapper>
+
+      <CompanyModal
+        chosenValue={{
+          value: data.partner_company_id,
+          label: data.company_name,
+        }}
+        setChosenValue={handleOnChangeCompanyData}
+        visible={isOpenModal}
+        setVisible={handleToggleModal}
+      />
+    </>
+  );
+};
+
+export default ContactEntryForm;
