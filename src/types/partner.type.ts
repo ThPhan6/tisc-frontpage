@@ -34,3 +34,31 @@ export interface CompanyForm extends Omit<Company, 'contact'> {
   }[];
   authorized_country_ids: string[];
 }
+
+export interface Contact {
+  id: string;
+  fullname: string;
+  company_name: string;
+  country_name: string;
+  status: PartnerContactStatus;
+  position: string;
+  email: string;
+  phone: string;
+  mobile: string;
+}
+
+export interface ContactForm extends Omit<Contact, 'fullname'> {
+  firstname: string;
+  lastname: string;
+  gender: boolean;
+  linkedin: string;
+  remark: string;
+  partner_company_id: string;
+  phone_code: string;
+}
+
+export enum PartnerContactStatus {
+  Uninitiate,
+  Pending,
+  Activated,
+}

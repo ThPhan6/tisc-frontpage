@@ -18,7 +18,7 @@ export interface CollapsiblePanelItem {
 }
 
 interface CollapsiblePanelProps {
-  filters?: Partial<Record<FilterKeys, string>>;
+  filters?: Partial<Record<FilterKeys, string | number>>;
   onRemoveFilter?: (type: FilterType, id?: string) => () => void;
   disabled?: boolean;
   panels: CollapsiblePanelItem[];
@@ -62,8 +62,14 @@ const CollapsiblePanel = ({
   return (
     <>
       {panels.map((panel, index) => {
-        const filterId = filters?.[`${panel.title.toLowerCase()}_id` as FilterKeys];
-        const selectedLabel = panel.labels?.find((label) => label.id === filterId)?.label;
+        const key =
+          panel.title === 'Activation'
+            ? 'status'
+            : (`${panel.title.toLowerCase()}_id` as FilterKeys);
+        const filterId = filters?.[key];
+        const selectedLabel = panel.labels?.find(
+          (label) => label.id === filterId?.toString(),
+        )?.label;
 
         return (
           <Dropdown

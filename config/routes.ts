@@ -655,13 +655,18 @@ const routes = [
             hideInMenu: true,
           },
           {
-            path: PATH.brandCreatePartners,
+            path: PATH.brandCreatePartnerCompany,
             component: './Brand/Adminstration/Partners/CompanyEntryForm',
             hideInMenu: true,
           },
           {
             path: PATH.brandUpdatePartner,
             component: './Brand/Adminstration/Partners/CompanyEntryForm',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandCreatePartnerContact,
+            component: './Brand/Adminstration/Partners/ContactEntryForm',
             hideInMenu: true,
           },
         ],
