@@ -108,4 +108,5 @@ export interface StatusProps {
   InActiveButtonClass?: string;
   toolTipTitle?: string | ReactNode;
   alignOffset?: [number, number];
+  disabled?: boolean;
 }
