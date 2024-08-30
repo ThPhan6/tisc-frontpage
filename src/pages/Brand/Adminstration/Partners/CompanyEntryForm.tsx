@@ -200,7 +200,7 @@ const CompanyEntryForm = () => {
     { field: 'coverage_beyond', messageField: 'Coverage beyond is required' },
   ];
 
-  const handleCloseEntryForm = () => pushTo(`${PATH.brandPartners}?tab=comapny`);
+  const handleCloseEntryForm = () => pushTo(`${PATH.brandPartners}?tab=company`);
 
   const handleChangeLocationData =
     (type: 'country' | 'state' | 'city') =>
