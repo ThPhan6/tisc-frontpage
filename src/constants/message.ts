@@ -383,6 +383,11 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PARTNER_COMPANY_ERROR: 'Update partner company unsuccessfully',
   DELETE_PARTNER_COMPANY_SUCCESS: 'Delete partner company successfully',
   DELETE_PARTNER_COMPANY_ERROR: 'Delete partner company unsuccessfully',
+  CREATE_PARTNER_CONTACT_SUCCESS: 'Create partner contact successfully',
+  CREATE_PARTNER_CONTACT_ERROR: 'Create partner contact unsuccessfully',
+
+  // company
+  GET_COMPANY_SUMMARY_ERROR: 'Get company unsuccessfully',
 };
 
 export const MESSAGE_TOOLTIP = {
