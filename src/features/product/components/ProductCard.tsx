@@ -386,6 +386,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customLoading, setCustomLoading] = useState(false);
   const firstLoad = useBoolean(true);
+  const [delayDuration, setDelayDuration] = useState<number>(3000);
   const location = useLocation();
   console.log(groups);
   useEffect(() => {
@@ -457,7 +458,16 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   }
   // After choosing filter
   else if (!firstLoad.value && !(typeof filter == 'undefined')) {
-    firstLoad.setValue(true);
+    setTimeout(() => {
+      firstLoad.setValue(true);
+    }, delayDuration);
+    if (!data?.length) {
+      return (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      );
+    }
   }
 
   if (!allProducts?.length && !data?.length) {
