@@ -216,7 +216,7 @@ const PartnersTable = () => {
       {
         title: '',
         dataIndex: 'avatar',
-        width: '5%',
+        width: '2%',
         render: (_, record) => {
           return <TeamIcon avatar={record.avatar} name={getFullName(record)} size={20} />;
         },
@@ -225,7 +225,7 @@ const PartnersTable = () => {
         title: 'Full Name',
         dataIndex: 'fullname',
         sorter: true,
-        width: '10%',
+        width: '15%',
       },
       {
         title: 'Company',
@@ -242,12 +242,12 @@ const PartnersTable = () => {
       {
         title: 'Title/Position',
         dataIndex: 'position',
-        width: '10%',
+        width: '14%',
       },
       {
         title: 'Work Email',
         dataIndex: 'email',
-        width: '10%',
+        width: '14%',
       },
       {
         title: 'Work Phone',
@@ -262,7 +262,6 @@ const PartnersTable = () => {
       {
         title: 'Activation',
         dataIndex: 'status',
-        align: 'center',
         width: '15%',
         render: (_, record) => {
           switch (record.status) {
