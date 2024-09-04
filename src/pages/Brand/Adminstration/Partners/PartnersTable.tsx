@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { TableColumnProps } from 'antd';
-import { useHistory, useLocation, useParams } from 'umi';
+import { useHistory, useLocation } from 'umi';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -11,6 +11,7 @@ import { useQuery } from '@/helper/hook';
 import { handleGetCommonPartnerTypeList } from '@/helper/utils';
 import {
   deletePartner,
+  deletePartnerContact,
   getCommonPartnerTypes,
   getListPartnerCompanies,
   getListPartnerContacts,
@@ -50,23 +51,23 @@ export interface CommonPartnerType {
   }[];
 }
 
-export type FilterType = 'affiliation' | 'relation' | 'acquisition';
 export type FilterKeys = 'affiliation_id' | 'relation_id' | 'acquisition_id' | 'status';
 
 const PartnersTable = () => {
   const query = useQuery();
   const queryTab = query.get('tab');
+  const history = useHistory();
+  const location = useLocation();
+  const { association } = useAppSelector((state: RootState) => state.partner);
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
 
   const [columns, setColumns] = useState<TableColumnProps<Company | Contact>[]>([]);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(
     !isEmpty(queryTab) ? (queryTab as PartnerTabKey) : PartnerTabKey.companyPartners,
   );
-  const location = useLocation();
+
   const isActiveTab = location.pathname === PATH.brandPartners;
-  const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
   const isTabCompany = selectedTab === PartnerTabKey.companyPartners ? true : false;
-  const history = useHistory();
 
   const tableRef = useRef<any>();
   const initialLoad = useRef(true);
@@ -98,13 +99,17 @@ const PartnersTable = () => {
 
   const handleDeletePartner = (id: string) => () => {
     confirmDelete(async () => {
-      const res = await deletePartner(id);
+      const res = isTabCompany ? await deletePartner(id) : await deletePartnerContact(id);
       if (res) tableRef.current.reload();
     });
   };
 
   const handlePushToUpdate = (id: string) => () =>
-    pushTo(PATH.brandUpdatePartner.replace(':id', id));
+    pushTo(
+      isTabCompany
+        ? PATH.brandUpdatePartner.replace(':id', id)
+        : PATH.brandUpdatePartnerContact.replace(':id', id),
+    );
 
   const companyColumns: TableColumnProps<Company>[] = [
     {
@@ -267,11 +272,11 @@ const PartnersTable = () => {
             actionItems={[
               {
                 type: 'updated',
-                onClick: () => {},
+                onClick: handlePushToUpdate(record.id),
               },
               {
                 type: 'deleted',
-                onClick: () => {},
+                onClick: handleDeletePartner(record.id),
               },
             ]}
           />
@@ -313,36 +318,17 @@ const PartnersTable = () => {
     });
   };
 
-  const handleFilterChange = (type: FilterType, id?: string) => () => {
-    if (filters[`${type}_id`] === id) return;
+  const handleFilter = (key: FilterKeys, value?: string | PartnerContactStatus) => () => {
+    if (filters[key] === value) return;
 
-    if (id === '') {
-      setFilters({
-        [`${type}_id`]: '',
-      });
+    if (value === null && value === undefined) {
+      setFilters({});
       return;
     }
 
     setFilters({
-      [`${type}_id`]: id,
+      [key]: value,
     });
-  };
-
-  const handleFilterStatus = (value?: PartnerContactStatus) => () => {
-    if (filters['status'] === value) return;
-
-    if (
-      value === PartnerContactStatus.Activated ||
-      value === PartnerContactStatus.Pending ||
-      value === PartnerContactStatus.Uninitiate
-    ) {
-      setFilters({
-        status: value,
-      });
-      return;
-    }
-
-    setFilters({});
   };
 
   const generateAssociation = (): CollapsiblePanelItem[] => {
@@ -352,13 +338,13 @@ const PartnersTable = () => {
         title: 'Affiliation',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', ''),
+          headingOnClick: handleFilter('affiliation_id'),
         },
         labels:
           association?.affiliation.map((item) => ({
             id: item.id,
             label: item.name,
-            labelAction: handleFilterChange('affiliation', item.id),
+            labelAction: handleFilter('affiliation_id', item.id),
           })) || [],
       },
       {
@@ -366,13 +352,13 @@ const PartnersTable = () => {
         title: 'Relation',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', ''),
+          headingOnClick: handleFilter('relation_id'),
         },
         labels:
           association?.relation.map((item) => ({
             id: item.id,
             label: item.name,
-            labelAction: handleFilterChange('relation', item.id),
+            labelAction: handleFilter('relation_id', item.id),
           })) || [],
       },
       {
@@ -380,7 +366,7 @@ const PartnersTable = () => {
         title: 'Acquisition',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', ''),
+          headingOnClick: handleFilter('acquisition_id'),
         },
         labels:
           association?.acquisition.map((item) => {
@@ -402,7 +388,7 @@ const PartnersTable = () => {
             return {
               id: item.id,
               label: <span className={`${className}`}>{item.name}</span>,
-              labelAction: handleFilterChange('acquisition', item.id),
+              labelAction: handleFilter('acquisition_id', item.id),
             };
           }) || [],
       },
@@ -415,23 +401,23 @@ const PartnersTable = () => {
       title: 'Activation',
       headingDropdown: {
         label: 'VIEW ALL',
-        headingOnClick: handleFilterStatus(),
+        headingOnClick: handleFilter('status'),
       },
       labels: [
         {
           id: PartnerContactStatus.Uninitiate.toString(),
           label: 'Uninitiate',
-          labelAction: handleFilterStatus(PartnerContactStatus.Uninitiate),
+          labelAction: handleFilter('status', PartnerContactStatus.Uninitiate),
         },
         {
           id: PartnerContactStatus.Pending.toString(),
           label: 'Pending',
-          labelAction: handleFilterStatus(PartnerContactStatus.Pending),
+          labelAction: handleFilter('status', PartnerContactStatus.Pending),
         },
         {
           id: PartnerContactStatus.Activated.toString(),
           label: 'Activated',
-          labelAction: handleFilterStatus(PartnerContactStatus.Activated),
+          labelAction: handleFilter('status', PartnerContactStatus.Activated),
         },
       ],
     },
@@ -464,7 +450,7 @@ const PartnersTable = () => {
           <CollapsiblePanel
             panels={isTabCompany ? generateAssociation() : generateStatus}
             filters={filters}
-            onRemoveFilter={handleFilterChange}
+            onRemoveFilter={handleFilter}
           />
           <CustomPlusButton
             onClick={handlePushTo}

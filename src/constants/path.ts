@@ -151,6 +151,7 @@ export const PATH = {
   brandCreatePartnerCompany: '/brand/adminstration/partners/create/company',
   brandUpdatePartner: '/brand/adminstration/partners/:id',
   brandCreatePartnerContact: '/brand/adminstration/partners/create/contact',
+  brandUpdatePartnerContact: '/brand/adminstration/partners/contact/:id',
 
   //brand billed services
   brandBilledServices: '/brand/adminstration/billed-services',

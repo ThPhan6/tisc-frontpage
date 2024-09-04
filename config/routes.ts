@@ -669,6 +669,11 @@ const routes = [
             component: './Brand/Adminstration/Partners/ContactEntryForm',
             hideInMenu: true,
           },
+          {
+            path: PATH.brandUpdatePartnerContact,
+            component: './Brand/Adminstration/Partners/ContactEntryForm',
+            hideInMenu: true,
+          },
         ],
       },
       {
