@@ -64,7 +64,7 @@ const ContactEntryForm = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { state } = useLocation<{ selectedTab?: string }>();
-  const selectedTab = state?.selectedTab;
+  const selectedTab = state?.selectedTab || PartnerTabKey.contactPartners;
   const partnerContactId = useGetParamId();
   const isUpdate = Boolean(partnerContactId);
 

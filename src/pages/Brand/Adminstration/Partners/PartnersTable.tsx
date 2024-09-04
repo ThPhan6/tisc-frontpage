@@ -112,6 +112,7 @@ const PartnersTable = () => {
     history.push({
       pathname: path,
       state: { selectedTab },
+      search: `?tab=${selectedTab}`,
     });
   };
 
