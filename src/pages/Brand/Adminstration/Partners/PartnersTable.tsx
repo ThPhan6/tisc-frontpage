@@ -216,34 +216,34 @@ const PartnersTable = () => {
         title: 'Full Name',
         dataIndex: 'fullname',
         sorter: true,
-        width: '5%',
+        width: '10%',
       },
       {
         title: 'Company',
         dataIndex: 'company_name',
         sorter: true,
-        width: '5%',
+        width: '10%',
       },
       {
         title: 'Country',
         dataIndex: 'country_name',
         sorter: true,
-        width: '5%',
+        width: '10%',
       },
       {
         title: 'Title/Position',
         dataIndex: 'position',
-        width: '5%',
+        width: '10%',
       },
       {
         title: 'Work Email',
         dataIndex: 'email',
-        width: '5%',
+        width: '10%',
       },
       {
         title: 'Work Phone',
         dataIndex: 'phone',
-        width: '5%',
+        width: '10%',
       },
       {
         title: 'Work Mobile',
@@ -254,7 +254,7 @@ const PartnersTable = () => {
         title: 'Activation',
         dataIndex: 'status',
         align: 'center',
-        width: '5%',
+        width: '15%',
         render: (_, record) => {
           switch (record.status) {
             case PartnerContactStatus.Uninitiate:
