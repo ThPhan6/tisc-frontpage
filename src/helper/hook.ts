@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { USER_ROLE } from '@/constants/userRoles';
 import { useLocation, useModel, useParams } from 'umi';
 
+import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
 
 import { getQueryVariableFromOriginURL, redirectAfterLogin } from './utils';
@@ -127,4 +128,41 @@ export const useToggleExpand = (singleExpand = false) => {
   );
 
   return { expandedKeys, setExpandedKeys, handleToggleExpand };
+};
+
+type FormData = Record<string, any>;
+
+export const useEntryFormHandlers = <T extends FormData>(initialData: T) => {
+  const [data, setData] = useState<T>(initialData);
+
+  const handleOnChange = <K extends keyof T>(fieldName: K, fieldValue: T[K] | string) => {
+    setData((prevData) => ({
+      ...prevData,
+      [fieldName]: fieldValue,
+    }));
+  };
+
+  const handleInputChange =
+    (fieldName: keyof T) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      handleOnChange(fieldName, event.target.value);
+    };
+
+  const handleInputDelete = (fieldName: keyof T) => () => handleOnChange(fieldName, '');
+
+  const handlePhoneChange = (fieldName: keyof T) => (value: { phoneNumber: string }) => {
+    handleOnChange(fieldName, value.phoneNumber);
+  };
+
+  const handleRadioChange = (fieldName: keyof T) => (radioValue: RadioValue) =>
+    handleOnChange(fieldName, radioValue.value as T[typeof fieldName]);
+
+  return {
+    data,
+    setData,
+    handleOnChange,
+    handleInputChange,
+    handleInputDelete,
+    handlePhoneChange,
+    handleRadioChange,
+  };
 };

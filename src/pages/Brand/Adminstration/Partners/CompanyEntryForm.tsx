@@ -7,7 +7,7 @@ import { PATH } from '@/constants/path';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { useGetParamId } from '@/helper/hook';
+import { useEntryFormHandlers, useGetParamId } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
@@ -97,7 +97,6 @@ const initialCompanyForm: CompanyForm = {
 };
 
 const CompanyEntryForm = () => {
-  const [data, setData] = useState<CompanyForm>(initialCompanyForm);
   const [initSelectedAssociation, setInitSelectedAssociation] = useState({
     affiliation_id: '',
     relation_id: '',
@@ -116,6 +115,16 @@ const CompanyEntryForm = () => {
   const dispatch = useDispatch();
   const isUpdate = partnerId ? true : false;
 
+  const {
+    data,
+    handleInputChange,
+    handleInputDelete,
+    handleOnChange,
+    handlePhoneChange,
+    handleRadioChange,
+    setData,
+  } = useEntryFormHandlers<CompanyForm>(initialCompanyForm);
+
   const listTab: TabItem[] = [
     {
       tab: 'Companies',
@@ -131,16 +140,6 @@ const CompanyEntryForm = () => {
       disable: !isActiveTab,
     },
   ];
-
-  const handleOnChange = <K extends keyof CompanyForm>(
-    fieldName: K,
-    fieldValue: CompanyForm[K],
-  ) => {
-    setData({
-      ...data,
-      [fieldName]: fieldValue,
-    });
-  };
 
   useEffect(() => {
     if (
@@ -457,8 +456,8 @@ const CompanyEntryForm = () => {
           colorRequired="tertiary"
           value={data.name}
           placeholder="channel partner company name"
-          onChange={(event) => handleOnChange('name', event.target.value)}
-          onDelete={() => handleOnChange('name', '')}
+          onChange={handleInputChange('name')}
+          onDelete={handleInputDelete('name')}
           deleteIcon
         />
         <InputGroup
@@ -471,8 +470,8 @@ const CompanyEntryForm = () => {
           colorRequired="tertiary"
           value={data.website}
           placeholder="paste site URL link here"
-          onChange={(event) => handleOnChange('website', event.target.value)}
-          onDelete={() => handleOnChange('website', '')}
+          onChange={handleInputChange('website')}
+          onDelete={handleInputDelete('website')}
           deleteIcon
         />
         <InputGroup
@@ -525,7 +524,7 @@ const CompanyEntryForm = () => {
             placeholder="unit #, street / road name"
             value={data.address}
             name="address"
-            onChange={(event) => handleOnChange('address', event.target.value)}
+            onChange={handleInputChange('address')}
           />
         </FormGroup>
         <InputGroup
@@ -540,8 +539,8 @@ const CompanyEntryForm = () => {
           colorRequired="tertiary"
           value={data.postal_code}
           name="postal_code"
-          onChange={(event) => handleOnChange('postal_code', event.target.value)}
-          onDelete={() => handleOnChange('postal_code', '')}
+          onChange={handleInputChange('postal_code')}
+          onDelete={handleInputDelete('postal_code')}
           message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
           messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
           deleteIcon
@@ -549,7 +548,7 @@ const CompanyEntryForm = () => {
         <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
           <PhoneInput
             phonePlaceholder="area code / number"
-            onChange={(value) => handleOnChange('phone', value.phoneNumber)}
+            onChange={handlePhoneChange('phone')}
             containerClass={styles.phoneInputCustom}
             value={{
               zoneCode: data.phone_code,
@@ -570,8 +569,8 @@ const CompanyEntryForm = () => {
           colorRequired="tertiary"
           placeholder="general email address"
           value={data.email}
-          onChange={(event) => handleOnChange('email', event.target.value)}
-          onDelete={() => handleOnChange('email', '')}
+          onChange={handleInputChange('email')}
+          onDelete={handleInputDelete('email')}
           deleteIcon
           message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
           messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
@@ -748,8 +747,8 @@ const CompanyEntryForm = () => {
           colorPrimaryDark={true}
           value={data.price_rate}
           name="price_rate"
-          onChange={(event) => handleOnChange('price_rate', event.target.value)}
-          onDelete={() => handleOnChange('price_rate', '')}
+          onChange={handleInputChange('price_rate')}
+          onDelete={handleInputDelete('price_rate')}
           deleteIcon
         />
         <InputGroup
@@ -775,9 +774,7 @@ const CompanyEntryForm = () => {
           <CustomRadio
             options={coverageBeyondOptions}
             value={data.coverage_beyond}
-            onChange={(radioValue) =>
-              handleOnChange('coverage_beyond', radioValue.value as boolean)
-            }
+            onChange={handleRadioChange('coverage_beyond')}
           />
         </FormGroup>
         <FormGroup label="Remark" layout="vertical">
@@ -787,7 +784,7 @@ const CompanyEntryForm = () => {
             showCount
             boxShadow
             placeholder="input text"
-            onChange={(event) => handleOnChange('remark', event.target.value)}
+            onChange={handleInputChange('remark')}
           />
         </FormGroup>
       </EntryFormWrapper>
