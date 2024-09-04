@@ -1,19 +1,20 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { useLocation } from 'umi';
 
 import { pushTo } from '@/helper/history';
+import { useEntryFormHandlers, useGetParamId } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
   validateRequiredFields,
 } from '@/helper/utils';
-import { createPartnerContact } from '@/services';
+import { createPartnerContact, getPartnerContact, updatePartnerContact } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
-import { ContactForm } from '@/types';
+import { ContactForm, PartnerContactStatus } from '@/types';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -23,7 +24,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import CompanyModal from '@/components/Modal/CompanyModal';
+import CompanyModal, { SelectedCompany } from '@/components/Modal/CompanyModal';
 import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CustomTabs } from '@/components/Tabs';
@@ -60,11 +61,32 @@ const initialContactForm: ContactForm = {
 };
 
 const ContactEntryForm = () => {
-  const [data, setData] = useState<ContactForm>(initialContactForm);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const isActiveTab = location.pathname === PATH.brandPartners;
-  const { state } = useLocation();
-  const selectedTab = state?.selectedTab;
+  const { state } = useLocation<{ selectedTab?: string }>();
+  const selectedTab = state?.selectedTab || PartnerTabKey.contactPartners;
+  const partnerContactId = useGetParamId();
+  const isUpdate = Boolean(partnerContactId);
+
+  const {
+    data,
+    handleInputChange,
+    handleInputDelete,
+    handlePhoneChange,
+    handleRadioChange,
+    setData,
+  } = useEntryFormHandlers<ContactForm>(initialContactForm);
+
+  useEffect(() => {
+    if (partnerContactId) {
+      const handleFetchPartnerContactInfo = async () => {
+        const res = await getPartnerContact(partnerContactId);
+        if (res) setData(res);
+      };
+
+      handleFetchPartnerContactInfo();
+    }
+  }, [partnerContactId]);
 
   const listTab: TabItem[] = [
     {
@@ -101,6 +123,12 @@ const ContactEntryForm = () => {
     const requiredFields = getRequiredFields();
     if (!validateRequiredFields(data, requiredFields)) return;
 
+    if (isUpdate) {
+      const res = await updatePartnerContact(partnerContactId, data);
+      if (res) setData(res);
+      return;
+    }
+
     const res = await createPartnerContact(data);
     if (res) handleCloseEntryForm();
   };
@@ -117,29 +145,27 @@ const ContactEntryForm = () => {
     [],
   );
 
-  const handleOnChange = <K extends keyof ContactForm>(
-    fieldName: K,
-    fieldValue: ContactForm[K],
-  ) => {
-    setData({
-      ...data,
-      [fieldName]: fieldValue,
-    });
-  };
-
-  const handleOnChangeCompanyData = (companyData: {
-    value: string;
-    label: string;
-    country: string;
-    phoneCode: string;
-  }) => {
+  const handleOnChangeCompanyData = (companyData: SelectedCompany) => {
     setData((prevData) => ({
       ...prevData,
       partner_company_id: companyData.value,
       company_name: companyData.label,
-      country_name: companyData.country,
-      phone_code: companyData.phoneCode,
+      country_name: companyData.country || '',
+      phone_code: companyData.phoneCode || '',
     }));
+  };
+
+  const getStatusText = () => {
+    switch (data.status) {
+      case PartnerContactStatus.Uninitiate:
+        return 'Uninitiate';
+      case PartnerContactStatus.Pending:
+        return 'Pending';
+      case PartnerContactStatus.Activated:
+        return 'Activated';
+      default:
+        return 'Unknown';
+    }
   };
 
   return (
@@ -186,8 +212,8 @@ const ContactEntryForm = () => {
           colorRequired="tertiary"
           value={data.firstname}
           placeholder="member first name"
-          onChange={(event) => handleOnChange('firstname', event.target.value)}
-          onDelete={() => handleOnChange('firstname', '')}
+          onChange={handleInputChange('firstname')}
+          onDelete={handleInputDelete('firstname')}
           deleteIcon
         />
         <InputGroup
@@ -201,8 +227,8 @@ const ContactEntryForm = () => {
           colorRequired="tertiary"
           value={data.lastname}
           placeholder="member last name"
-          onChange={(event) => handleOnChange('lastname', event.target.value)}
-          onDelete={() => handleOnChange('lastname', '')}
+          onChange={handleInputChange('lastname')}
+          onDelete={handleInputDelete('lastname')}
           deleteIcon
         />
         <FormGroup
@@ -214,7 +240,7 @@ const ContactEntryForm = () => {
           <CustomRadio
             options={genderOptions}
             value={data.gender}
-            onChange={(radioValue) => handleOnChange('gender', radioValue.value as boolean)}
+            onChange={handleRadioChange('gender')}
           />
         </FormGroup>
         <InputGroup
@@ -227,8 +253,8 @@ const ContactEntryForm = () => {
           colorRequired="tertiary"
           value={data.linkedin}
           placeholder="copy/paste personal Linkedin URL link"
-          onChange={(event) => handleOnChange('linkedin', event.target.value)}
-          onDelete={() => handleOnChange('linkedin', '')}
+          onChange={handleInputChange('linkedin')}
+          onDelete={handleInputDelete('linkedin')}
           deleteIcon
         />
 
@@ -260,8 +286,8 @@ const ContactEntryForm = () => {
           colorRequired="tertiary"
           value={data.position}
           placeholder="member title/position"
-          onChange={(event) => handleOnChange('position', event.target.value)}
-          onDelete={() => handleOnChange('position', '')}
+          onChange={handleInputChange('position')}
+          onDelete={handleInputDelete('position')}
           deleteIcon
         />
         <InputGroup
@@ -275,8 +301,8 @@ const ContactEntryForm = () => {
           colorRequired="tertiary"
           value={data.email}
           placeholder="user work email"
-          onChange={(event) => handleOnChange('email', event.target.value)}
-          onDelete={() => handleOnChange('email', '')}
+          onChange={handleInputChange('email')}
+          onDelete={handleInputDelete('email')}
           deleteIcon
           message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
           messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
@@ -284,7 +310,7 @@ const ContactEntryForm = () => {
         <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
           <PhoneInput
             phonePlaceholder="area code / member"
-            onChange={(value) => handleOnChange('phone', value.phoneNumber)}
+            onChange={handlePhoneChange('phone')}
             containerClass={styles.phoneInputCustom}
             value={{
               zoneCode: data.phone_code,
@@ -297,7 +323,7 @@ const ContactEntryForm = () => {
         <FormGroup label="Work Mobile" required layout="vertical" formClass={styles.formGroup}>
           <PhoneInput
             phonePlaceholder="area code / member"
-            onChange={(value) => handleOnChange('mobile', value.phoneNumber)}
+            onChange={handlePhoneChange('mobile')}
             containerClass={styles.phoneInputCustom}
             value={{
               zoneCode: data.phone_code,
@@ -312,8 +338,8 @@ const ContactEntryForm = () => {
           onClick={() => {}}
           label="Status"
           buttonName="Send Invite"
-          text_1="Activated"
-          text_2="uninitiate"
+          text_1={getStatusText()}
+          text_2="Uninitiate"
           disabled={true}
         />
         <FormGroup label="Remark" layout="vertical">
@@ -323,7 +349,7 @@ const ContactEntryForm = () => {
             showCount
             boxShadow
             placeholder="input text"
-            onChange={(event) => handleOnChange('remark', event.target.value)}
+            onChange={handleInputChange('remark')}
           />
         </FormGroup>
       </EntryFormWrapper>

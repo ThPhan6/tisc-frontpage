@@ -6,7 +6,9 @@ import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { FilterKeys, FilterType } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import { PartnerContactStatus } from '@/types';
+
+import { FilterKeys } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
 
 import styles from './index.less';
 
@@ -19,7 +21,7 @@ export interface CollapsiblePanelItem {
 
 interface CollapsiblePanelProps {
   filters?: Partial<Record<FilterKeys, string | number>>;
-  onRemoveFilter?: (type: FilterType, id?: string) => () => void;
+  onRemoveFilter?: (key: FilterKeys, value?: string | PartnerContactStatus) => () => void;
   disabled?: boolean;
   panels: CollapsiblePanelItem[];
 }
@@ -50,10 +52,10 @@ const CollapsiblePanel = ({
   };
 
   const handleOnRemoveFilter =
-    (type: FilterType) => (event: React.MouseEvent<SVGElement, MouseEvent>) => {
+    (key: FilterKeys) => (event: React.MouseEvent<SVGElement, MouseEvent>) => {
       event.stopPropagation();
       if (onRemoveFilter) {
-        onRemoveFilter(type, '')();
+        onRemoveFilter(key)();
       }
     };
 
@@ -140,10 +142,7 @@ const CollapsiblePanel = ({
                     <h2 className={`ellipsis ${styles.collapsibleFilterLabel} my-0`}>
                       {selectedLabel}
                     </h2>
-                    <RemoveIcon
-                      className="ml-8 pure-black"
-                      onClick={handleOnRemoveFilter(panel.labels?.[0]?.label as FilterType)}
-                    />
+                    <RemoveIcon className="ml-8 pure-black" onClick={handleOnRemoveFilter(key)} />
                   </article>
                 ) : (
                   'view'

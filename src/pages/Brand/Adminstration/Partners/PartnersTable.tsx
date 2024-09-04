@@ -1,16 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { TableColumnProps } from 'antd';
-import { useHistory, useLocation, useParams } from 'umi';
+import { useHistory, useLocation } from 'umi';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useQuery } from '@/helper/hook';
-import { handleGetCommonPartnerTypeList } from '@/helper/utils';
+import { getFullName, handleGetCommonPartnerTypeList } from '@/helper/utils';
 import {
   deletePartner,
+  deletePartnerContact,
   getCommonPartnerTypes,
   getListPartnerCompanies,
   getListPartnerContacts,
@@ -28,6 +29,7 @@ import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomTabs } from '@/components/Tabs';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
 export enum PartnerTabKey {
@@ -50,23 +52,23 @@ export interface CommonPartnerType {
   }[];
 }
 
-export type FilterType = 'affiliation' | 'relation' | 'acquisition';
 export type FilterKeys = 'affiliation_id' | 'relation_id' | 'acquisition_id' | 'status';
 
 const PartnersTable = () => {
   const query = useQuery();
   const queryTab = query.get('tab');
+  const history = useHistory();
+  const location = useLocation();
+  const { association } = useAppSelector((state: RootState) => state.partner);
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
 
   const [columns, setColumns] = useState<TableColumnProps<Company | Contact>[]>([]);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(
     !isEmpty(queryTab) ? (queryTab as PartnerTabKey) : PartnerTabKey.companyPartners,
   );
-  const location = useLocation();
+
   const isActiveTab = location.pathname === PATH.brandPartners;
-  const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
   const isTabCompany = selectedTab === PartnerTabKey.companyPartners ? true : false;
-  const history = useHistory();
 
   const tableRef = useRef<any>();
   const initialLoad = useRef(true);
@@ -81,7 +83,7 @@ const PartnersTable = () => {
     };
 
     sortedCommonPartnerTypeList();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (initialLoad.current) {
@@ -98,187 +100,207 @@ const PartnersTable = () => {
 
   const handleDeletePartner = (id: string) => () => {
     confirmDelete(async () => {
-      const res = await deletePartner(id);
+      const res = isTabCompany ? await deletePartner(id) : await deletePartnerContact(id);
       if (res) tableRef.current.reload();
     });
   };
 
-  const handlePushToUpdate = (id: string) => () =>
-    pushTo(PATH.brandUpdatePartner.replace(':id', id));
+  const handlePushToUpdate = (id: string) => () => {
+    const path = isTabCompany
+      ? PATH.brandUpdatePartner.replace(':id', id)
+      : PATH.brandUpdatePartnerContact.replace(':id', id);
 
-  const companyColumns: TableColumnProps<Company>[] = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Country',
-      dataIndex: 'country_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'City',
-      dataIndex: 'city_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Contact',
-      dataIndex: 'contact',
-      width: '5%',
-    },
-    {
-      title: 'Affiliation',
-      dataIndex: 'affiliation_name',
-      width: '5%',
-    },
-    {
-      title: 'Relation',
-      dataIndex: 'relation_name',
-      width: '5%',
-    },
-    {
-      title: 'Acquisition',
-      dataIndex: 'acquisition_name',
-      width: '5%',
-      render: (_, record) => {
-        switch (record.acquisition_name) {
-          case 'Active':
-            return <span className="indigo-dark-variant">Active</span>;
-          case 'Inactive':
-            return <span className="red-magenta">Inactive</span>;
-          case 'Freeze':
-            return <span className="orange">Freeze</span>;
-          default:
-            return '';
-        }
-      },
-    },
-    {
-      title: 'Price Rate',
-      dataIndex: 'price_rate',
-      width: '5%',
-      render: (_, record) => parseFloat(record.price_rate?.toString()).toFixed(2),
-    },
-    {
-      title: 'Authorised Country',
-      dataIndex: 'authorized_country_name',
-      width: '45%',
-    },
-    {
-      title: 'Beyond',
-      dataIndex: 'coverage_beyond',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => (record.coverage_beyond ? 'Allow' : 'Not Allow'),
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => {
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'updated',
-                onClick: handlePushToUpdate(record.id),
-              },
-              {
-                type: 'deleted',
-                onClick: handleDeletePartner(record.id),
-              },
-            ]}
-          />
-        );
-      },
-    },
-  ];
+    history.push({
+      pathname: path,
+    });
+  };
 
-  const contactColumns: TableColumnProps<Contact>[] = [
-    {
-      title: 'Full Name',
-      dataIndex: 'fullname',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Company',
-      dataIndex: 'company_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Country',
-      dataIndex: 'country_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Title/Position',
-      dataIndex: 'position',
-      width: '5%',
-    },
-    {
-      title: 'Work Email',
-      dataIndex: 'email',
-      width: '5%',
-    },
-    {
-      title: 'Work Phone',
-      dataIndex: 'phone',
-      width: '5%',
-    },
-    {
-      title: 'Work Mobile',
-      dataIndex: 'mobile',
-      width: '5%',
-    },
-    {
-      title: 'Activation',
-      dataIndex: 'status',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => {
-        switch (record.status) {
-          case PartnerContactStatus.Uninitiate:
-            return 'Uninitiate';
-          case PartnerContactStatus.Pending:
-            return 'Pending';
-          case PartnerContactStatus.Activated:
-            return 'Activated';
-          default:
-            return '';
-        }
+  const companyColumns: TableColumnProps<Company>[] = useMemo(
+    () => [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        sorter: true,
+        width: '5%',
       },
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => {
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'updated',
-                onClick: () => {},
-              },
-              {
-                type: 'deleted',
-                onClick: () => {},
-              },
-            ]}
-          />
-        );
+      {
+        title: 'Country',
+        dataIndex: 'country_name',
+        sorter: true,
+        width: '5%',
       },
-    },
-  ];
+      {
+        title: 'City',
+        dataIndex: 'city_name',
+        sorter: true,
+        width: '5%',
+      },
+      {
+        title: 'Contact',
+        dataIndex: 'contact',
+        width: '5%',
+      },
+      {
+        title: 'Affiliation',
+        dataIndex: 'affiliation_name',
+        width: '5%',
+      },
+      {
+        title: 'Relation',
+        dataIndex: 'relation_name',
+        width: '5%',
+      },
+      {
+        title: 'Acquisition',
+        dataIndex: 'acquisition_name',
+        width: '5%',
+        render: (_, record) => {
+          switch (record.acquisition_name) {
+            case 'Active':
+              return <span className="indigo-dark-variant">Active</span>;
+            case 'Inactive':
+              return <span className="red-magenta">Inactive</span>;
+            case 'Freeze':
+              return <span className="orange">Freeze</span>;
+            default:
+              return '';
+          }
+        },
+      },
+      {
+        title: 'Price Rate',
+        dataIndex: 'price_rate',
+        width: '5%',
+        render: (_, record) => parseFloat(record.price_rate?.toString()).toFixed(2),
+      },
+      {
+        title: 'Authorised Country',
+        dataIndex: 'authorized_country_name',
+        width: '45%',
+      },
+      {
+        title: 'Beyond',
+        dataIndex: 'coverage_beyond',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => (record.coverage_beyond ? 'Allow' : 'Not Allow'),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => {
+          return (
+            <ActionMenu
+              actionItems={[
+                {
+                  type: 'updated',
+                  onClick: handlePushToUpdate(record.id),
+                },
+                {
+                  type: 'deleted',
+                  onClick: handleDeletePartner(record.id),
+                },
+              ]}
+            />
+          );
+        },
+      },
+    ],
+    [handleDeletePartner, handlePushToUpdate],
+  );
+
+  const contactColumns: TableColumnProps<Contact>[] = useMemo(
+    () => [
+      {
+        title: '',
+        dataIndex: 'avatar',
+        width: '2%',
+        render: (_, record) => {
+          return <TeamIcon avatar={record.avatar} name={getFullName(record)} size={20} />;
+        },
+      },
+      {
+        title: 'Full Name',
+        dataIndex: 'fullname',
+        sorter: true,
+        width: '15%',
+      },
+      {
+        title: 'Company',
+        dataIndex: 'company_name',
+        sorter: true,
+        width: '10%',
+      },
+      {
+        title: 'Country',
+        dataIndex: 'country_name',
+        sorter: true,
+        width: '10%',
+      },
+      {
+        title: 'Title/Position',
+        dataIndex: 'position',
+        width: '14%',
+      },
+      {
+        title: 'Work Email',
+        dataIndex: 'email',
+        width: '14%',
+      },
+      {
+        title: 'Work Phone',
+        dataIndex: 'phone',
+        width: '10%',
+      },
+      {
+        title: 'Work Mobile',
+        dataIndex: 'mobile',
+        width: '5%',
+      },
+      {
+        title: 'Activation',
+        dataIndex: 'status',
+        width: '15%',
+        render: (_, record) => {
+          switch (record.status) {
+            case PartnerContactStatus.Uninitiate:
+              return 'Uninitiate';
+            case PartnerContactStatus.Pending:
+              return 'Pending';
+            case PartnerContactStatus.Activated:
+              return 'Activated';
+            default:
+              return '';
+          }
+        },
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => {
+          return (
+            <ActionMenu
+              actionItems={[
+                {
+                  type: 'updated',
+                  onClick: handlePushToUpdate(record.id),
+                },
+                {
+                  type: 'deleted',
+                  onClick: handleDeletePartner(record.id),
+                },
+              ]}
+            />
+          );
+        },
+      },
+    ],
+    [handleDeletePartner, handlePushToUpdate],
+  );
 
   useEffect(() => {
     if (isTabCompany) {
@@ -313,36 +335,17 @@ const PartnersTable = () => {
     });
   };
 
-  const handleFilterChange = (type: FilterType, id?: string) => () => {
-    if (filters[`${type}_id`] === id) return;
+  const handleFilter = (key: FilterKeys, value?: string | PartnerContactStatus) => () => {
+    if (filters[key] === value) return;
 
-    if (id === '') {
-      setFilters({
-        [`${type}_id`]: '',
-      });
+    if (value === null && value === undefined) {
+      setFilters({});
       return;
     }
 
     setFilters({
-      [`${type}_id`]: id,
+      [key]: value,
     });
-  };
-
-  const handleFilterStatus = (value?: PartnerContactStatus) => () => {
-    if (filters['status'] === value) return;
-
-    if (
-      value === PartnerContactStatus.Activated ||
-      value === PartnerContactStatus.Pending ||
-      value === PartnerContactStatus.Uninitiate
-    ) {
-      setFilters({
-        status: value,
-      });
-      return;
-    }
-
-    setFilters({});
   };
 
   const generateAssociation = (): CollapsiblePanelItem[] => {
@@ -352,13 +355,13 @@ const PartnersTable = () => {
         title: 'Affiliation',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', ''),
+          headingOnClick: handleFilter('affiliation_id'),
         },
         labels:
           association?.affiliation.map((item) => ({
             id: item.id,
             label: item.name,
-            labelAction: handleFilterChange('affiliation', item.id),
+            labelAction: handleFilter('affiliation_id', item.id),
           })) || [],
       },
       {
@@ -366,13 +369,13 @@ const PartnersTable = () => {
         title: 'Relation',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', ''),
+          headingOnClick: handleFilter('relation_id'),
         },
         labels:
           association?.relation.map((item) => ({
             id: item.id,
             label: item.name,
-            labelAction: handleFilterChange('relation', item.id),
+            labelAction: handleFilter('relation_id', item.id),
           })) || [],
       },
       {
@@ -380,7 +383,7 @@ const PartnersTable = () => {
         title: 'Acquisition',
         headingDropdown: {
           label: 'VIEW ALL',
-          headingOnClick: handleFilterChange('affiliation', ''),
+          headingOnClick: handleFilter('acquisition_id'),
         },
         labels:
           association?.acquisition.map((item) => {
@@ -402,7 +405,7 @@ const PartnersTable = () => {
             return {
               id: item.id,
               label: <span className={`${className}`}>{item.name}</span>,
-              labelAction: handleFilterChange('acquisition', item.id),
+              labelAction: handleFilter('acquisition_id', item.id),
             };
           }) || [],
       },
@@ -415,23 +418,23 @@ const PartnersTable = () => {
       title: 'Activation',
       headingDropdown: {
         label: 'VIEW ALL',
-        headingOnClick: handleFilterStatus(),
+        headingOnClick: handleFilter('status'),
       },
       labels: [
         {
           id: PartnerContactStatus.Uninitiate.toString(),
           label: 'Uninitiate',
-          labelAction: handleFilterStatus(PartnerContactStatus.Uninitiate),
+          labelAction: handleFilter('status', PartnerContactStatus.Uninitiate),
         },
         {
           id: PartnerContactStatus.Pending.toString(),
           label: 'Pending',
-          labelAction: handleFilterStatus(PartnerContactStatus.Pending),
+          labelAction: handleFilter('status', PartnerContactStatus.Pending),
         },
         {
           id: PartnerContactStatus.Activated.toString(),
           label: 'Activated',
-          labelAction: handleFilterStatus(PartnerContactStatus.Activated),
+          labelAction: handleFilter('status', PartnerContactStatus.Activated),
         },
       ],
     },
@@ -464,7 +467,7 @@ const PartnersTable = () => {
           <CollapsiblePanel
             panels={isTabCompany ? generateAssociation() : generateStatus}
             filters={filters}
-            onRemoveFilter={handleFilterChange}
+            onRemoveFilter={handleFilter}
           />
           <CustomPlusButton
             onClick={handlePushTo}
