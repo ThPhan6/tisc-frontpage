@@ -385,6 +385,10 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PARTNER_COMPANY_ERROR: 'Delete partner company unsuccessfully',
   CREATE_PARTNER_CONTACT_SUCCESS: 'Create partner contact successfully',
   CREATE_PARTNER_CONTACT_ERROR: 'Create partner contact unsuccessfully',
+  UPDATE_PARTNER_CONTACT_SUCCESS: 'Update partner contact successfully',
+  UPDATE_PARTNER_CONTACT_ERROR: 'Update partner contact unsuccessfully',
+  DELETE_PARTNER_CONTACT_SUCCESS: 'Delete partner contact successfully',
+  DELETE_PARTNER_CONTACT_ERROR: 'Delete partner contact unsuccessfully',
 
   // company
   GET_COMPANY_SUMMARY_ERROR: 'Get company unsuccessfully',

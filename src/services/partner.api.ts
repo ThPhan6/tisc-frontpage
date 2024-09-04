@@ -90,6 +90,15 @@ export const getPartner = async (id: string) => {
     });
 };
 
+export const getPartnerContact = async (id: string) => {
+  return request<{ data: ContactForm }>(`/api/partner-contact/get-one/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_PARTNER_ERROR);
+      return null;
+    });
+};
+
 export const createPartner = async (data: CompanyForm) => {
   return request<{ data: CompanyForm }>(`/api/partner/create-partner`, {
     method: 'POST',
@@ -140,6 +149,25 @@ export async function updatePartner(id: string, data: CompanyForm) {
     });
 }
 
+export async function updatePartnerContact(id: string, data: ContactForm) {
+  showPageLoading();
+
+  return request<{ data: ContactForm }>(`/api/partner-contact/update/${id}`, {
+    method: 'PUT',
+    data,
+  })
+    .then((res) => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_PARTNER_CONTACT_SUCCESS);
+      hidePageLoading();
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PARTNER_CONTACT_ERROR);
+      hidePageLoading();
+      return null;
+    });
+}
+
 export async function deletePartner(id: string) {
   return request<boolean>(`/api/partner/delete/${id}`, { method: 'DELETE' })
     .then(() => {
@@ -148,6 +176,20 @@ export async function deletePartner(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_PARTNER_COMPANY_ERROR);
+      return false;
+    });
+}
+
+export async function deletePartnerContact(id: string) {
+  showPageLoading();
+
+  return request<boolean>(`/api/partner-contact/delete/${id}`, { method: 'DELETE' })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_PARTNER_CONTACT_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_PARTNER_CONTACT_ERROR);
       return false;
     });
 }
