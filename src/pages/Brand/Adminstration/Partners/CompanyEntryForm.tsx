@@ -160,7 +160,7 @@ const CompanyEntryForm = () => {
   const handleFetchPartnerInfo = async () => {
     const res = await getPartner(partnerId);
     if (res) {
-      setData(res);
+      setData({ ...res, price_rate: Number.parseFloat(res.price_rate.toString()).toFixed(2) });
       setInitSelectedAssociation({
         affiliation_id: res.affiliation_id,
         relation_id: res.relation_id,
@@ -240,7 +240,7 @@ const CompanyEntryForm = () => {
     if (isUpdate) {
       const res = await updatePartner(partnerId, normalizePriceRate(data));
       if (res) {
-        setData(res);
+        setData({ ...res, price_rate: Number.parseFloat(res.price_rate.toString()).toFixed(2) });
         setClearOther(false);
         await sortedCommonPartnerTypeList();
       }
