@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
-import { Spin, Tooltip, TooltipProps } from 'antd';
+import { BackTop, Spin, Tooltip, TooltipProps } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
@@ -386,6 +386,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customLoading, setCustomLoading] = useState(false);
   const firstLoad = useBoolean(true);
+  const [delayDuration, setDelayDuration] = useState<number>(3000);
   const location = useLocation();
   console.log(groups);
   useEffect(() => {
@@ -457,7 +458,16 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   }
   // After choosing filter
   else if (!firstLoad.value && !(typeof filter == 'undefined')) {
-    firstLoad.setValue(true);
+    setTimeout(() => {
+      firstLoad.setValue(true);
+    }, delayDuration);
+    if (!data?.length) {
+      return (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      );
+    }
   }
 
   if (!allProducts?.length && !data?.length) {
@@ -756,28 +766,24 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         ))}
       </div>
       {/* Scroll to top Button */}
-      <CustomButton
-        style={{
-          position: 'fixed',
-          bottom: 40,
-          right: 25,
-          zIndex: 1,
-          paddingLeft: 20,
-          paddingRight: 20,
-          borderRadius: 40,
-        }}
-        properties={'rounded'}
-        variant={'primaryDark'}
-        size={'medium'}
-        onClick={() => {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-          });
-        }}
-      >
-        <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
-      </CustomButton>
+      <BackTop>
+        <CustomButton
+          style={{
+            position: 'fixed',
+            bottom: 40,
+            right: 25,
+            zIndex: 1,
+            paddingLeft: 20,
+            paddingRight: 20,
+            borderRadius: 40,
+          }}
+          properties={'rounded'}
+          variant={'primaryDark'}
+          size={'medium'}
+        >
+          <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
+        </CustomButton>
+      </BackTop>
     </>
   );
 };
