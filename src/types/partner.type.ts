@@ -45,9 +45,10 @@ export interface Contact {
   email: string;
   phone: string;
   mobile: string;
+  avatar: string;
 }
 
-export interface ContactForm extends Omit<Contact, 'fullname'> {
+export interface ContactForm extends Omit<Contact, 'fullname' | 'avatar'> {
   firstname: string;
   lastname: string;
   gender: boolean;

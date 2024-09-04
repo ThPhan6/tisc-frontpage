@@ -14,7 +14,7 @@ import {
 import { createPartnerContact, getPartnerContact, updatePartnerContact } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
-import { ContactForm } from '@/types';
+import { ContactForm, PartnerContactStatus } from '@/types';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -153,6 +153,19 @@ const ContactEntryForm = () => {
       country_name: companyData.country || '',
       phone_code: companyData.phoneCode || '',
     }));
+  };
+
+  const getStatusText = () => {
+    switch (data.status) {
+      case PartnerContactStatus.Uninitiate:
+        return 'Uninitiate';
+      case PartnerContactStatus.Pending:
+        return 'Pending';
+      case PartnerContactStatus.Activated:
+        return 'Activated';
+      default:
+        return 'Unknown';
+    }
   };
 
   return (
@@ -325,8 +338,8 @@ const ContactEntryForm = () => {
           onClick={() => {}}
           label="Status"
           buttonName="Send Invite"
-          text_1="Activated"
-          text_2="uninitiate"
+          text_1={getStatusText()}
+          text_2="Uninitiate"
           disabled={true}
         />
         <FormGroup label="Remark" layout="vertical">

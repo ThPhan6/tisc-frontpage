@@ -8,7 +8,7 @@ import { useHistory, useLocation } from 'umi';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useQuery } from '@/helper/hook';
-import { handleGetCommonPartnerTypeList } from '@/helper/utils';
+import { getFullName, handleGetCommonPartnerTypeList } from '@/helper/utils';
 import {
   deletePartner,
   deletePartnerContact,
@@ -29,6 +29,7 @@ import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomTabs } from '@/components/Tabs';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
 export enum PartnerTabKey {
@@ -212,6 +213,14 @@ const PartnersTable = () => {
 
   const contactColumns: TableColumnProps<Contact>[] = useMemo(
     () => [
+      {
+        title: '',
+        dataIndex: 'avatar',
+        width: '5%',
+        render: (_, record) => {
+          return <TeamIcon avatar={record.avatar} name={getFullName(record)} size={20} />;
+        },
+      },
       {
         title: 'Full Name',
         dataIndex: 'fullname',
