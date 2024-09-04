@@ -81,7 +81,6 @@ const ContactEntryForm = () => {
     if (partnerContactId) {
       const handleFetchPartnerContactInfo = async () => {
         const res = await getPartnerContact(partnerContactId);
-
         if (res) setData(res);
       };
 

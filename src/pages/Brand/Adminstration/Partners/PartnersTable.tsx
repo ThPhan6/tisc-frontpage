@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
@@ -82,7 +82,7 @@ const PartnersTable = () => {
     };
 
     sortedCommonPartnerTypeList();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (initialLoad.current) {
@@ -104,186 +104,196 @@ const PartnersTable = () => {
     });
   };
 
-  const handlePushToUpdate = (id: string) => () =>
-    pushTo(
-      isTabCompany
-        ? PATH.brandUpdatePartner.replace(':id', id)
-        : PATH.brandUpdatePartnerContact.replace(':id', id),
-    );
+  const handlePushToUpdate = (id: string) => () => {
+    const path = isTabCompany
+      ? PATH.brandUpdatePartner.replace(':id', id)
+      : PATH.brandUpdatePartnerContact.replace(':id', id);
 
-  const companyColumns: TableColumnProps<Company>[] = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Country',
-      dataIndex: 'country_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'City',
-      dataIndex: 'city_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Contact',
-      dataIndex: 'contact',
-      width: '5%',
-    },
-    {
-      title: 'Affiliation',
-      dataIndex: 'affiliation_name',
-      width: '5%',
-    },
-    {
-      title: 'Relation',
-      dataIndex: 'relation_name',
-      width: '5%',
-    },
-    {
-      title: 'Acquisition',
-      dataIndex: 'acquisition_name',
-      width: '5%',
-      render: (_, record) => {
-        switch (record.acquisition_name) {
-          case 'Active':
-            return <span className="indigo-dark-variant">Active</span>;
-          case 'Inactive':
-            return <span className="red-magenta">Inactive</span>;
-          case 'Freeze':
-            return <span className="orange">Freeze</span>;
-          default:
-            return '';
-        }
-      },
-    },
-    {
-      title: 'Price Rate',
-      dataIndex: 'price_rate',
-      width: '5%',
-      render: (_, record) => parseFloat(record.price_rate?.toString()).toFixed(2),
-    },
-    {
-      title: 'Authorised Country',
-      dataIndex: 'authorized_country_name',
-      width: '45%',
-    },
-    {
-      title: 'Beyond',
-      dataIndex: 'coverage_beyond',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => (record.coverage_beyond ? 'Allow' : 'Not Allow'),
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => {
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'updated',
-                onClick: handlePushToUpdate(record.id),
-              },
-              {
-                type: 'deleted',
-                onClick: handleDeletePartner(record.id),
-              },
-            ]}
-          />
-        );
-      },
-    },
-  ];
+    history.push({
+      pathname: path,
+      state: { selectedTab },
+    });
+  };
 
-  const contactColumns: TableColumnProps<Contact>[] = [
-    {
-      title: 'Full Name',
-      dataIndex: 'fullname',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Company',
-      dataIndex: 'company_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Country',
-      dataIndex: 'country_name',
-      sorter: true,
-      width: '5%',
-    },
-    {
-      title: 'Title/Position',
-      dataIndex: 'position',
-      width: '5%',
-    },
-    {
-      title: 'Work Email',
-      dataIndex: 'email',
-      width: '5%',
-    },
-    {
-      title: 'Work Phone',
-      dataIndex: 'phone',
-      width: '5%',
-    },
-    {
-      title: 'Work Mobile',
-      dataIndex: 'mobile',
-      width: '5%',
-    },
-    {
-      title: 'Activation',
-      dataIndex: 'status',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => {
-        switch (record.status) {
-          case PartnerContactStatus.Uninitiate:
-            return 'Uninitiate';
-          case PartnerContactStatus.Pending:
-            return 'Pending';
-          case PartnerContactStatus.Activated:
-            return 'Activated';
-          default:
-            return '';
-        }
+  const companyColumns: TableColumnProps<Company>[] = useMemo(
+    () => [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        sorter: true,
+        width: '5%',
       },
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-      render: (_, record) => {
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'updated',
-                onClick: handlePushToUpdate(record.id),
-              },
-              {
-                type: 'deleted',
-                onClick: handleDeletePartner(record.id),
-              },
-            ]}
-          />
-        );
+      {
+        title: 'Country',
+        dataIndex: 'country_name',
+        sorter: true,
+        width: '5%',
       },
-    },
-  ];
+      {
+        title: 'City',
+        dataIndex: 'city_name',
+        sorter: true,
+        width: '5%',
+      },
+      {
+        title: 'Contact',
+        dataIndex: 'contact',
+        width: '5%',
+      },
+      {
+        title: 'Affiliation',
+        dataIndex: 'affiliation_name',
+        width: '5%',
+      },
+      {
+        title: 'Relation',
+        dataIndex: 'relation_name',
+        width: '5%',
+      },
+      {
+        title: 'Acquisition',
+        dataIndex: 'acquisition_name',
+        width: '5%',
+        render: (_, record) => {
+          switch (record.acquisition_name) {
+            case 'Active':
+              return <span className="indigo-dark-variant">Active</span>;
+            case 'Inactive':
+              return <span className="red-magenta">Inactive</span>;
+            case 'Freeze':
+              return <span className="orange">Freeze</span>;
+            default:
+              return '';
+          }
+        },
+      },
+      {
+        title: 'Price Rate',
+        dataIndex: 'price_rate',
+        width: '5%',
+        render: (_, record) => parseFloat(record.price_rate?.toString()).toFixed(2),
+      },
+      {
+        title: 'Authorised Country',
+        dataIndex: 'authorized_country_name',
+        width: '45%',
+      },
+      {
+        title: 'Beyond',
+        dataIndex: 'coverage_beyond',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => (record.coverage_beyond ? 'Allow' : 'Not Allow'),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => {
+          return (
+            <ActionMenu
+              actionItems={[
+                {
+                  type: 'updated',
+                  onClick: handlePushToUpdate(record.id),
+                },
+                {
+                  type: 'deleted',
+                  onClick: handleDeletePartner(record.id),
+                },
+              ]}
+            />
+          );
+        },
+      },
+    ],
+    [handleDeletePartner, handlePushToUpdate],
+  );
+
+  const contactColumns: TableColumnProps<Contact>[] = useMemo(
+    () => [
+      {
+        title: 'Full Name',
+        dataIndex: 'fullname',
+        sorter: true,
+        width: '5%',
+      },
+      {
+        title: 'Company',
+        dataIndex: 'company_name',
+        sorter: true,
+        width: '5%',
+      },
+      {
+        title: 'Country',
+        dataIndex: 'country_name',
+        sorter: true,
+        width: '5%',
+      },
+      {
+        title: 'Title/Position',
+        dataIndex: 'position',
+        width: '5%',
+      },
+      {
+        title: 'Work Email',
+        dataIndex: 'email',
+        width: '5%',
+      },
+      {
+        title: 'Work Phone',
+        dataIndex: 'phone',
+        width: '5%',
+      },
+      {
+        title: 'Work Mobile',
+        dataIndex: 'mobile',
+        width: '5%',
+      },
+      {
+        title: 'Activation',
+        dataIndex: 'status',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => {
+          switch (record.status) {
+            case PartnerContactStatus.Uninitiate:
+              return 'Uninitiate';
+            case PartnerContactStatus.Pending:
+              return 'Pending';
+            case PartnerContactStatus.Activated:
+              return 'Activated';
+            default:
+              return '';
+          }
+        },
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        align: 'center',
+        width: '5%',
+        render: (_, record) => {
+          return (
+            <ActionMenu
+              actionItems={[
+                {
+                  type: 'updated',
+                  onClick: handlePushToUpdate(record.id),
+                },
+                {
+                  type: 'deleted',
+                  onClick: handleDeletePartner(record.id),
+                },
+              ]}
+            />
+          );
+        },
+      },
+    ],
+    [handleDeletePartner, handlePushToUpdate],
+  );
 
   useEffect(() => {
     if (isTabCompany) {
