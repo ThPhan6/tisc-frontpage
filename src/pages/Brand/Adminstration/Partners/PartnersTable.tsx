@@ -299,12 +299,9 @@ const PartnersTable = () => {
   );
 
   useEffect(() => {
-    setColumns(
-      isTabCompany
-        ? (companyColumns as TableColumnProps<Company | Contact>[])
-        : (contactColumns as TableColumnProps<Company | Contact>[]),
-    );
-  }, [selectedTab]);
+    const selectedColumns = isTabCompany ? companyColumns : contactColumns;
+    setColumns(selectedColumns as TableColumnProps<Company | Contact>[]);
+  }, [selectedTab, isTabCompany]);
 
   const listTab: TabItem[] = [
     {
