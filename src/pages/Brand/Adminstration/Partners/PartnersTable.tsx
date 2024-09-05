@@ -58,22 +58,21 @@ const PartnersTable = () => {
   const query = useQuery();
   const queryTab = query.get('tab');
   const history = useHistory();
-  const location = useLocation();
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
 
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
   const [columns, setColumns] = useState<TableColumnProps<Company | Contact>[]>([]);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(
     !isEmpty(queryTab) ? (queryTab as PartnerTabKey) : PartnerTabKey.companyPartners,
   );
 
-  const isActiveTab = location.pathname === PATH.brandPartners;
+  const isActiveTab = pathname === PATH.brandPartners;
   const isTabCompany = selectedTab === PartnerTabKey.companyPartners ? true : false;
 
   const tableRef = useRef<any>();
   const initialLoad = useRef(true);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const sortedCommonPartnerTypeList = async () => {
@@ -105,15 +104,12 @@ const PartnersTable = () => {
     });
   };
 
-  const handlePushToUpdate = (id: string) => () => {
-    const path = isTabCompany
-      ? PATH.brandUpdatePartner.replace(':id', id)
-      : PATH.brandUpdatePartnerContact.replace(':id', id);
-
-    history.push({
-      pathname: path,
-    });
-  };
+  const handlePushToUpdate = (id: string) => () =>
+    pushTo(
+      isTabCompany
+        ? PATH.brandUpdatePartner.replace(':id', id)
+        : PATH.brandUpdatePartnerContact.replace(':id', id),
+    );
 
   const companyColumns: TableColumnProps<Company>[] = useMemo(
     () => [
@@ -225,44 +221,44 @@ const PartnersTable = () => {
         title: 'Full Name',
         dataIndex: 'fullname',
         sorter: true,
-        width: '15%',
+        width: '5%',
       },
       {
         title: 'Company',
         dataIndex: 'company_name',
         sorter: true,
-        width: '10%',
+        width: '5%',
       },
       {
         title: 'Country',
         dataIndex: 'country_name',
         sorter: true,
-        width: '10%',
+        width: '5%',
       },
       {
         title: 'Title/Position',
         dataIndex: 'position',
-        width: '14%',
+        width: '5%',
       },
       {
         title: 'Work Email',
         dataIndex: 'email',
-        width: '14%',
+        width: '5%',
       },
       {
         title: 'Work Phone',
         dataIndex: 'phone',
-        width: '10%',
+        width: '5%',
       },
       {
         title: 'Work Mobile',
         dataIndex: 'mobile',
-        width: '5%',
+        width: '58%',
       },
       {
         title: 'Activation',
         dataIndex: 'status',
-        width: '15%',
+        width: '5%',
         render: (_, record) => {
           switch (record.status) {
             case PartnerContactStatus.Uninitiate:
@@ -303,12 +299,11 @@ const PartnersTable = () => {
   );
 
   useEffect(() => {
-    if (isTabCompany) {
-      setColumns(companyColumns as TableColumnProps<Company | Contact>[]);
-      return;
-    }
-
-    setColumns(contactColumns as TableColumnProps<Company | Contact>[]);
+    setColumns(
+      isTabCompany
+        ? (companyColumns as TableColumnProps<Company | Contact>[])
+        : (contactColumns as TableColumnProps<Company | Contact>[]),
+    );
   }, [selectedTab]);
 
   const listTab: TabItem[] = [
