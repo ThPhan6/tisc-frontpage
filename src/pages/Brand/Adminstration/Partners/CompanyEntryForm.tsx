@@ -18,6 +18,7 @@ import {
 } from '@/helper/utils';
 import { createPartner, getCommonPartnerTypes, getPartner, updatePartner } from '@/services';
 
+import { RadioValue } from '@/components/CustomRadio/types';
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
 import { setAssociation } from '@/reducers/partner';
@@ -113,7 +114,7 @@ const CompanyEntryForm = () => {
   const isActiveTab = location.pathname === PATH.brandPartners;
   const partnerId = useGetParamId();
   const dispatch = useDispatch();
-  const isUpdate = partnerId ? true : false;
+  const isUpdate = Boolean(partnerId);
 
   const {
     data,
@@ -142,11 +143,7 @@ const CompanyEntryForm = () => {
   ];
 
   useEffect(() => {
-    if (
-      associationOther.affiliation === '' &&
-      associationOther.relation === '' &&
-      associationOther.acquisition === ''
-    ) {
+    if (Object.values(associationOther).every((value) => value === '')) {
       setData((pre) => ({
         ...pre,
         affiliation_id: initSelectedAssociation.affiliation_id,
@@ -222,6 +219,20 @@ const CompanyEntryForm = () => {
     }));
   };
 
+  const handleAssociationChange =
+    (type: 'affiliation' | 'relation' | 'acquisition') => (radioValue: RadioValue) => {
+      if (radioValue.value !== 'other') {
+        handleOnChange(`${type}_id`, radioValue.value as string);
+        return;
+      }
+
+      handleOnChange(`${type}_id`, radioValue.label as string);
+      setAssociationOther((prev) => ({
+        ...prev,
+        [type]: radioValue.label,
+      }));
+    };
+
   const normalizePriceRate = (formData: CompanyForm) => {
     return {
       ...formData,
@@ -230,9 +241,7 @@ const CompanyEntryForm = () => {
   };
 
   const handleSubmit = async () => {
-    const requiredFields = getRequiredFields();
-    const check = validateRequiredFields(data, requiredFields);
-    if (!check) return;
+    if (!validateRequiredFields(data, getRequiredFields())) return;
     showPageLoading();
     setClearOther(true);
 
@@ -414,9 +423,9 @@ const CompanyEntryForm = () => {
   };
 
   return (
-    <div>
+    <>
       <MemorizeTableHeader title="PARTNERS" customClass={styles.partnerHeader} />
-      <div className="d-flex">
+      <header className="d-flex">
         <CustomTabs
           listTab={listTab}
           centered
@@ -432,7 +441,7 @@ const CompanyEntryForm = () => {
           <CollapsiblePanel panels={panels} disabled={true} />
           <CustomPlusButton customClass="my-0 mx-16" disabled={true} />
         </div>
-      </div>
+      </header>
 
       <EntryFormWrapper
         customClass="w-full"
@@ -616,17 +625,7 @@ const CompanyEntryForm = () => {
             additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.affiliation_id}
-            onChange={(radioValue) => {
-              if (radioValue.value === 'other') {
-                handleOnChange('affiliation_id', radioValue.label as string);
-                setAssociationOther((prev) => ({
-                  ...prev,
-                  affiliation: radioValue.label as string,
-                }));
-                return;
-              }
-              handleOnChange('affiliation_id', radioValue.value as string);
-            }}
+            onChange={handleAssociationChange('affiliation')}
             clearOtherInput={clearOther}
           />
         </FormGroup>
@@ -662,17 +661,7 @@ const CompanyEntryForm = () => {
             additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.relation_id}
-            onChange={(radioValue) => {
-              if (radioValue.value === 'other') {
-                handleOnChange('relation_id', radioValue.label as string);
-                setAssociationOther((prev) => ({
-                  ...prev,
-                  relation: radioValue.label as string,
-                }));
-                return;
-              }
-              handleOnChange('relation_id', radioValue.value as string);
-            }}
+            onChange={handleAssociationChange('relation')}
             clearOtherInput={clearOther}
           />
         </FormGroup>
@@ -723,17 +712,7 @@ const CompanyEntryForm = () => {
             additionalOtherClass="mb-10 ml-16"
             otherInput={true}
             checked={data.acquisition_id}
-            onChange={(radioValue) => {
-              if (radioValue.value === 'other') {
-                handleOnChange('acquisition_id', radioValue.label as string);
-                setAssociationOther((prev) => ({
-                  ...prev,
-                  acquisition: radioValue.label as string,
-                }));
-                return;
-              }
-              handleOnChange('acquisition_id', radioValue.value as string);
-            }}
+            onChange={handleAssociationChange('acquisition')}
             clearOtherInput={clearOther}
           />
         </FormGroup>
@@ -829,7 +808,7 @@ const CompanyEntryForm = () => {
         title={accountProfileInfo.title}
         content={accountProfileInfo.content}
       />
-    </div>
+    </>
   );
 };
 

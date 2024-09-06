@@ -120,8 +120,7 @@ const ContactEntryForm = () => {
   };
 
   const handleSubmit = async () => {
-    const requiredFields = getRequiredFields();
-    if (!validateRequiredFields(data, requiredFields)) return;
+    if (!validateRequiredFields(data, getRequiredFields())) return;
 
     if (isUpdate) {
       const res = await updatePartnerContact(partnerContactId, data);
@@ -164,7 +163,7 @@ const ContactEntryForm = () => {
       case PartnerContactStatus.Activated:
         return 'Activated';
       default:
-        return 'Unknown';
+        return '';
     }
   };
 

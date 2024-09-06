@@ -58,22 +58,21 @@ const PartnersTable = () => {
   const query = useQuery();
   const queryTab = query.get('tab');
   const history = useHistory();
-  const location = useLocation();
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const { association } = useAppSelector((state: RootState) => state.partner);
-  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
 
+  const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
   const [columns, setColumns] = useState<TableColumnProps<Company | Contact>[]>([]);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(
     !isEmpty(queryTab) ? (queryTab as PartnerTabKey) : PartnerTabKey.companyPartners,
   );
 
-  const isActiveTab = location.pathname === PATH.brandPartners;
+  const isActiveTab = pathname === PATH.brandPartners;
   const isTabCompany = selectedTab === PartnerTabKey.companyPartners ? true : false;
 
   const tableRef = useRef<any>();
   const initialLoad = useRef(true);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const sortedCommonPartnerTypeList = async () => {
@@ -105,15 +104,12 @@ const PartnersTable = () => {
     });
   };
 
-  const handlePushToUpdate = (id: string) => () => {
-    const path = isTabCompany
-      ? PATH.brandUpdatePartner.replace(':id', id)
-      : PATH.brandUpdatePartnerContact.replace(':id', id);
-
-    history.push({
-      pathname: path,
-    });
-  };
+  const handlePushToUpdate = (id: string) => () =>
+    pushTo(
+      isTabCompany
+        ? PATH.brandUpdatePartner.replace(':id', id)
+        : PATH.brandUpdatePartnerContact.replace(':id', id),
+    );
 
   const companyColumns: TableColumnProps<Company>[] = useMemo(
     () => [
@@ -122,6 +118,7 @@ const PartnersTable = () => {
         dataIndex: 'name',
         sorter: true,
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.name}</span>,
       },
       {
         title: 'Country',
@@ -144,11 +141,13 @@ const PartnersTable = () => {
         title: 'Affiliation',
         dataIndex: 'affiliation_name',
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.affiliation_name}</span>,
       },
       {
         title: 'Relation',
         dataIndex: 'relation_name',
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.relation_name}</span>,
       },
       {
         title: 'Acquisition',
@@ -157,13 +156,13 @@ const PartnersTable = () => {
         render: (_, record) => {
           switch (record.acquisition_name) {
             case 'Active':
-              return <span className="indigo-dark-variant">Active</span>;
+              return <span className="indigo-dark-variant text-capitalize">Active</span>;
             case 'Inactive':
-              return <span className="red-magenta">Inactive</span>;
+              return <span className="red-magenta text-capitalize">Inactive</span>;
             case 'Freeze':
-              return <span className="orange">Freeze</span>;
+              return <span className="orange text-capitalize">Freeze</span>;
             default:
-              return '';
+              return <span className="text-capitalize">{record.acquisition_name}</span>;
           }
         },
       },
@@ -225,52 +224,55 @@ const PartnersTable = () => {
         title: 'Full Name',
         dataIndex: 'fullname',
         sorter: true,
-        width: '15%',
+        width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.fullname}</span>,
       },
       {
         title: 'Company',
         dataIndex: 'company_name',
         sorter: true,
-        width: '10%',
+        width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.company_name}</span>,
       },
       {
         title: 'Country',
         dataIndex: 'country_name',
         sorter: true,
-        width: '10%',
+        width: '5%',
       },
       {
         title: 'Title/Position',
         dataIndex: 'position',
-        width: '14%',
+        width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.position}</span>,
       },
       {
         title: 'Work Email',
         dataIndex: 'email',
-        width: '14%',
+        width: '5%',
       },
       {
         title: 'Work Phone',
         dataIndex: 'phone',
-        width: '10%',
+        width: '5%',
       },
       {
         title: 'Work Mobile',
         dataIndex: 'mobile',
-        width: '5%',
+        width: '58%',
       },
       {
         title: 'Activation',
         dataIndex: 'status',
-        width: '15%',
+        width: '5%',
         render: (_, record) => {
           switch (record.status) {
             case PartnerContactStatus.Uninitiate:
-              return 'Uninitiate';
+              return <span className="text-capitalize">Uninitiate</span>;
             case PartnerContactStatus.Pending:
-              return 'Pending';
+              return <span className="text-capitalize">Pending</span>;
             case PartnerContactStatus.Activated:
-              return 'Activated';
+              return <span className="text-capitalize">Activated</span>;
             default:
               return '';
           }
@@ -303,13 +305,9 @@ const PartnersTable = () => {
   );
 
   useEffect(() => {
-    if (isTabCompany) {
-      setColumns(companyColumns as TableColumnProps<Company | Contact>[]);
-      return;
-    }
-
-    setColumns(contactColumns as TableColumnProps<Company | Contact>[]);
-  }, [selectedTab]);
+    const selectedColumns = isTabCompany ? companyColumns : contactColumns;
+    setColumns(selectedColumns as TableColumnProps<Company | Contact>[]);
+  }, [selectedTab, isTabCompany]);
 
   const listTab: TabItem[] = [
     {
