@@ -54,9 +54,7 @@ const CollapsiblePanel = ({
   const handleOnRemoveFilter =
     (key: FilterKeys) => (event: React.MouseEvent<SVGElement, MouseEvent>) => {
       event.stopPropagation();
-      if (onRemoveFilter) {
-        onRemoveFilter(key)();
-      }
+      if (onRemoveFilter) onRemoveFilter(key)();
     };
 
   const isCursorPointer = () => (!disabled ? 'pointer' : 'not-allowed');
