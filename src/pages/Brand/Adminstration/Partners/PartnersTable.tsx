@@ -118,6 +118,7 @@ const PartnersTable = () => {
         dataIndex: 'name',
         sorter: true,
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.name}</span>,
       },
       {
         title: 'Country',
@@ -140,11 +141,13 @@ const PartnersTable = () => {
         title: 'Affiliation',
         dataIndex: 'affiliation_name',
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.affiliation_name}</span>,
       },
       {
         title: 'Relation',
         dataIndex: 'relation_name',
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.relation_name}</span>,
       },
       {
         title: 'Acquisition',
@@ -153,13 +156,13 @@ const PartnersTable = () => {
         render: (_, record) => {
           switch (record.acquisition_name) {
             case 'Active':
-              return <span className="indigo-dark-variant">Active</span>;
+              return <span className="indigo-dark-variant text-capitalize">Active</span>;
             case 'Inactive':
-              return <span className="red-magenta">Inactive</span>;
+              return <span className="red-magenta text-capitalize">Inactive</span>;
             case 'Freeze':
-              return <span className="orange">Freeze</span>;
+              return <span className="orange text-capitalize">Freeze</span>;
             default:
-              return '';
+              return <span className="text-capitalize">{record.acquisition_name}</span>;
           }
         },
       },
@@ -222,12 +225,14 @@ const PartnersTable = () => {
         dataIndex: 'fullname',
         sorter: true,
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.fullname}</span>,
       },
       {
         title: 'Company',
         dataIndex: 'company_name',
         sorter: true,
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.company_name}</span>,
       },
       {
         title: 'Country',
@@ -239,6 +244,7 @@ const PartnersTable = () => {
         title: 'Title/Position',
         dataIndex: 'position',
         width: '5%',
+        render: (_, record) => <span className="text-capitalize ">{record.position}</span>,
       },
       {
         title: 'Work Email',
@@ -262,11 +268,11 @@ const PartnersTable = () => {
         render: (_, record) => {
           switch (record.status) {
             case PartnerContactStatus.Uninitiate:
-              return 'Uninitiate';
+              return <span className="text-capitalize">Uninitiate</span>;
             case PartnerContactStatus.Pending:
-              return 'Pending';
+              return <span className="text-capitalize">Pending</span>;
             case PartnerContactStatus.Activated:
-              return 'Activated';
+              return <span className="text-capitalize">Activated</span>;
             default:
               return '';
           }
