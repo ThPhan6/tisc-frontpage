@@ -248,8 +248,13 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
     if (newLabel) {
       // check if value is existed
       const isExisted = labels
-        .map((item: any) => String(item.name).toLocaleLowerCase())
-        .includes(newLabel.toLocaleLowerCase());
+        .map((item: any) => {
+          return {
+            ...item,
+            name: String(item.name).toLocaleLowerCase(),
+          };
+        })
+        .find((item: any) => item.name == newLabel.toLocaleLowerCase() && item.parent_id == null);
 
       if (isExisted) {
         message.error('Label is existed');
