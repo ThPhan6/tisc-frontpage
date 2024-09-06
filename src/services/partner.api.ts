@@ -53,7 +53,7 @@ export const getListPartnerContacts = (
     method: 'GET',
     params,
   })
-    .then((response: any) => {
+    .then((response) => {
       const { partner_contacts, pagination } = response.data;
       callback({
         data: partner_contacts,
