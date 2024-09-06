@@ -72,7 +72,6 @@ const PartnersTable = () => {
   const isTabCompany = selectedTab === PartnerTabKey.companyPartners ? true : false;
 
   const tableRef = useRef<any>();
-  const initialLoad = useRef(true);
 
   useEffect(() => {
     const sortedCommonPartnerTypeList = async () => {
@@ -85,17 +84,8 @@ const PartnersTable = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (initialLoad.current) {
-      initialLoad.current = false;
-      return;
-    }
-
-    tableRef.current.reload();
-  }, [selectedTab]);
-
-  useEffect(() => {
     tableRef.current.reloadWithFilter();
-  }, [filters]);
+  }, [filters, selectedTab]);
 
   const handleDeletePartner = (id: string) => () => {
     confirmDelete(async () => {
