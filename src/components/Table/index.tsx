@@ -253,19 +253,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     });
   };
 
-  // useEffect(() => {
-  //   if (currentPage !== undefined && currentPage !== pagination.current) {
-  //     console.log(currentPage);
-  //     console.log(pagination);
-
-  //     setPagination((prev) => ({ ...prev, current: currentPage }));
-  //     fetchData({
-  //       pagination: { ...pagination, current: currentPage },
-  //       sorter: currentSorter,
-  //     });
-  //   }
-  // }, [currentPage]);
-
   useEffect(() => {
     if (!isUndefined(tableSummaryRef.current?.getTableSummaryWidth)) {
       setTableSummaryWidth(tableSummaryRef.current.getTableSummaryWidth());
