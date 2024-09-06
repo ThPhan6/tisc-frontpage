@@ -1157,16 +1157,15 @@ export const NextStep: FC<NextStepProps> = forwardRef(
           {/* left side */}
           <div className={styles.content} style={{ marginRight: 8 }}>
             {linkedData.length ? (
-              <div className={styles.resetAll}>
-                <CustomButton
-                  size="small"
-                  variant="primary"
-                  properties="rounded"
-                  onClick={handleResetAll}
-                >
-                  Reset All
-                </CustomButton>
-              </div>
+              <CustomButton
+                buttonClass={styles.resetAll}
+                size="small"
+                variant="primary"
+                properties="rounded"
+                onClick={handleResetAll}
+              >
+                Reset All
+              </CustomButton>
             ) : null}
             {pickedData.map((pickedSub, optIdx) => {
               return (
