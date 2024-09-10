@@ -155,6 +155,10 @@ export const MESSAGE_NOTIFICATION = {
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
+  // partner
+  GET_LIST_COMMON_PARTNER_TYPE_ERROR: 'Get list common partner type error',
+  GET_PARTNER_ERROR: 'Get partner error',
+
   /// user group
   // brand
   GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
@@ -371,6 +375,23 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
   CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',
   UPDATE_BOOKING_SUCCESS: 'Update booking successfully',
+
+  // partner
+  CREATE_PARTNER_COMPANY_SUCCESS: 'Create partner company successfully',
+  CREATE_PARTNER_COMPANY_ERROR: 'Create partner company unsuccessfully',
+  UPDATE_PARTNER_COMPANY_SUCCESS: 'Update partner company successfully',
+  UPDATE_PARTNER_COMPANY_ERROR: 'Update partner company unsuccessfully',
+  DELETE_PARTNER_COMPANY_SUCCESS: 'Delete partner company successfully',
+  DELETE_PARTNER_COMPANY_ERROR: 'Delete partner company unsuccessfully',
+  CREATE_PARTNER_CONTACT_SUCCESS: 'Create partner contact successfully',
+  CREATE_PARTNER_CONTACT_ERROR: 'Create partner contact unsuccessfully',
+  UPDATE_PARTNER_CONTACT_SUCCESS: 'Update partner contact successfully',
+  UPDATE_PARTNER_CONTACT_ERROR: 'Update partner contact unsuccessfully',
+  DELETE_PARTNER_CONTACT_SUCCESS: 'Delete partner contact successfully',
+  DELETE_PARTNER_CONTACT_ERROR: 'Delete partner contact unsuccessfully',
+
+  // company
+  GET_COMPANY_SUMMARY_ERROR: 'Get company unsuccessfully',
 };
 
 export const MESSAGE_TOOLTIP = {

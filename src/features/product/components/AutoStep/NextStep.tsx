@@ -43,6 +43,7 @@ import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { setPartialProductDetail } from '@/features/product/reducers';
 import store, { useAppSelector } from '@/reducers';
 
+import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
 import { CheckBoxOptionProps, CheckboxDynamic } from '@/components/CustomCheckbox/CheckboxDynamic';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
@@ -1104,6 +1105,42 @@ export const NextStep: FC<NextStepProps> = forwardRef(
         setCurActiveKey(curActiveKey.filter((item) => item !== activeKey));
       } else setCurActiveKey(curActiveKey.concat([activeKey]));
     };
+    const handleResetAll = async () => {
+      store.dispatch(
+        setLinkedOptionData({
+          index: slide,
+          pickedData: pickedData.map((el) => ({
+            ...el,
+            subs: el.subs.map((item) => {
+              return {
+                ...item,
+                sub_id: el.id,
+                sub_name: el.name,
+                pre_option: slide === 0 ? undefined : item.pre_option,
+                replicate: 0,
+              };
+            }),
+          })),
+          linkedData: linkedData,
+        }),
+      );
+      store.dispatch(
+        setOptionsSelected({
+          order: curOrder - 1,
+          options: optionsSelected[curOrder - 1].options.map((el) => ({
+            ...el,
+            linkage: 0,
+            replicate: 0,
+          })),
+        }),
+      );
+      store.dispatch(
+        setOptionsSelected({
+          order: curOrder,
+          options: [],
+        }),
+      );
+    };
     useImperativeHandle(ref, () => ({
       handleBackToPrevSlide,
       handleGoToNextSlide,
@@ -1119,6 +1156,17 @@ export const NextStep: FC<NextStepProps> = forwardRef(
         <div className={styles.mainContent}>
           {/* left side */}
           <div className={styles.content} style={{ marginRight: 8 }}>
+            {linkedData.length ? (
+              <CustomButton
+                buttonClass={styles.resetAll}
+                size="small"
+                variant="primary"
+                properties="rounded"
+                onClick={handleResetAll}
+              >
+                Reset All
+              </CustomButton>
+            ) : null}
             {pickedData.map((pickedSub, optIdx) => {
               return (
                 <>

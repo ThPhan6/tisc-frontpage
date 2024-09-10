@@ -23,6 +23,7 @@ export const Status: FC<StatusProps> = ({
   InActiveButtonClass,
   alignOffset,
   toolTipTitle,
+  disabled = false,
 }) => {
   return (
     <FormGroup label={label} layout={layout} formClass={`${styles.form_group} ${formClass}`}>
@@ -32,7 +33,8 @@ export const Status: FC<StatusProps> = ({
           ${styles.status_text}
           ${textClass}
           ${value === USER_STATUSES.PENDING || !value ? styles.pendingText : ''}
-          `}>
+          `}
+        >
           {value === USER_STATUSES.PENDING || !value ? text_2 : text_1}
         </span>
         {value == USER_STATUSES.ACTIVE || value == USER_STATUSES.BLOCKED ? (
@@ -53,11 +55,14 @@ export const Status: FC<StatusProps> = ({
             }
             overlayStyle={{ width: 244 }}
             placement="topRight"
-            align={{ offset: alignOffset }}>
+            align={{ offset: alignOffset }}
+          >
             <CustomButton
               buttonClass={`${InActiveButtonClass} ${styles.sendInvite}`}
               onClick={onClick}
-              variant="secondary">
+              variant="secondary"
+              disabled={disabled}
+            >
               {buttonName}
             </CustomButton>
           </Tooltip>

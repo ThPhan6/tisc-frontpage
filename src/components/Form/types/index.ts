@@ -91,6 +91,7 @@ export interface PhoneInputProps {
 export type PhoneInputValueProp = {
   zoneCode: string;
   phoneNumber: string;
+  priceRate?: number;
 };
 
 export interface StatusProps {
@@ -107,4 +108,5 @@ export interface StatusProps {
   InActiveButtonClass?: string;
   toolTipTitle?: string | ReactNode;
   alignOffset?: [number, number];
+  disabled?: boolean;
 }

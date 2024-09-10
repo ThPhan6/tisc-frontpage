@@ -441,12 +441,25 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                     </Title>
                   ),
                   options:
-                    curAttributeData?.basis?.subs?.map((sub: any, index: number) => {
-                      return {
-                        value: sub.id,
-                        label: <AttributeOptionLabel option={sub} key={index} />,
-                      };
-                    }) ?? [],
+                    curAttributeData?.basis?.subs
+                      ?.sort((a: any, b: any) => {
+                        const nameA = a?.value_1?.toUpperCase();
+                        const nameB = b?.value_1?.toUpperCase();
+                        if (nameA < nameB) {
+                          return -1;
+                        }
+                        if (nameA > nameB) {
+                          return 1;
+                        }
+
+                        return 0;
+                      })
+                      ?.map((sub: any, index: number) => {
+                        return {
+                          value: sub.id,
+                          label: <AttributeOptionLabel option={sub} key={index} />,
+                        };
+                      }) ?? [],
                 },
               ]
         }

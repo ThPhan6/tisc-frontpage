@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { CSSProperties, FC, ReactNode } from 'react';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useCollapseGroupActiveCheck } from '@/reducers/active';
@@ -25,6 +25,8 @@ export interface CollapseRadioListProps {
   activeKey?: string | string[];
   groupType?: string;
   groupIndex?: number; // distinct index for handling active collapse item
+  additonalOptionsStyle?: CSSProperties;
+  additionalOtherClass?: string;
 }
 
 const CollapseRadioList: FC<CollapseRadioListProps> = ({
@@ -42,6 +44,8 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   inputPlaceholder,
   noDataMessage = 'No options',
   collapsible = false,
+  additonalOptionsStyle,
+  additionalOtherClass = '',
   ...props
 }) => {
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
@@ -65,7 +69,7 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
       className={`${styles.functionTypeDropdown} ${containerClass}`}
       {...props}
     >
-      {options.length ? (
+      {options?.length ? (
         <CustomRadio
           options={options}
           isRadioList
@@ -74,6 +78,8 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
           inputPlaceholder={inputPlaceholder}
           value={checked}
           onChange={onChange}
+          optionStyle={additonalOptionsStyle}
+          additionalOtherClass={additionalOtherClass}
         />
       ) : (
         <span style={{ paddingLeft: 16 }}>{noDataMessage}</span>
