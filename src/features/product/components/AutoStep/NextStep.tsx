@@ -1106,40 +1106,67 @@ export const NextStep: FC<NextStepProps> = forwardRef(
       } else setCurActiveKey(curActiveKey.concat([activeKey]));
     };
     const handleResetAll = async () => {
-      store.dispatch(
-        setLinkedOptionData({
-          index: slide,
-          pickedData: pickedData.map((el) => ({
-            ...el,
-            subs: el.subs.map((item) => {
-              return {
-                ...item,
-                sub_id: el.id,
-                sub_name: el.name,
-                pre_option: slide === 0 ? undefined : item.pre_option,
-                replicate: 0,
-              };
-            }),
-          })),
-          linkedData: linkedData,
-        }),
-      );
-      store.dispatch(
-        setOptionsSelected({
-          order: curOrder - 1,
-          options: optionsSelected[curOrder - 1].options.map((el) => ({
-            ...el,
+      // Remove slide bar
+      const newSlideBar = cloneDeep(slideBars);
+      store.dispatch(setSlideBar(newSlideBar.slice(0, slide + 2)));
+
+      // Remove linked option data
+      const newLinkedOptionData =
+        linkedOptionData
+          ?.filter((_, idx) => idx <= slide + 1)
+          .map((item, id) =>
+            id == slide
+              ? {
+                  ...item,
+                  pickedData: item.pickedData.map((picked) => ({
+                    ...picked,
+                    subs: picked.subs.map((sub) => ({ ...sub, replicate: 0 })),
+                  })),
+                }
+              : item,
+          ) ?? [];
+      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+
+      /* delete options selected view */
+      let newOptionsSelected: OptionSelectedProps = {};
+
+      forEach(optionsSelected, (optionSelected, curStep) => {
+        if (Number(curStep) < curOrder - 1) {
+          newOptionsSelected = {
+            ...newOptionsSelected,
+            [Number(curStep)]: optionSelected,
+          };
+        } else if (Number(curStep) == curOrder - 1) {
+          const newOptionSelected = cloneDeep(optionSelected);
+          newOptionSelected.options = optionSelected.options.map((option) => ({
+            ...option,
             linkage: 0,
             replicate: 0,
-          })),
-        }),
-      );
-      store.dispatch(
-        setOptionsSelected({
-          order: curOrder,
-          options: [],
-        }),
-      );
+          }));
+          newOptionsSelected = {
+            ...newOptionsSelected,
+            [Number(curStep)]: newOptionSelected,
+          };
+        }
+      });
+
+      store.dispatch(setOptionsSelected(newOptionsSelected));
+      /* ----------------------- */
+
+      /* delete option hightighted view */
+      let newPickedOption = {};
+
+      forEach(pickedOption, (option, curSlide) => {
+        if (Number(curSlide) <= slide) {
+          newPickedOption = {
+            ...newPickedOption,
+            [Number(curSlide)]: option,
+          };
+        }
+      });
+
+      store.dispatch(setPickedOption(newPickedOption));
+      /* ---------------------------- */
     };
     useImperativeHandle(ref, () => ({
       handleBackToPrevSlide,
