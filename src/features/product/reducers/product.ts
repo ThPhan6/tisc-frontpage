@@ -384,7 +384,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     let prevFormat = -1;
     el?.attributes?.forEach((attr: any) => {
       if (!attr?.basis_options?.find((opt: any) => opt.isChecked)) {
-        const curFormat = attr?.basis_options?.[0].id_format_type;
+        const curFormat = attr?.basis_options?.[0].id_format_type || 0;
         const seperator = prevFormat == 0 ? ', ' : curFormat == 0 ? ', ' : ' - ';
         prevFormat = curFormat;
         variants += (variants ? seperator : '') + 'X';
