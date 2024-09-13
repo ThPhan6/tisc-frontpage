@@ -1057,6 +1057,67 @@ export const NextStep: FC<NextStepProps> = forwardRef(
         e.preventDefault();
 
         if (subOpt.replicate === 1) {
+          const removeIds: any[] = [];
+          removeIds.push(subOpt.id);
+          // LinkedOptionData
+          const newLinkedOptionData =
+            cloneDeep(linkedOptionData).map((item, id) => {
+              if (id < slide) return item;
+              const newPickedData =
+                id == slide
+                  ? item.pickedData.map((el) => ({
+                      ...el,
+                      subs: el.subs.map((sub) => ({
+                        ...sub,
+                        replicate:
+                          sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
+                            ? --sub.replicate
+                            : sub.replicate,
+                      })),
+                    }))
+                  : item.pickedData.map((el) => {
+                      const newSubs = el.subs.filter((sub) => {
+                        if (!removeIds.includes(sub.pre_option)) return true;
+                        removeIds.push(sub.id);
+                        return false;
+                      });
+                      return {
+                        ...el,
+                        subs: newSubs,
+                      };
+                    });
+              return {
+                ...item,
+                pickedData: newPickedData.filter((el) => el.subs.length > 0),
+                linkedData: item.linkedData,
+              };
+            }) ?? [];
+          store.dispatch(setLinkedOptionData(newLinkedOptionData));
+          // OptionsSelected
+          let newOptionsSelected: OptionSelectedProps = {};
+
+          forEach(optionsSelected, (optionSelected, curStep) => {
+            const newOptionSelected = cloneDeep(optionSelected);
+            newOptionSelected.options =
+              Number(curStep) == curOrder - 1
+                ? newOptionSelected.options.map((sub) => ({
+                    ...sub,
+                    replicate:
+                      sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
+                        ? --sub.replicate
+                        : sub.replicate,
+                  }))
+                : Number(curStep) > curOrder - 1
+                ? newOptionSelected.options.filter((sub) => !removeIds.includes(sub.pre_option))
+                : newOptionSelected.options;
+            newOptionsSelected = {
+              ...newOptionsSelected,
+              [Number(curStep)]: newOptionSelected,
+            };
+          });
+          store.dispatch(setOptionsSelected(newOptionsSelected));
+          return;
+        } else if (subOpt.replicate == 0) {
           return;
         }
         if (restrictDecreaseByTotalDefaultPreSelect(subOpt)) return;
@@ -1303,7 +1364,7 @@ export const NextStep: FC<NextStepProps> = forwardRef(
                                   >
                                     <DropdownIcon
                                       style={{
-                                        cursor: option.replicate === 1 ? 'default' : 'pointer',
+                                        cursor: option.replicate === 0 ? 'default' : 'pointer',
                                       }}
                                       onClick={handleDecreaseReplicate(option)}
                                     />
