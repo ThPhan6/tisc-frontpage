@@ -135,6 +135,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   );
 
   const [images, setImages] = useState<any>([]);
+  const [optionImages, setOptionImages] = useState<any>([]);
   /// for specification choice attribute
   const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
 
@@ -205,6 +206,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   useEffect(() => {
     if (!attrGroupItem.isChecked) {
       setImages([]);
+      setOptionImages([]);
       return;
     }
 
@@ -240,7 +242,24 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       });
     };
     setImages(autoStepImages());
-  }, [attrGroupItem?.stepSelection?.quantities, specifiedDetail, currentSpecAttributeGroupId]);
+    // Options Images
+    const optionAttributes = attrGroupItem.attributes;
+    const getOptionImages = () => {
+      return optionAttributes?.map((attribute) => {
+        const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
+        return {
+          ...attribute,
+          basis_options: newBasisOptions,
+        };
+      });
+    };
+    setOptionImages(getOptionImages());
+  }, [
+    attrGroupItem?.stepSelection?.quantities,
+    attrGroupItem?.attributes,
+    specifiedDetail,
+    currentSpecAttributeGroupId,
+  ]);
   const handleOpenAutoStepModal = (stepIndex: number) => async () => {
     if (!curProductId) {
       message.error('Product ID is required');
@@ -604,6 +623,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   onCheckedSpecification(grIndex, !isTiscAdmin);
 
                   setImages([]);
+                  setOptionImages([]);
                   if (curAttributeSelect.groupId && curAttributeSelect.attribute?.id) {
                     setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
                   }
@@ -1000,6 +1020,80 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   )}
                 </tbody>
               </table>
+              {isEditable ? null : (
+                <div className={styles.stepImages}>
+                  {optionImages?.map((step: any, stepIdx: number) =>
+                    step.basis_options.map((option: any, optionIdx: number) => {
+                      return (
+                        <div
+                          key={`${step.id}_${option.id}_${stepIdx}_${optionIdx}`}
+                          className={`${styles.autoStepOption} ${
+                            isSpecifiedModal ? styles.autoStepOptionSpec : 'autoStepOption'
+                          }`}
+                        >
+                          {optionIdx !== 0 || stepIdx === 0 ? null : (
+                            <div className="plus-icon">
+                              <PlusIcon />
+                            </div>
+                          )}
+                          <Popover
+                            className={`${styles.customPopover}`}
+                            overlayClassName={`${styles.customPopover}`}
+                            content={
+                              <div className="step-text">
+                                <BodyText
+                                  level={7}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  style={{ whiteSpace: 'nowrap' }}
+                                  color="white"
+                                >
+                                  {step.name}
+                                </BodyText>
+
+                                <BodyText
+                                  level={7}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  color="white"
+                                >
+                                  {trimEnd(
+                                    `${option.value_1} ${option.value_2} ${
+                                      option.unit_1 || option.unit_2
+                                        ? `- ${option.unit_1} ${option.unit_2}`
+                                        : ''
+                                    }`,
+                                  )}
+                                </BodyText>
+                                <BodyText
+                                  level={7}
+                                  customClass="description"
+                                  fontFamily="Roboto"
+                                  color="white"
+                                >
+                                  {option.option_code}
+                                </BodyText>
+                              </div>
+                            }
+                          >
+                            <div className="step-info">
+                              {option.image ? (
+                                option.image === '/default/option_default.webp' ? (
+                                  <div className={'step-image-text-container'}>
+                                    <div className={'step-image-text'}>{option.option_code}</div>
+                                  </div>
+                                ) : (
+                                  <img className="step-image" src={showImageUrl(option.image)} />
+                                )
+                              ) : null}
+                            </div>
+                          </Popover>
+                        </div>
+                      );
+                    }),
+                  )}
+                </div>
+              )}
             </div>
           </CustomCollapse>
         </div>
