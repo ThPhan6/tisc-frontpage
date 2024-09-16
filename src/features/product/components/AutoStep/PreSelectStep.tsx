@@ -923,7 +923,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                               fontFamily="Roboto"
                               level={6}
                               customClass="amount-quantity"
-                              style={{ padding: '0 8px', width: 30 }}
+                              style={{ padding: '0 4px', width: 20 }}
                             >
                               {sub.quantity}
                             </BodyText>
