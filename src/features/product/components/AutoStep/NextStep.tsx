@@ -1116,6 +1116,8 @@ export const NextStep: FC<NextStepProps> = forwardRef(
             };
           });
           store.dispatch(setOptionsSelected(newOptionsSelected));
+          const newAllOptionPickedIds = allOptionPickedIds.filter((id) => !removeIds.includes(id));
+          store.dispatch(setAllOptionPickedIds(newAllOptionPickedIds));
           return;
         } else if (subOpt.replicate == 0) {
           return;
@@ -1228,6 +1230,20 @@ export const NextStep: FC<NextStepProps> = forwardRef(
 
       store.dispatch(setPickedOption(newPickedOption));
       /* ---------------------------- */
+      /// get all options highlighted
+      const allOptionSelectedIds: string[] = [];
+      map(optionsSelected, (optionSelected, order: string) => {
+        if (Number(order) < curOrder - 1) {
+          optionSelected.options.forEach((el) => {
+            const optionSelectedId =
+              Number(order) === 1 ? (optionSelected.id as string) : (el.pre_option as string);
+            allOptionSelectedIds.push(optionSelectedId);
+          });
+        }
+      });
+
+      /// save all option highlighted by option selected pre_option and its id
+      store.dispatch(setAllOptionPickedIds(allOptionSelectedIds));
     };
     useImperativeHandle(ref, () => ({
       handleBackToPrevSlide,
