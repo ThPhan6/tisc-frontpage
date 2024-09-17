@@ -173,6 +173,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
           title={title}
           visible={visible}
           setVisible={setVisible}
+          width={1152}
           groupRadioList={[
             {
               heading: attributeName,
