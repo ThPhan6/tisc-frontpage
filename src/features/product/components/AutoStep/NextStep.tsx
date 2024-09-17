@@ -681,24 +681,24 @@ export const NextStep: FC<NextStepProps> = forwardRef(
           store.dispatch(
             setOptionsSelected({ order: curOrder, options: optionSelectedOfCurrentStep }),
           );
-          if (optionsSelected[curOrder - 1] && curOrder !== 2) {
-            store.dispatch(
-              setOptionsSelected({
-                order: curOrder - 1,
-                options: optionsSelected[curOrder - 1].options.map((el) => ({
-                  ...el,
-                  linkage: sum(flatMap(res.map((k) => k.subs.map((l) => l.subs.length)))),
+          // if (optionsSelected[curOrder - 1] && curOrder !== 2) {
+          store.dispatch(
+            setOptionsSelected({
+              order: curOrder - 1,
+              options: optionsSelected[curOrder - 1].options.map((el) => ({
+                ...el,
+                linkage: sum(flatMap(res.map((k) => k.subs.map((l) => l.subs.length)))),
 
-                  replicate:
-                    curOptionSelected.id === el.id &&
-                    curOptionSelected.pre_option === el.pre_option &&
-                    res.length > 0
-                      ? 1
-                      : el.replicate,
-                })),
-              }),
-            );
-          }
+                replicate:
+                  curOptionSelected.id === el.id &&
+                  curOptionSelected.pre_option === el.pre_option &&
+                  res.length > 0
+                    ? 1
+                    : el.replicate,
+              })),
+            }),
+          );
+          // }
         }
       });
     };
@@ -1058,7 +1058,7 @@ export const NextStep: FC<NextStepProps> = forwardRef(
 
         if (subOpt.replicate === 1) {
           const removeIds: any[] = [];
-          removeIds.push(subOpt.id);
+          removeIds.push(subOpt.pre_option ? subOpt.pre_option.concat(',', subOpt.id) : subOpt.id);
           // LinkedOptionData
           const newLinkedOptionData =
             cloneDeep(linkedOptionData).map((item, id) => {
@@ -1078,7 +1078,7 @@ export const NextStep: FC<NextStepProps> = forwardRef(
                   : item.pickedData.map((el) => {
                       const newSubs = el.subs.filter((sub) => {
                         if (!removeIds.includes(sub.pre_option)) return true;
-                        removeIds.push(sub.id);
+                        removeIds.push(sub.pre_option?.concat(',', sub.id));
                         return false;
                       });
                       return {
@@ -1116,6 +1116,8 @@ export const NextStep: FC<NextStepProps> = forwardRef(
             };
           });
           store.dispatch(setOptionsSelected(newOptionsSelected));
+          const newAllOptionPickedIds = allOptionPickedIds.filter((id) => !removeIds.includes(id));
+          store.dispatch(setAllOptionPickedIds(newAllOptionPickedIds));
           return;
         } else if (subOpt.replicate == 0) {
           return;
@@ -1228,6 +1230,20 @@ export const NextStep: FC<NextStepProps> = forwardRef(
 
       store.dispatch(setPickedOption(newPickedOption));
       /* ---------------------------- */
+      /// get all options highlighted
+      const allOptionSelectedIds: string[] = [];
+      map(optionsSelected, (optionSelected, order: string) => {
+        if (Number(order) < curOrder - 1) {
+          optionSelected.options.forEach((el) => {
+            const optionSelectedId =
+              Number(order) === 1 ? (optionSelected.id as string) : (el.pre_option as string);
+            allOptionSelectedIds.push(optionSelectedId);
+          });
+        }
+      });
+
+      /// save all option highlighted by option selected pre_option and its id
+      store.dispatch(setAllOptionPickedIds(allOptionSelectedIds));
     };
     useImperativeHandle(ref, () => ({
       handleBackToPrevSlide,
