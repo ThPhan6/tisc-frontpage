@@ -28,6 +28,7 @@ import { BrandProfile, DesignFirmProfile } from '@/types/user.type';
 import { ItemWebsite } from './components/ItemWebsite';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
+import DynamicFormInput, { DynamicFormInputData } from '@/components/EntryForm/DynamicFormInput';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
@@ -113,6 +114,7 @@ const BrandProfilePage = () => {
           slogan: brandAppState.slogan || '',
           official_websites: brandAppState.official_websites || [],
           logo: brandAppState.logo ?? '',
+          catelogue_downloads: brandAppState.catelogue_downloads || [],
         });
       }
       setLoadedData(true);
@@ -252,6 +254,10 @@ const BrandProfilePage = () => {
             url: website.url?.trim() ?? '',
           })),
           logo: brandProfile.logo ?? brandAppState?.logo,
+          catelogue_downloads: brandProfile.catelogue_downloads?.map((item) => ({
+            title: item.title,
+            url: item.url?.trim(),
+          })),
         })
       : updateDesignFirmOfficeProfile(designAppState?.id ?? '', {
           name: designFirmProfile.name?.trim() ?? '',
@@ -277,6 +283,19 @@ const BrandProfilePage = () => {
   if (!loadedData) {
     return null;
   }
+
+  const handleSetDataDynamicFromInput = (data: DynamicFormInputData[]) => {
+    const updatedCatelogueDownloads = data.map((item, index) => ({
+      id: index,
+      title: item.title,
+      url: item.value,
+    }));
+
+    setBrandProfile({
+      ...brandProfile,
+      catelogue_downloads: updatedCatelogueDownloads,
+    });
+  };
 
   return (
     <div className={styles.content}>
@@ -462,6 +481,25 @@ const BrandProfilePage = () => {
                   </FormGroup>
                 </div>
               )}
+
+              <FormGroup
+                label="Catalogue & Download"
+                layout="vertical"
+                formClass={styles.catologue}
+              >
+                <DynamicFormInput
+                  data={brandProfile.catelogue_downloads?.map((item, index) => ({
+                    id: index,
+                    title: item.title,
+                    value: item.url,
+                  }))}
+                  setData={handleSetDataDynamicFromInput}
+                  titlePlaceholder="type catelogue name here"
+                  valuePlaceholder="paste file URL link here"
+                  additionalDynamicFormAddMoreClass={`${styles.dynamic_form} p-0`}
+                  valueClass={`${styles.dynamic_form_value}`}
+                />
+              </FormGroup>
             </div>
 
             <div className={styles.actionButton}>

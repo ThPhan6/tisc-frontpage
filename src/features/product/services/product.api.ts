@@ -308,6 +308,7 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
         setPartialProductDetail({
           ...res.data,
           specification_attribute_groups: newAttributeGroup,
+          catelogue_downloads: (res.data.brand as any)?.catelogue_downloads,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';
           }) as ['', '', '', ''],
