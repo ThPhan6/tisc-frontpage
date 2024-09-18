@@ -676,29 +676,29 @@ const routes = [
           },
         ],
       },
-      {
-        path: PATH.distributors,
-        name: 'brand.distributor',
-        icon: 'distributor-icon.svg',
-        access: 'brand_administration_distributor',
-        routes: [
-          {
-            path: PATH.distributors,
-            component: './Brand/Adminstration/Distributors',
-            hideInMenu: true,
-          },
-          {
-            path: PATH.createDistributor,
-            component: '../features/distributors/components/DistributorDetail',
-            hideInMenu: true,
-          },
-          {
-            path: PATH.updateDistributor,
-            component: '../features/distributors/components/DistributorDetail',
-            hideInMenu: true,
-          },
-        ],
-      },
+      // {
+      //   path: PATH.distributors,
+      //   name: 'brand.distributor',
+      //   icon: 'distributor-icon.svg',
+      //   access: 'brand_administration_distributor',
+      //   routes: [
+      //     {
+      //       path: PATH.distributors,
+      //       component: './Brand/Adminstration/Distributors',
+      //       hideInMenu: true,
+      //     },
+      //     {
+      //       path: PATH.createDistributor,
+      //       component: '../features/distributors/components/DistributorDetail',
+      //       hideInMenu: true,
+      //     },
+      //     {
+      //       path: PATH.updateDistributor,
+      //       component: '../features/distributors/components/DistributorDetail',
+      //       hideInMenu: true,
+      //     },
+      //   ],
+      // },
       {
         name: 'brand.market_availability',
         icon: 'market-availability-icon.svg',
