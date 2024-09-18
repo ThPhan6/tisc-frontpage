@@ -482,24 +482,26 @@ const BrandProfilePage = () => {
                 </div>
               )}
 
-              <FormGroup
-                label="Catalogue & Download"
-                layout="vertical"
-                formClass={styles.catologue}
-              >
-                <DynamicFormInput
-                  data={brandProfile.catelogue_downloads?.map((item, index) => ({
-                    id: index,
-                    title: item.title,
-                    value: item.url,
-                  }))}
-                  setData={handleSetDataDynamicFromInput}
-                  titlePlaceholder="type catelogue name here"
-                  valuePlaceholder="paste file URL link here"
-                  additionalDynamicFormAddMoreClass={`${styles.dynamic_form} p-0`}
-                  valueClass={`${styles.dynamic_form_value}`}
-                />
-              </FormGroup>
+              {isBrand ? (
+                <FormGroup
+                  label="Catalogue & Download"
+                  layout="vertical"
+                  formClass={styles.catologue}
+                >
+                  <DynamicFormInput
+                    data={brandProfile.catelogue_downloads?.map((item, index) => ({
+                      id: index,
+                      title: item.title,
+                      value: item.url,
+                    }))}
+                    setData={handleSetDataDynamicFromInput}
+                    titlePlaceholder="type catelogue name here"
+                    valuePlaceholder="paste file URL link here"
+                    additionalDynamicFormAddMoreClass={`${styles.dynamic_form} p-0`}
+                    valueClass={`${styles.dynamic_form_value}`}
+                  />
+                </FormGroup>
+              ) : null}
             </div>
 
             <div className={styles.actionButton}>

@@ -1,8 +1,10 @@
-import type { CSSProperties, FC } from 'react';
+import { type CSSProperties, type FC, useEffect, useRef } from 'react';
 
 import { TextAreaProps } from 'antd/lib/input';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+
+import { useBoolean } from '@/helper/hook';
 
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
@@ -47,9 +49,20 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
   additionalDynamicFormAddMoreClass = '',
   ...props
 }) => {
+  const lastElementRef = useRef<HTMLDivElement | null>(null);
+  const { value: isShouldScroll, setValue: setIsShouldScroll } = useBoolean(false);
+
+  useEffect(() => {
+    if (isShouldScroll && lastElementRef.current) {
+      lastElementRef.current.scrollIntoView({ behavior: 'smooth' });
+      setIsShouldScroll(false);
+    }
+  }, [isShouldScroll]);
+
   const addMoreData = () => {
     if (setData && data) {
       setData([...data, DEFAULT_FORM_INPUT]);
+      setIsShouldScroll(true);
     }
   };
   const onDelete = (index: number) => {
@@ -100,7 +113,11 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
       </div>
       {data?.map((item, index) => {
         return (
-          <div className={`${styles.dynamicFormInput} dynamic-wrapper`} key={index}>
+          <div
+            className={`${styles.dynamicFormInput} dynamic-wrapper`}
+            key={index}
+            ref={index === data?.length - 1 ? lastElementRef : null}
+          >
             <div className="flex-input-with-icon">
               <CustomTextArea
                 customClass={`${styles.customTextArea} ${titleClass}`}
