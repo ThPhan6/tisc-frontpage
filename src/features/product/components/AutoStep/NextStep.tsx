@@ -681,24 +681,24 @@ export const NextStep: FC<NextStepProps> = forwardRef(
           store.dispatch(
             setOptionsSelected({ order: curOrder, options: optionSelectedOfCurrentStep }),
           );
-          if (optionsSelected[curOrder - 1] && curOrder !== 2) {
-            store.dispatch(
-              setOptionsSelected({
-                order: curOrder - 1,
-                options: optionsSelected[curOrder - 1].options.map((el) => ({
-                  ...el,
-                  linkage: sum(flatMap(res.map((k) => k.subs.map((l) => l.subs.length)))),
+          // if (optionsSelected[curOrder - 1] && curOrder !== 2) {
+          store.dispatch(
+            setOptionsSelected({
+              order: curOrder - 1,
+              options: optionsSelected[curOrder - 1].options.map((el) => ({
+                ...el,
+                linkage: sum(flatMap(res.map((k) => k.subs.map((l) => l.subs.length)))),
 
-                  replicate:
-                    curOptionSelected.id === el.id &&
-                    curOptionSelected.pre_option === el.pre_option &&
-                    res.length > 0
-                      ? 1
-                      : el.replicate,
-                })),
-              }),
-            );
-          }
+                replicate:
+                  curOptionSelected.id === el.id &&
+                  curOptionSelected.pre_option === el.pre_option &&
+                  res.length > 0
+                    ? 1
+                    : el.replicate,
+              })),
+            }),
+          );
+          // }
         }
       });
     };
@@ -1057,6 +1057,69 @@ export const NextStep: FC<NextStepProps> = forwardRef(
         e.preventDefault();
 
         if (subOpt.replicate === 1) {
+          const removeIds: any[] = [];
+          removeIds.push(subOpt.pre_option ? subOpt.pre_option.concat(',', subOpt.id) : subOpt.id);
+          // LinkedOptionData
+          const newLinkedOptionData =
+            cloneDeep(linkedOptionData).map((item, id) => {
+              if (id < slide) return item;
+              const newPickedData =
+                id == slide
+                  ? item.pickedData.map((el) => ({
+                      ...el,
+                      subs: el.subs.map((sub) => ({
+                        ...sub,
+                        replicate:
+                          sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
+                            ? --sub.replicate
+                            : sub.replicate,
+                      })),
+                    }))
+                  : item.pickedData.map((el) => {
+                      const newSubs = el.subs.filter((sub) => {
+                        if (!removeIds.includes(sub.pre_option)) return true;
+                        removeIds.push(sub.pre_option?.concat(',', sub.id));
+                        return false;
+                      });
+                      return {
+                        ...el,
+                        subs: newSubs,
+                      };
+                    });
+              return {
+                ...item,
+                pickedData: newPickedData.filter((el) => el.subs.length > 0),
+                linkedData: item.linkedData,
+              };
+            }) ?? [];
+          store.dispatch(setLinkedOptionData(newLinkedOptionData));
+          // OptionsSelected
+          let newOptionsSelected: OptionSelectedProps = {};
+
+          forEach(optionsSelected, (optionSelected, curStep) => {
+            const newOptionSelected = cloneDeep(optionSelected);
+            newOptionSelected.options =
+              Number(curStep) == curOrder - 1
+                ? newOptionSelected.options.map((sub) => ({
+                    ...sub,
+                    replicate:
+                      sub.id === subOpt.id && sub.pre_option === subOpt.pre_option
+                        ? --sub.replicate
+                        : sub.replicate,
+                  }))
+                : Number(curStep) > curOrder - 1
+                ? newOptionSelected.options.filter((sub) => !removeIds.includes(sub.pre_option))
+                : newOptionSelected.options;
+            newOptionsSelected = {
+              ...newOptionsSelected,
+              [Number(curStep)]: newOptionSelected,
+            };
+          });
+          store.dispatch(setOptionsSelected(newOptionsSelected));
+          const newAllOptionPickedIds = allOptionPickedIds.filter((id) => !removeIds.includes(id));
+          store.dispatch(setAllOptionPickedIds(newAllOptionPickedIds));
+          return;
+        } else if (subOpt.replicate == 0) {
           return;
         }
         if (restrictDecreaseByTotalDefaultPreSelect(subOpt)) return;
@@ -1106,40 +1169,81 @@ export const NextStep: FC<NextStepProps> = forwardRef(
       } else setCurActiveKey(curActiveKey.concat([activeKey]));
     };
     const handleResetAll = async () => {
-      store.dispatch(
-        setLinkedOptionData({
-          index: slide,
-          pickedData: pickedData.map((el) => ({
-            ...el,
-            subs: el.subs.map((item) => {
-              return {
-                ...item,
-                sub_id: el.id,
-                sub_name: el.name,
-                pre_option: slide === 0 ? undefined : item.pre_option,
-                replicate: 0,
-              };
-            }),
-          })),
-          linkedData: linkedData,
-        }),
-      );
-      store.dispatch(
-        setOptionsSelected({
-          order: curOrder - 1,
-          options: optionsSelected[curOrder - 1].options.map((el) => ({
-            ...el,
+      // Remove slide bar
+      const newSlideBar = cloneDeep(slideBars);
+      store.dispatch(setSlideBar(newSlideBar.slice(0, slide + 2)));
+
+      // Remove linked option data
+      const newLinkedOptionData =
+        linkedOptionData
+          ?.filter((_, idx) => idx <= slide + 1)
+          .map((item, id) =>
+            id == slide
+              ? {
+                  ...item,
+                  pickedData: item.pickedData.map((picked) => ({
+                    ...picked,
+                    subs: picked.subs.map((sub) => ({ ...sub, replicate: 0 })),
+                  })),
+                }
+              : item,
+          ) ?? [];
+      store.dispatch(setLinkedOptionData(newLinkedOptionData));
+
+      /* delete options selected view */
+      let newOptionsSelected: OptionSelectedProps = {};
+
+      forEach(optionsSelected, (optionSelected, curStep) => {
+        if (Number(curStep) < curOrder - 1) {
+          newOptionsSelected = {
+            ...newOptionsSelected,
+            [Number(curStep)]: optionSelected,
+          };
+        } else if (Number(curStep) == curOrder - 1) {
+          const newOptionSelected = cloneDeep(optionSelected);
+          newOptionSelected.options = optionSelected.options.map((option) => ({
+            ...option,
             linkage: 0,
             replicate: 0,
-          })),
-        }),
-      );
-      store.dispatch(
-        setOptionsSelected({
-          order: curOrder,
-          options: [],
-        }),
-      );
+          }));
+          newOptionsSelected = {
+            ...newOptionsSelected,
+            [Number(curStep)]: newOptionSelected,
+          };
+        }
+      });
+
+      store.dispatch(setOptionsSelected(newOptionsSelected));
+      /* ----------------------- */
+
+      /* delete option hightighted view */
+      let newPickedOption = {};
+
+      forEach(pickedOption, (option, curSlide) => {
+        if (Number(curSlide) <= slide) {
+          newPickedOption = {
+            ...newPickedOption,
+            [Number(curSlide)]: option,
+          };
+        }
+      });
+
+      store.dispatch(setPickedOption(newPickedOption));
+      /* ---------------------------- */
+      /// get all options highlighted
+      const allOptionSelectedIds: string[] = [];
+      map(optionsSelected, (optionSelected, order: string) => {
+        if (Number(order) < curOrder - 1) {
+          optionSelected.options.forEach((el) => {
+            const optionSelectedId =
+              Number(order) === 1 ? (optionSelected.id as string) : (el.pre_option as string);
+            allOptionSelectedIds.push(optionSelectedId);
+          });
+        }
+      });
+
+      /// save all option highlighted by option selected pre_option and its id
+      store.dispatch(setAllOptionPickedIds(allOptionSelectedIds));
     };
     useImperativeHandle(ref, () => ({
       handleBackToPrevSlide,
@@ -1276,7 +1380,7 @@ export const NextStep: FC<NextStepProps> = forwardRef(
                                   >
                                     <DropdownIcon
                                       style={{
-                                        cursor: option.replicate === 1 ? 'default' : 'pointer',
+                                        cursor: option.replicate === 0 ? 'default' : 'pointer',
                                       }}
                                       onClick={handleDecreaseReplicate(option)}
                                     />
