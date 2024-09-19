@@ -1,8 +1,10 @@
-import type { CSSProperties, FC } from 'react';
+import { type CSSProperties, type FC, useEffect, useRef } from 'react';
 
 import { TextAreaProps } from 'antd/lib/input';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+
+import { useBoolean } from '@/helper/hook';
 
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
@@ -10,7 +12,7 @@ import { MainTitle } from '@/components/Typography';
 import { CustomTextArea } from '../Form/CustomTextArea';
 import styles from './styles/DynamicFormInput.less';
 
-interface DynamicFormInputData {
+export interface DynamicFormInputData {
   title: string;
   value: string;
 }
@@ -30,6 +32,7 @@ interface DynamicFormInputProps extends TextAreaProps {
   valueClass?: string;
   titleStyles?: CSSProperties;
   valueStyles?: CSSProperties;
+  additionalDynamicFormAddMoreClass?: string;
 }
 
 const DynamicFormInput: FC<DynamicFormInputProps> = ({
@@ -43,11 +46,23 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
   valueStyles,
   maxTitleWords,
   maxValueWords,
+  additionalDynamicFormAddMoreClass = '',
   ...props
 }) => {
+  const lastElementRef = useRef<HTMLDivElement | null>(null);
+  const { value: isShouldScroll, setValue: setIsShouldScroll } = useBoolean(false);
+
+  useEffect(() => {
+    if (isShouldScroll && lastElementRef.current) {
+      lastElementRef.current.scrollIntoView({ behavior: 'smooth' });
+      setIsShouldScroll(false);
+    }
+  }, [isShouldScroll]);
+
   const addMoreData = () => {
     if (setData && data) {
       setData([...data, DEFAULT_FORM_INPUT]);
+      setIsShouldScroll(true);
     }
   };
   const onDelete = (index: number) => {
@@ -86,43 +101,52 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
   };
 
   return (
-    <div>
-      <div className={styles.dynamicFormAddMore} onClick={addMoreData}>
+    <>
+      <div
+        className={`${styles.dynamicFormAddMore} ${additionalDynamicFormAddMoreClass}`}
+        onClick={addMoreData}
+      >
         <MainTitle level={4} customClass="add-attribute-text">
           Add Content
         </MainTitle>
         <CustomPlusButton size={18} />
       </div>
-      {data?.map((item, index) => (
-        <div className={`${styles.dynamicFormInput} dynamic-wrapper`} key={index}>
-          <div className="flex-input-with-icon">
+      {data?.map((item, index) => {
+        return (
+          <div
+            className={`${styles.dynamicFormInput} dynamic-wrapper`}
+            key={index}
+            ref={index === data?.length - 1 ? lastElementRef : null}
+          >
+            <div className="flex-input-with-icon">
+              <CustomTextArea
+                customClass={`${styles.customTextArea} ${titleClass}`}
+                styles={titleStyles}
+                maxWords={maxTitleWords}
+                placeholder={titlePlaceholder}
+                value={item.title}
+                onChange={(e) => onChangeText(e, index, 'title')}
+                onClick={(e) => e.stopPropagation()}
+                autoResize
+                {...props}
+              />
+              <DeleteIcon onClick={() => onDelete(index)} className="delete-action-input-group" />
+            </div>
             <CustomTextArea
-              customClass={`${styles.customTextArea} ${titleClass}`}
-              styles={titleStyles}
-              maxWords={maxTitleWords}
-              placeholder={titlePlaceholder}
-              value={item.title}
-              onChange={(e) => onChangeText(e, index, 'title')}
+              customClass={`${styles.customTextArea} ${valueClass}`}
+              styles={valueStyles}
+              maxWords={maxValueWords}
+              placeholder={valuePlaceholder}
+              value={item.value}
+              onChange={(e) => onChangeText(e, index, 'value')}
               onClick={(e) => e.stopPropagation()}
               autoResize
               {...props}
             />
-            <DeleteIcon onClick={() => onDelete(index)} className="delete-action-input-group" />
           </div>
-          <CustomTextArea
-            customClass={`${styles.customTextArea} ${valueClass}`}
-            styles={valueStyles}
-            maxWords={maxValueWords}
-            placeholder={valuePlaceholder}
-            value={item.value}
-            onChange={(e) => onChangeText(e, index, 'value')}
-            onClick={(e) => e.stopPropagation()}
-            autoResize
-            {...props}
-          />
-        </div>
-      ))}
-    </div>
+        );
+      })}
+    </>
   );
 };
 export default DynamicFormInput;
