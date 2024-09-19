@@ -14,6 +14,7 @@ export interface BrandProfile {
   status: number;
   team_profile_ids: string[];
   updated_at: string;
+  catelogue_downloads: { title: string; url: string }[];
 }
 
 export interface DesignFirmProfile {
