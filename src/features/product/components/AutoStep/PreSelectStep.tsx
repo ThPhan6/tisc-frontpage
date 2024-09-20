@@ -829,7 +829,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
                   .filter((el: any) => el.picked)
                   .map((el: any) => ({ label: '', value: el.id }))}
                 forceEnableCollapse={forceEnableCollapse}
-                renderTitle={(data) => <span style={{ paddingRight: 16 }}>{data.label}</span>}
+                renderTitle={(data) => <span>{data.label}</span>}
                 data={mappedRight.map((option) => ({
                   label: option.name,
                   id: option.id,
