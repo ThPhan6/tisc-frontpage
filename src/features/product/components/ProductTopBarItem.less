@@ -180,7 +180,8 @@
     }
 
     span {
-      max-width: 211.5px;
+      width: fit-content;
+      max-width: 576px;
       overflow: hidden;
       font-weight: 300;
       font-size: 12px;
@@ -310,6 +311,11 @@
   justify-content: space-between;
   padding: 6px 18px 0 32px;
   cursor: pointer;
+
+  :global(.sub-label-name) {
+    width: fit-content;
+    max-width: 556px;
+  }
 }
 
 .color-checked {
