@@ -245,7 +245,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     // Options Images
     const optionAttributes = attrGroupItem.attributes;
     const getOptionImages = () => {
-      return optionAttributes?.map((attribute) => {
+      const optionSelectAttribute = optionAttributes?.filter(
+        (attribute) => attribute.basis_options,
+      );
+      return optionSelectAttribute?.map((attribute) => {
         const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
         return {
           ...attribute,
@@ -1020,7 +1023,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   )}
                 </tbody>
               </table>
-              {isEditable ? null : (
+              {isEditable ? null : optionImages.length === 0 ? null : (
                 <div className={styles.stepImages}>
                   {optionImages?.map((step: any, stepIdx: number) =>
                     step.basis_options.map((option: any, optionIdx: number) => {
@@ -1078,7 +1081,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           >
                             <div className="step-info">
                               {option.image ? (
-                                option.image === '/default/option_default.webp' ? (
+                                option.image === '/default/option_default.webp' || !option.image ? (
                                   <div className={'step-image-text-container'}>
                                     <div className={'step-image-text'}>{option.option_code}</div>
                                   </div>
