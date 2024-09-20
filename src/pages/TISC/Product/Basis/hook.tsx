@@ -103,6 +103,30 @@ const getAttributeValueDefault = (subs: AttributeForm[]) => {
   };
 };
 
+const sortPresetValues = (presetGroup: any) => {
+  const newSubGroups = presetGroup.subs.map((subGroup) => {
+    const newPresets = subGroup.subs.map((preset) => {
+      const newPresetValues = preset.subs.sort((a, b) => {
+        if (a.value_1 < b.value_1) return -1;
+        if (a.value_1 > b.value_1) return 1;
+        return 0;
+      });
+      return {
+        ...preset,
+        subs: newPresetValues,
+      };
+    });
+    return {
+      ...subGroup,
+      subs: newPresets,
+    };
+  });
+  return {
+    ...presetGroup,
+    subs: newSubGroups,
+  };
+};
+
 const removeOtherSubOptions = (data: BasisOptionForm, id: string) => {
   const sub = data.subs.find((el) => el.id === id || el.id === `new-${id}`);
 
@@ -301,6 +325,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
 
             newData = removeOtherSubOptions(res as unknown as BasisOptionForm, subId as string);
           }
+
+          if (type === ProductBasisFormType.presets) newData = sortPresetValues(newData);
 
           setData(newData);
         }

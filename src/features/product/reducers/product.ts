@@ -384,11 +384,13 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     let prevFormat = -1;
     el?.attributes?.forEach((attr: any) => {
       if (!attr?.basis_options?.find((opt: any) => opt.isChecked)) {
-        const curFormat =
-          attr?.basis_options?.find((opt: any) => opt.option_code)?.id_format_type ?? 0;
-        const seperator = prevFormat == 0 ? ', ' : curFormat == 0 ? ', ' : ' - ';
-        prevFormat = curFormat;
-        variants += (variants ? seperator : '') + 'X';
+        if (attr?.basis_options) {
+          const curFormat =
+            attr?.basis_options?.find((opt: any) => opt.option_code)?.id_format_type ?? 0;
+          const seperator = prevFormat == 0 ? ', ' : curFormat == 0 ? ', ' : ' - ';
+          prevFormat = curFormat;
+          variants += (variants ? seperator : '') + 'X';
+        }
       }
       attr?.basis_options?.forEach((opt: any) => {
         if (opt.isChecked) {
