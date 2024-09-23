@@ -563,6 +563,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
           }
           setData(newData);
         }
+        if (type === ProductBasisFormType.presets) setData(sortPresetValues(data));
       }
 
       submitButtonStatus.setValue(true);
