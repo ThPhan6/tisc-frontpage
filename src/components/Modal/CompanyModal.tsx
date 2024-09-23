@@ -103,6 +103,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
         {
           options: [
             {
+              customClass: `pb-4 bottom-border-inset-black`,
               label: (
                 <>
                   <hgroup className={`${styles.company_modal_heading_group}`}>
