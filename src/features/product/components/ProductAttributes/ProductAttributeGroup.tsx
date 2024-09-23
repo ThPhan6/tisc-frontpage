@@ -249,13 +249,15 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         (attribute) =>
           attribute?.basis_options !== undefined && attribute?.basis_options?.length > 0,
       );
-      return optionSelectAttribute?.map((attribute) => {
-        const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
-        return {
-          ...attribute,
-          basis_options: newBasisOptions,
-        };
-      });
+      return optionSelectAttribute
+        ?.map((attribute) => {
+          const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
+          return {
+            ...attribute,
+            basis_options: newBasisOptions,
+          };
+        })
+        .filter((attribute) => attribute?.basis_options?.length > 0);
     };
     setOptionImages(getOptionImages());
   }, [
