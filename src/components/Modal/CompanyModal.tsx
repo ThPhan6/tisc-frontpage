@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { DEFAULT_UNEMPLOYED_COMPANY_NAME } from '@/constants';
+
 import { getCompanySummary } from '@/services';
 
 import Popover from '@/components/Modal/Popover';
@@ -27,14 +29,25 @@ export interface Company {
   phone_code: string;
 }
 
+export interface CompanyData {
+  companies: Company[];
+  unemployed: { id: string; name: string };
+}
+
 const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: CompanyModalProps) => {
-  const [companies, setCompanies] = useState<Company[]>([]);
+  const [companyOptions, setCompanyOptions] = useState<CompanyData>({
+    companies: [],
+    unemployed: { id: '', name: DEFAULT_UNEMPLOYED_COMPANY_NAME },
+  });
 
   useEffect(() => {
     const handleFetchCompanies = async () => {
       const res: any = await getCompanySummary();
       if (res) {
-        setCompanies(res.company);
+        setCompanyOptions({
+          companies: res.company,
+          unemployed: { id: res.unemployed_company.id, name: res.unemployed_company.name },
+        });
         if (chosenValue?.value) {
           const selectedCompany = res.company.find(
             (item: Company) => item.id === chosenValue.value,
@@ -56,7 +69,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
 
   const handleCompanySelection = useCallback(
     (data: { value: string }) => {
-      const selectedCompany = companies.find((company) => company.id === data.value);
+      const selectedCompany = companyOptions.companies.find((company) => company.id === data.value);
       if (selectedCompany) {
         setChosenValue({
           label: selectedCompany.name,
@@ -65,8 +78,16 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
           phoneCode: selectedCompany.phone_code,
         });
       }
+
+      if (data.value === companyOptions.unemployed.id) {
+        setChosenValue({
+          label: companyOptions.unemployed.name,
+          value: companyOptions.unemployed.id,
+          phoneCode: '00',
+        });
+      }
     },
-    [companies, setChosenValue],
+    [companyOptions, setChosenValue],
   );
 
   return (
@@ -80,27 +101,45 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
       className={`${styles.company_modal}`}
       groupRadioList={[
         {
-          options: companies.map((company) => {
-            return {
+          options: [
+            {
               label: (
                 <>
                   <hgroup className={`${styles.company_modal_heading_group}`}>
                     <BodyText
                       fontFamily="Roboto"
                       level={5}
-                      customClass={`${styles.company_modal_heading_group_name}`}
+                      customClass={`${styles.company_modal_heading_group_name} ellipsis`}
                     >
-                      {company.name}
+                      {companyOptions.unemployed.name}
                     </BodyText>
-                    <p className={`${styles.company_modal_heading_group_country}`}>
-                      {company.country_name}
-                    </p>
                   </hgroup>
                 </>
               ),
-              value: company.id,
-            };
-          }),
+              value: companyOptions.unemployed.id,
+            },
+            ...companyOptions.companies.map((company) => {
+              return {
+                label: (
+                  <>
+                    <hgroup className={`${styles.company_modal_heading_group}`}>
+                      <BodyText
+                        fontFamily="Roboto"
+                        level={5}
+                        customClass={`${styles.company_modal_heading_group_name} ellipsis`}
+                      >
+                        {company.name}
+                      </BodyText>
+                      <p className={`${styles.company_modal_heading_group_country}`}>
+                        {company.country_name}
+                      </p>
+                    </hgroup>
+                  </>
+                ),
+                value: company.id,
+              };
+            }),
+          ],
         },
       ]}
     />
