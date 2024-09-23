@@ -152,10 +152,6 @@
         min-height: 64px !important;
         box-shadow: @border-bottom-light;
       }
-
-      :global(.ant-checkbox-wrapper) {
-        display: none;
-      }
     }
 
     :global(.product-id) {
@@ -196,6 +192,16 @@
   :global(.option-attribute-label) {
     margin-right: 8px;
     overflow: hidden;
+  }
+}
+
+.leftContent {
+  :global(.checkbox-item) {
+    :global(.ant-checkbox-group) {
+      :global(.ant-checkbox-wrapper) {
+        display: none;
+      }
+    }
   }
 }
 

@@ -689,7 +689,7 @@ export const PreSelectStep: FC<PreSelectStepProps> = ({
 
       <div className={styles.mainContent}>
         {/* left side */}
-        <div className={styles.content} style={{ marginRight: 8 }}>
+        <div className={`${styles.content} ${styles.leftContent}`} style={{ marginRight: 8 }}>
           {mappedLeft.map((pickedSub, optIdx) => {
             return (
               <CheckboxDynamic
