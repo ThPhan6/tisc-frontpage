@@ -384,7 +384,7 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     let prevFormat = -1;
     el?.attributes?.forEach((attr: any) => {
       if (!attr?.basis_options?.find((opt: any) => opt.isChecked)) {
-        if (attr?.basis_options) {
+        if (attr?.basis_options !== undefined && attr?.basis_options?.length > 0) {
           const curFormat =
             attr?.basis_options?.find((opt: any) => opt.option_code)?.id_format_type ?? 0;
           const seperator = prevFormat == 0 ? ', ' : curFormat == 0 ? ', ' : ' - ';

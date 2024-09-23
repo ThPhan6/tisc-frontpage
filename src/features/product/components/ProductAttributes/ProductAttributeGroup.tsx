@@ -246,7 +246,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     const optionAttributes = attrGroupItem.attributes;
     const getOptionImages = () => {
       const optionSelectAttribute = optionAttributes?.filter(
-        (attribute) => attribute.basis_options,
+        (attribute) =>
+          attribute?.basis_options !== undefined && attribute?.basis_options?.length > 0,
       );
       return optionSelectAttribute?.map((attribute) => {
         const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
@@ -1081,13 +1082,17 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                           >
                             <div className="step-info">
                               {option.image ? (
-                                option.image === '/default/option_default.webp' || !option.image ? (
+                                option.image === '/default/option_default.webp' ? (
                                   <div className={'step-image-text-container'}>
                                     <div className={'step-image-text'}>{option.option_code}</div>
                                   </div>
                                 ) : (
                                   <img className="step-image" src={showImageUrl(option.image)} />
                                 )
+                              ) : option.option_code ? (
+                                <div className={'step-image-text-container'}>
+                                  <div className={'step-image-text'}>{option.option_code}</div>
+                                </div>
                               ) : null}
                             </div>
                           </Popover>
