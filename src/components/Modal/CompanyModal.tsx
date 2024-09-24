@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { DEFAULT_UNEMPLOYED_COMPANY_NAME } from '@/constants';
 
 import { getCompanySummary } from '@/services';
+import { max } from 'lodash';
 
 import Popover from '@/components/Modal/Popover';
 import styles from '@/components/Modal/styles/CompanyModal.less';
@@ -90,6 +91,12 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
     [companyOptions, setChosenValue],
   );
 
+  const generalCompanyNameWidth = useMemo(() => {
+    const longestCompanyNameLength =
+      max(companyOptions.companies.map((company) => company.name.length)) || 0;
+    return 8 * longestCompanyNameLength;
+  }, [companyOptions.companies]);
+
   return (
     <Popover
       title="SELECT COMPANY"
@@ -129,6 +136,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
                         fontFamily="Roboto"
                         level={5}
                         customClass={`${styles.company_modal_heading_group_name} ellipsis`}
+                        style={{ width: generalCompanyNameWidth }}
                       >
                         {company.name}
                       </BodyText>
