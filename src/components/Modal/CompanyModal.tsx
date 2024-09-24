@@ -103,7 +103,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
         {
           options: [
             {
-              customClass: `pb-12 bottom-border-inset-black`,
+              customClass: `pb-12 border-bottom-light`,
               label: (
                 <>
                   <hgroup className={`${styles.company_modal_heading_group}`}>
@@ -121,6 +121,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
             },
             ...companyOptions.companies.map((company) => {
               return {
+                customClass: 'mb-16',
                 label: (
                   <>
                     <hgroup className={`${styles.company_modal_heading_group}`}>
