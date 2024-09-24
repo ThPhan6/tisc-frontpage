@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { DEFAULT_UNEMPLOYED_COMPANY_NAME } from '@/constants';
 
 import { getCompanySummary } from '@/services';
+import { max } from 'lodash';
 
 import Popover from '@/components/Modal/Popover';
 import styles from '@/components/Modal/styles/CompanyModal.less';
@@ -46,7 +47,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
       if (res) {
         setCompanyOptions({
           companies: res.company,
-          unemployed: { id: res.unemployed_company.id, name: res.unemployed_company.name },
+          unemployed: { id: res.unemployed_company?.id, name: res.unemployed_company.name },
         });
         if (chosenValue?.value) {
           const selectedCompany = res.company.find(
@@ -90,6 +91,12 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
     [companyOptions, setChosenValue],
   );
 
+  const generalCompanyNameWidth = useMemo(() => {
+    const longestCompanyNameLength =
+      max(companyOptions.companies.map((company) => company.name.length)) || 0;
+    return 8 * longestCompanyNameLength;
+  }, [companyOptions.companies]);
+
   return (
     <Popover
       title="SELECT COMPANY"
@@ -103,7 +110,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
         {
           options: [
             {
-              customClass: `pb-4 bottom-border-inset-black`,
+              customClass: `pb-12 border-bottom-light`,
               label: (
                 <>
                   <hgroup className={`${styles.company_modal_heading_group}`}>
@@ -121,6 +128,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
             },
             ...companyOptions.companies.map((company) => {
               return {
+                customClass: 'mb-16',
                 label: (
                   <>
                     <hgroup className={`${styles.company_modal_heading_group}`}>
@@ -128,6 +136,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
                         fontFamily="Roboto"
                         level={5}
                         customClass={`${styles.company_modal_heading_group_name} ellipsis`}
+                        style={{ width: generalCompanyNameWidth }}
                       >
                         {company.name}
                       </BodyText>
