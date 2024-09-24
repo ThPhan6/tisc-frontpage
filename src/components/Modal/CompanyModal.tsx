@@ -110,14 +110,14 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
         {
           options: [
             {
-              customClass: `pb-12 border-bottom-light`,
+              customClass: `pb-12 border-bottom-light mb-8-px`,
               label: (
                 <>
                   <hgroup className={`${styles.company_modal_heading_group}`}>
                     <BodyText
                       fontFamily="Roboto"
                       level={5}
-                      customClass={`${styles.company_modal_heading_group_name} ellipsis`}
+                      customClass={`${styles.company_modal_heading_group_name} ellipsis text-uppercase`}
                     >
                       {companyOptions.unemployed.name}
                     </BodyText>
@@ -135,7 +135,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
                       <BodyText
                         fontFamily="Roboto"
                         level={5}
-                        customClass={`${styles.company_modal_heading_group_name} ellipsis`}
+                        customClass={`${styles.company_modal_heading_group_name} ellipsis text-capitalize `}
                         style={{ width: generalCompanyNameWidth }}
                       >
                         {company.name}
