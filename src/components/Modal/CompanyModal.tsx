@@ -46,7 +46,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
       if (res) {
         setCompanyOptions({
           companies: res.company,
-          unemployed: { id: res.unemployed_company.id, name: res.unemployed_company.name },
+          unemployed: { id: res.unemployed_company?.id, name: res.unemployed_company.name },
         });
         if (chosenValue?.value) {
           const selectedCompany = res.company.find(
@@ -103,7 +103,7 @@ const CompanyModal = ({ visible, setVisible, chosenValue, setChosenValue }: Comp
         {
           options: [
             {
-              customClass: `pb-4 bottom-border-inset-black`,
+              customClass: `pb-12 bottom-border-inset-black`,
               label: (
                 <>
                   <hgroup className={`${styles.company_modal_heading_group}`}>
