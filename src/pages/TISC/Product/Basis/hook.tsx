@@ -104,23 +104,35 @@ const getAttributeValueDefault = (subs: AttributeForm[]) => {
 };
 
 const sortPresetValues = (presetGroup: any) => {
-  const newSubGroups = presetGroup.subs.map((subGroup) => {
-    const newPresets = subGroup.subs.map((preset) => {
-      const newPresetValues = preset.subs.sort((a, b) => {
-        if (a.value_1 < b.value_1) return -1;
-        if (a.value_1 > b.value_1) return 1;
-        return 0;
-      });
+  const newSubGroups = presetGroup.subs
+    .map((subGroup) => {
+      const newPresets = subGroup.subs
+        .map((preset) => {
+          const newPresetValues = preset.subs.sort((a, b) => {
+            if (a.value_1 < b.value_1) return -1;
+            if (a.value_1 > b.value_1) return 1;
+            return 0;
+          });
+          return {
+            ...preset,
+            subs: newPresetValues,
+          };
+        })
+        .sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
       return {
-        ...preset,
-        subs: newPresetValues,
+        ...subGroup,
+        subs: newPresets,
       };
+    })
+    .sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
     });
-    return {
-      ...subGroup,
-      subs: newPresets,
-    };
-  });
   return {
     ...presetGroup,
     subs: newSubGroups,
