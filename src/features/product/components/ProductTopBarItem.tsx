@@ -340,7 +340,6 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
       style={{
         width: DEFAULT_WIDTH,
         position: subLevel ? 'absolute' : 'relative',
-        top: subLevel ? 0 : undefined,
         left: getPositionLeftMenu(),
         boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
         height: 432,
