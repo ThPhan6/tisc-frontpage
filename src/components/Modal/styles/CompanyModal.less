@@ -1,12 +1,21 @@
 .company_modal {
   &_heading_group {
     display: flex;
+    gap: 32px;
+    align-items: center;
 
     &_name {
-      flex-basis: 30%;
+      max-width: 60%;
       font-weight: 300;
       line-height: calc(22 / 14);
       letter-spacing: 0.28px;
+    }
+
+    &_country {
+      margin-bottom: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 
