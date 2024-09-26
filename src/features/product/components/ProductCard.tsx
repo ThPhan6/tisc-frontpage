@@ -450,8 +450,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           <Spin size="large" />
         </div>
       );
-    else if (location.pathname == PATH.productConfiguration)
+    else if (
+      location.pathname == PATH.productConfiguration ||
+      location.pathname == PATH.designerFavourite
+    )
       // First time load to TISC-Conf but login as Designer or Brand previously
+      // First time load to Designer Favourite
       store.dispatch(resetProductState());
 
     firstLoad.setValue(false);
