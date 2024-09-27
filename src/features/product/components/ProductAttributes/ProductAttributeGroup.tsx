@@ -245,13 +245,19 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     // Options Images
     const optionAttributes = attrGroupItem.attributes;
     const getOptionImages = () => {
-      return optionAttributes?.map((attribute) => {
-        const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
-        return {
-          ...attribute,
-          basis_options: newBasisOptions,
-        };
-      });
+      const optionSelectAttribute = optionAttributes?.filter(
+        (attribute) =>
+          attribute?.basis_options !== undefined && attribute?.basis_options?.length > 0,
+      );
+      return optionSelectAttribute
+        ?.map((attribute) => {
+          const newBasisOptions = attribute?.basis_options?.filter((option) => option.isChecked);
+          return {
+            ...attribute,
+            basis_options: newBasisOptions,
+          };
+        })
+        .filter((attribute) => attribute?.basis_options?.length > 0);
     };
     setOptionImages(getOptionImages());
   }, [
@@ -1020,7 +1026,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   )}
                 </tbody>
               </table>
-              {isEditable ? null : (
+              {isEditable ? null : optionImages.length === 0 ? null : (
                 <div className={styles.stepImages}>
                   {optionImages?.map((step: any, stepIdx: number) =>
                     step.basis_options.map((option: any, optionIdx: number) => {
@@ -1085,6 +1091,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                                 ) : (
                                   <img className="step-image" src={showImageUrl(option.image)} />
                                 )
+                              ) : option.option_code ? (
+                                <div className={'step-image-text-container'}>
+                                  <div className={'step-image-text'}>{option.option_code}</div>
+                                </div>
                               ) : null}
                             </div>
                           </Popover>

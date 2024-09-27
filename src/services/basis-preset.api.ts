@@ -30,8 +30,31 @@ export async function getProductBasisPresetPagination(
   })
     .then((response: CategoryPaginationResponse) => {
       const { basis_presets, pagination, summary } = response.data;
+      const newBasisPresets = basis_presets.map((group) => {
+        const newSubGroups = group.subs.map((subGroup) => {
+          const newPresets = subGroup.subs.map((preset) => {
+            const newPresetValues = preset.subs.sort((a, b) => {
+              if (a.value_1 < b.value_1) return -1;
+              if (a.value_1 > b.value_1) return 1;
+              return 0;
+            });
+            return {
+              ...preset,
+              subs: newPresetValues,
+            };
+          });
+          return {
+            ...subGroup,
+            subs: newPresets,
+          };
+        });
+        return {
+          ...group,
+          subs: newSubGroups,
+        };
+      });
       callback({
-        data: basis_presets,
+        data: newBasisPresets,
         pagination: {
           current: pagination.page,
           pageSize: pagination.page_size,

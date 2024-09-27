@@ -450,8 +450,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           <Spin size="large" />
         </div>
       );
-    else if (location.pathname == PATH.productConfiguration)
+    else if (
+      location.pathname == PATH.productConfiguration ||
+      location.pathname == PATH.designerFavourite
+    )
       // First time load to TISC-Conf but login as Designer or Brand previously
+      // First time load to Designer Favourite
       store.dispatch(resetProductState());
 
     firstLoad.setValue(false);
@@ -605,7 +609,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                         viewAllTop={true}
                         textCapitalize={false}
                         placement={'bottomLeft'}
-                        menuStyle={{ height: 'max-content', width: 240 }}
+                        menuStyle={{ height: 'max-content', width: '100%' }}
                         handleChangeDropDownIcon={(visible: boolean) => {
                           isOpenLabel.setValue(visible);
                         }}
@@ -640,7 +644,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                                   className={'text-capitalize'}
                                   style={{
                                     paddingRight: 8,
-                                    maxWidth: 150,
+                                    maxWidth: 400,
+                                    width: 'fit-content',
                                     overflow: 'hidden',
                                     whiteSpace: 'nowrap',
                                     textOverflow: 'ellipsis',
