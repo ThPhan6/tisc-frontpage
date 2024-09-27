@@ -92,6 +92,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
   const [liked, setLiked] = useState(product.is_liked);
 
+  const { data } = useAppSelector((state) => state.product.list);
+  const location = useLocation();
+
   // custom product
   const customProductFilter = useAppSelector((state) => state.customProduct.filter);
 
@@ -124,6 +127,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const newLiked = !liked;
         setLiked(newLiked);
         setLikeCount(likeCount + (newLiked ? 1 : -1));
+        if (location.pathname == PATH.designerFavourite && data) {
+          const newData = data.map((collection) => {
+            const newProducts = collection.products.filter((item) => item.id !== product.id);
+            return {
+              ...collection,
+              products: newProducts,
+            };
+          });
+          store.dispatch(
+            setProductList({
+              data: newData,
+            }),
+          );
+        }
       }
     });
   };
