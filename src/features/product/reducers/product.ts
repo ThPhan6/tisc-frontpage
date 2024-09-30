@@ -298,25 +298,28 @@ export const productSpecificationSelector = (state: RootState) => {
     !isEmpty(state.product.details.specifiedDetail.specification?.attribute_groups)
     ? state.product.details.specifiedDetail.specification?.attribute_groups?.map(
         (attributeGroup: any) => {
-          const allNormalAttribute = state.product.details.specification_attribute_groups.reduce(
-            (pre: any, cur) => {
-              if (cur.type === 0) {
-                return pre.concat(cur.attributes);
-              }
-              return pre;
-            },
-            [],
+          // const allNormalAttribute = state.product.details.specification_attribute_groups.reduce(
+          //   (pre: any, cur) => {
+          //     if (cur.type === 0) {
+          //       return pre.concat(cur.attributes);
+          //     }
+          //     return pre;
+          //   },
+          //   [],
+          // );
+          // const newAttributes = attributeGroup.attributes?.map((attribute: any) => {
+          //   const foundAttribute = allNormalAttribute.find((el: any) => el.id === attribute.id);
+          //   return {
+          //     ...attribute,
+          //     ...foundAttribute,
+          //     basis_options: foundAttribute?.basis_options.filter(
+          //       (bo: any) => bo.id === attribute.basis_option_id,
+          //     ),
+          //   };
+          // });
+          const attrGroup = state.product.details.specification_attribute_groups.find(
+            (group) => group.id === attributeGroup.id,
           );
-          const newAttributes = attributeGroup.attributes?.map((attribute: any) => {
-            const foundAttribute = allNormalAttribute.find((el: any) => el.id === attribute.id);
-            return {
-              ...attribute,
-              ...foundAttribute,
-              basis_options: foundAttribute?.basis_options.filter(
-                (bo: any) => bo.id === attribute.basis_option_id,
-              ),
-            };
-          });
           const found = state.product.details.specification_attribute_groups.find(
             (item) => item.id === attributeGroup.id,
           );
@@ -342,7 +345,7 @@ export const productSpecificationSelector = (state: RootState) => {
           return {
             ...attributeGroup,
             isChecked: true,
-            attributes: newAttributes,
+            attributes: attrGroup?.attributes,
             stepSelection: attributeGroup.step_selections,
             viewSteps: newViewSteps,
           };
