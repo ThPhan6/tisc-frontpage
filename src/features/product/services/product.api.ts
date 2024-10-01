@@ -113,6 +113,7 @@ export const getProductListForDesigner = async (
   params: GetListProductForDesignerRequestParams,
   props?: { isConcat?: boolean },
 ) => {
+  if (params.brand_id || params.category_id) showPageLoading();
   return request<{
     data?: GroupProductList[];
     brand_summary?: BrandSummary;
@@ -151,9 +152,11 @@ export const getProductListForDesigner = async (
           }),
         );
       }
+      if (params.brand_id || params.category_id) hidePageLoading();
       return { allProducts, pagination: newPagination };
     })
     .catch((error) => {
+      if (params.brand_id || params.category_id) hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
       return {
         allProducts: [],
