@@ -69,18 +69,22 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
   });
   //sort attribute items
-  const allSubAttributes = attributes?.reduce((pre, cur: any) => {
-    return pre.concat(cur.subs);
-  }, []);
+  // const allSubAttributes = attributes?.reduce((pre, cur: any) => {
+  //   return pre.concat(cur.subs);
+  // }, []);
+  // console.log('allSubAttributes: ', allSubAttributes);
+  // console.log('attributes: ', attributes);
   const sortedAttributeGroup = attributeGroup.map((group) => {
     const mappedNameData = [...group.attributes].map((attribute) => {
-      const foundAttributeData: any = allSubAttributes?.find(
-        (item: any) => item.id === attribute.id,
-      );
-      return {
-        ...attribute,
-        name: foundAttributeData?.name || '',
-      };
+      // const foundAttributeData: any = allSubAttributes?.find(
+      //   (item: any) => item.id === attribute.id,
+      // );
+      // console.log('foundAttributeData: ', foundAttributeData);
+      // return {
+      //   ...attribute,
+      //   name: foundAttributeData?.name || '',
+      // };
+      return attribute;
     });
     return {
       ...group,
