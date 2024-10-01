@@ -155,7 +155,7 @@ const ProductDetailContainer: React.FC = () => {
     const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
     );
-    const haveInvaliCatelogueURL = details.catelogue_downloads.some(
+    const haveInvaliCatelogueURL = details.catelogue_downloads?.some(
       (content) => isValidURL(content.url) === false,
     );
     if (haveInvaliDownloadURL || haveInvaliCatelogueURL) {
