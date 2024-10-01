@@ -203,8 +203,11 @@ export const likeProductById = async (productId: string) => {
     });
 };
 
-export const getProductById = async (productId: string, props?: { isSpecified?: boolean }) => {
-  showPageLoading();
+export const getProductById = async (
+  productId: string,
+  props?: { isSpecified?: boolean; isAssignModal?: boolean },
+) => {
+  if (!props?.isAssignModal) showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
@@ -317,10 +320,10 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           }) as ['', '', '', ''],
         }),
       );
-      hidePageLoading();
+      if (!props?.isAssignModal) hidePageLoading();
     })
     .catch((error) => {
-      hidePageLoading();
+      if (!props?.isAssignModal) hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
     });
