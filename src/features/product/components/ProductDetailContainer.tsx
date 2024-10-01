@@ -123,7 +123,7 @@ const ProductDetailContainer: React.FC = () => {
 
   useEffect(() => {
     if (productId) {
-      getProductById(productId);
+      getProductById(productId, { isDetail: true });
     }
   }, [productId]);
 

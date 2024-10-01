@@ -205,7 +205,7 @@ export const likeProductById = async (productId: string) => {
 
 export const getProductById = async (
   productId: string,
-  props?: { isSpecified?: boolean; isAssignModal?: boolean },
+  props?: { isSpecified?: boolean; isAssignModal?: boolean; isDetail?: boolean },
 ) => {
   if (!props?.isAssignModal) showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
@@ -320,7 +320,11 @@ export const getProductById = async (
           }) as ['', '', '', ''],
         }),
       );
-      if (!props?.isAssignModal) hidePageLoading();
+      if (!props?.isAssignModal && !props?.isDetail) hidePageLoading();
+      else if (props?.isDetail)
+        setTimeout(() => {
+          hidePageLoading();
+        }, 3000);
     })
     .catch((error) => {
       if (!props?.isAssignModal) hidePageLoading();
