@@ -199,6 +199,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           menuStyle={menuStyle}
           alignRight={alignRight}
           position={position}
+          textCapitalize={textCapitalize}
         />
       )}
     </>
