@@ -5,7 +5,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { selectProductSpecification } from '../product/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
-import { getBusinessAddress } from '@/helper/utils';
+import { getBusinessAddress, sortObjectArray } from '@/helper/utils';
 import { getCustomDistributorByCompany } from '@/pages/Designer/Products/CustomLibrary/services';
 
 import { BrandDetail } from '../user-group/types';
@@ -164,7 +164,15 @@ export const VendorLocation: FC<VendorTabProps> = ({
       : getDistributorLocation;
     fetchDistributorsFunc(customProduct ? brandId : productId, projectId).then((data) => {
       if (data) {
-        setDistributorAddresses(data);
+        const newData = data.map((country) => {
+          const newDistributors = sortObjectArray(country.distributors, 'name', 'asc');
+          return {
+            ...country,
+            distributors: newDistributors,
+          };
+        });
+        const sortedData = sortObjectArray(newData, 'country_name', 'asc');
+        setDistributorAddresses(sortedData);
       }
     });
 
@@ -179,7 +187,15 @@ export const VendorLocation: FC<VendorTabProps> = ({
     } else {
       getBrandLocation(brandId).then((data) => {
         if (data) {
-          setBrandAddresses(data);
+          const newData = data.map((country) => {
+            const newLocations = sortObjectArray(country.locations, 'business_name', 'asc');
+            return {
+              ...country,
+              locations: newLocations,
+            };
+          });
+          const sortedData = sortObjectArray(newData, 'country_name', 'asc');
+          setBrandAddresses(sortedData);
         }
       });
     }
