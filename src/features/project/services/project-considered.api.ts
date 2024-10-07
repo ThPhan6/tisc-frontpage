@@ -69,7 +69,7 @@ export async function assignProductToProject(data: {
   })
     .then(() => {
       if (!data.custom_product) {
-        getProductById(data.product_id).then(() => {
+        getProductById(data.product_id, { isAssignModal: true }).then(() => {
           closeModal();
           message.success(getResponseMessage('assign', 'product'));
         });

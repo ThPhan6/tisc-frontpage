@@ -113,6 +113,7 @@ export const getProductListForDesigner = async (
   params: GetListProductForDesignerRequestParams,
   props?: { isConcat?: boolean },
 ) => {
+  if (params.brand_id || params.category_id) showPageLoading();
   return request<{
     data?: GroupProductList[];
     brand_summary?: BrandSummary;
@@ -151,9 +152,11 @@ export const getProductListForDesigner = async (
           }),
         );
       }
+      if (params.brand_id || params.category_id) hidePageLoading();
       return { allProducts, pagination: newPagination };
     })
     .catch((error) => {
+      if (params.brand_id || params.category_id) hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
       return {
         allProducts: [],
@@ -200,8 +203,11 @@ export const likeProductById = async (productId: string) => {
     });
 };
 
-export const getProductById = async (productId: string, props?: { isSpecified?: boolean }) => {
-  showPageLoading();
+export const getProductById = async (
+  productId: string,
+  props?: { isSpecified?: boolean; isAssignModal?: boolean; isDetail?: boolean },
+) => {
+  if (!props?.isAssignModal) showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
@@ -314,10 +320,14 @@ export const getProductById = async (productId: string, props?: { isSpecified?: 
           }) as ['', '', '', ''],
         }),
       );
-      hidePageLoading();
+      if (!props?.isAssignModal && !props?.isDetail) hidePageLoading();
+      else if (props?.isDetail)
+        setTimeout(() => {
+          hidePageLoading();
+        }, 3000);
     })
     .catch((error) => {
-      hidePageLoading();
+      if (!props?.isAssignModal) hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
     });
