@@ -457,37 +457,35 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     return null;
   }
 
-  // First time load to Designer/Brand-Product or TISC-Conf
-  // attrb: no filter
-  if (firstLoad.value && typeof filter == 'undefined') {
-    if (location.pathname == PATH.designerBrandProduct && !allProducts?.length)
-      // First time load to Designer/Brand-Product
-      return (
-        <div className={loadingStyles.container}>
-          <Spin size="large" />
-        </div>
-      );
-    else if (
-      location.pathname == PATH.productConfiguration ||
-      location.pathname == PATH.designerFavourite
-    )
-      // First time load to TISC-Conf but login as Designer or Brand previously
-      // First time load to Designer Favourite
-      store.dispatch(resetProductState());
-
-    firstLoad.setValue(false);
-  }
-  // After choosing filter
-  else if (!firstLoad.value && !(typeof filter == 'undefined')) {
-    setTimeout(() => {
-      firstLoad.setValue(true);
-    }, delayDuration);
-    if (!data?.length) {
-      return (
-        <div className={loadingStyles.container}>
-          <Spin size="large" />
-        </div>
-      );
+  if (typeof filter == 'undefined') {
+    if (firstLoad.value) {
+      if (location.pathname == PATH.designerBrandProduct) {
+        // First time load to Designer/Brand-Product
+        if (allProducts?.length) firstLoad.setValue(false);
+        else
+          return (
+            <div className={loadingStyles.container}>
+              <Spin size="large" />
+            </div>
+          );
+      } else if (location.pathname == PATH.productConfiguration) {
+        // First time load to TISC-Conf but login as Designer or Brand previously
+        store.dispatch(resetProductState());
+        firstLoad.setValue(false);
+      } else {
+        // First time load to Designer Favourite
+        if (allProducts?.length) store.dispatch(resetProductState());
+        setTimeout(() => {
+          firstLoad.setValue(false);
+        }, delayDuration);
+        if (!data?.length) {
+          return (
+            <div className={loadingStyles.container}>
+              <Spin size="large" />
+            </div>
+          );
+        }
+      }
     }
   }
 
