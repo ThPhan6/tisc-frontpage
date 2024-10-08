@@ -1,0 +1,34 @@
+.tree_select {
+  position: absolute;
+  width: max-content;
+  box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px !important;
+  transform: translate(8.4rem, 2.3rem);
+
+  :global(.ant-menu-item) {
+    height: 28px !important;
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+  }
+
+  :global(.ant-menu-title-content) {
+    display: flex;
+    padding: 8px 12px;
+  }
+
+  &_name {
+    width: 170px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-transform: capitalize;
+    text-overflow: ellipsis;
+
+    &:hover {
+      color: @primary-color-dark;
+      font-weight: 500;
+    }
+  }
+
+  &_icon {
+    margin-top: 6px;
+  }
+}

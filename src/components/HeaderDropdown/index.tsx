@@ -19,6 +19,7 @@ export type HeaderDropdownProps = {
   placement?: DropdownProps['placement'];
   filterDropdown?: boolean;
   menuDropdown?: boolean;
+  customVisible?: boolean;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
@@ -51,7 +52,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
           return;
         }
         onParentClick?.();
-        onClick();
+        onClick?.();
       }}
       className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
       style={additionalStyle}
@@ -88,6 +89,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   items = [],
   filterDropdown,
   menuDropdown,
+  customVisible = false,
   ...restProps
 }) => {
   const { isMobile } = useScreen();
@@ -108,7 +110,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
           arrowPositionCenter && styles[`arrow-center`]
         } ${cls} ${filterDropdown ? styles.filterDropdown : ''} ${containerClass}`}
         arrow={arrow}
-        visible={visible && isMobile === false}
+        visible={customVisible || (visible && isMobile === false)}
         onVisibleChange={(value) => setVisible(value)}
         overlay={content}
         {...restProps}

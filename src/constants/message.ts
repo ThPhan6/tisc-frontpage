@@ -51,6 +51,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_CATEGORY_SUCCESS: 'Update the category successfully',
   UPDATE_CATEGORY_ERROR: 'Update the category error',
   GET_LIST_CATEGORY_ERROR: 'Failed to get list category',
+  MOVE_CATEGORY_TO_SUB_CATEGORY_SUCCESS: 'Move category to another sub category successfully',
+  MOVE_CATEGORY_TO_SUB_CATEGORY_ERROR: 'Move category to another sub category unsuccessfully',
 
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',

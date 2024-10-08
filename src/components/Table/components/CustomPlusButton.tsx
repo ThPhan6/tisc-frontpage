@@ -13,6 +13,7 @@ interface CustomPlusButtonProps {
   customClass?: string;
   position?: 'start' | 'between' | 'center' | 'end';
   style?: CSSProperties;
+  additionalLabelClass?: string;
 }
 
 const CustomPlusButton: FC<CustomPlusButtonProps> = ({
@@ -23,6 +24,7 @@ const CustomPlusButton: FC<CustomPlusButtonProps> = ({
   customClass = '',
   position = 'end',
   style,
+  additionalLabelClass = '',
 }) => {
   return (
     <div className={`flex-${position} ${customClass}`} style={style}>
@@ -33,7 +35,7 @@ const CustomPlusButton: FC<CustomPlusButtonProps> = ({
         }`}
       >
         {label ? (
-          <MainTitle level={4} customClass="label">
+          <MainTitle level={4} customClass={`label ${additionalLabelClass}`}>
             {label}
           </MainTitle>
         ) : null}
