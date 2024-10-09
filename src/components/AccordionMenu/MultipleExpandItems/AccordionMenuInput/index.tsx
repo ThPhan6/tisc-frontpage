@@ -1,5 +1,7 @@
 import { ReactNode, useState } from 'react';
 
+import { message } from 'antd';
+
 import { AccordionItem } from '@/components/AccordionMenu';
 import styles from '@/components/AccordionMenu/AccodionMenu.less';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -12,12 +14,7 @@ interface AccordionMenuInputProps {
   data: AccordionItem[];
   isEditMode: boolean;
   level: number;
-  onAdd: (
-    value: string,
-    currentParentId: string | null,
-    level: number,
-    expandedItems: string[],
-  ) => Promise<boolean>;
+  onAdd: any;
   expandedItems: string[];
 }
 
@@ -32,9 +29,13 @@ const AccordionMenuInput = ({
 }: AccordionMenuInputProps) => {
   const [newCategory, setNewCategory] = useState('');
 
-  const handleAdd = async () => {
+  const handleAdd = async (): Promise<void> => {
     if (newCategory.trim()) {
-      const isSuccess = await onAdd(newCategory, expandedItems[level - 2], level, expandedItems);
+      if (level > 1 && !expandedItems.includes(expandedItems[level - 2])) {
+        message.warn(`Please expand a valid category before adding to this level.`);
+        return;
+      }
+      const isSuccess = await onAdd(newCategory, expandedItems[level - 2], level);
       if (isSuccess) setNewCategory('');
     }
   };

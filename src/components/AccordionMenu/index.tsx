@@ -20,12 +20,7 @@ interface AccordionMenuProps {
   accordionConfig: {
     inputTitle: string;
   }[];
-  onAdd: (
-    value: string,
-    currentParentId: string | null,
-    level: number,
-    expandedItems: string[],
-  ) => Promise<boolean>;
+  onAdd: (value: string, currentParentId: string | null, level: number) => Promise<boolean>;
   onDelete: (id: string) => void;
   onUpdate: (id: string, value: string) => Promise<boolean>;
   onSelect: (sub_id: string, parent_id: string) => Promise<boolean>;

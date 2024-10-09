@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { message } from 'antd';
-
 import { confirmDelete } from '@/helper/common';
 import {
   createDynamicCategory,
@@ -56,10 +54,10 @@ const PricesAndInventories = () => {
     confirmDelete(async () => {
       const res = await deleteDynamicCategory(id);
       if (res) {
-        const updatedItems = accordionItems.filter((item) => item.id !== id);
-        setAccordionItems(updatedItems);
-        await fetchGroupCategories();
+        Promise.all([fetchCategories(), fetchGroupCategories()]);
+        return true;
       }
+      return false;
     });
   };
 

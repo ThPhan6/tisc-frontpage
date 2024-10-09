@@ -27,13 +27,8 @@ interface AccordionMenuItemsProps {
   }[];
   accordionItems: AccordionItem[];
   groupItems: AccordionItem[];
-  onAdd: (
-    value: string,
-    currentParentId: string | null,
-    level: number,
-    expandedItems: string[],
-  ) => Promise<boolean>;
-  onDelete: (id: string) => void;
+  onAdd: (value: string, currentParentId: string | null, level: number) => Promise<boolean>;
+  onDelete: any;
   onUpdate: (id: string, value: string) => Promise<boolean>;
   onSelect: (sub_id: string, parent_id: string) => Promise<boolean>;
 }
@@ -177,7 +172,10 @@ const AccordionMenuItems = ({
     setSelectedItem(item);
   };
 
-  const removeItem = (id: string) => () => onDelete(id);
+  const removeItem = (id: string) => async () => {
+    const success = await onDelete(id);
+    if (success) setExpandedItems([]);
+  };
 
   const renderItems = (level: number, parentId: string | null = null) => {
     return sortObjectArray(accordionItems, 'name')
