@@ -487,6 +487,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         }
       }
     }
+  } else {
+    if (!firstLoad.value && location.pathname == PATH.productConfiguration) {
+      setTimeout(() => {
+        firstLoad.setValue(true);
+      }, delayDuration);
+      if (!data?.length) {
+        return (
+          <div className={loadingStyles.container}>
+            <Spin size="large" />
+          </div>
+        );
+      }
+    }
   }
 
   if (!allProducts?.length && !data?.length) {
