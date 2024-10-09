@@ -34,19 +34,8 @@ const PricesAndInventories = () => {
     if (res) setGroupItems(res);
   };
 
-  const handleAdd = async (
-    value: string,
-    parentId: string | null,
-    level: number,
-    expandedItems: string[],
-  ) => {
-    if (level > 1 && !expandedItems.includes(parentId ?? '')) {
-      message.warn(`Please expand a valid category before adding to this level.`);
-      return false;
-    }
-
+  const handleAdd = async (value: string, parentId: string | null, level: number) => {
     const newItem: AccordionItem = {
-      id: Math.random().toString(),
       name: value,
       level,
       parent_id: parentId || '',
