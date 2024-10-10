@@ -50,17 +50,20 @@ const PricesAndInventories = () => {
     return false;
   };
 
-  const handleDelete = (id: string) => {
-    confirmDelete(async () => {
-      const res = await deleteDynamicCategory(id);
-      if (res) {
-        Promise.all([fetchCategories(), fetchGroupCategories()]);
-        return true;
-      }
-      return false;
+  const handleDelete = async (id: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      confirmDelete(async () => {
+        const res = await deleteDynamicCategory(id);
+        if (res) {
+          await Promise.all([fetchCategories(), fetchGroupCategories()]);
+          resolve(true);
+          return;
+        }
+
+        resolve(false);
+      });
     });
   };
-
   const handleUpdate = async (id: string, value: string) => {
     const res = await updateDynamicCategory(id, value);
     if (res) {

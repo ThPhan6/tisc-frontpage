@@ -21,7 +21,7 @@ interface AccordionMenuProps {
     inputTitle: string;
   }[];
   onAdd: (value: string, currentParentId: string | null, level: number) => Promise<boolean>;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => Promise<boolean>;
   onUpdate: (id: string, value: string) => Promise<boolean>;
   onSelect: (sub_id: string, parent_id: string) => Promise<boolean>;
 }
