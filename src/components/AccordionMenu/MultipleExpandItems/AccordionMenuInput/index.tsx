@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { message } from 'antd';
 
@@ -9,7 +9,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 interface AccordionMenuInputProps {
-  title: ReactNode;
+  title: string;
   parentIds: string[];
   data: AccordionItem[];
   isEditMode: boolean;
@@ -51,11 +51,19 @@ const AccordionMenuInput = ({
     (item) => item.level === level && parentIds?.includes(item.parent_id),
   ).length;
 
+  const getDynamicTitle = () => {
+    if (dataLength <= 1) {
+      if (title.endsWith('ies')) return title.slice(0, -3) + 'y';
+      if (title.endsWith('s')) return title.slice(0, -1);
+    }
+    return title;
+  };
+
   return (
     <header className={`${styles.accordion_menu_input} ${isEditMode ? 'p-0' : 'pb-8'}`}>
       <hgroup className="d-flex items-center">
         <MainTitle level={3} customClass="mr-16 ">
-          {title}
+          {getDynamicTitle()}
         </MainTitle>
         <BodyText fontFamily="Roboto" level={5}>
           ({dataLength})

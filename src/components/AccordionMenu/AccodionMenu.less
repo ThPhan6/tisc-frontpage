@@ -24,9 +24,6 @@
     }
 
     &_btn_switch {
-      width: 114px;
-      height: 24px;
-
       &_on,
       &_off {
         :global(.ant-switch-handle) {
@@ -37,13 +34,21 @@
       }
 
       &_on {
+        width: 114px;
+        height: 24px;
+
         :global(.ant-switch-inner) {
+          max-width: 82px;
           color: #fff;
         }
       }
 
       &_off {
+        width: 90px;
+        height: 24px;
+
         :global(.ant-switch-inner) {
+          max-width: 58px;
           color: @mono-color;
         }
 
@@ -58,7 +63,6 @@
 
       :global(.ant-switch-inner) {
         width: 100%;
-        max-width: 82px;
         font-weight: 500;
         font-size: 12px;
         font-family: 'Roboto';
