@@ -403,7 +403,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customLoading, setCustomLoading] = useState(false);
   const firstLoad = useBoolean(true);
-  const [delayDuration, setDelayDuration] = useState<number>(10000);
+  const [delayDuration, setDelayDuration] = useState<number>(20000);
   const location = useLocation();
   console.log(groups);
   useEffect(() => {
