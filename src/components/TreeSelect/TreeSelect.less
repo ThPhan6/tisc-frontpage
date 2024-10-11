@@ -1,8 +1,11 @@
 .tree_select {
   position: absolute;
-  width: max-content;
+  width: 100%;
+  max-width: 420px;
+  max-height: 500px;
+  overflow: auto;
   box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px !important;
-  transform: translate(8.4rem, 2.3rem);
+  transform: translate(-2.4rem, 2.3rem);
 
   :global(.ant-menu-item) {
     height: 28px !important;
@@ -15,8 +18,12 @@
     padding: 8px 12px;
   }
 
+  &_item {
+    width: 100%;
+  }
+
   &_name {
-    width: 170px;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-transform: capitalize;

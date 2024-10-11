@@ -182,6 +182,7 @@ const AccordionMenuItems = ({
       .filter((item) => item.level === level && item.parent_id === parentId)
       .map((item) => {
         const isEditing = editStatus[item.id]?.isEditing;
+        const isExpanded = expandedItems.includes(item.id);
 
         return (
           <>
@@ -229,7 +230,7 @@ const AccordionMenuItems = ({
                   } text-capitalize ellipsis`}
                   level={5}
                   fontFamily="Roboto"
-                  style={{ fontWeight: `${expandedItems.includes(item.id) ? '500' : ''}` }}
+                  style={{ fontWeight: `${isExpanded ? '500' : ''}` }}
                 >
                   {item.name}
                 </BodyText>
@@ -264,9 +265,7 @@ const AccordionMenuItems = ({
                   />
                 )}
                 {levels !== level && (
-                  <span className="ml-8">
-                    {expandedItems.includes(item.id) ? <DropupIcon /> : <DropdownIcon />}
-                  </span>
+                  <span className="ml-8">{isExpanded ? <DropupIcon /> : <DropdownIcon />}</span>
                 )}
               </div>
             </li>
@@ -299,6 +298,7 @@ const AccordionMenuItems = ({
           parentIds={parentIds}
           expandedItems={expandedItems}
         />
+
         <ul className={styles.accordion_menu_item}>
           {parentIds.map((parentId: string) => renderItems(level, parentId))}
         </ul>

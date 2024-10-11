@@ -17,17 +17,21 @@ export interface TreeItem {
 
 interface TreeSelectProps<T> extends MenuProps {
   data: T[];
+  isSingleExpand?: boolean;
+  showAllLevels?: boolean;
   additionalClassName?: string;
   onItemSelect: (item: TreeItem) => void;
 }
 
 const TreeSelect = <T,>({
   data,
+  isSingleExpand = true,
+  showAllLevels = false,
   additionalClassName = '',
   onItemSelect,
   ...props
 }: TreeSelectProps<T>) => {
-  const { expandedKeys, handleToggleExpand } = useToggleExpand(true);
+  const { expandedKeys, handleToggleExpand } = useToggleExpand(isSingleExpand);
 
   const findMaxLevel = (items: TreeItem[]): number => {
     let maxLevel = 0;
@@ -44,9 +48,11 @@ const TreeSelect = <T,>({
 
   const maxLevel = findMaxLevel(data as TreeItem[]);
 
-  const isItemSelectable = (item: TreeItem): boolean => item.level === maxLevel - 1;
+  const isItemSelectable = (item: TreeItem): boolean =>
+    showAllLevels ? item.level === maxLevel : item.level === maxLevel - 1;
 
-  const shouldDisplayItem = (item: TreeItem): boolean => item.level < maxLevel;
+  const shouldDisplayItem = (item: TreeItem): boolean =>
+    showAllLevels ? true : item.level < maxLevel;
 
   const handleItemClick = (item: TreeItem) => () =>
     isItemSelectable(item) ? onItemSelect(item) : handleToggleExpand(item.id);
@@ -71,6 +77,7 @@ const TreeSelect = <T,>({
           onClick={handleItemClick(item)}
         >
           <Menu.Item
+            className={styles.tree_select_item}
             style={{
               paddingLeft: `${indent * 16}px`,
             }}
