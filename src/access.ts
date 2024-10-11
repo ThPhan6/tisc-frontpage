@@ -64,10 +64,12 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     brand_product: isAccessableForBrand('product'),
     brand_genenral_inquiry: isAccessableForBrand('general'),
     brand_project_tracking: isAccessableForBrand('project tracking'),
+    brand_prices_and_inventories: isAccessableForBrand('prices & inventories'),
     brand_administration:
       isAccessableForBrand('administration', 'brand profile') ||
       isAccessableForBrand('administration', 'location') ||
       isAccessableForBrand('administration', 'team profile') ||
+      isAccessableForBrand('administration', 'partners') ||
       isAccessableForBrand('administration', 'distributor') ||
       isAccessableForBrand('administration', 'market availability') ||
       isAccessableForBrand('administration', 'billed services'),
