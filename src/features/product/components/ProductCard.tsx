@@ -403,7 +403,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customLoading, setCustomLoading] = useState(false);
   const firstLoad = useBoolean(true);
-  const [delayDuration, setDelayDuration] = useState<number>(3000);
+  const [delayDuration, setDelayDuration] = useState<number>(20000);
   const location = useLocation();
   console.log(groups);
   useEffect(() => {
@@ -485,6 +485,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             </div>
           );
         }
+      }
+    }
+  } else {
+    if (!firstLoad.value && location.pathname == PATH.productConfiguration) {
+      setTimeout(() => {
+        firstLoad.setValue(true);
+      }, delayDuration);
+      if (!data?.length) {
+        return (
+          <div className={loadingStyles.container}>
+            <Spin size="large" />
+          </div>
+        );
       }
     }
   }
