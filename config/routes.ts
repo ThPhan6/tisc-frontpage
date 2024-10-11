@@ -584,6 +584,19 @@ const routes = [
     ],
   },
   {
+    path: PATH.brandPricesInventories,
+    name: 'prices_inventories',
+    icon: 'bar-code-icon.svg',
+    access: 'brand_prices_and_inventories',
+    routes: [
+      {
+        path: PATH.brandPricesInventories,
+        component: './Brand/PricesAndInventories',
+        hideInMenu: true,
+      },
+    ],
+  },
+  {
     path: PATH.brandAdministration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',

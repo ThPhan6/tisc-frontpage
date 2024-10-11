@@ -12,3 +12,4 @@ export * from './label.type';
 export * from './product-id.type';
 export * from './partner.type';
 export * from './common-partner-type';
+export * from './dynamic-category.type';

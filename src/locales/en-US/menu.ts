@@ -32,6 +32,7 @@ export default {
 
   'menu.general_inquiry': 'GENERAL INQUIRIES',
   'menu.project_tracking': 'PROJECT TRACKING',
+  'menu.prices_inventories': 'PRICES & INVENTORIES',
   'menu.adminstration.brand.distributor': 'Distributors',
   'menu.adminstration.brand.partners': 'Partners',
   'menu.adminstration.brand.market_availability': 'Market Availability',
