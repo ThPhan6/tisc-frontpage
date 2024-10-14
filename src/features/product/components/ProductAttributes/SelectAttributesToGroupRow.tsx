@@ -7,6 +7,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { checkedOptionType, useProductAttributeForm } from './hooks';
 import { useBoolean } from '@/helper/hook';
+import { sortObjectArray } from '@/helper/utils';
 import { capitalize, cloneDeep, flatMap, upperCase } from 'lodash';
 
 import { setPartialProductDetail, setStep } from '../../reducers';
@@ -173,12 +174,17 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
       };
 
       /// to rearrange attribute has type option to top
+      // newAttrGroup.forEach((group) => {
+      //   group.attributes.forEach((attribute, index) => {
+      //     if (attribute.type === 'Options') {
+      //       group.attributes.unshift(group.attributes.splice(index, 1)[0]);
+      //     }
+      //   });
+      // });
+
+      // to sort attribute by name
       newAttrGroup.forEach((group) => {
-        group.attributes.forEach((attribute, index) => {
-          if (attribute.type === 'Options') {
-            group.attributes.unshift(group.attributes.splice(index, 1)[0]);
-          }
-        });
+        group.attributes = sortObjectArray(group.attributes, 'name', 'asc');
       });
 
       store.dispatch(
