@@ -39,6 +39,8 @@ const CountryModal: FC<{
   };
 
   const onCountrySearch = (e: ChangeEvent<HTMLInputElement>) => {
+    // Store original countries array in 1st Search
+    if (orgCountries.length == 0) setOrgCountries(countries);
     if (e.target.value === '') {
       setCountries(orgCountries);
       return;
@@ -51,7 +53,6 @@ const CountryModal: FC<{
 
   useEffect(() => {
     getCountryList();
-    setOrgCountries(countries);
   }, []);
 
   return (
