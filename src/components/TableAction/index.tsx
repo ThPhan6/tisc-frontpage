@@ -42,6 +42,7 @@ interface ActionFormProps extends HeaderDropdownProps {
   containerStyle?: CSSProperties;
   editActionOnMobile?: boolean;
   disabledOnMobile?: boolean;
+  customVisible?: boolean;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -116,6 +117,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
   containerStyle,
   editActionOnMobile = true,
   disabledOnMobile,
+  customVisible = false,
   ...props
 }) => {
   const isTablet = useScreen().isTablet;
@@ -167,6 +169,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
         trigger={trigger}
         placement={placement}
         items={filledActionItems}
+        customVisible={customVisible}
       >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>

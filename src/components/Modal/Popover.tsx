@@ -5,6 +5,7 @@ import { Modal } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
+import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
 import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
@@ -25,6 +26,7 @@ import { DropdownCategoryList } from '@/features/categories/components/CategoryD
 
 import { CustomCheckbox } from '../CustomCheckbox';
 import { EmptyOne } from '../Empty';
+import { CustomInput } from '../Form/CustomInput';
 import { MobileDrawer } from './Drawer';
 import styles from './styles/Popover.less';
 
@@ -92,6 +94,8 @@ export interface PopoverProps {
 
   width?: string | number;
   notScrollWholeContent?: boolean;
+
+  onCountrySearch?: (e?: any) => void;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -131,6 +135,7 @@ const Popover: FC<PopoverProps> = ({
   cancelSaveFooter,
   collapseLevel,
   notScrollWholeContent,
+  onCountrySearch,
 }) => {
   const { isMobile } = useScreen();
 
@@ -327,16 +332,25 @@ const Popover: FC<PopoverProps> = ({
         icon={<CheckSuccessIcon />}
       />
     ) : (
-      <CustomButton
-        size="small"
-        variant="primary"
-        properties="rounded"
-        buttonClass="done-btn"
-        disabled={disabledSubmit}
-        onClick={handleDone}
-      >
-        {label}
-      </CustomButton>
+      <div className="done-btn">
+        {title === 'SELECT COUNTRY' && <SearchIcon />}
+        {title === 'SELECT COUNTRY' && (
+          <CustomInput
+            placeholder="Search"
+            style={{ paddingLeft: 16, paddingRight: 16 }}
+            onChange={onCountrySearch}
+          />
+        )}
+        <CustomButton
+          size="small"
+          variant="primary"
+          properties="rounded"
+          disabled={disabledSubmit}
+          onClick={handleDone}
+        >
+          {label}
+        </CustomButton>
+      </div>
     );
   };
 

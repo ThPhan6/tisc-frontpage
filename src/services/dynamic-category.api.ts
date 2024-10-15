@@ -1,0 +1,100 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { CategoryEntity } from '@/types';
+
+import { AccordionItem } from '@/components/AccordionMenu';
+
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
+export async function getDynamicCategories() {
+  showPageLoading();
+
+  return request<{ data: AccordionItem[] }>(`/api/dynamic-category/get-list`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      hidePageLoading();
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_CATEGORY_ERROR);
+      hidePageLoading();
+      return [];
+    });
+}
+
+export async function getGroupCategories() {
+  return request<{ data: AccordionItem[] }>(`/api/dynamic-category/group`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'Get group categories error');
+      return [];
+    });
+}
+
+export async function createDynamicCategory(data: Partial<CategoryEntity>) {
+  return request<{ data: AccordionItem }>(`/api/dynamic-category/create`, {
+    method: 'POST',
+    data,
+  })
+    .then((response) => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_CATEGORY_ERROR);
+      return false;
+    });
+}
+
+export async function updateDynamicCategory(id: string, name: string) {
+  return request<boolean>(`/api/dynamic-category/update/${id}`, {
+    method: 'PUT',
+    data: { name },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_CATEGORY_ERROR);
+      return false;
+    });
+}
+
+export async function deleteDynamicCategory(id: string) {
+  return request<boolean>(`/api/dynamic-category/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+      return false;
+    });
+}
+
+export async function moveCategoryToSubCategory(sub_id: string, parent_id: string) {
+  return request<boolean>(`/api/dynamic-category/${sub_id}/move`, {
+    method: 'POST',
+    data: { parent_id },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.MOVE_CATEGORY_TO_SUB_CATEGORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message ?? MESSAGE_NOTIFICATION.MOVE_CATEGORY_TO_SUB_CATEGORY_ERROR,
+      );
+      return false;
+    });
+}

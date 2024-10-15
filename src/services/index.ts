@@ -9,3 +9,4 @@ export * from './department.api';
 export * from './label.api';
 export * from './partner.api';
 export * from './company.api';
+export * from './dynamic-category.api';
