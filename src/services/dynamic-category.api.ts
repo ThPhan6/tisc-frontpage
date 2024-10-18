@@ -2,11 +2,24 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import {
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+} from '@/components/Table/types';
 import { CategoryEntity } from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
+import { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
+interface InventoryReponse {
+  data: {
+    pagination: PaginationResponse;
+    partners: PriceAndInventoryAttribute[];
+  };
+}
 
 export async function getDynamicCategories() {
   showPageLoading();
@@ -96,5 +109,69 @@ export async function moveCategoryToSubCategory(sub_id: string, parent_id: strin
         error?.data?.message ?? MESSAGE_NOTIFICATION.MOVE_CATEGORY_TO_SUB_CATEGORY_ERROR,
       );
       return false;
+    });
+}
+
+export const getListInventories = (
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) => {
+  request(`/api/inventory/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response: InventoryReponse) => {
+      const { pagination } = response as any;
+
+      callback({
+        data: response.data,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+      });
+    })
+    .catch((error) => {
+      message.error(error.message);
+      hidePageLoading();
+    });
+};
+
+export async function createInventory(data: PriceAndInventoryAttribute) {
+  return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/create`, {
+    method: 'POST',
+    data,
+  })
+    .then((response) => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_INVENTORY_SUCCESS);
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INVENTORY_ERROR);
+      return false;
+    });
+}
+
+export async function deleteInventory(id: string) {
+  return request<boolean>(`/api/inventory/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_INVENTORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_INVENTORY_ERROR);
+      return false;
+    });
+}
+
+export async function getInventory(id: string) {
+  return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/get-one/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_PARTNER_ERROR);
+      return null;
     });
 }

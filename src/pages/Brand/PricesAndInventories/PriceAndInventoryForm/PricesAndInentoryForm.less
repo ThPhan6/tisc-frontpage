@@ -1,0 +1,106 @@
+.category_form {
+  &_wrapper {
+    background: #fff;
+  }
+  &_heading_group {
+    padding: 16px;
+    box-shadow: @border-bottom-black-inset;
+    &_title {
+      font-weight: 400;
+      line-height: calc(24 / 16);
+      letter-spacing: 0.32px;
+      text-transform: uppercase;
+    }
+  }
+  &_content {
+    width: 100%;
+    padding: 16px;
+    box-shadow: -0.5px 0 0 0 #000 inset;
+    &:last-child {
+      box-shadow: none;
+    }
+    &_title {
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      font-size: 14px;
+      line-height: calc(22 / 14);
+      letter-spacing: 0.28px;
+      box-shadow: @border-bottom-black-inset;
+    }
+  }
+  &_btn_switch {
+    margin-top: 20px;
+    &_on,
+    &_off {
+      :global(.ant-switch-handle) {
+        top: 5px;
+        width: 12px;
+        height: 12px;
+      }
+    }
+    &_on {
+      width: 114px;
+      height: 24px;
+      :global(.ant-switch-inner) {
+        max-width: 82px;
+        color: #fff;
+      }
+    }
+    &_off {
+      width: 90px;
+      height: 24px;
+      :global(.ant-switch-inner) {
+        max-width: 58px;
+        color: @mono-color;
+      }
+      :global(.ant-switch-handle) {
+        left: 10px;
+        &::before {
+          background: @mono-color;
+        }
+      }
+    }
+    :global(.ant-switch-inner) {
+      width: 100%;
+      font-weight: 500;
+      font-size: 12px;
+      font-family: 'Roboto';
+      line-height: calc(20 / 12);
+    }
+  }
+  &_footer {
+    padding: 16px;
+    text-align: end;
+    background: #fff;
+    box-shadow: 0 0.5px 0 0 @mono-color inset;
+  }
+  :global(.ant-switch.category_form_btn_switch___3u6y5.category_form_btn_switch_off___1dLO6) {
+    background: #fff;
+    border: 0.5px solid @mono-color;
+  }
+  :global(
+      .ant-switch.category_form_btn_switch___3u6y5.category_form_btn_switch_on___2tGUz.ant-switch-checked
+    ) {
+    background: @primary-color-dark;
+  }
+  :global(.ant-table-thead) {
+    tr {
+      :global(.ant-table-cell) {
+        background: #fff;
+        border: none;
+        box-shadow: @border-top-black-inset;
+        &::before {
+          width: 0 !important;
+        }
+      }
+    }
+  }
+  :global(.ant-table-tbody) {
+    tr {
+      :global(.ant-table-cell) {
+        border: none;
+        // box-shadow: @border-top-black-inset;
+      }
+    }
+  }
+}

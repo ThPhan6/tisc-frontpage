@@ -1,6 +1,8 @@
 import { ChangeEvent, MouseEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 
+import { PATH } from '@/constants/path';
 import { message } from 'antd';
+import { useHistory } from 'umi';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
@@ -52,12 +54,13 @@ const AccordionMenuItems = ({
     parent_id: '',
   });
   const [currentMoveToParentList, setCurrentMoveToParentList] = useState('');
-
   const [editStatus, setEditStatus] = useState<{
     [key: string]: { value: string; isEditing: boolean };
   }>({});
 
   const treeSelectRef = useRef<HTMLDivElement>(null);
+
+  const history = useHistory();
 
   const handleClickOutside = (event: MouseEvent) => {
     if (treeSelectRef.current && !treeSelectRef.current.contains(event.target as Node)) {
@@ -177,6 +180,36 @@ const AccordionMenuItems = ({
     if (success) setExpandedItems([]);
   };
 
+  // const getCategoryPath = (item: AccordionItem, items: AccordionItem[]) => {
+  //   const path = [];
+  //   let currentItem: AccordionItem | null = item;
+
+  //   while (currentItem) {
+  //     path.unshift(currentItem.name);
+  //     const parentItem = items.find((parent) => parent.id === currentItem?.parent_id) || null;
+  //     currentItem = parentItem;
+  //   }
+
+  //   return path.join(' / ');
+  // };
+
+  const handleItemClick = (clickedItem: AccordionItem, level: number) => {
+    // const isLastLevel = level === levels;
+    // if (!isLastLevel) {
+    //   return () => toggleExpand(clickedItem.id ?? '', level)();
+    // }
+    // return () => {
+    //   const fullPath = getCategoryPath(clickedItem, [...accordionItems]);
+    //   history.push({
+    //     pathname: PATH.brandPricesInventoriesTable,
+    //     search: `?categories=${encodeURIComponent(fullPath)}`,
+    //     state: {
+    //       categoryId: clickedItem.id,
+    //     },
+    //   });
+    // };
+  };
+
   const renderItems = (level: number, parentId: string | null = null) => {
     return sortObjectArray(accordionItems, 'name')
       .filter((item) => item.level === level && item.parent_id === parentId)
@@ -188,7 +221,7 @@ const AccordionMenuItems = ({
           <>
             <li
               key={item.id}
-              onClick={toggleExpand(item.id, level)}
+              // onClick={handleItemClick(item, level)}
               className={`${styles.accordion_menu_item_action}`}
             >
               {isEditing ? (

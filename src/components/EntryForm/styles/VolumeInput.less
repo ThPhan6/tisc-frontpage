@@ -1,0 +1,23 @@
+.volume_discount_input {
+  width: 100%;
+
+  :global(.ant-input-affix-wrapper) {
+    background: none;
+    border: none !important;
+    box-shadow: 0 -0.5px 0 0 rgba(0, 0, 0, 0.3) inset;
+  }
+
+  :global(.ant-input) {
+    padding-left: 16px !important;
+    color: @primary-color-dark;
+    font-weight: 300;
+    background: none;
+
+    &::placeholder {
+      color: @mono-color-medium;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: Roboto;
+    }
+  }
+}

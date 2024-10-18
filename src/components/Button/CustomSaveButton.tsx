@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { Spin } from 'antd';
+
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 
 import { CustomSaveButtonProps } from './types';
@@ -8,6 +10,7 @@ import styles from '../Button/styles/index.less';
 import { BodyText } from '../Typography';
 
 export const CustomSaveButton: FC<Omit<CustomSaveButtonProps, 'className'>> = ({
+  isLoading,
   isSuccess,
   onClick,
   customClass = '',
@@ -21,8 +24,11 @@ export const CustomSaveButton: FC<Omit<CustomSaveButtonProps, 'className'>> = ({
       } ${customClass}`}
       onClick={onClick}
       {...props}
+      disabled={isLoading}
     >
-      {isSuccess ? (
+      {isLoading ? (
+        <Spin className={styles.spin} />
+      ) : isSuccess ? (
         <CheckSuccessIcon />
       ) : (
         <BodyText level={6} fontFamily="Roboto">

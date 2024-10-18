@@ -608,3 +608,24 @@ export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) =
   }
   return null;
 };
+
+export const extractDataBase64 = (src: string): string | null => {
+  const base64Prefix = 'base64,';
+  const base64Index = src.indexOf(base64Prefix);
+  if (base64Index !== -1) return src.substring(base64Index + base64Prefix.length);
+  return null;
+};
+
+export const convertUrlToBase64 = async (url: string): Promise<string> => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(blob);
+  });
+};
