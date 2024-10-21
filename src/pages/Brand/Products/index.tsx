@@ -68,12 +68,14 @@ const BrandProductListPage: React.FC = () => {
       return;
     }
 
+    const cateFilter = filter.find((item) => item.name === 'category_id');
+    const collFilter = filter.find((item) => item.name === 'collection_id');
     getProductListByBrandId({
       brand_id: userBrand.id,
-      category_id: filter?.name === 'category_id' ? filter?.value : undefined,
-      collection_id: filter?.name === 'collection_id' ? filter?.value : undefined,
+      category_id: cateFilter ? cateFilter.value : undefined,
+      collection_id: collFilter ? collFilter.value : undefined,
     });
-  }, [filter?.value, filter?.name]);
+  }, [filter]);
 
   const renderPageHeader = () => (
     <TopBarContainer
