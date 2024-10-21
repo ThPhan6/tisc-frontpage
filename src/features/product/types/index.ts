@@ -252,7 +252,7 @@ export type SortParams = {
 };
 
 export interface ProductList {
-  filter?: ProductTopBarFilter;
+  filter?: ProductTopBarFilter[];
   data?: GroupProductList[];
   search?: string;
   sort?: SortParams;
