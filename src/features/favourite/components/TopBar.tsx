@@ -22,26 +22,26 @@ export interface ProductSummaryTopBarProps {
   isFavouriteRetrieved: boolean;
 }
 
-export const formatCategoriesFavouriteToDropDownData = (
-  categories?: ProductItemValue[],
-): ItemType[] => {
-  if (!categories) return [];
-  return categories.map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    onClick: () => onCategoryFilterClick(el.id, el.name),
-  }));
-};
+// export const formatCategoriesFavouriteToDropDownData = (
+//   categories?: ProductItemValue[],
+// ): ItemType[] => {
+//   if (!categories) return [];
+//   return categories.map((el) => ({
+//     key: el.id,
+//     label: el.name || '',
+//     onClick: () => onCategoryFilterClick(el.id, el.name),
+//   }));
+// };
 
-export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[]): ItemType[] => {
-  if (!brands) return [];
-  return brands.map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
-    onClick: () => onBrandFilterClick(el.id, el.name),
-  }));
-};
+// export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[]): ItemType[] => {
+//   if (!brands) return [];
+//   return brands.map((el) => ({
+//     key: el.id,
+//     label: el.name || '',
+//     icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
+//     onClick: () => onBrandFilterClick(el.id, el.name),
+//   }));
+// };
 
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();

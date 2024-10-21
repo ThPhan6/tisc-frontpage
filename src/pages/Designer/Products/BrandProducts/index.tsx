@@ -101,16 +101,17 @@ const BrandProductListPage: React.FC = () => {
 
   const getProductList = async (props: { page: number; isConcat: boolean }) => {
     setIsLoading(true);
+    const cateFilter = filter?.find((item) => item.name === 'category_id');
+    const brandFilter = filter?.find((item) => item.name === 'brand_id');
     await getProductListForDesigner(
       {
-        category_id:
-          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+        category_id: cateFilter && cateFilter.value !== 'all' ? cateFilter.value : undefined,
+        brand_id: brandFilter && brandFilter.value !== 'all' ? brandFilter.value : undefined,
         name: searchInputRef.current?.input?.value || undefined,
         sort: sort?.sort,
         order: sort?.order,
         page: props.page,
-        pageSize: filter?.value ? 99999 : 20,
+        pageSize: filter ? 99999 : 20,
       },
       { isConcat: props.isConcat },
     )
@@ -169,7 +170,7 @@ const BrandProductListPage: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-  }, [filter?.value, searchCount, sort?.order, sort?.sort]);
+  }, [filter, searchCount, sort?.order, sort?.sort]);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>

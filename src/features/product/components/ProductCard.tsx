@@ -165,11 +165,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const params = {
           brand_id: product.brand?.id,
         } as ProductGetListParameter;
-        if (filter.name === 'category_id') {
-          params.category_id = filter.value === 'all' ? 'all' : filter.value;
+        const cateFilter = filter.find((item) => item.name === 'category_id');
+        const collFilter = filter.find((item) => item.name === 'collection_id');
+        if (cateFilter) {
+          params.category_id = cateFilter.value === 'all' ? 'all' : cateFilter.value;
         }
-        if (filter.name === 'collection_id') {
-          params.collection_id = filter.value === 'all' ? 'all' : filter.value;
+        if (collFilter) {
+          params.collection_id = collFilter.value === 'all' ? 'all' : collFilter.value;
         }
         getProductListByBrandId(params);
       });
@@ -438,7 +440,11 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     }
   }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
 
-  const filterByCategory = filter?.name.toLowerCase() === 'category_id';
+  const filterByCategory = filter
+    ? filter.find((item) => item.name === 'category_id')
+      ? true
+      : false
+    : false;
 
   const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!data) {
