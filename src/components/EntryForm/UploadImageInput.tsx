@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 import { Upload, message } from 'antd';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
@@ -18,7 +18,7 @@ interface UploadImageInputProps extends Omit<UploadProps, 'onChange'> {
   maxFileCount?: number;
   maxSize?: number;
   accept?: string;
-  fieldName: ReactNode;
+  fieldName?: ReactNode;
   showUploadList?: boolean;
   listType?: UploadListType;
   multiple?: boolean;
@@ -44,9 +44,9 @@ const UploadImageInput: React.FC<UploadImageInputProps> = ({
 }) => {
   const [files, setFiles] = useState<UploadFile[]>(fileList);
 
-  // useEffect(() => {
-  //   setFiles(fileList);
-  // }, [fileList]);
+  useEffect(() => {
+    if (fileList && fileList.length > 0) setFiles(fileList);
+  }, [fileList]);
 
   const handleBeforeUpload = (file: UploadFile) => {
     const isImage = file.type?.startsWith('image/');
@@ -84,14 +84,14 @@ const UploadImageInput: React.FC<UploadImageInputProps> = ({
   };
 
   const handlePreview = async (file: UploadFile) => {
-    if (onPreview) {
-      onPreview(file);
-      return;
-    }
+    let src = file.url;
 
-    const src = file.url || (await getBase64(file.originFileObj as Blob));
+    if (!src) src = await getBase64(file.originFileObj as Blob);
+
     const imgWindow = window.open(src);
-    imgWindow?.document.write(`<img src="${src}" style="width:100%" />`);
+    imgWindow?.document.write(
+      `<img src="${src}" style="width:auto; height:auto; max-width:100%; max-height:100%;" />`,
+    );
   };
 
   return (

@@ -50,7 +50,11 @@ export type ModalType =
   | 'Inquiry Request'
 
   // Color AI
-  | 'Color AI';
+  | 'Color AI'
+  | 'Location'
+  | 'Base & Volume'
+  | 'Inventory'
+  | 'Unit Type';
 
 export interface ModalState {
   type: ModalType;

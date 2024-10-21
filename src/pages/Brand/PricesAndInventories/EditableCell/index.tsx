@@ -1,99 +1,100 @@
-// import { CSSProperties, useRef, useState } from 'react';
-// import { message } from 'antd';
-// import { CustomInput } from '@/components/Form/CustomInput';
+import { CSSProperties, useRef, useState } from 'react';
 
-// interface EditStatus {
-//   [key: string]: {
-//     [columnKey: string]: { isEditing: boolean; value: string };
-//   };
-// }
+import { message } from 'antd';
 
-// interface EditableCell {
-//   inputStyle?: CSSProperties;
-//   item: { id: string };
-//   columnKey: string;
-//   defaultValue: any;
-//   valueClass?: string;
-// }
+import { CustomInput } from '@/components/Form/CustomInput';
 
-// const EditableCell = ({
-//   columnKey,
-//   inputStyle,
-//   defaultValue,
-//   valueClass = '',
-//   item,
-// }: EditableCell) => {
-//   const [editStatus, setEditStatus] = useState<EditStatus>({});
-//   const inputRef = useRef<HTMLInputElement>(null);
+interface EditStatus {
+  [key: string]: {
+    [columnKey: string]: { isEditing: boolean; value: string };
+  };
+}
 
-//   const handleClick = (id: string, colKey: string, value: string) => () => {
-//     setEditStatus((prev) => ({
-//       ...prev,
-//       [id]: {
-//         ...prev[id],
-//         [colKey]: { isEditing: true, value },
-//       },
-//     }));
-//   };
+interface UpdatableCell {
+  inputStyle?: CSSProperties;
+  item: { id: string };
+  columnKey: string;
+  defaultValue: any;
+  valueClass?: string;
+  onSave: (id: string, columnKey: string, newValue: string) => void;
+}
 
-//   const handleOnChange =
-//     (id: string, colKey: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-//       setEditStatus((prev) => ({
-//         ...prev,
-//         [id]: {
-//           ...prev[id],
-//           [colKey]: { ...prev[id]?.[colKey], value: event.target.value },
-//         },
-//       }));
-//     };
+const UpdatableCell = ({
+  onSave,
+  columnKey,
+  inputStyle,
+  defaultValue,
+  valueClass = '',
+  item,
+}: UpdatableCell) => {
+  const [editStatus, setEditStatus] = useState<EditStatus>({});
+  const inputRef = useRef<HTMLInputElement>(null);
 
-//   const handleSave = (id: string, colKey: string) => {
-//     if (!editStatus[id]?.[colKey]?.value) {
-//       message.warn('Please fill in the value');
-//       inputRef.current?.focus();
-//       return;
-//     }
-//     setEditStatus((prev) => ({
-//       ...prev,
-//       [id]: {
-//         ...prev[id],
-//         [colKey]: { ...prev[id]?.[colKey], isEditing: false },
-//       },
-//     }));
-//   };
+  const handleClick = (id: string, colKey: string, value: string) => () => {
+    setEditStatus((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [colKey]: { isEditing: true, value },
+      },
+    }));
+  };
 
-//   const handleKeyDown =
-//     (id: string, colKey: string) => (event: React.KeyboardEvent<HTMLInputElement>) => {
-//       if (event.key === 'Enter') handleSave(id, colKey);
-//     };
+  const handleOnChange =
+    (id: string, colKey: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEditStatus((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          [colKey]: { ...prev[id]?.[colKey], value: event.target.value },
+        },
+      }));
+    };
 
-//   const handleBlur = (id: string, colKey: string) => () => {
-//     if (!editStatus[id]?.[colKey]?.value) {
-//       message.warn('Please fill in the value');
-//       inputRef.current?.focus();
-//       return;
-//     }
-//     handleSave(id, colKey);
-//   };
+  const handleSave = (id: string, colKey: string) => {
+    const value = editStatus[id]?.[colKey]?.value ?? defaultValue;
+    if (!value) {
+      message.warn('Please fill in the value');
+      inputRef.current?.focus();
+      return;
+    }
 
-//   const isEditing = editStatus[item.id]?.[columnKey]?.isEditing;
-//   const value = editStatus[item.id]?.[columnKey]?.value ?? defaultValue;
+    setEditStatus((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [colKey]: { ...prev[id]?.[colKey], isEditing: false },
+      },
+    }));
 
-//   return isEditing ? (
-//     <CustomInput
-//       autoFocus={isEditing}
-//       value={value}
-//       onChange={handleOnChange(item.id, columnKey)}
-//       onBlur={handleBlur(item.id, columnKey)}
-//       onKeyDown={handleKeyDown(item.id, columnKey)}
-//       style={inputStyle}
-//       ref={inputRef}
-//     />
-//   ) : (
-//     <span onClick={handleClick(item.id, columnKey, value)} className={`${valueClass} flex-1`}>
-//       {value}
-//     </span>
-//   );
-// };
+    onSave(id, colKey, value);
+  };
 
-// export default EditableCell;
+  const handleKeyDown =
+    (id: string, colKey: string) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') handleSave(id, colKey);
+    };
+
+  const handleBlur = (id: string, colKey: string) => () => handleSave(id, colKey);
+
+  const isEditing = editStatus[item.id]?.[columnKey]?.isEditing;
+  const value = editStatus[item.id]?.[columnKey]?.value ?? defaultValue;
+
+  return isEditing ? (
+    <CustomInput
+      autoFocus={isEditing}
+      value={value}
+      onChange={handleOnChange(item.id, columnKey)}
+      onBlur={handleBlur(item.id, columnKey)}
+      onKeyDown={handleKeyDown(item.id, columnKey)}
+      style={inputStyle}
+      ref={inputRef}
+    />
+  ) : (
+    <span onClick={handleClick(item.id, columnKey, value)} className={`${valueClass} flex-1`}>
+      {value}
+    </span>
+  );
+};
+
+export default UpdatableCell;

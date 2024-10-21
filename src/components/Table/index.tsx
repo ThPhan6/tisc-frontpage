@@ -1,12 +1,13 @@
 import { ReactNode, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { Table } from 'antd';
-import type { TablePaginationConfig, TableProps } from 'antd/lib/table';
+import type { TablePaginationConfig } from 'antd/lib/table';
 import type {
   ExpandableConfig,
   FilterValue,
   SortOrder,
   SorterResult,
+  TableRowSelection,
 } from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
@@ -96,7 +97,8 @@ type GetComponentProps<DataType> = (
   index?: number,
 ) => React.HTMLAttributes<any> | React.TdHTMLAttributes<any>;
 
-export interface CustomTableProps<T> extends Omit<TableProps<T>, 'title'> {
+export interface CustomTableProps {
+  rowSelection?: TableRowSelection<any>;
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
   expandableConfig?: ExpandableTableConfig;
@@ -130,8 +132,9 @@ export interface CustomTableProps<T> extends Omit<TableProps<T>, 'title'> {
 const converseOrder = (order: SortOrder | undefined) =>
   order ? (order === 'descend' ? 'ASC' : 'DESC') : undefined;
 
-const CustomTable = forwardRef((props: CustomTableProps<any>, ref: any) => {
+const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const {
+    rowSelection,
     expandable,
     fetchDataFunc,
     title,
@@ -150,7 +153,6 @@ const CustomTable = forwardRef((props: CustomTableProps<any>, ref: any) => {
     onFilterLoad = true,
     dynamicPageSize,
     hasSummary,
-    ...rest
   } = props;
 
   const DEFAULT_TABLE_ROW = 44;
@@ -347,8 +349,9 @@ const CustomTable = forwardRef((props: CustomTableProps<any>, ref: any) => {
       {renderHeaderTable()}
 
       <Table
+        rowSelection={rowSelection}
         className={tableClass}
-        // columns={columns}
+        columns={columns}
         rowKey={rowKey}
         rowClassName={(record) => {
           if (record[rowKey] === expanded) {
@@ -375,7 +378,6 @@ const CustomTable = forwardRef((props: CustomTableProps<any>, ref: any) => {
           ...(customExpandable ?? expandable),
           expandedRowKeys: expanded ? [expanded] : undefined,
         }}
-        {...rest}
       />
 
       {hasPagination && pagination && !hasSummary ? (

@@ -43,7 +43,7 @@ const Backorder = ({ isShowBackorder, onCancel }: BackorderProps) => {
       align: 'center',
       render: (_: any, item: any) => (
         <></>
-        // <EditableCell
+        // <UpdatableCell
         //   item={item}
         //   columnKey="add_to"
         //   defaultValue="6"

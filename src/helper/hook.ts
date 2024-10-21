@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
-import { message } from 'antd';
-import { useLocation, useModel, useParams } from 'umi';
+import { useHistory, useLocation, useModel, useParams } from 'umi';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
@@ -166,4 +165,42 @@ export const useEntryFormHandlers = <T extends FormData>(initialData: T) => {
     handlePhoneChange,
     handleRadioChange,
   };
+};
+
+interface NavigateOptions {
+  path: string;
+  query?: Record<string, any>;
+  state?: Record<string, any>;
+}
+
+export const useNavigationHandler = () => {
+  const history = useHistory();
+
+  const navigate =
+    ({ path, query, state }: NavigateOptions) =>
+    () => {
+      const searchParams = query ? new URLSearchParams(query).toString() : '';
+      const search = searchParams ? `?${searchParams}` : '';
+
+      history.push({
+        pathname: path,
+        search,
+        state,
+      });
+    };
+
+  return navigate;
+};
+
+export const useSelectableData = <T extends { items: { id: string }[] }>(data: T[]) => {
+  const [selectedValue, setSelectedValue] = useState<any>(null);
+
+  const handleRadioChange = (event: any) => {
+    const selectedItem = data
+      .flatMap((category) => category.items)
+      .find((item) => item.id === event.target.value);
+    setSelectedValue(selectedItem ?? null);
+  };
+
+  return [selectedValue, handleRadioChange] as const;
 };

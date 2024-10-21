@@ -180,34 +180,36 @@ const AccordionMenuItems = ({
     if (success) setExpandedItems([]);
   };
 
-  // const getCategoryPath = (item: AccordionItem, items: AccordionItem[]) => {
-  //   const path = [];
-  //   let currentItem: AccordionItem | null = item;
+  const getCategoryPath = (item: AccordionItem, items: AccordionItem[]) => {
+    const path = [];
+    let currentItem: AccordionItem | null = item;
 
-  //   while (currentItem) {
-  //     path.unshift(currentItem.name);
-  //     const parentItem = items.find((parent) => parent.id === currentItem?.parent_id) || null;
-  //     currentItem = parentItem;
-  //   }
+    // Traverse upwards through the tree structure to build the full path
+    while (currentItem) {
+      path.unshift(currentItem.name); // Add the current item name at the beginning of the path
+      const parentItem = items.find((parent) => parent.id === currentItem?.parent_id) || null;
+      currentItem = parentItem;
+    }
 
-  //   return path.join(' / ');
-  // };
+    return path.join(' / ');
+  };
 
-  const handleItemClick = (clickedItem: AccordionItem, level: number) => {
-    // const isLastLevel = level === levels;
-    // if (!isLastLevel) {
-    //   return () => toggleExpand(clickedItem.id ?? '', level)();
-    // }
-    // return () => {
-    //   const fullPath = getCategoryPath(clickedItem, [...accordionItems]);
-    //   history.push({
-    //     pathname: PATH.brandPricesInventoriesTable,
-    //     search: `?categories=${encodeURIComponent(fullPath)}`,
-    //     state: {
-    //       categoryId: clickedItem.id,
-    //     },
-    //   });
-    // };
+  const handleItemClick = (clickedItem: AccordionItem, level: number) => () => {
+    const isLastLevel = level === levels;
+
+    if (!isLastLevel) {
+      toggleExpand(clickedItem.id ?? '', level)();
+      return;
+    }
+
+    const fullPath = getCategoryPath(clickedItem, [...accordionItems]);
+    history.push({
+      pathname: PATH.brandPricesInventoriesTable,
+      search: `?categories=${encodeURIComponent(fullPath)}`,
+      state: {
+        categoryId: clickedItem.id,
+      },
+    });
   };
 
   const renderItems = (level: number, parentId: string | null = null) => {
@@ -221,7 +223,7 @@ const AccordionMenuItems = ({
           <>
             <li
               key={item.id}
-              // onClick={handleItemClick(item, level)}
+              onClick={handleItemClick(item, level)}
               className={`${styles.accordion_menu_item_action}`}
             >
               {isEditing ? (

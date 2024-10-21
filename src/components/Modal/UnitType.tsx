@@ -1,37 +1,61 @@
-import { Fragment, ReactNode, useState } from 'react';
+import { Fragment, ReactNode, useMemo, useState } from 'react';
 
-import { Modal, ModalProps, Radio, RadioChangeEvent } from 'antd';
+import { Modal, ModalProps, Radio } from 'antd';
+
+import { CommonUnitTypeGroup } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import styles from '@/components/Modal/styles/UnitType.less';
 import { BodyText } from '@/components/Typography';
 
-interface UnitItem {
+export interface UnitItem {
   id: string;
-  unit: string;
-  label: string;
-}
-
-interface UnitCategory {
-  category: string;
-  items: UnitItem[];
+  name: string;
+  code: string;
+  group: CommonUnitTypeGroup;
 }
 
 interface UnitTypeProps extends ModalProps {
   title: ReactNode;
   visible: boolean;
   onCancel: () => void;
-  onConfirm: () => void;
-  unitData: UnitCategory[];
+  onSave: (selectedItem: UnitItem | null) => void;
+  unitData: UnitItem[];
 }
 
-const UnitType = ({ title, visible, onCancel, onConfirm, unitData }: UnitTypeProps) => {
-  const [selectedValue, setSelectedvalue] = useState<string | null>(null);
+// Unit type group to label mapping
+const unitGroupLabels: Record<CommonUnitTypeGroup, string> = {
+  [CommonUnitTypeGroup.INV_AREA]: 'Area',
+  [CommonUnitTypeGroup.INV_LENGTH]: 'Length',
+  [CommonUnitTypeGroup.INV_LINEAR_DISTANCE]: 'Linear Distance',
+  [CommonUnitTypeGroup.INV_VOLUME]: 'Volume',
+  [CommonUnitTypeGroup.INV_WEIGHT]: 'Weight',
+  [CommonUnitTypeGroup.INV_COUNT]: 'Count',
+};
 
-  const handleRadioChange = (event: RadioChangeEvent) =>
-    selectedValue === event.target.value
-      ? setSelectedvalue(null)
-      : setSelectedvalue(event.target.value);
+const UnitType = ({ title, visible, onCancel, onSave, unitData }: UnitTypeProps) => {
+  const [selectedValue, setSelectedValue] = useState<UnitItem | null>(null);
+
+  const getUnitByType = (group: CommonUnitTypeGroup): string => unitGroupLabels[group] || 'Unknown';
+
+  const groupedData = useMemo(() => {
+    return unitData.reduce<Record<string, UnitItem[]>>((acc, item) => {
+      const type = getUnitByType(item.group);
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(item);
+      return acc;
+    }, {});
+  }, [unitData, getUnitByType]);
+
+  const handleRadioChange = (item: UnitItem) => () =>
+    selectedValue?.id === item.id ? setSelectedValue(null) : setSelectedValue(item);
+
+  const handleSave = () => {
+    onSave(selectedValue);
+    onCancel();
+  };
 
   return (
     <Modal
@@ -44,24 +68,24 @@ const UnitType = ({ title, visible, onCancel, onConfirm, unitData }: UnitTypePro
           {title}
         </BodyText>
       }
-      footer={<CustomSaveButton contentButton="Done" onClick={onConfirm} />}
+      footer={<CustomSaveButton contentButton="Done" onClick={handleSave} />}
     >
-      {unitData.map((el) => (
-        <Fragment key={el.category}>
-          <h4 className={styles.unit_type_heading}>{el.category}</h4>
-          {el.items.map((item) => (
+      {Object.keys(groupedData).map((category) => (
+        <Fragment key={category}>
+          <h4 className={styles.unit_type_heading}>{category}</h4>
+          {groupedData[category].map((item) => (
             <div key={item.id} className={styles.unit_type_wrapper}>
               <BodyText customClass={styles.unit_type_wrapper_unit} fontFamily="Roboto" level={6}>
-                {item.unit}
+                {item.code}
               </BodyText>
               <BodyText customClass={styles.unit_type_wrapper_label} fontFamily="Roboto" level={6}>
-                {item.label}
+                {item.name}
               </BodyText>
               <Radio
                 value={item.id}
                 className="mr-16"
-                checked={selectedValue === item.id}
-                onChange={handleRadioChange}
+                checked={selectedValue?.id === item.id}
+                onChange={handleRadioChange(item)}
               />
             </div>
           ))}

@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Input, InputProps, Space } from 'antd';
 
 import styles from '@/components/EntryForm/styles/VolumeInput.less';
@@ -38,4 +40,4 @@ const VolumeInput = ({ label, inputs, containerClass = '', containerStyle }: Vol
   );
 };
 
-export default VolumeInput;
+export default memo(VolumeInput);

@@ -2,9 +2,12 @@
   &_wrapper {
     background: #fff;
   }
+
   &_heading_group {
     padding: 16px;
+    background: #fff;
     box-shadow: @border-bottom-black-inset;
+
     &_title {
       font-weight: 400;
       line-height: calc(24 / 16);
@@ -12,13 +15,17 @@
       text-transform: uppercase;
     }
   }
+
   &_content {
     width: 100%;
     padding: 16px;
+    background: #fff;
     box-shadow: -0.5px 0 0 0 #000 inset;
+
     &:last-child {
       box-shadow: none;
     }
+
     &_title {
       margin-bottom: 8px;
       padding-bottom: 6px;
@@ -28,8 +35,10 @@
       box-shadow: @border-bottom-black-inset;
     }
   }
+
   &_btn_switch {
     margin-top: 20px;
+
     &_on,
     &_off {
       :global(.ant-switch-handle) {
@@ -38,28 +47,35 @@
         height: 12px;
       }
     }
+
     &_on {
       width: 114px;
       height: 24px;
+
       :global(.ant-switch-inner) {
         max-width: 82px;
         color: #fff;
       }
     }
+
     &_off {
       width: 90px;
       height: 24px;
+
       :global(.ant-switch-inner) {
         max-width: 58px;
         color: @mono-color;
       }
+
       :global(.ant-switch-handle) {
         left: 10px;
+
         &::before {
           background: @mono-color;
         }
       }
     }
+
     :global(.ant-switch-inner) {
       width: 100%;
       font-weight: 500;
@@ -68,39 +84,60 @@
       line-height: calc(20 / 12);
     }
   }
+
   &_footer {
     padding: 16px;
     text-align: end;
     background: #fff;
     box-shadow: 0 0.5px 0 0 @mono-color inset;
   }
+
+  &_info_modal {
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  &_input {
+    :global(.ant-input) {
+      color: @mono-color !important;
+    }
+  }
+
   :global(.ant-switch.category_form_btn_switch___3u6y5.category_form_btn_switch_off___1dLO6) {
     background: #fff;
     border: 0.5px solid @mono-color;
   }
+
   :global(
       .ant-switch.category_form_btn_switch___3u6y5.category_form_btn_switch_on___2tGUz.ant-switch-checked
     ) {
     background: @primary-color-dark;
   }
+
   :global(.ant-table-thead) {
     tr {
       :global(.ant-table-cell) {
         background: #fff;
         border: none;
-        box-shadow: @border-top-black-inset;
+        box-shadow: @border-bottom-black-inset;
+
         &::before {
           width: 0 !important;
         }
       }
     }
   }
+
   :global(.ant-table-tbody) {
     tr {
       :global(.ant-table-cell) {
         border: none;
-        // box-shadow: @border-top-black-inset;
       }
     }
+  }
+
+  :global(.ant-table-cell-row-hover) {
+    background: none !important;
   }
 }

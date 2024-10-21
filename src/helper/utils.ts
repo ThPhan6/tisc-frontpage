@@ -610,9 +610,11 @@ export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) =
 };
 
 export const extractDataBase64 = (src: string): string | null => {
-  const base64Prefix = 'base64,';
-  const base64Index = src.indexOf(base64Prefix);
-  if (base64Index !== -1) return src.substring(base64Index + base64Prefix.length);
+  if (src) {
+    const base64Prefix = 'base64,';
+    const base64Index = src.indexOf(base64Prefix);
+    if (base64Index !== -1) return src.substring(base64Index + base64Prefix.length);
+  }
   return null;
 };
 

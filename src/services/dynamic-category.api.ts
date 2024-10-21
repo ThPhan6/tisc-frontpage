@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -10,6 +11,8 @@ import {
 import { CategoryEntity } from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
+import { UnitItem } from '@/components/Modal/UnitType';
+import type { InventoryColumn } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
@@ -17,7 +20,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 interface InventoryReponse {
   data: {
     pagination: PaginationResponse;
-    partners: PriceAndInventoryAttribute[];
+    inventories: PriceAndInventoryAttribute;
   };
 }
 
@@ -121,10 +124,10 @@ export const getListInventories = (
     params,
   })
     .then((response: InventoryReponse) => {
-      const { pagination } = response as any;
+      const { pagination, inventories } = response.data;
 
       callback({
-        data: response.data,
+        data: inventories,
         pagination: {
           current: pagination.page,
           pageSize: pagination.page_size,
@@ -139,16 +142,19 @@ export const getListInventories = (
 };
 
 export async function createInventory(data: PriceAndInventoryAttribute) {
+  showPageLoading();
   return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/create`, {
     method: 'POST',
     data,
   })
     .then((response) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_INVENTORY_SUCCESS);
+      hidePageLoading();
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INVENTORY_ERROR);
+      hidePageLoading();
       return false;
     });
 }
@@ -168,10 +174,44 @@ export async function deleteInventory(id: string) {
 }
 
 export async function getInventory(id: string) {
-  return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/get-one/${id}`)
+  showPageLoading();
+  return request<{ data: InventoryColumn }>(`/api/inventory/get-one/${id}`)
+    .then((response) => {
+      hidePageLoading();
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_INVENTORY_ERROR);
+      hidePageLoading();
+      return null;
+    });
+}
+
+export async function updateInventory(id: string, payload: PriceAndInventoryAttribute) {
+  showPageLoading();
+  return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/update/${id}`, {
+    method: 'PATCH',
+    data: payload,
+  })
+    .then((res) => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_INVENTORY_SUCCESS);
+      hidePageLoading();
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INVENTORY_ERROR);
+      hidePageLoading();
+      return false;
+    });
+}
+
+export async function fetchUnitType() {
+  return request<{ data: UnitItem[] }>(`/api/setting/common-type/${COMMON_TYPES.INVENTORY_UNIT}`, {
+    method: 'GET',
+  })
     .then((response) => response.data)
     .catch((error) => {
-      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_PARTNER_ERROR);
-      return null;
+      console.log('getUnitTypeList error', error);
+      return [];
     });
 }

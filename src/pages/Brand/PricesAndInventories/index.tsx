@@ -118,8 +118,6 @@ const PricesAndInventories = () => {
 
   const handleToggleModal = (status: boolean) => () => setIsShowModal(status);
 
-  const data = [];
-
   const inventoryHeaderData: DataItem[] = [
     {
       id: '1',

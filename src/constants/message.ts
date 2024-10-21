@@ -59,6 +59,9 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_INVENTORY_ERROR: 'Create inventory error',
   DELETE_INVENTORY_SUCCESS: 'Delete inventory successfully',
   DELETE_INVENTORY_ERROR: 'Delete inventory error',
+  UPDATE_INVENTORY_SUCCESS: 'Update inventory successfully',
+  UPDATE_INVENTORY_ERROR: 'Update inventory error',
+  GET_INVENTORY_ERROR: 'Get inventory error',
 
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',

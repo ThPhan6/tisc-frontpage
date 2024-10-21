@@ -1,9 +1,11 @@
 import { ReactNode, useState } from 'react';
 
-import { Collapse, Modal, Radio, type RadioChangeEvent } from 'antd';
+import { Collapse, Modal, Radio } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
+import { useSelectableData } from '@/helper/hook';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import styles from '@/components/Modal/styles/LocationOffice.less';
@@ -23,25 +25,20 @@ interface Location {
 interface Country {
   id: string;
   name: string;
-  locations: Location[];
+  items: Location[];
 }
 
 interface LocationOfficeProps {
   title: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (value: Location) => void;
   countries: Country[];
 }
 
 const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationOfficeProps) => {
-  const [selectedValue, setSelectedvalue] = useState<string | null>(null);
+  const [selectedValue, handleRadioChange] = useSelectableData(countries);
   const [activePanel, setActivePanel] = useState<string[]>([countries[0]?.id]);
-
-  const handleRadioChange = (event: RadioChangeEvent) =>
-    selectedValue === event.target.value
-      ? setSelectedvalue(null)
-      : setSelectedvalue(event.target.value);
 
   const expandIcon = (panelProps: any) => {
     const isActive = panelProps.isActive ?? false;
@@ -50,6 +47,11 @@ const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationO
 
   const handlePanelChange = (key: string | string[]) =>
     setActivePanel(Array.isArray(key) ? key.slice(-1) : [key]);
+
+  const handleSave = () => {
+    onSave(selectedValue);
+    onClose();
+  };
 
   return (
     <Modal
@@ -61,11 +63,11 @@ const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationO
       footer={<CustomSaveButton contentButton="Done" />}
       open={isOpen}
       onCancel={onClose}
-      onOk={onSave}
+      onOk={handleSave}
       className={styles.location_office}
     >
       <Collapse
-        defaultActiveKey={[countries[0].name]}
+        defaultActiveKey={[countries[0]?.id]}
         expandIconPosition="end"
         expandIcon={expandIcon}
         activeKey={activePanel}
@@ -74,16 +76,20 @@ const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationO
         {countries.map((country) => (
           <Panel
             header={
-              <RobotoBodyText customClass={styles.location_office_country_name}>
+              <RobotoBodyText
+                customClass={`${styles.location_office_country_name} ${
+                  activePanel.includes(country.id) ? 'font-medium' : ''
+                }`}
+              >
                 {country.name}{' '}
                 <span className={styles.location_office_country_length}>
-                  ({country.locations.length})
+                  ({country.items.length})
                 </span>
               </RobotoBodyText>
             }
             key={country.id}
           >
-            {country.locations.map((location) => (
+            {country.items.map((location) => (
               <div className={styles.location_office_location_wrapper} key={location.id}>
                 <section>
                   <article className="d-flex items-center mb-8-px">
@@ -112,7 +118,7 @@ const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationO
                 </section>
                 <Radio
                   value={location.id}
-                  checked={selectedValue === location.id}
+                  checked={selectedValue?.id === location.id}
                   onChange={handleRadioChange}
                 />
               </div>

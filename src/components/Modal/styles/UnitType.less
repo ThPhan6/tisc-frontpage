@@ -18,7 +18,7 @@
     padding: 0 0 12px 24px;
 
     &_unit {
-      flex-basis: 36px;
+      flex-basis: 40px;
       max-width: 100px;
       font-weight: 500;
     }
@@ -26,6 +26,11 @@
     &_label {
       flex-basis: 454px;
     }
+  }
+
+  :global(.ant-modal-content) {
+    max-height: 704px;
+    overflow: auto;
   }
 
   :global(.ant-modal-header) {

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Popover, Switch, TableColumnProps, TableProps } from 'antd';
-import { useHistory, useLocation } from 'umi';
+import { useLocation } from 'umi';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-blue-color.svg';
@@ -10,7 +10,7 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { confirmDelete } from '@/helper/common';
-import { pushTo } from '@/helper/history';
+import { useNavigationHandler } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { deleteInventory, getListInventories } from '@/services';
 
@@ -22,8 +22,7 @@ import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 import Backorder from '@/pages/Brand/PricesAndInventories/Backorder';
 import styles from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
-// import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
-import { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
+import UpdatableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import WareHouse from '@/pages/Brand/PricesAndInventories/WareHouse';
 
 interface DataType {
@@ -33,22 +32,42 @@ interface DataType {
   address: string;
 }
 
-// interface TableColumn
+export interface VolumePrice {
+  id?: string;
+  discount_price: string | number;
+  discount_rate: string | number;
+  min_quantity: string | number;
+  max_quantity: string | number;
+  unit_type: string;
+}
+
+export interface InventoryColumn {
+  id: string;
+  image: string;
+  sku: string;
+  description: string;
+  price: {
+    created_at: string;
+    unit_price: string | number;
+    unit_type: string;
+    volume_prices: VolumePrice[];
+  };
+}
 
 const CategoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [showBackorder, setIsShowOrder] = useState(false);
+  const [isShowBackOrder, setIsShowBackOrder] = useState(false);
 
   const tableRef = useRef<any>();
-  const history = useHistory();
-  const location = useLocation();
+  const location = useLocation<{ categoryId: string }>();
+  const navigate = useNavigationHandler();
 
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
 
   const handleToggleSwitch = () => setIsEditMode(!isEditMode);
 
-  const handleShowHideBackorder = (status: boolean) => () => setIsShowOrder(status);
+  const handleShowHideBackorder = (status: boolean) => () => setIsShowBackOrder(status);
 
   const handleDelete = (id: string) => () => {
     confirmDelete(async () => {
@@ -58,16 +77,20 @@ const CategoryTable: React.FC = () => {
   };
 
   const handlePushToUpdate = (id: string) => () =>
-    pushTo(PATH.brandPricesInventoriesFormUpdate.replace(':id', id));
+    navigate({
+      path: PATH.brandPricesInventoriesFormUpdate.replace(':id', id),
+      query: { categories: category },
+      state: {
+        categoryId: location.state?.categoryId,
+      },
+    })();
 
-  const columns: TableColumnProps<PriceAndInventoryAttribute>[] = [
+  const columns: TableColumnProps<InventoryColumn>[] = [
     {
       title: 'Image',
       dataIndex: 'image',
       width: '7%',
       render: (src: string) => {
-        console.log(src);
-
         return src ? (
           <figure className={styles.category_table_figure}>
             <img src={showImageUrl(src)} alt="Image" />
@@ -79,6 +102,7 @@ const CategoryTable: React.FC = () => {
     },
     {
       title: 'Product ID',
+      sorter: true,
       dataIndex: 'sku',
       width: '7%',
     },
@@ -92,29 +116,29 @@ const CategoryTable: React.FC = () => {
       dataIndex: 'unit_price',
       width: '7%',
       align: 'center',
-      render: (_: any, item: any) => (
-        <></>
-        // <EditableCell
-        //   item={item}
-        //   columnKey="unit_price"
-        //   defaultValue="abc"
-        //   inputStyle={{ width: 60 }}
-        //   valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
-        // />
+      render: (_, item) => (
+        <UpdatableCell
+          item={item}
+          columnKey="unit_price"
+          defaultValue={item?.price?.unit_price}
+          inputStyle={{ width: 60 }}
+          valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
+          onSave={() => {}}
+        />
       ),
     },
     {
       title: 'Unit Type',
-      dataIndex: 'unit_price',
+      dataIndex: 'unit_type',
       width: '7%',
       align: 'center',
-      render: (_: any, item: any) => <span>ea.</span>,
+      render: (_, item) => <span>{item?.price?.unit_type}</span>,
     },
     {
       title: 'Item In Stock',
       dataIndex: 'item_in_stock',
       width: '7%',
-      render: (_: any, item: any) => (
+      render: (_, item) => (
         <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
           <span className="flex-1">30</span>
           {isEditMode && (
@@ -150,10 +174,10 @@ const CategoryTable: React.FC = () => {
       title: 'Backorder',
       dataIndex: 'back_order',
       width: '7%',
-      render: (_: any, item: any) => (
+      render: (_, item) => (
         <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
           <span className="flex-1">12</span>
-          {isEditMode && <CDownLeftIcon onClick={handleShowHideBackorder(!showBackorder)} />}
+          {isEditMode && <CDownLeftIcon onClick={handleShowHideBackorder(!isShowBackOrder)} />}
         </div>
       ),
     },
@@ -162,7 +186,7 @@ const CategoryTable: React.FC = () => {
       dataIndex: 'volumn_price',
       width: '7%',
       align: 'center',
-      render: () => <span>3</span>,
+      render: (_, item) => <span>{item?.price?.volume_prices?.length}</span>,
     },
     {
       title: 'Stock Value',
@@ -174,7 +198,7 @@ const CategoryTable: React.FC = () => {
       title: 'Revision',
       dataIndex: 'revision',
       width: '7%',
-      render: () => <span>yyyy-mm-dd</span>,
+      render: (_, item) => <span>{item.price?.created_at?.split(' ')[0]}</span>,
     },
     {
       title: 'Action',
@@ -205,15 +229,6 @@ const CategoryTable: React.FC = () => {
     },
   };
 
-  const handleNavigate = (path: string, query?: string, state?: string) => () =>
-    history.push({
-      pathname: path,
-      search: query,
-      state: {
-        categoryId: state,
-      },
-    });
-
   return (
     <>
       <section className={styles.category_table}>
@@ -222,7 +237,9 @@ const CategoryTable: React.FC = () => {
             <article className={styles.category_table_header}>
               <div
                 className="d-flex items-center cursor-pointer"
-                onClick={handleNavigate(PATH.brandPricesInventories)}
+                onClick={navigate({
+                  path: PATH.brandPricesInventories,
+                })}
               >
                 <BodyText
                   fontFamily="Roboto"
@@ -247,11 +264,13 @@ const CategoryTable: React.FC = () => {
               <CustomPlusButton
                 size={24}
                 disabled={isEditMode}
-                onClick={handleNavigate(
-                  PATH.brandPricesInventoriesForm,
-                  `?categories=${category}`,
-                  (location.state as any)?.categoryId,
-                )}
+                onClick={navigate({
+                  path: PATH.brandPricesInventoriesForm,
+                  query: { categories: category },
+                  state: {
+                    categoryId: location.state?.categoryId,
+                  },
+                })}
               />
               <CustomButton
                 size="small"
@@ -294,7 +313,7 @@ const CategoryTable: React.FC = () => {
         />
       </section>
 
-      <Backorder isShowBackorder={showBackorder} onCancel={handleShowHideBackorder(false)} />
+      <Backorder isShowBackorder={isShowBackOrder} onCancel={handleShowHideBackorder(false)} />
     </>
   );
 };
