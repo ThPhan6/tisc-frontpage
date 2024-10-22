@@ -10,7 +10,7 @@ import InfoModal from '@/components/Modal/InfoModal';
 import LocationOffice from '@/components/Modal/LocationOffice';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
-import UpdatableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
+import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
 interface InventoryFromProps {
@@ -42,7 +42,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
       dataIndex: 'in_stock',
       align: 'center',
       render: (_: any, item: any) => (
-        <UpdatableCell
+        <EditableCell
           item={item}
           columnKey="add_to"
           defaultValue="6"
@@ -137,6 +137,8 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
     ],
   };
 
+  const handleSaveLocationOffice = (value: any) => {};
+
   return (
     <>
       <article className={styles.category_form_content}>
@@ -154,8 +156,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
         </section>
         <div className="mt-8">
           <InputGroup
-            label="Location"
-            required
+            label="Location :"
             fontLevel={3}
             placeholder="select from the list"
             value={''}
@@ -170,7 +171,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
         </div>
         <form className="d-flex items-center gap-16">
           <InputGroup
-            label="Total Stock"
+            label="Total Stock :"
             fontLevel={3}
             placeholder="type number"
             value={''}
@@ -181,7 +182,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             colorRequired="tertiary"
           />
           <InputGroup
-            label="Out of Stock"
+            label="Out of Stock :"
             fontLevel={3}
             placeholder="type number"
             value={''}
@@ -192,7 +193,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             colorRequired="tertiary"
           />
           <InputGroup
-            label="On Order"
+            label="On Order :"
             fontLevel={3}
             placeholder="type number"
             value={''}
@@ -203,7 +204,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             colorRequired="tertiary"
           />
           <InputGroup
-            label="Back Order"
+            label="Back Order :"
             fontLevel={3}
             placeholder="type number"
             value={''}
@@ -214,22 +215,6 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             colorRequired="tertiary"
           />
         </form>
-
-        <div className="d-flex justify-between">
-          <div />
-          {/* <Switch
-    checked={editModes['switch2']}
-    onChange={handleToggleSwitch('switch2')}
-    size="default"
-    checkedChildren="CLOSE EDIT"
-    unCheckedChildren="EDIT NOW"
-    className={`${styles.category_form_btn_switch} ${
-      editModes['switch2']
-        ? styles.category_form_btn_switch_on
-        : styles.category_form_btn_switch_off
-    }`}
-  /> */}
-        </div>
 
         <Table
           dataSource={[
@@ -290,7 +275,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             ],
           },
         ]}
-        onSave={() => {}}
+        onSave={handleSaveLocationOffice}
       />
 
       <InfoModal

@@ -52,6 +52,8 @@ export type ModalType =
   // Color AI
   | 'Color AI'
   | 'Location'
+  | 'BackOrder'
+  | 'Inventory Header'
   | 'Base & Volume'
   | 'Inventory'
   | 'Unit Type';

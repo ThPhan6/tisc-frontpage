@@ -13,7 +13,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 const { Panel } = Collapse;
 
-interface Location {
+export interface Location {
   id: string;
   name: string;
   type: string;
@@ -60,10 +60,9 @@ const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationO
           {title}
         </BodyText>
       }
-      footer={<CustomSaveButton contentButton="Done" />}
+      footer={<CustomSaveButton contentButton="Done" onClick={handleSave} />}
       open={isOpen}
       onCancel={onClose}
-      onOk={handleSave}
       className={styles.location_office}
     >
       <Collapse

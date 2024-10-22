@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { PageContainer } from '@ant-design/pro-layout';
 import { Switch } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
+import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
 import { extractDataBase64, showImageUrl, validateRequiredFields } from '@/helper/utils';
@@ -15,6 +17,8 @@ import type { ModalType } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import InventoryHeader, { DataItem } from '@/components/InventoryHeader';
+import CurrencyModal from '@/components/Modal/CurrencyModal';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
@@ -95,7 +99,22 @@ const PriceAndInventoryForm = () => {
   const fetchInventory = async () => {
     const res = await getInventory(inventoryId);
     if (res) {
-      setFormDataAfterAction(res);
+      setFormData({
+        ...res,
+        unit_price: res.price.unit_price.toString(),
+        unit_type: res.price.unit_type,
+        discount_price: '0.00',
+        image: res.image
+          ? [
+              {
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: showImageUrl(res.image),
+              },
+            ]
+          : [],
+      });
 
       const volumePrices = res.price.volume_prices?.map((price, index: number) => ({
         key: `${index + 1}`,
@@ -180,8 +199,36 @@ const PriceAndInventoryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
+  const inventoryHeaderData: DataItem[] = [
+    {
+      id: '1',
+      value: 'USD',
+      label: 'BASE CURRENTCY',
+      rightAction: (
+        <SingleRightFormIcon
+          className="cursor-pointer"
+          width={16}
+          height={16}
+          onClick={handleToggleModal('Inventory Header')}
+        />
+      ),
+    },
+    {
+      id: '2',
+      value: '1043',
+      label: 'TOTAL PRODUCT RECORDS',
+    },
+    {
+      id: '3',
+      value: 'US$ 00,000',
+      label: 'TOTAL STOCK VALUE',
+    },
+  ];
+
+  const pageHeaderRender = () => <InventoryHeader data={inventoryHeaderData} onSearch={() => {}} />;
+
   return (
-    <>
+    <PageContainer pageHeaderRender={pageHeaderRender}>
       <div className={styles.category_form}>
         <TableHeader
           title={
@@ -234,42 +281,50 @@ const PriceAndInventoryForm = () => {
           }
         />
 
-        <div>
-          <hgroup
-            className={`d-flex items-center justify-between ${styles.category_form_heading_group}`}
-          >
-            <BodyText level={3} customClass={styles.category_form_heading_group_title}>
-              {category}
-            </BodyText>
-            <CloseIcon
-              onClick={navigate({
-                path: PATH.brandPricesInventoriesTable,
-                query: { categories: category },
-                state: {
-                  categoryId: location.state?.categoryId,
-                },
-              })}
-            />
-          </hgroup>
+        <hgroup
+          className={`d-flex items-center justify-between ${styles.category_form_heading_group}`}
+        >
+          <BodyText level={3} customClass={styles.category_form_heading_group_title}>
+            {category}
+          </BodyText>
+          <CloseIcon
+            onClick={navigate({
+              path: PATH.brandPricesInventoriesTable,
+              query: { categories: category },
+              state: {
+                categoryId: location.state?.categoryId,
+              },
+            })}
+          />
+        </hgroup>
 
-          <div className="d-flex">
-            <PriceForm
-              isShowModal={isShowModal}
-              onToggleModal={handleToggleModal}
-              formData={formData}
-              setFormData={setFormData}
-              tableData={tableData}
-              setTableData={setTableData}
-            />
-            <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} />
-          </div>
-
-          <footer className={styles.category_form_footer}>
-            <CustomSaveButton contentButton="Save" onClick={handleSave} />
-          </footer>
+        <div className={styles.category_form_wrapper}>
+          <PriceForm
+            isShowModal={isShowModal}
+            onToggleModal={handleToggleModal}
+            formData={formData}
+            setFormData={setFormData}
+            tableData={tableData}
+            setTableData={setTableData}
+          />
+          <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} />
         </div>
+
+        <footer className={styles.category_form_footer}>
+          <CustomSaveButton contentButton="Save" onClick={handleSave} />
+        </footer>
       </div>
-    </>
+
+      <CurrencyModal
+        annouceContent="Beware that changing this currency will impact ALL of your price settings for the existing product cards and partner price rates. Proceed with caution."
+        isShowAnnouncement={true}
+        onCancel={handleToggleModal('none')}
+        onOk={() => {}}
+        open={isShowModal === 'Inventory Header'}
+        title="SELECT CURRENTCY"
+        data={[]}
+      />
+    </PageContainer>
   );
 };
 

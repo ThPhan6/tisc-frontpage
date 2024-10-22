@@ -144,12 +144,10 @@ const PricesAndInventories = () => {
     },
   ];
 
+  const pageHeaderRender = () => <InventoryHeader data={inventoryHeaderData} onSearch={() => {}} />;
+
   return (
-    <PageContainer
-      pageHeaderRender={() => {
-        return <InventoryHeader data={inventoryHeaderData} onSearch={() => {}} />;
-      }}
-    >
+    <PageContainer pageHeaderRender={pageHeaderRender}>
       <AccordionMenu
         title="PRODUCT INVENTORY CATEGORY"
         levels={3}

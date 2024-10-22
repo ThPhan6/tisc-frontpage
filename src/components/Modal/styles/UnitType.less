@@ -31,6 +31,11 @@
   :global(.ant-modal-content) {
     max-height: 704px;
     overflow: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   :global(.ant-modal-header) {

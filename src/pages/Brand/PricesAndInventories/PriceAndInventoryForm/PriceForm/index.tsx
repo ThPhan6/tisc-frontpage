@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, type TableColumnsType, type UploadFile, message } from 'antd';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { fetchUnitType } from '@/services';
@@ -17,7 +18,7 @@ import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import UpdatableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
+import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import type { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
@@ -39,6 +40,13 @@ const PriceForm = ({
   setTableData,
 }: PriceFormProps) => {
   const [unitData, setUnitData] = useState<UnitItem[]>([]);
+  const [isLgScreen, setIsLgScreen] = useState(window.innerWidth > 1500);
+
+  useEffect(() => {
+    const handleResize = () => setIsLgScreen(window.innerWidth >= 1500);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const getUnitType = async () => {
@@ -80,7 +88,7 @@ const PriceForm = ({
 
   const renderUpdatableCell = (item: any, columnKey: string, defaultValue: any) => {
     return (
-      <UpdatableCell
+      <EditableCell
         item={item}
         columnKey={columnKey}
         defaultValue={defaultValue}
@@ -98,18 +106,21 @@ const PriceForm = ({
     {
       title: '#',
       dataIndex: 'key',
+      width: '28px',
       align: 'center',
     },
     {
       title: 'Discount Price',
       dataIndex: 'discount_price',
       align: 'center',
+      width: '132px',
       render: (_, item) => renderUpdatableCell(item, 'discount_price', item.discount_price),
     },
     {
       title: 'Discount Rate',
       dataIndex: 'discount_rate',
       align: 'center',
+      width: '78px',
       render: (_, item) =>
         renderUpdatableCell(
           item,
@@ -121,20 +132,24 @@ const PriceForm = ({
       title: 'Min. Quantity',
       dataIndex: 'min_quantity',
       align: 'center',
+      width: '78px',
       render: (_, item) => renderUpdatableCell(item, 'min_quantity', item.min_quantity),
     },
     {
       title: 'Max. Quantity',
       dataIndex: 'max_quantity',
       align: 'center',
+      width: '78px',
       render: (_, item) => renderUpdatableCell(item, 'max_quantity', item.max_quantity),
     },
     {
       title: 'Unit Type',
       dataIndex: 'unit_type',
       align: 'center',
+      width: '69px',
     },
     {
+      width: '28px',
       render: (_, item) => (
         <TrashIcon
           className="cursor-pointer indigo-dark-variant"
@@ -143,12 +158,6 @@ const PriceForm = ({
       ),
     },
   ];
-
-  const calculateDiscountRate = (price: number) => {
-    const unitPrice = parseFloat(formData.unit_price?.toString() ?? '0');
-    if (!unitPrice || isNaN(unitPrice)) return '0';
-    return (((unitPrice - price) / unitPrice) * 100).toString();
-  };
 
   const calculateDiscountPrice = (rate: number) => {
     const unitPrice = parseFloat(formData.unit_price?.toString() ?? '0');
@@ -347,36 +356,49 @@ const PriceForm = ({
 
   return (
     <>
-      <article className={styles.category_form_content}>
-        <Title customClass={`${styles.category_form_content_title} d-flex items-center`}>
-          BASE PRICE
-          <WarningIcon className="ml-16 cursor-pointer" onClick={onToggleModal('Base & Volume')} />
-        </Title>
+      <div
+        className={`${styles.category_form_content} ${
+          isLgScreen ? 'border-right-black-inset' : 'border-bottom-black-inset'
+        }`}
+      >
+        <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
+          <Title customClass={`${styles.category_form_content_title} d-flex items-center`}>
+            BASE PRICE
+            <WarningIcon
+              className="ml-16 cursor-pointer"
+              onClick={onToggleModal('Base & Volume')}
+            />
+          </Title>
+          <UploadIcon width={18} height={18} className="mb-6" />
+        </article>
+
         <form className="d-flex gap-16">
-          <UploadImageInput
-            fieldName="Upload Image :"
-            listType="picture-card"
-            fileList={formData.image}
-            onChange={handleImageChange}
-          />
-          <InputGroup
-            label="Product ID (SKU Code)"
-            required
-            fontLevel={3}
-            hasPadding
-            hasHeight
-            hasBoxShadow
-            colorPrimaryDark
-            colorRequired="tertiary"
-            value={formData.sku}
-            placeholder="type text"
-            deleteIcon
-            onChange={handleFormChange('sku')}
-            onDelete={handleClearInputValue('sku')}
-          />
+          <div className="d-flex items-center justify-between w-full">
+            <InputGroup
+              label="Product ID (SKU Code)"
+              required
+              fontLevel={3}
+              hasPadding
+              hasHeight
+              hasBoxShadow
+              colorPrimaryDark
+              colorRequired="tertiary"
+              value={formData.sku}
+              placeholder="type text"
+              deleteIcon
+              onChange={handleFormChange('sku')}
+              onDelete={handleClearInputValue('sku')}
+            />
+            <UploadImageInput
+              listType="picture-card"
+              fileList={formData.image}
+              onChange={handleImageChange}
+              additonalContainerStyle={{ width: '20%' }}
+            />
+          </div>
         </form>
         <InputGroup
-          label="Description"
+          label="Description :"
           fontLevel={3}
           hasPadding
           hasHeight
@@ -429,7 +451,7 @@ const PriceForm = ({
           <Title
             customClass={`${styles.category_form_content_title} shadow-none d-flex items-center`}
           >
-            VOLUMN PRICE
+            VOLUME PRICE
             <WarningIcon
               className="ml-16 cursor-pointer"
               onClick={onToggleModal('Base & Volume')}
@@ -448,8 +470,9 @@ const PriceForm = ({
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
+          scroll={{ y: 200 }}
         />
-      </article>
+      </div>
 
       <UnitType
         title="SELECT UNIT TYPE"

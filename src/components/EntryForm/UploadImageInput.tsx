@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { CSSProperties, ReactNode, useEffect, useState } from 'react';
 
 import { Upload, message } from 'antd';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
@@ -12,6 +12,7 @@ import styles from '@/components/EntryForm/styles/UploadImageInput.less';
 import { BodyText } from '@/components/Typography';
 
 interface UploadImageInputProps extends Omit<UploadProps, 'onChange'> {
+  isHaveboxShadow?: boolean;
   action?: string;
   name?: string;
   fileList?: UploadFile[];
@@ -24,10 +25,11 @@ interface UploadImageInputProps extends Omit<UploadProps, 'onChange'> {
   multiple?: boolean;
   onChange?: (fileList: UploadFile[]) => void;
   onRemove?: (file: UploadFile) => void;
-  onPreview?: (file: UploadFile) => void;
+  additonalContainerStyle?: CSSProperties;
 }
 
 const UploadImageInput: React.FC<UploadImageInputProps> = ({
+  isHaveboxShadow = false,
   action = '',
   name = 'file',
   fileList = [],
@@ -38,9 +40,9 @@ const UploadImageInput: React.FC<UploadImageInputProps> = ({
   multiple = false,
   onChange,
   onRemove,
-  onPreview,
   listType,
   fieldName,
+  additonalContainerStyle,
 }) => {
   const [files, setFiles] = useState<UploadFile[]>(fileList);
 
@@ -95,7 +97,10 @@ const UploadImageInput: React.FC<UploadImageInputProps> = ({
   };
 
   return (
-    <section className={styles.upload_image}>
+    <section
+      className={`${styles.upload_image}  ${isHaveboxShadow ? 'border-bottom-light' : ''}`}
+      style={additonalContainerStyle}
+    >
       <BodyText level={3} customClass={styles.upload_image_name}>
         {fieldName}
       </BodyText>
@@ -112,7 +117,11 @@ const UploadImageInput: React.FC<UploadImageInputProps> = ({
         multiple={multiple}
         listType={listType}
       >
-        {files.length < maxFileCount && <PhotoIcon />}
+        {files.length < maxFileCount && (
+          <figure className={styles.upload_image_wrapper}>
+            <PhotoIcon />
+          </figure>
+        )}
       </Upload>
     </section>
   );

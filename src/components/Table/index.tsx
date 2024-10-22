@@ -126,6 +126,7 @@ export interface CustomTableProps {
   isActiveOnRow?: boolean;
   dynamicPageSize?: boolean;
   hasSummary?: boolean;
+  hoverOnRow?: boolean;
 }
 
 /// update order compared to BE
@@ -153,6 +154,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     onFilterLoad = true,
     dynamicPageSize,
     hasSummary,
+    hoverOnRow = true,
   } = props;
 
   const DEFAULT_TABLE_ROW = 44;
@@ -354,15 +356,17 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         columns={columns}
         rowKey={rowKey}
         rowClassName={(record) => {
+          const classes = [];
           if (record[rowKey] === expanded) {
-            return `custom-expanded ${isActiveOnRow ? 'hover-on-row hover-table-on-row' : ''} ${
-              onRow ? 'cursor-pointer hover-on-row' : ''
-            } ` as any;
+            classes.push('custom-expanded');
+            if (isActiveOnRow) classes.push('hover-on-row', 'hover-table-on-row');
           }
-          if (onRow) {
-            return 'cursor-pointer hover-on-row';
-          }
-          return isActiveOnRow ? 'hover-on-row' : '';
+
+          if (onRow) classes.push('cursor-pointer');
+          if (onRow && hoverOnRow) classes.push('hover-on-row');
+          if (isActiveOnRow && record[rowKey] !== expanded) classes.push('hover-on-row');
+
+          return classes.join(' ');
         }}
         onRow={onRow}
         dataSource={data}

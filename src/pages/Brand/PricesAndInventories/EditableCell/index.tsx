@@ -10,7 +10,7 @@ interface EditStatus {
   };
 }
 
-interface UpdatableCell {
+interface EditableCell {
   inputStyle?: CSSProperties;
   item: { id: string };
   columnKey: string;
@@ -19,14 +19,14 @@ interface UpdatableCell {
   onSave: (id: string, columnKey: string, newValue: string) => void;
 }
 
-const UpdatableCell = ({
+const EditableCell = ({
   onSave,
   columnKey,
   inputStyle,
   defaultValue,
   valueClass = '',
   item,
-}: UpdatableCell) => {
+}: EditableCell) => {
   const [editStatus, setEditStatus] = useState<EditStatus>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -97,4 +97,4 @@ const UpdatableCell = ({
   );
 };
 
-export default UpdatableCell;
+export default EditableCell;
