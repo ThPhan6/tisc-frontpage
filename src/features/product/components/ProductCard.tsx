@@ -463,7 +463,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     return null;
   }
 
-  if (typeof filter == 'undefined') {
+  if (typeof filter == 'undefined' || filter.length == 0) {
     if (firstLoad.value) {
       if (location.pathname == PATH.designerBrandProduct) {
         // First time load to Designer/Brand-Product
