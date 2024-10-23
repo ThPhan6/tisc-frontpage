@@ -464,21 +464,18 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   }
 
   if (typeof filter == 'undefined' || filter.length == 0) {
-    if (firstLoad.value) {
-      if (location.pathname == PATH.designerBrandProduct) {
-        // First time load to Designer/Brand-Product
-        if (allProducts?.length) firstLoad.setValue(false);
-        else
-          return (
-            <div className={loadingStyles.container}>
-              <Spin size="large" />
-            </div>
-          );
-      } else if (location.pathname == PATH.productConfiguration) {
+    if (location.pathname == PATH.designerBrandProduct && !allProducts?.length) {
+      return (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      );
+    } else if (firstLoad.value) {
+      if (location.pathname == PATH.productConfiguration) {
         // First time load to TISC-Conf but login as Designer or Brand previously
         store.dispatch(resetProductState());
         firstLoad.setValue(false);
-      } else {
+      } else if (location.pathname == PATH.designerFavourite) {
         // First time load to Designer Favourite
         if (allProducts?.length) store.dispatch(resetProductState());
         setTimeout(() => {
