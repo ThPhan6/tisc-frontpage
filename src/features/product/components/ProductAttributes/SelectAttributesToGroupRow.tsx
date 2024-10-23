@@ -71,6 +71,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
           return {
             label: '',
             value: attr.id,
+            name: attr.name,
           };
         }),
       );
@@ -158,6 +159,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
             basis_id: selectedAttribute?.basis_id || '',
             basis_value_id: '',
             type: selectedAttribute?.basis?.type ?? 'Text',
+            name: item.name,
             ...activeData,
           };
 
@@ -287,6 +289,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
                   sub.subs.map((el) => ({
                     label: renderCheckBoxLabel(el),
                     value: el.id,
+                    name: el.name,
                   })),
                 ),
               ),
@@ -296,6 +299,7 @@ export const SelectAttributesToGroupRow: FC<SelectAttributesToGroupRowProps> = m
                 options: el.subs.map((sub) => ({
                   label: renderCheckBoxLabel(sub),
                   value: sub.id,
+                  name: sub.name,
                 })),
               })),
             }))}

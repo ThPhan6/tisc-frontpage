@@ -76,13 +76,23 @@ export const TopBarItem: React.FC<ProductTopBarProps> = ({
 
 interface FilterItemProps {
   title: string;
+  name?: string;
   onDelete?: () => void;
+  onRemove?: (filterType: string) => void;
 }
-export const FilterItem: React.FC<FilterItemProps> = ({ title, onDelete }) => {
+export const FilterItem: React.FC<FilterItemProps> = ({ title, name = '', onDelete, onRemove }) => {
   return (
     <span className={styles.filterItem}>
       {capitalize(title)}
-      <DeleteIcon onClick={onDelete} />
+      <DeleteIcon
+        onClick={() => {
+          if (onDelete) {
+            onDelete();
+          } else {
+            onRemove(name);
+          }
+        }}
+      />
     </span>
   );
 };
