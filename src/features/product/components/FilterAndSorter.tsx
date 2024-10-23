@@ -34,7 +34,6 @@ export const onCategoryFilterClick = (
     ],
     remove: [QUERY_KEY.coll_id, QUERY_KEY.coll_name],
   });
-  console.log(filter);
   const removeFilter = filter
     ? filter.filter((item) => item.name != 'collection_id' && item.name != 'category_id')
     : [];
@@ -57,7 +56,6 @@ export const onBrandFilterClick = (
       { key: QUERY_KEY.brand_name, value: name },
     ],
   });
-  console.log(filter);
   const removeFilter = filter ? filter.filter((item) => item.name != 'brand_id') : [];
   const brandFilter: ProductTopBarFilter = { name: 'brand_id', title: name, value: id };
   store.dispatch(
@@ -358,23 +356,45 @@ export const useProductListFilterAndSorter = (fetchs: {
     }
   }, []);
 
+  useEffect(() => {
+    getProductCategoryPagination(
+      {
+        page: 1,
+        pageSize: 99999,
+        haveProduct: true,
+      },
+      (data) => {
+        setCategories(formatCategoriesToDropDownData(data.data, 1, filter));
+      },
+    );
+  }, [filter]);
+
   const resetProductListSorter = () => {
     removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
     dispatch(setProductList({ sort: undefined }));
   };
 
-  const resetFilter = () => {
-    removeUrlParams([
-      QUERY_KEY.cate_id,
-      QUERY_KEY.cate_name,
-      QUERY_KEY.brand_id,
-      QUERY_KEY.brand_name,
-      QUERY_KEY.coll_id,
-      QUERY_KEY.coll_name,
-      QUERY_KEY.company_id,
-      QUERY_KEY.company_name,
-    ]);
-    dispatch(setProductList({ filter: undefined, brandSummary: undefined }));
+  const resetFilter = (filterType: string) => {
+    let newFilter: ProductTopBarFilter[] | undefined = [];
+    switch (filterType) {
+      case 'category_id':
+        removeUrlParams([QUERY_KEY.cate_id, QUERY_KEY.cate_name]);
+        newFilter = filter?.filter((item) => item.name !== 'category_id');
+        break;
+      case 'brand_id':
+        removeUrlParams([QUERY_KEY.brand_id, QUERY_KEY.brand_name]);
+        newFilter = filter?.filter((item) => item.name !== 'brand_id');
+        break;
+      case 'company_id':
+        removeUrlParams([QUERY_KEY.company_id, QUERY_KEY.company_name]);
+        newFilter = filter?.filter((item) => item.name !== 'company_id');
+        break;
+      case 'collection_id':
+        removeUrlParams([QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
+        newFilter = filter?.filter((item) => item.name !== 'collection_id');
+        break;
+    }
+    dispatch(setProductList({ filter: newFilter, brandSummary: undefined }));
   };
 
   const renderItemTopBar = (
@@ -384,7 +404,13 @@ export const useProductListFilterAndSorter = (fetchs: {
   ) => {
     if (filter && filter.find((item) => item.name === filterType)) {
       const selectedFilter = filter.find((item) => item.name === filterType);
-      return <FilterItem title={selectedFilter?.title || ''} onDelete={resetFilter} />;
+      return (
+        <FilterItem
+          title={selectedFilter?.title || ''}
+          onRemove={resetFilter}
+          name={selectedFilter?.name}
+        />
+      );
     }
 
     if (defaultLabel) return defaultLabel;
