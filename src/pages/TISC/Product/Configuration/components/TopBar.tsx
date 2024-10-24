@@ -311,7 +311,11 @@ export const TopBar: React.FC = () => {
                 undefined,
                 { autoHeight: false, borderFirstItem: true },
               )}
-              customClass="left-divider white-space"
+              customClass={`left-divider white-space ${
+                filter?.find((item) => item.name === 'collection_id')?.value === 'all'
+                  ? styles.hideDeleteIcon
+                  : ''
+              }`}
             />
             {isTablet ? null : (
               <TopBarItem
