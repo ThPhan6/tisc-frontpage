@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { PATH } from '@/constants/path';
 import { QUERY_KEY } from '@/constants/util';
 import { DropDownProps } from 'antd/es/dropdown';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -376,24 +377,56 @@ export const useProductListFilterAndSorter = (fetchs: {
 
   const resetFilter = (filterType: string) => {
     let newFilter: ProductTopBarFilter[] | undefined = [];
-    switch (filterType) {
-      case 'category_id':
-        removeUrlParams([QUERY_KEY.cate_id, QUERY_KEY.cate_name]);
-        newFilter = filter?.filter((item) => item.name !== 'category_id');
-        break;
-      case 'brand_id':
-        removeUrlParams([QUERY_KEY.brand_id, QUERY_KEY.brand_name]);
-        newFilter = filter?.filter((item) => item.name !== 'brand_id');
-        break;
-      case 'company_id':
-        removeUrlParams([QUERY_KEY.company_id, QUERY_KEY.company_name]);
-        newFilter = filter?.filter((item) => item.name !== 'company_id');
-        break;
-      case 'collection_id':
-        removeUrlParams([QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
-        newFilter = filter?.filter((item) => item.name !== 'collection_id');
-        break;
+    if (location.pathname === PATH.productConfiguration) {
+      switch (filterType) {
+        case 'category_id':
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.cate_id, value: 'all' },
+              { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+            ],
+          });
+          newFilter = filter?.map((item) => {
+            return item.name !== 'category_id'
+              ? item
+              : { ...item, title: 'VIEW ALL', value: 'all' };
+          });
+          break;
+        case 'collection_id':
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.coll_id, value: 'all' },
+              { key: QUERY_KEY.coll_name, value: 'VIEW ALL' },
+            ],
+          });
+          newFilter = filter?.map((item) => {
+            return item.name !== 'collection_id'
+              ? item
+              : { ...item, title: 'VIEW ALL', value: 'all' };
+          });
+          break;
+      }
+    } else {
+      switch (filterType) {
+        case 'category_id':
+          removeUrlParams([QUERY_KEY.cate_id, QUERY_KEY.cate_name]);
+          newFilter = filter?.filter((item) => item.name !== 'category_id');
+          break;
+        case 'brand_id':
+          removeUrlParams([QUERY_KEY.brand_id, QUERY_KEY.brand_name]);
+          newFilter = filter?.filter((item) => item.name !== 'brand_id');
+          break;
+        case 'company_id':
+          removeUrlParams([QUERY_KEY.company_id, QUERY_KEY.company_name]);
+          newFilter = filter?.filter((item) => item.name !== 'company_id');
+          break;
+        case 'collection_id':
+          removeUrlParams([QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
+          newFilter = filter?.filter((item) => item.name !== 'collection_id');
+          break;
+      }
     }
+
     dispatch(setProductList({ filter: newFilter, brandSummary: undefined }));
   };
 
