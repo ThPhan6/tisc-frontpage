@@ -134,9 +134,11 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   };
 
   const handleDisableButton = () => {
-    for (const element of data.contacts) {
-      if (checkContactValue(element)) {
-        return true;
+    if (data.contacts) {
+      for (const element of data.contacts) {
+        if (checkContactValue(element)) {
+          return true;
+        }
       }
     }
     return false;
@@ -342,7 +344,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
         className={styles.information}
         style={{ height: isTablet ? '' : 'calc(var(--vh) * 100 - 304px)' }}
       >
-        {data.contacts.map((contact, index) => renderContacts(contact, index))}
+        {data?.contacts?.map((contact, index) => renderContacts(contact, index))}
       </div>
       {isEdit && (
         <div className={styles.bottom}>

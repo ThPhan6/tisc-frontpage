@@ -27,7 +27,7 @@ export const AssociateModal: FC<{
         : CustomResourceType.Brand,
     ).then((res) => {
       if (res) {
-        const selectedAssociate = chosenValue.map((checked) =>
+        const selectedAssociate = chosenValue?.map((checked) =>
           res.find((associate) => associate.id === checked.value),
         );
         if (selectedAssociate) {

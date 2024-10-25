@@ -51,6 +51,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   additionalSelected,
   onChangeAdditionalSelected,
   isExpanded,
+  onCollClick,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -343,6 +344,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   } item-wrapper-custom text-capitalize`}
                   style={{ minHeight: heightItem }}
                   htmlFor={`${option.value}_${index}_${randomId}`}
+                  onClick={() => {
+                    if (onCollClick) onCollClick(option.value as string);
+                  }}
                 >
                   <div
                     style={{
