@@ -23,9 +23,16 @@ interface CheckboxListProps {
   chosenItem?: CheckboxValue[];
   onChange?: (value: CheckboxValue[]) => void;
   isExpanded?: boolean;
+  onCollClick?: (value: string) => void;
 }
 
-const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange, isExpanded }) => {
+const CheckboxList: React.FC<CheckboxListProps> = ({
+  data,
+  selected,
+  onChange,
+  isExpanded,
+  onCollClick,
+}) => {
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
   useEffect(() => {
@@ -84,6 +91,7 @@ const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange, i
             checkboxClass={data.customItemClass}
             isCheckboxList
             isExpanded={isExpanded}
+            onCollClick={onCollClick ? onCollClick : undefined}
           />
         </div>
       </div>

@@ -96,6 +96,7 @@ export interface PopoverProps {
   notScrollWholeContent?: boolean;
 
   onCountrySearch?: (e?: any) => void;
+  onCollClick?: (e?: any) => void;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -136,6 +137,7 @@ const Popover: FC<PopoverProps> = ({
   collapseLevel,
   notScrollWholeContent,
   onCountrySearch,
+  onCollClick,
 }) => {
   const { isMobile } = useScreen();
 
@@ -226,6 +228,7 @@ const Popover: FC<PopoverProps> = ({
               data={leftCheckboxList}
               onChange={setCurrentValue}
               isExpanded={false}
+              onCollClick={title === 'SELECT COLLECTION & LABEL' ? onCollClick : undefined}
             />
           </div>
           <div className={'flex-grow side-container'}>
