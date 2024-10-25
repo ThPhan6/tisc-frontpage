@@ -128,6 +128,10 @@ export const PATH = {
   /// project tracking
   brandProjectTracking: '/brand/project-tracking',
   brandProjectTrackingDetail: '/brand/project-tracking/:id',
+
+  // prices & inventories
+  brandPricesInventories: '/brand/prices-and-inventories',
+
   //adminstration
   brandAdministration: '/brand/adminstration',
   brandAdministrationProfile: '/brand/adminstration/brand-profile',

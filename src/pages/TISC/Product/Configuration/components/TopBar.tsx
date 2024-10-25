@@ -43,11 +43,13 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 const setViewProductLitsByCollection = () =>
   store.dispatch(
     setProductList({
-      filter: {
-        name: 'collection_id',
-        title: 'VIEW ALL',
-        value: 'all',
-      },
+      filter: [
+        {
+          name: 'collection_id',
+          title: 'VIEW ALL',
+          value: 'all',
+        },
+      ],
     }),
   );
 
@@ -137,6 +139,7 @@ export const TopBar: React.FC = () => {
       getProductSummary(checkedBrand.value as string).then((res) => {
         /// in case collection filter has chosen,
         /// updated its filter name and param after reloading
+        const collFilter = filter?.find((item) => item.name === 'collection_id');
         if (
           res.collections.length &&
           brandId &&
@@ -144,20 +147,22 @@ export const TopBar: React.FC = () => {
           coll_id &&
           coll_name &&
           filter &&
-          filter.name === 'collection_id' &&
-          filter.value !== 'all'
+          collFilter &&
+          collFilter.value !== 'all'
         ) {
           const collectionFilterName =
-            res.collections.find((collection) => collection.id === filter?.value)?.name || '';
+            res.collections.find((collection) => collection.id === collFilter?.value)?.name || '';
 
           /// update collection filter name
           dispatch(
             setProductList({
-              filter: {
-                name: 'collection_id',
-                value: filter.value,
-                title: collectionFilterName ?? '',
-              },
+              filter: [
+                {
+                  name: 'collection_id',
+                  value: collFilter.value,
+                  title: collectionFilterName ?? '',
+                },
+              ],
             }),
           );
           /// update params
@@ -165,7 +170,7 @@ export const TopBar: React.FC = () => {
             set: [
               { key: QUERY_KEY.b_id, value: brandId },
               { key: QUERY_KEY.b_name, value: brandName },
-              { key: QUERY_KEY.coll_id, value: filter.value },
+              { key: QUERY_KEY.coll_id, value: collFilter.value },
               { key: QUERY_KEY.coll_name, value: collectionFilterName },
             ],
           });
@@ -181,12 +186,13 @@ export const TopBar: React.FC = () => {
         brand_id: checkedBrand.value as string,
         collection_id: !filter ? 'all' : undefined,
       };
-
-      if (filter?.name === 'category_id') {
-        params.category_id = filter.value === 'all' ? 'all' : filter.value;
+      const cateFilter = filter?.find((item) => item.name === 'category_id');
+      const collFilter = filter?.find((item) => item.name === 'collection_id');
+      if (cateFilter) {
+        params.category_id = cateFilter.value === 'all' ? 'all' : cateFilter.value;
       }
-      if (filter?.name === 'collection_id') {
-        params.collection_id = filter.value === 'all' ? 'all' : filter.value;
+      if (collFilter) {
+        params.collection_id = collFilter.value === 'all' ? 'all' : collFilter.value;
       }
 
       if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
@@ -196,7 +202,7 @@ export const TopBar: React.FC = () => {
 
       getProductListByBrandId(params);
     }
-  }, [filter?.value, filter?.name, checkedBrand?.value, firstLoad.value]);
+  }, [filter, checkedBrand?.value, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
@@ -263,7 +269,7 @@ export const TopBar: React.FC = () => {
               topValue={renderItemTopBar(
                 'category_id',
                 filter,
-                checkedBrand && filter?.name !== 'category_id' ? 'view' : '',
+                checkedBrand && !filter?.find((item) => item.name !== 'category_id') ? 'view' : '',
               )}
               disabled
               bottomEnable={productSummary ? true : false}
@@ -286,7 +292,9 @@ export const TopBar: React.FC = () => {
               topValue={renderItemTopBar(
                 'collection_id',
                 filter,
-                checkedBrand && filter?.name !== 'collection_id' ? 'view' : '',
+                checkedBrand && !filter?.find((item) => item.name !== 'collection_id')
+                  ? 'view'
+                  : '',
               )}
               disabled
               bottomEnable={productSummary ? true : false}
@@ -303,7 +311,11 @@ export const TopBar: React.FC = () => {
                 undefined,
                 { autoHeight: false, borderFirstItem: true },
               )}
-              customClass="left-divider white-space"
+              customClass={`left-divider white-space ${
+                filter?.find((item) => item.name === 'collection_id')?.value === 'all'
+                  ? styles.hideDeleteIcon
+                  : ''
+              }`}
             />
             {isTablet ? null : (
               <TopBarItem
