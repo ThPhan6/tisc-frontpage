@@ -39,4 +39,6 @@ export interface CustomResourceForm {
   contacts: ContactDetail[];
   type: number;
   phone_code?: string;
+  type_code?: string;
+  notes?: string;
 }
