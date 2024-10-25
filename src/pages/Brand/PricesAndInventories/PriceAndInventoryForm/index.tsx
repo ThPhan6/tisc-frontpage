@@ -13,7 +13,6 @@ import { extractDataBase64, showImageUrl, validateRequiredFields } from '@/helpe
 import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
 import { reduce } from 'lodash';
 
-import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -27,7 +26,6 @@ import type {
   VolumePrice,
 } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import categoryTableStyle from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
-import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
@@ -97,8 +95,8 @@ const PriceAndInventoryForm = () => {
 
     if (res) {
       const rate = reduce(
-        res.price.exchange_histories?.map((el) => el.rate),
-        (acc, rate) => acc * rate,
+        res.price.exchange_histories?.map((item) => item.rate),
+        (acc, el) => acc * el,
         1,
       );
       const unitPrice = Number(res.price.unit_price) * rate;
@@ -137,6 +135,11 @@ const PriceAndInventoryForm = () => {
   }, [inventoryId]);
 
   const transformTableDataToVolumePrices = useMemo(() => {
+    if (!tableData) {
+      setTableData([]);
+      return;
+    }
+
     return () =>
       tableData.map((item) => ({
         unit_type: item.unit_type,
@@ -149,13 +152,17 @@ const PriceAndInventoryForm = () => {
 
   const handleSave = useCallback(async () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
+    if (tableData.length === 0) {
+      message.warn('Please add volume prices and click plus button after entering the unit price.');
+      return;
+    }
 
     const image =
       formData.image && formData.image.length > 0
         ? extractDataBase64(formData.image[0].thumbUrl as string)
         : null;
 
-    const newVolumePrices = transformTableDataToVolumePrices();
+    const newVolumePrices = transformTableDataToVolumePrices?.() || [];
     const existingVolumePrices = (formData as any).volume_prices || [];
     const mergedVolumePrices = [
       ...existingVolumePrices,
@@ -296,7 +303,10 @@ const PriceAndInventoryForm = () => {
             tableData={tableData}
             setTableData={setTableData}
           />
-          <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} />
+          <span className="p-16" style={{ whiteSpace: 'nowrap' }}>
+            Comming soon
+          </span>
+          {/* <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} /> */}
         </div>
 
         <footer className={styles.category_form_footer}>

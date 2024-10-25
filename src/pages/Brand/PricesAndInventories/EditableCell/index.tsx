@@ -34,7 +34,7 @@ const EditableCell = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isEditing = editStatus[item.id]?.[columnKey]?.isEditing;
-  const value = editStatus[item.id]?.[columnKey]?.value ?? defaultValue;
+  const inputValue = editStatus[item.id]?.[columnKey]?.value ?? defaultValue;
 
   const handleClick = (id: string, colKey: string, value: string) => () => {
     setEditStatus((prev) => ({
@@ -85,7 +85,7 @@ const EditableCell = ({
       },
     }));
 
-    onSave(id, colKey, value);
+    onSave(id, colKey, inputValue);
   };
 
   const handleKeyDown =
@@ -98,7 +98,7 @@ const EditableCell = ({
   return isEditing ? (
     <CustomInput
       autoFocus={isEditing}
-      value={value}
+      value={inputValue}
       onChange={handleOnChange(item.id, columnKey)}
       onBlur={handleBlur(item.id, columnKey)}
       onKeyDown={handleKeyDown(item.id, columnKey)}
@@ -106,14 +106,34 @@ const EditableCell = ({
       ref={inputRef}
       className="indigo-dark-variant text-center"
       type="number"
+      message={
+        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
+          ? 'Max discount rate is 100'
+          : undefined
+      }
+      messageType={
+        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
+          ? 'error'
+          : undefined
+      }
       {...rest}
     />
   ) : (
     <CustomInput
-      value={value}
-      onClick={handleClick(item.id, columnKey, value)}
+      value={inputValue}
+      onClick={handleClick(item.id, columnKey, inputValue)}
       className={` flex-1 indigo-dark-variant text-center ${valueClass}`}
       type="number"
+      message={
+        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
+          ? 'Max discount rate is 100'
+          : undefined
+      }
+      messageType={
+        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
+          ? 'error'
+          : undefined
+      }
     />
   );
 };

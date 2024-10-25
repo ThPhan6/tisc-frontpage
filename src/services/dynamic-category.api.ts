@@ -149,10 +149,10 @@ export async function createInventory(data: PriceAndInventoryAttribute) {
     method: 'POST',
     data,
   })
-    .then((response) => {
+    .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_INVENTORY_SUCCESS);
       hidePageLoading();
-      return response.data;
+      return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INVENTORY_ERROR);

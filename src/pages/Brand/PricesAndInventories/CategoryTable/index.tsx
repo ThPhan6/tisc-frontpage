@@ -1,4 +1,4 @@
-import { MouseEvent, MouseEventHandler, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -170,7 +170,6 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Image',
         dataIndex: 'image',
-        width: '7%',
         render: (src: string) => {
           return src ? (
             <figure className={styles.category_table_figure}>
@@ -185,7 +184,6 @@ const CategoryTable: React.FC = () => {
         title: 'Product ID',
         sorter: true,
         dataIndex: 'sku',
-        width: '7%',
         render: (_, item) => (
           <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>{item.sku}</span>
         ),
@@ -193,7 +191,6 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Description',
         dataIndex: 'description',
-        width: '7%',
         render: (_, item) => (
           <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>{item.description}</span>
         ),
@@ -201,12 +198,11 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Unit Price',
         dataIndex: 'unit_price',
-        width: '7%',
         align: 'center',
         render: (_, item) => {
           const rate = reduce(
-            item.price.exchange_histories?.map((el) => el.rate),
-            (acc, rate) => acc * rate,
+            item.price.exchange_histories?.map((unit) => unit.rate),
+            (acc, el) => acc * el,
             1,
           );
           const unitPrice = Number(item.price.unit_price) * rate;
@@ -227,7 +223,6 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Unit Type',
         dataIndex: 'unit_type',
-        width: '7%',
         align: 'center',
         render: (_, item) => {
           return (
@@ -240,7 +235,7 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Total Stock',
         dataIndex: 'total_stock',
-        width: '7%',
+        align: 'center',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
             <span className={`${isRowSelected(item) ? 'font-medium' : ''} flex-1`}>1</span>
@@ -264,7 +259,6 @@ const CategoryTable: React.FC = () => {
         title: 'Out stock',
         dataIndex: 'out_stock',
         align: 'center',
-        width: '7%',
         render: (_, item) => (
           <span className={`${isRowSelected(item) ? 'font-medium' : ''} red-magenta`}>-7</span>
         ),
@@ -273,14 +267,13 @@ const CategoryTable: React.FC = () => {
       {
         title: 'On Order',
         dataIndex: 'on_order',
-        width: '7%',
         align: 'center',
         render: (_, item) => renderEditableCell(item, 'on_order', 37),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
-        width: '7%',
+        align: 'center',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
             <span className="flex-1">{renderEditableCell(item, 'unit_price', 12)}</span>
@@ -302,7 +295,6 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Stock Value',
         dataIndex: 'stock_value',
-        width: '7%',
         render: (_, item) => (
           <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>US$ 105.00</span>
         ),
@@ -310,7 +302,6 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Revision',
         dataIndex: 'revision',
-        width: '7%',
         render: (_, item) => (
           <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>
             {item.price?.created_at?.split(' ')[0]}

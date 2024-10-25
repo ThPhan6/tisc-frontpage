@@ -126,7 +126,6 @@ const PriceForm = ({
       dataIndex: 'discount_price',
       align: 'center',
       width: '132px',
-      render: (_, item) => renderUpdatableCell(item, 'discount_price', item.discount_price),
     },
     {
       title: 'Discount Rate',
@@ -155,7 +154,7 @@ const PriceForm = ({
       align: 'center',
       width: '69px',
       render: () => (
-        <BodyText fontFamily="Roboto" level={5} color="primary-color-dark">
+        <BodyText fontFamily="Roboto" level={5}>
           {unitTypeCode}
         </BodyText>
       ),
@@ -239,7 +238,7 @@ const PriceForm = ({
     if (!ensureValidPricesAndQuantities()) return;
 
     const newRow = {
-      key: `${tableData?.length + 1}`,
+      key: Number(tableData?.length + 1),
       id: `${tableData?.length + 1}`,
       discount_price: formData.discount_price,
       discount_rate: formData.discount_rate,
@@ -248,7 +247,7 @@ const PriceForm = ({
       unit_type: formData.unit_type,
     };
 
-    setTableData((prev) => [...prev, newRow]);
+    setTableData((prev = []) => [...prev, newRow]);
 
     setFormData({
       ...formData,
@@ -434,6 +433,7 @@ const PriceForm = ({
         <form className="d-flex gap-16">
           <InputGroup
             label="Unit Price"
+            placeholder="type price"
             required
             fontLevel={3}
             addonBefore={currencySelected}
@@ -499,7 +499,7 @@ const PriceForm = ({
               {...input}
               message={
                 index == 1 && formData.discount_rate && formData.discount_rate > 100
-                  ? 'Discout rate cannot exceed to 100'
+                  ? 'Max discount rate is 100'
                   : undefined
               }
               messageType={
