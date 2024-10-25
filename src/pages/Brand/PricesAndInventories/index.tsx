@@ -2,26 +2,23 @@ import { useEffect, useState } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
-
 import { confirmDelete } from '@/helper/common';
 import {
   createDynamicCategory,
   deleteDynamicCategory,
   getDynamicCategories,
   getGroupCategories,
+  getSummary,
   moveCategoryToSubCategory,
   updateDynamicCategory,
 } from '@/services';
 
 import AccordionMenu, { AccordionItem } from '@/components/AccordionMenu';
-import InventoryHeader, { DataItem } from '@/components/InventoryHeader';
-import CurrencyModal from '@/components/Modal/CurrencyModal';
+import InventoryHeader from '@/components/InventoryHeader';
 
 const PricesAndInventories = () => {
   const [accordionItems, setAccordionItems] = useState<AccordionItem[]>([]);
   const [groupItems, setGroupItems] = useState<AccordionItem[]>([]);
-  const [isShowModal, setIsShowModal] = useState(false);
 
   const categoryConfig = [
     { inputTitle: 'Main Categories' },
@@ -90,6 +87,15 @@ const PricesAndInventories = () => {
     Promise.all([fetchCategories(), fetchGroupCategories()]);
   }, []);
 
+  useEffect(() => {
+    const brandId = [...new Set(accordionItems.map((item) => item.relation_id))][0];
+
+    if (brandId) {
+      const fetchSummary = async () => await getSummary(brandId);
+      fetchSummary();
+    }
+  }, [accordionItems]);
+
   const handleSelect = async (sub_id: string, parent_id: string) => {
     const res = await moveCategoryToSubCategory(sub_id, parent_id);
 
@@ -116,35 +122,7 @@ const PricesAndInventories = () => {
     return false;
   };
 
-  const handleToggleModal = (status: boolean) => () => setIsShowModal(status);
-
-  const inventoryHeaderData: DataItem[] = [
-    {
-      id: '1',
-      value: 'USD',
-      label: 'BASE CURRENTCY',
-      rightAction: (
-        <SingleRightFormIcon
-          className="cursor-pointer"
-          width={16}
-          height={16}
-          onClick={handleToggleModal(true)}
-        />
-      ),
-    },
-    {
-      id: '2',
-      value: '1043',
-      label: 'TOTAL PRODUCT RECORDS',
-    },
-    {
-      id: '3',
-      value: 'US$ 00,000',
-      label: 'TOTAL STOCK VALUE',
-    },
-  ];
-
-  const pageHeaderRender = () => <InventoryHeader data={inventoryHeaderData} onSearch={() => {}} />;
+  const pageHeaderRender = () => <InventoryHeader />;
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
@@ -158,15 +136,6 @@ const PricesAndInventories = () => {
         onDelete={handleDelete}
         onSelect={handleSelect}
         onUpdate={handleUpdate}
-      />
-      <CurrencyModal
-        annouceContent="Beware that changing this currency will impact ALL of your price settings for the existing product cards and partner price rates. Proceed with caution."
-        isShowAnnouncement={true}
-        onCancel={handleToggleModal(false)}
-        onOk={() => {}}
-        open={isShowModal}
-        title="SELECT CURRENTCY"
-        data={[]}
       />
     </PageContainer>
   );

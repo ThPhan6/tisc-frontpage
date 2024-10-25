@@ -2,23 +2,23 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Switch } from 'antd';
+import { Switch, message } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
-import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
 import { extractDataBase64, showImageUrl, validateRequiredFields } from '@/helper/utils';
-import { createInventory, getInventory, updateInventory } from '@/services';
+import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
+import { reduce } from 'lodash';
 
+import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
-import InventoryHeader, { DataItem } from '@/components/InventoryHeader';
-import CurrencyModal from '@/components/Modal/CurrencyModal';
+import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
@@ -35,12 +35,13 @@ export interface PriceAndInventoryAttribute {
   id?: string;
   sku?: string;
   description?: string;
-  unit_price?: string | number;
-  discount_price?: string;
-  discount_rate?: string;
-  min_quantity?: string;
-  max_quantity?: string;
+  unit_price?: number;
+  discount_price?: number;
+  discount_rate?: number;
+  min_quantity?: number;
+  max_quantity?: number;
   unit_type: string;
+  unit_type_code?: string;
   inventory_category_id?: string;
   image?: any;
 }
@@ -48,11 +49,6 @@ export interface PriceAndInventoryAttribute {
 const initialFormData = {
   sku: '',
   description: '',
-  unit_price: '',
-  discount_price: '0.00',
-  discount_rate: '',
-  min_quantity: '',
-  max_quantity: '',
   unit_type: '',
   inventory_category_id: '',
   image: [],
@@ -63,7 +59,7 @@ const PriceAndInventoryForm = () => {
   const [tableData, setTableData] = useState<VolumePrice[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
 
-  const location = useLocation<{ categoryId: string }>();
+  const location = useLocation<{ categoryId: string; brandId: string }>();
   const navigate = useNavigationHandler();
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
@@ -81,7 +77,7 @@ const PriceAndInventoryForm = () => {
   const setFormDataAfterAction = (data: InventoryColumn) => {
     setFormData({
       ...data,
-      unit_price: data.price.unit_price.toString(),
+      unit_price: data.price.unit_price,
       unit_type: data.price.unit_type,
       image: data.image
         ? [
@@ -98,12 +94,19 @@ const PriceAndInventoryForm = () => {
 
   const fetchInventory = async () => {
     const res = await getInventory(inventoryId);
+
     if (res) {
+      const rate = reduce(
+        res.price.exchange_histories?.map((el) => el.rate),
+        (acc, rate) => acc * rate,
+        1,
+      );
+      const unitPrice = Number(res.price.unit_price) * rate;
+
       setFormData({
         ...res,
-        unit_price: res.price.unit_price.toString(),
+        unit_price: unitPrice,
         unit_type: res.price.unit_type,
-        discount_price: '0.00',
         image: res.image
           ? [
               {
@@ -180,13 +183,14 @@ const PriceAndInventoryForm = () => {
 
     if (inventoryId) {
       setFormDataAfterAction(res);
+      fetchInventory();
       return;
     }
 
     navigate({
       path: PATH.brandPricesInventoriesTable,
       query: { categories: category },
-      state: { categoryId: location.state?.categoryId },
+      state: { categoryId: location.state?.categoryId, brandId: location.state?.brandId },
     })();
   }, [
     formData,
@@ -199,33 +203,17 @@ const PriceAndInventoryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
-  const inventoryHeaderData: DataItem[] = [
-    {
-      id: '1',
-      value: 'USD',
-      label: 'BASE CURRENTCY',
-      rightAction: (
-        <SingleRightFormIcon
-          className="cursor-pointer"
-          width={16}
-          height={16}
-          onClick={handleToggleModal('Inventory Header')}
-        />
-      ),
-    },
-    {
-      id: '2',
-      value: '1043',
-      label: 'TOTAL PRODUCT RECORDS',
-    },
-    {
-      id: '3',
-      value: 'US$ 00,000',
-      label: 'TOTAL STOCK VALUE',
-    },
-  ];
+  const handleSaveCurrecy = async (currency: string) => {
+    if (!currency) {
+      message.error('Please select a currency');
+      return;
+    }
 
-  const pageHeaderRender = () => <InventoryHeader data={inventoryHeaderData} onSearch={() => {}} />;
+    const res = await exchangeCurrency(location.state.brandId, currency);
+    if (res) fetchInventory();
+  };
+
+  const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
@@ -293,6 +281,7 @@ const PriceAndInventoryForm = () => {
               query: { categories: category },
               state: {
                 categoryId: location.state?.categoryId,
+                brandId: location.state?.brandId,
               },
             })}
           />
@@ -314,16 +303,6 @@ const PriceAndInventoryForm = () => {
           <CustomSaveButton contentButton="Save" onClick={handleSave} />
         </footer>
       </div>
-
-      <CurrencyModal
-        annouceContent="Beware that changing this currency will impact ALL of your price settings for the existing product cards and partner price rates. Proceed with caution."
-        isShowAnnouncement={true}
-        onCancel={handleToggleModal('none')}
-        onOk={() => {}}
-        open={isShowModal === 'Inventory Header'}
-        title="SELECT CURRENTCY"
-        data={[]}
-      />
     </PageContainer>
   );
 };

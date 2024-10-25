@@ -95,12 +95,6 @@
     }
   }
 
-  &_input {
-    :global(.ant-input) {
-      color: @mono-color !important;
-    }
-  }
-
   &_table {
     width: 100%;
   }
@@ -130,12 +124,23 @@
     }
   }
 
+  :global(.ant-input-group-addon) {
+    padding: 0 24px 0 16px;
+    font-weight: 300;
+    background: #fff;
+    border: none;
+  }
+
   :global(.ant-table-tbody) {
     tr {
       :global(.ant-table-cell) {
         border: none;
       }
     }
+  }
+
+  :global(.ant-input) {
+    color: #2b39d4;
   }
 
   :global(.ant-table-cell-row-hover) {

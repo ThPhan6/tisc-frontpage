@@ -8,11 +8,12 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { fetchUnitType } from '@/services';
 
+import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
 
-import InputGroup from '@/components/EntryForm/InputGroup';
+import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
 import UploadImageInput from '@/components/EntryForm/UploadImageInput';
-import VolumeInput, { type InputFieldProps } from '@/components/EntryForm/VolumeInput';
+import volumeInputStyles from '@/components/EntryForm/styles/VolumeInput.less';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -39,8 +40,13 @@ const PriceForm = ({
   tableData,
   setTableData,
 }: PriceFormProps) => {
-  const [unitData, setUnitData] = useState<UnitItem[]>([]);
   const [isLgScreen, setIsLgScreen] = useState(window.innerWidth > 1500);
+  const { currencySelected, unitType } = useAppSelector((state) => state.summary);
+
+  const unitTypeCode = useMemo(
+    () => unitType.find((item) => item.id === formData.unit_type)?.code,
+    [unitType, formData.unit_type],
+  );
 
   useEffect(() => {
     const handleResize = () => setIsLgScreen(window.innerWidth >= 1500);
@@ -50,29 +56,35 @@ const PriceForm = ({
 
   useEffect(() => {
     const getUnitType = async () => {
-      const res = await fetchUnitType();
-      setUnitData(res);
+      await fetchUnitType();
     };
 
     getUnitType();
   }, []);
 
   const ensureValidPricesAndQuantities = () => {
-    const { unit_price, unit_type, min_quantity, max_quantity } = formData;
+    const {
+      unit_price,
+      unit_type,
+      min_quantity = 0,
+      max_quantity = 1,
+      discount_rate = 0,
+    } = formData;
     const parsedUnitPrice = parseFloat(unit_price?.toString() ?? '0');
-    const minQuantity = min_quantity ? parseFloat(min_quantity) : null;
-    const maxQuantity = max_quantity ? parseFloat(max_quantity) : null;
+    const minQuantity = min_quantity;
+    const maxQuantity = max_quantity;
 
     if (!unit_price || !unit_type || isNaN(parsedUnitPrice)) {
       message.warn('Unit price and type are required and must be valid.');
       return false;
     }
 
-    if (
-      (minQuantity !== null && (!Number.isInteger(minQuantity) || isNaN(minQuantity))) ||
-      (maxQuantity !== null && (!Number.isInteger(maxQuantity) || isNaN(maxQuantity))) ||
-      (minQuantity !== null && maxQuantity !== null && minQuantity > maxQuantity)
-    ) {
+    if (discount_rate > 100) {
+      message.warn('Discount rate must not exceed 100.');
+      return false;
+    }
+
+    if (isNaN(Number(minQuantity)) || isNaN(Number(maxQuantity)) || minQuantity > maxQuantity) {
       message.warn('Quantities must be valid integers and min cannot exceed max.');
       return false;
     }
@@ -92,7 +104,7 @@ const PriceForm = ({
         item={item}
         columnKey={columnKey}
         defaultValue={defaultValue}
-        inputStyle={{ width: 60, height: 20 }}
+        autoWidth
         valueClass="indigo-dark-variant"
         onSave={handleSaveCell}
       />
@@ -121,12 +133,7 @@ const PriceForm = ({
       dataIndex: 'discount_rate',
       align: 'center',
       width: '78px',
-      render: (_, item) =>
-        renderUpdatableCell(
-          item,
-          'discount_rate',
-          `${item.discount_rate}${item.discount_rate ? '%' : ''}`,
-        ),
+      render: (_, item) => renderUpdatableCell(item, 'discount_rate', `${item.discount_rate}`),
     },
     {
       title: 'Min. Quantity',
@@ -147,6 +154,11 @@ const PriceForm = ({
       dataIndex: 'unit_type',
       align: 'center',
       width: '69px',
+      render: () => (
+        <BodyText fontFamily="Roboto" level={5} color="primary-color-dark">
+          {unitTypeCode}
+        </BodyText>
+      ),
     },
     {
       width: '28px',
@@ -159,37 +171,34 @@ const PriceForm = ({
     },
   ];
 
-  const calculateDiscountPrice = (rate: number) => {
-    const unitPrice = parseFloat(formData.unit_price?.toString() ?? '0');
-    if (!unitPrice || isNaN(unitPrice)) return '0';
-    return (unitPrice * (1 - rate / 100)).toString();
-  };
-
   const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const rate = parseFloat(event.target.value);
-    const price = calculateDiscountPrice(rate);
-
     setFormData((prev) => ({
       ...prev,
-      discount_rate: event.target.value,
-      discount_price: price,
+      discount_rate: Number(event.target.value),
+      discount_price: (Number(event.target.value) * Number(prev.unit_price)) / 100,
     }));
   };
 
-  const volumnDiscountInput: InputFieldProps[] = useMemo(
+  const volumnDiscountInput: InputGroupProps[] = useMemo(
     () => [
       {
-        placeholder: 'Type number',
         prefix: 'Price',
-        value: formData.discount_price,
+        value: formData.discount_price ?? '0.00',
+        customClass: 'discount-price-area',
         readOnly: true,
-        className: styles.category_form_input,
+        label: 'Volume Discount Price/Percentage :',
+        fontLevel: 3,
+        type: 'number',
       },
       {
         placeholder: '%',
         prefix: '% Rate',
         value: formData.discount_rate,
         onChange: handleRateChange,
+        fontLevel: 3,
+        type: 'number',
+        max: 100,
+        readOnly: !formData.unit_price,
       },
     ],
     [formData.discount_price, formData.discount_rate, formData.unit_price],
@@ -199,17 +208,22 @@ const PriceForm = ({
     (field: keyof PriceAndInventoryAttribute) => (event: React.ChangeEvent<HTMLInputElement>) =>
       setFormData((prev) => ({ ...prev, [field]: event.target.value }));
 
-  const minMaxInput: InputFieldProps[] = useMemo(
+  const minMaxInput: InputGroupProps[] = useMemo(
     () => [
       {
         placeholder: 'min. #',
         value: formData.min_quantity,
         onChange: handleFormChange('min_quantity'),
+        fontLevel: 3,
+        label: 'Min./Max. Quantity :',
+        type: 'number',
       },
       {
         placeholder: 'max. #',
         value: formData.max_quantity,
         onChange: handleFormChange('max_quantity'),
+        fontLevel: 3,
+        type: 'number',
       },
     ],
     [formData.min_quantity, formData.max_quantity],
@@ -227,10 +241,10 @@ const PriceForm = ({
     const newRow = {
       key: `${tableData?.length + 1}`,
       id: `${tableData?.length + 1}`,
-      discount_price: formData.discount_price || '',
-      discount_rate: formData.discount_rate || '',
-      min_quantity: formData.min_quantity || '',
-      max_quantity: formData.max_quantity || '',
+      discount_price: formData.discount_price,
+      discount_rate: formData.discount_rate,
+      min_quantity: formData.min_quantity,
+      max_quantity: formData.max_quantity,
       unit_type: formData.unit_type,
     };
 
@@ -238,15 +252,21 @@ const PriceForm = ({
 
     setFormData({
       ...formData,
-      discount_price: '',
-      discount_rate: '',
-      min_quantity: '',
-      max_quantity: '',
+      discount_price: 0.0,
+      discount_rate: undefined,
+      min_quantity: undefined,
+      max_quantity: undefined,
     });
   };
 
-  const handeSaveUnitType = (value: UnitItem | null) =>
-    setFormData((prev) => ({ ...prev, unit_type: value?.code ?? '' }));
+  const handeSaveUnitType = (value: UnitItem | undefined) => {
+    if (!value?.id) {
+      message.error('Please select a unit type');
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, unit_type: value.id, unit_type_code: value?.code }));
+  };
 
   const baseAndVolumePriceInfo = {
     title: 'BASE & VOLUME PRICE',
@@ -416,23 +436,24 @@ const PriceForm = ({
             label="Unit Price"
             required
             fontLevel={3}
-            hasPadding
-            hasHeight
+            addonBefore={currencySelected}
+            value={formData.unit_price}
             hasBoxShadow
+            hasPadding
+            type="number"
+            hasHeight
             colorPrimaryDark
             colorRequired="tertiary"
-            value={formData.unit_price}
-            placeholder="type price"
-            deleteIcon
             onChange={handleFormChange('unit_price')}
             onDelete={handleClearInputValue('unit_price')}
+            deleteIcon
           />
           <InputGroup
             label="Unit Type"
             required
             fontLevel={3}
             placeholder="select from the list"
-            value={formData.unit_type}
+            value={unitTypeCode}
             hasBoxShadow
             hasPadding
             rightIcon
@@ -457,12 +478,56 @@ const PriceForm = ({
               onClick={onToggleModal('Base & Volume')}
             />
           </Title>
-          <CustomPlusButton customClass="pb-16" onClick={handleAddRow} />
+          <CustomPlusButton
+            customClass="pb-16"
+            onClick={
+              !formData.unit_price || !formData.discount_rate || !formData.unit_type
+                ? undefined
+                : handleAddRow
+            }
+            disabled={!formData.unit_price || !formData.discount_rate || !formData.unit_type}
+          />
         </article>
 
-        <form className="d-flex items-center gap-16 mb-16">
-          <VolumeInput label="Volume Discount Price/Percentage :" inputs={volumnDiscountInput} />
-          <VolumeInput label="Min./Max. Quantity :" inputs={minMaxInput} />
+        <form
+          className={`d-flex items-center gap-16 mb-16 ${volumeInputStyles.volume_discount_input}`}
+        >
+          {volumnDiscountInput.map((input, index) => (
+            <InputGroup
+              key={index}
+              customClass={`volume_price_area ${input.customClass ?? ''}`}
+              {...input}
+              message={
+                index == 1 && formData.discount_rate && formData.discount_rate > 100
+                  ? 'Discout rate cannot exceed to 100'
+                  : undefined
+              }
+              messageType={
+                index == 1 && formData.discount_rate && formData.discount_rate > 100
+                  ? 'error'
+                  : undefined
+              }
+              labelProps={{
+                style: { whiteSpace: 'nowrap' },
+              }}
+              prefix={
+                <BodyText level={5} fontFamily="Roboto">
+                  {input.prefix}
+                </BodyText>
+              }
+            />
+          ))}
+          {minMaxInput.map((input, index) => (
+            <InputGroup
+              key={index}
+              {...input}
+              prefix={
+                <BodyText level={5} fontFamily="Roboto">
+                  {input.prefix}
+                </BodyText>
+              }
+            />
+          ))}
         </form>
 
         <Table
@@ -476,10 +541,10 @@ const PriceForm = ({
 
       <UnitType
         title="SELECT UNIT TYPE"
-        unitData={unitData}
         visible={isShowModal === 'Unit Type'}
         onCancel={onToggleModal('none')}
         onSave={handeSaveUnitType}
+        defaultValue={formData.unit_type}
       />
 
       <InfoModal

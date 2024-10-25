@@ -1,25 +1,73 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { Input } from 'antd';
+import { useLocation } from 'umi';
 
 import { ReactComponent as MagnifyingGlassIcon } from '@/assets/icons/ic-search.svg';
+import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
+
+import { getSummary } from '@/services';
+
+import { useAppSelector } from '@/reducers';
 
 import styles from '@/components/InventoryHeader/InventoryHeader.less';
+import CurrencyModal from '@/components/Modal/CurrencyModal';
 import { BodyText } from '@/components/Typography';
 
 export interface DataItem {
   id: string;
   label: string;
-  value: string;
+  value: string | number;
   rightAction?: ReactNode;
 }
 
 interface InventoryHeaderProps {
-  data: DataItem[];
-  onSearch: (value: string) => void;
+  onSearch?: (value: string) => void;
+  onSaveCurrency?: (currency: string) => void;
 }
 
-const InventoryHeader = ({ data, onSearch }: InventoryHeaderProps) => {
+const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => {
+  const [isShowModal, setIsShowModal] = useState(false);
+  const { summaryFinancialRecords, currencySelected } = useAppSelector((state) => state.summary);
+
+  const location = useLocation<{ categoryId: string; brandId: string }>();
+
+  useEffect(() => {
+    const brandId = location.state?.brandId;
+    if (brandId) {
+      const fetchSummary = async () => await getSummary(brandId);
+      fetchSummary();
+    }
+  }, [location.state?.brandId]);
+
+  const handleToggleModal = (status: boolean) => () => setIsShowModal(status);
+
+  const data: DataItem[] = [
+    {
+      id: '1',
+      value: currencySelected,
+      label: 'BASE CURRENTCY',
+      rightAction: (
+        <SingleRightFormIcon
+          className="cursor-pointer"
+          width={16}
+          height={16}
+          onClick={handleToggleModal(true)}
+        />
+      ),
+    },
+    {
+      id: '2',
+      value: summaryFinancialRecords.total_product,
+      label: 'TOTAL PRODUCT RECORDS',
+    },
+    {
+      id: '3',
+      value: summaryFinancialRecords.total_stock,
+      label: 'TOTAL STOCK VALUE',
+    },
+  ];
+
   return (
     <div className={styles.inventory_header}>
       <section className={styles.inventory_header_content}>
@@ -39,14 +87,21 @@ const InventoryHeader = ({ data, onSearch }: InventoryHeaderProps) => {
       </section>
 
       <div className={styles.inventory_header_search_container}>
-        <Input placeholder="Search" />
-        <div className="d-flex items-center">
+        <Input placeholder="Search" disabled={!onSearch} />
+        <div className="d-flex items-center" style={{ opacity: !onSearch ? 0.5 : 1 }}>
           <BodyText fontFamily="Roboto" level={6} customClass="mr-16 pl-12">
             Product ID / SKU
           </BodyText>
           <MagnifyingGlassIcon />
         </div>
       </div>
+
+      <CurrencyModal
+        onCancel={handleToggleModal(false)}
+        open={isShowModal}
+        title="SELECT CURRENCY"
+        onSave={onSaveCurrency}
+      />
     </div>
   );
 };

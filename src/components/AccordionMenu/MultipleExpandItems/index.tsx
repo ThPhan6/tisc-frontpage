@@ -208,6 +208,7 @@ const AccordionMenuItems = ({
       search: `?categories=${encodeURIComponent(fullPath)}`,
       state: {
         categoryId: clickedItem.id,
+        brandId: clickedItem.relation_id,
       },
     });
   };

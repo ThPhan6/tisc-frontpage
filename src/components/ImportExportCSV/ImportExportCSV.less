@@ -1,0 +1,72 @@
+.import_export_csv {
+  :global(.ant-modal-header) {
+    padding: 16px;
+  }
+
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+
+  :global(.ant-tabs-nav-list) {
+    width: 100%;
+  }
+
+  :global(.ant-tabs-tab) {
+    width: 100%;
+    margin: 0;
+    box-shadow: @border-top-black-inset;
+  }
+
+  :global(.ant-tabs-tab-active) {
+    background: @primary-color;
+
+    .import_export_csv_tab_label {
+      color: #fff;
+      font-weight: 500;
+    }
+  }
+
+  :global(.ant-tabs-tab-btn) {
+    margin: 0 auto;
+  }
+
+  :global(.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon) {
+    background: @primary-color-dark;
+  }
+
+  :global(.ant-steps-item-container) {
+    display: flex;
+    align-items: center;
+  }
+
+  :global(.ant-steps-item-icon) {
+    width: 24px;
+    height: 24px;
+  }
+
+  :global(.ant-steps-icon) {
+    top: -4px;
+  }
+
+  :global(.ant-steps-item-title) {
+    &::after {
+      display: none;
+    }
+  }
+
+  :global(.ant-steps-item-wait .ant-steps-item-icon) {
+    border: 1px solid @primary-color;
+
+    :global(.ant-steps-icon) {
+      color: @primary-color !important;
+    }
+  }
+
+  :global(.ant-steps-icon) {
+    font-weight: 400;
+    font-size: 14px;
+    font-family: @font-primary;
+  }
+}
+
+
