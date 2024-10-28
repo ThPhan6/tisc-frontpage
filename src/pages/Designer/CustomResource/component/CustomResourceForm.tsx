@@ -69,6 +69,18 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
     setData({ ...data, [fieldName]: fieldValue });
   };
 
+  const onChangeTypeCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // only 10 chars and cannot type space
+    // Postal code has same rule to utilize it
+    if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
+      return;
+    }
+    setData({
+      ...data,
+      type_code: e.target.value,
+    });
+  };
+
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     // only 10 chars and cannot type space
     if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
@@ -127,8 +139,8 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
-          placeholder="type company name and code"
-          onChange={(e) => onChangeData('type_code', e.target.value)}
+          placeholder="type code, max. 10 letters"
+          onChange={(e) => onChangeTypeCode(e)}
           deleteIcon={isEdit}
           onDelete={() => onChangeData('type_code', '')}
           readOnly={type === 'view'}
