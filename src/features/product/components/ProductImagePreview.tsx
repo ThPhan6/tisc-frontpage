@@ -81,6 +81,7 @@ interface ProductImagePreviewProps {
   disabledAssignProduct?: boolean;
   disabledShareViaEmail?: boolean;
   forceEdit?: boolean;
+  forceUpload?: boolean;
   contentImage?: ReactNode;
 }
 
@@ -91,6 +92,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   disabledAssignProduct,
   disabledShareViaEmail,
   forceEdit,
+  forceUpload,
   contentImage,
 }) => {
   const isTablet = useScreen().isTablet;
@@ -277,7 +279,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                     type: 'Inquiry Request',
                     title: 'Inquiry/Request',
                     props: {
-                      shareViaEmail: { isCustomProduct, product },
+                      shareViaEmail: { isCustomProduct, product } as any,
                     },
                   }),
                 )
@@ -314,7 +316,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                     type: 'Share via email',
                     title: 'Share via email',
                     props: {
-                      shareViaEmail: { isCustomProduct, product },
+                      shareViaEmail: { isCustomProduct, product } as any,
                     },
                   }),
                 )
@@ -329,8 +331,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   const renderMainImage = () => {
     if (product.images[0]) {
-      console.log(showImageUrl(product.images[0]));
-
       return (
         <img
           src={showImageUrl(product.images[0])}
@@ -346,23 +346,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         />
       );
     }
-
-    // if (image?.[0]) {
-    //   return (
-    //     <img
-    //       src={image[0].url}
-    //       className={styles.primaryPhoto}
-    //       onClick={() =>
-    //         isEditable
-    //           ? undefined
-    //           : setImageBox({
-    //               index: 0,
-    //               isOpen: true,
-    //             })
-    //       }
-    //     />
-    //   );
-    // }
 
     if (isEditable) {
       return (
@@ -421,28 +404,37 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   return (
     <div className={styles.productContent}>
       <div className={`${styles.productImageWrapper} product-image-wrapper`}>
-        <Upload.Dragger {...primaryProps}>
-          <div className={`${styles.uploadZoneContent} upload-zone-content`}>
-            {renderMainImage()}
+        <form
+          onSubmit={(event) => event.preventDefault()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) return;
+          }}
+        >
+          <Upload.Dragger {...primaryProps}>
+            <div className={`${styles.uploadZoneContent} upload-zone-content`}>
+              {renderMainImage()}
 
-            {renderImageLightBox()}
+              {renderImageLightBox()}
 
-            {isEditable ? (
-              <div className={`${styles.primaryAction} primary-action`}>
-                <SmallIconButton
-                  icon={<UploadIcon />}
-                  onClick={handleUploadPrimaryPhoto}
-                  className={`${styles.actionIcon} action-icon`}
-                />
-                <SmallIconButton
-                  icon={<DeleteIcon />}
-                  onClick={(e) => deletePhoto(e, 0)}
-                  className={`${styles.actionIcon} action-icon`}
-                />
-              </div>
-            ) : null}
-          </div>
-        </Upload.Dragger>
+              {isEditable || forceUpload ? (
+                <div className={`${styles.primaryAction} primary-action`}>
+                  {forceUpload && !!product.images.length ? null : (
+                    <SmallIconButton
+                      icon={<UploadIcon />}
+                      onClick={handleUploadPrimaryPhoto}
+                      className={`${styles.actionIcon} action-icon`}
+                    />
+                  )}
+                  <SmallIconButton
+                    icon={<DeleteIcon />}
+                    onClick={(e) => deletePhoto(e, 0)}
+                    className={`${styles.actionIcon} action-icon`}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </Upload.Dragger>
+        </form>
 
         <Row
           className={`${styles.photoList} photo-list`}

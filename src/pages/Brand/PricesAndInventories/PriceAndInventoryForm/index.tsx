@@ -42,6 +42,7 @@ const PriceAndInventoryForm = () => {
   const [tableData, setTableData] = useState<VolumePrice[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const images = useAppSelector((state) => state.product.details.images);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const location = useLocation<{ categoryId: string; brandId: string }>();
   const navigate = useNavigationHandler();
@@ -52,7 +53,7 @@ const PriceAndInventoryForm = () => {
   useEffect(() => {
     store.dispatch(
       setPartialProductDetail({
-        images: [''],
+        images: [],
       }),
     );
     setFormData(initialFormData);
@@ -86,7 +87,7 @@ const PriceAndInventoryForm = () => {
 
       store.dispatch(
         setPartialProductDetail({
-          images: [`/${res?.image.small}`],
+          images: res?.image ? [`/${res.image}`] : [],
         }),
       );
 
@@ -126,7 +127,7 @@ const PriceAndInventoryForm = () => {
   const handleSave = useCallback(async () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
 
-    if (tableData.length === 0) {
+    if (hasUnsavedChanges) {
       message.warn('Please add volume prices and click plus button after entering the unit price.');
       return;
     }
@@ -190,7 +191,7 @@ const PriceAndInventoryForm = () => {
       query: { categories: category },
       state: { categoryId: location.state?.categoryId, brandId: location.state?.brandId },
     })();
-  }, [formData, inventoryId, location.state?.categoryId, category, navigate]);
+  }, [hasUnsavedChanges, formData, inventoryId, location.state?.categoryId, category, navigate]);
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
@@ -287,6 +288,7 @@ const PriceAndInventoryForm = () => {
               setFormData={setFormData}
               tableData={tableData}
               setTableData={setTableData}
+              setHasUnsavedChanges={setHasUnsavedChanges}
             />
 
             {/* <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} /> */}

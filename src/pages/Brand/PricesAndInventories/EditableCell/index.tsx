@@ -132,6 +132,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
           className={`indigo-dark-variant text-center ${valueClass}`}
         >
           {inputValue}
+          {columnKey === 'discount_rate' ? '%' : ''}
         </span>
       )}
     </div>

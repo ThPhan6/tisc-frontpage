@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -6,16 +6,17 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { fetchUnitType } from '@/services';
+import { isEmpty, isNil } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
 import { PriceAndInventoryAttribute } from '@/types';
 
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
 import volumeInputStyles from '@/components/EntryForm/styles/VolumeInput.less';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
@@ -29,6 +30,7 @@ interface PriceFormProps {
   setFormData: React.Dispatch<React.SetStateAction<PriceAndInventoryAttribute>>;
   tableData: VolumePrice[];
   setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
+  setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PriceForm = ({
@@ -38,20 +40,22 @@ const PriceForm = ({
   setFormData,
   tableData,
   setTableData,
+  setHasUnsavedChanges,
 }: PriceFormProps) => {
-  const [isLgScreen, setIsLgScreen] = useState(window.innerWidth > 1500);
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
+  const images = useAppSelector((state) => state.product.details.images);
+
+  const disableAddPrice =
+    !formData.unit_price ||
+    !formData.unit_type ||
+    !formData.discount_rate ||
+    Number(formData.discount_rate) > 100 ||
+    Number(formData.discount_rate) < 0;
 
   const unitTypeCode = useMemo(
     () => unitType.find((item) => item.id === formData.unit_type)?.code,
     [unitType, formData.unit_type],
   );
-
-  useEffect(() => {
-    const handleResize = () => setIsLgScreen(window.innerWidth >= 1500);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const getUnitType = async () => await fetchUnitType();
@@ -128,12 +132,7 @@ const PriceForm = ({
         dataIndex: 'discount_rate',
         align: 'center',
         width: '78px',
-        render: (_, item) =>
-          renderUpdatableCell(
-            item,
-            'discount_rate',
-            `${item.discount_rate}${item.discount_rate ? '%' : ''}`,
-          ),
+        render: (_, item) => renderUpdatableCell(item, 'discount_rate', item.discount_rate),
       },
       {
         title: 'Min. Quantity',
@@ -187,6 +186,7 @@ const PriceForm = ({
         discount_price: (value * Number(item.discount_rate)) / 100,
       })),
     );
+    setHasUnsavedChanges(true);
   };
 
   const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,6 +196,7 @@ const PriceForm = ({
       discount_rate: discountRate,
       discount_price: discountRate && (discountRate * Number(prev.unit_price)) / 100,
     }));
+    setHasUnsavedChanges(true);
   };
 
   const volumnDiscountInput: InputGroupProps[] = useMemo(
@@ -224,8 +225,10 @@ const PriceForm = ({
   );
 
   const handleFormChange =
-    (field: keyof PriceAndInventoryAttribute) => (event: React.ChangeEvent<HTMLInputElement>) =>
+    (field: keyof PriceAndInventoryAttribute) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({ ...prev, [field]: event.target.value }));
+      setHasUnsavedChanges(true);
+    };
 
   const minMaxInput: InputGroupProps[] = useMemo(
     () => [
@@ -243,6 +246,7 @@ const PriceForm = ({
         onChange: handleFormChange('max_quantity'),
         fontLevel: 3,
         type: 'number',
+        prefix: 'to',
       },
     ],
     [formData.min_quantity, formData.max_quantity],
@@ -273,6 +277,7 @@ const PriceForm = ({
       min_quantity: undefined,
       max_quantity: undefined,
     });
+    setHasUnsavedChanges(false);
   };
 
   const handeSaveUnitType = (value: UnitItem | undefined) => {
@@ -439,7 +444,8 @@ const PriceForm = ({
 
             <div className={styles.category_form_upload_image_wrapper}>
               <ProductImagePreview
-                forceEdit
+                forceEdit={!images.length}
+                forceUpload
                 hideInquiryRequest
                 disabledAssignProduct
                 disabledShareViaEmail
@@ -504,57 +510,65 @@ const PriceForm = ({
               onClick={onToggleModal('Base & Volume')}
             />
           </Title>
-          <CustomPlusButton
-            customClass="pb-16"
-            onClick={
-              !formData.unit_price || !formData.discount_rate || !formData.unit_type
-                ? undefined
-                : handleAddRow
-            }
-            disabled={!formData.unit_price || !formData.discount_rate || !formData.unit_type}
-          />
         </article>
 
         <form
-          className={`d-flex items-center gap-16 mb-16 ${volumeInputStyles.volume_discount_input}`}
+          className={`d-flex items-center gap-16 mb-8-px ${volumeInputStyles.volume_discount_input}`}
         >
-          {volumnDiscountInput.map((input, index) => (
-            <InputGroup
-              key={index}
-              customClass={`volume_price_area ${input.customClass ?? ''}`}
-              {...input}
-              message={
-                index == 1 && formData.discount_rate && formData.discount_rate > 100
-                  ? 'Max discount rate is 100'
-                  : undefined
-              }
-              messageType={
-                index == 1 && formData.discount_rate && formData.discount_rate > 100
-                  ? 'error'
-                  : undefined
-              }
-              labelProps={{
-                style: { whiteSpace: 'nowrap' },
-              }}
-              prefix={
-                <BodyText level={5} fontFamily="Roboto">
-                  {input.prefix}
-                </BodyText>
-              }
-            />
-          ))}
-          {minMaxInput.map((input, index) => (
-            <InputGroup
-              key={index}
-              {...input}
-              prefix={
-                <BodyText level={5} fontFamily="Roboto">
-                  {input.prefix}
-                </BodyText>
-              }
-            />
-          ))}
+          <div className="d-flex items-center items-end border-bottom-light w-full">
+            {volumnDiscountInput.map((input, index) => (
+              <InputGroup
+                key={index}
+                customClass={`volume_price_area ${input.customClass ?? ''}`}
+                {...input}
+                message={
+                  index == 1 && formData.discount_rate && formData.discount_rate > 100
+                    ? 'Max discount rate is 100'
+                    : undefined
+                }
+                messageType={
+                  index == 1 && formData.discount_rate && formData.discount_rate > 100
+                    ? 'error'
+                    : undefined
+                }
+                labelProps={{
+                  style: { whiteSpace: 'nowrap' },
+                }}
+                prefix={
+                  <BodyText level={5} fontFamily="Roboto">
+                    {input.prefix}
+                  </BodyText>
+                }
+              />
+            ))}
+          </div>
+
+          <div className="d-flex items-center items-end border-bottom-light w-full">
+            {minMaxInput.map((input, index) => (
+              <InputGroup
+                key={index}
+                {...input}
+                prefix={
+                  <BodyText level={5} fontFamily="Roboto">
+                    {input.prefix}
+                  </BodyText>
+                }
+              />
+            ))}
+          </div>
         </form>
+
+        <div className="pb-16 border-bottom-black-inset" style={{ textAlign: 'right' }}>
+          <CustomSaveButton
+            contentButton="Add"
+            style={{
+              background: disableAddPrice ? '#bfbfbf' : '',
+              minWidth: 48,
+            }}
+            onClick={disableAddPrice ? undefined : handleAddRow}
+            disabled={disableAddPrice}
+          />
+        </div>
 
         <Table
           dataSource={tableData}

@@ -193,10 +193,10 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Image',
         dataIndex: 'image',
-        render: (image: { small: string }) => {
+        render: (image) => {
           return image ? (
             <figure className={styles.category_table_figure}>
-              <img src={showImageUrl(`/${image?.small}`)} alt="Image" />
+              <img src={showImageUrl(`/${image}`)} alt="Image" />
             </figure>
           ) : (
             <PhotoIcon width={35} height={32} />

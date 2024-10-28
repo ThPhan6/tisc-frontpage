@@ -24,11 +24,18 @@ type CollectionGalleryProps = {
 };
 const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
   const isTablet = useScreen().isTablet;
-  const [images, setImages] = useState<string[]>(props.data || []);
+  const [images, setImages] = useState<string[]>([]);
   const [imageBox, setImageBox] = useState<{ index: number; isOpen: boolean }>({
     index: 0,
     isOpen: false,
   });
+
+  useEffect(() => {
+    if (props.data.length) {
+      setImages(props.data);
+    }
+  }, [JSON.stringify(props.data)]);
+
   const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isEditable = !isTablet && isTiscUser;
   const emptyImages = isEditable

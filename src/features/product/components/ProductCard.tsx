@@ -502,8 +502,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     setGalleryImages(newImages);
   };
 
-  console.log(groups);
-
   return (
     <>
       {customLoading ? (
