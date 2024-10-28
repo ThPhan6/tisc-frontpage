@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { QUERY_KEY } from '@/constants/util';
 import { FilterNames } from '@/pages/Designer/Project/constants/filter';
-import { Row } from 'antd';
+import { Row, Spin } from 'antd';
 import { history } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
@@ -26,6 +26,7 @@ import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { EmptyOne } from '@/components/Empty';
 import { loadingSelector } from '@/components/LoadingPage/slices';
+import loadingStyles from '@/components/LoadingPage/styles/index.less';
 import { LogoIcon } from '@/components/LogoIcon';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
@@ -53,6 +54,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   ]);
 
   const { isMobile } = useScreen();
+  const [firstLoad, setFirstLoad] = useState<boolean>(true);
+  const [delayDuration, setDelayDuration] = useState<number>(20000);
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
@@ -228,6 +231,17 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 
   if (loading) {
     return null;
+  }
+
+  if (firstLoad && !data.length) {
+    setTimeout(() => {
+      setFirstLoad(false);
+    }, delayDuration);
+    return (
+      <div className={loadingStyles.container}>
+        <Spin size="large" />
+      </div>
+    );
   }
 
   return (
