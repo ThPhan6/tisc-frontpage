@@ -80,6 +80,8 @@ interface ProductImagePreviewProps {
   viewOnly?: boolean;
   disabledAssignProduct?: boolean;
   disabledShareViaEmail?: boolean;
+  forceEdit?: boolean;
+  contentImage?: ReactNode;
 }
 
 const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
@@ -88,6 +90,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   viewOnly,
   disabledAssignProduct,
   disabledShareViaEmail,
+  forceEdit,
+  contentImage,
 }) => {
   const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
@@ -96,7 +100,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
   const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
-  const isEditable = (!isTablet && isTiscUser) || (isCustomProduct && viewOnly !== true); // currently, uploading image
+  const isEditable =
+    (!isTablet && (isTiscUser || forceEdit)) || (isCustomProduct && viewOnly !== true); // currently, uploading image
 
   const customProduct = useAppSelector((state) => state.customProduct.details);
 
@@ -156,7 +161,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     },
     showUploadList: false,
     disabled: !isEditable,
-    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} ${
+    className: `${styles.uploadZone} upload-zone ${isEditable ? '' : styles.noBorder} ${
       !isEditable && product.images.length < 2 ? styles.noPadding : ''
     }`,
   };
@@ -173,12 +178,14 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   };
 
   const handleUploadPrimaryPhoto = (e: React.ChangeEvent<any>) => {
+    e.preventDefault();
     e.stopPropagation();
     /// trigger file dialog of dropzone element
     e.target.parentElement.parentElement.parentElement.click();
   };
 
   const deletePhoto = (e: React.ChangeEvent<any>, index: number) => {
+    e.preventDefault();
     e.stopPropagation();
     const newPhotos = product.images.filter((_photo, key) => {
       return index !== key;
@@ -256,7 +263,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
     // For Brand & Designer role
     return (
-      <div className={styles.productBrandAction}>
+      <div className={`${styles.productBrandAction} upload-image-bottom-container`}>
         <div className={styles.actionLeft}>{renderActionLeft()}</div>
 
         <div className={styles.actionRight}>
@@ -322,6 +329,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   const renderMainImage = () => {
     if (product.images[0]) {
+      console.log(showImageUrl(product.images[0]));
+
       return (
         <img
           src={showImageUrl(product.images[0])}
@@ -338,16 +347,39 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       );
     }
 
+    // if (image?.[0]) {
+    //   return (
+    //     <img
+    //       src={image[0].url}
+    //       className={styles.primaryPhoto}
+    //       onClick={() =>
+    //         isEditable
+    //           ? undefined
+    //           : setImageBox({
+    //               index: 0,
+    //               isOpen: true,
+    //             })
+    //       }
+    //     />
+    //   );
+    // }
+
     if (isEditable) {
       return (
-        <div className={styles.dropzoneNote}>
-          <BodyText level={3}>
-            Drag & drop the image into the frame
-            <br />
-            or click the upload button below
-          </BodyText>
-          <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
-        </div>
+        <>
+          {contentImage ? (
+            contentImage
+          ) : (
+            <div className={`${styles.dropzoneNote} drop-zone`}>
+              <BodyText level={3}>
+                Drag & drop the image into the frame
+                <br />
+                or click the upload button below
+              </BodyText>
+              <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
+            </div>
+          )}
+        </>
       );
     }
 
@@ -388,24 +420,24 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   return (
     <div className={styles.productContent}>
-      <div className={styles.productImageWrapper}>
+      <div className={`${styles.productImageWrapper} product-image-wrapper`}>
         <Upload.Dragger {...primaryProps}>
-          <div className={styles.uploadZoneContent}>
+          <div className={`${styles.uploadZoneContent} upload-zone-content`}>
             {renderMainImage()}
 
             {renderImageLightBox()}
 
             {isEditable ? (
-              <div className={styles.primaryAction}>
+              <div className={`${styles.primaryAction} primary-action`}>
                 <SmallIconButton
                   icon={<UploadIcon />}
                   onClick={handleUploadPrimaryPhoto}
-                  className={styles.actionIcon}
+                  className={`${styles.actionIcon} action-icon`}
                 />
                 <SmallIconButton
                   icon={<DeleteIcon />}
                   onClick={(e) => deletePhoto(e, 0)}
-                  className={styles.actionIcon}
+                  className={`${styles.actionIcon} action-icon`}
                 />
               </div>
             ) : null}
@@ -413,7 +445,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         </Upload.Dragger>
 
         <Row
-          className={styles.photoList}
+          className={`${styles.photoList} photo-list`}
           gutter={8}
           style={{
             height: viewOnly && product.images.length < 2 ? 0 : undefined,
@@ -457,7 +489,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           {isEditable ? (
             <Col span={6}>
               <Upload {...subProps}>
-                <div className={styles.addMorePhotocontent}>
+                <div className={`${styles.addMorePhotocontent} add-more-photo-content`}>
                   <BodyText level={6} fontFamily="Roboto">
                     Add more images
                   </BodyText>

@@ -1,26 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { Table, type TableColumnsType, type UploadFile, message } from 'antd';
+import { Table, type TableColumnsType, message } from 'antd';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { fetchUnitType } from '@/services';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
+import { PriceAndInventoryAttribute } from '@/types';
 
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
-import UploadImageInput from '@/components/EntryForm/UploadImageInput';
 import volumeInputStyles from '@/components/EntryForm/styles/VolumeInput.less';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
+import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
-import type { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
 interface PriceFormProps {
@@ -55,10 +54,7 @@ const PriceForm = ({
   }, []);
 
   useEffect(() => {
-    const getUnitType = async () => {
-      await fetchUnitType();
-    };
-
+    const getUnitType = async () => await fetchUnitType();
     getUnitType();
   }, []);
 
@@ -98,13 +94,12 @@ const PriceForm = ({
     );
   };
 
-  const renderUpdatableCell = (item: any, columnKey: string, defaultValue: any) => {
+  const renderUpdatableCell = (item: VolumePrice, columnKey: string, defaultValue: any) => {
     return (
       <EditableCell
         item={item}
         columnKey={columnKey}
         defaultValue={defaultValue}
-        autoWidth
         valueClass="indigo-dark-variant"
         onSave={handleSaveCell}
       />
@@ -114,67 +109,92 @@ const PriceForm = ({
   const handleRemoveRow = (id: string) => () =>
     setTableData((prev) => prev.filter((item) => item.id !== id));
 
-  const priceColumn: TableColumnsType<VolumePrice> = [
-    {
-      title: '#',
-      dataIndex: 'key',
-      width: '28px',
-      align: 'center',
-    },
-    {
-      title: 'Discount Price',
-      dataIndex: 'discount_price',
-      align: 'center',
-      width: '132px',
-    },
-    {
-      title: 'Discount Rate',
-      dataIndex: 'discount_rate',
-      align: 'center',
-      width: '78px',
-      render: (_, item) => renderUpdatableCell(item, 'discount_rate', `${item.discount_rate}`),
-    },
-    {
-      title: 'Min. Quantity',
-      dataIndex: 'min_quantity',
-      align: 'center',
-      width: '78px',
-      render: (_, item) => renderUpdatableCell(item, 'min_quantity', item.min_quantity),
-    },
-    {
-      title: 'Max. Quantity',
-      dataIndex: 'max_quantity',
-      align: 'center',
-      width: '78px',
-      render: (_, item) => renderUpdatableCell(item, 'max_quantity', item.max_quantity),
-    },
-    {
-      title: 'Unit Type',
-      dataIndex: 'unit_type',
-      align: 'center',
-      width: '69px',
-      render: () => (
-        <BodyText fontFamily="Roboto" level={5}>
-          {unitTypeCode}
-        </BodyText>
-      ),
-    },
-    {
-      width: '28px',
-      render: (_, item) => (
-        <TrashIcon
-          className="cursor-pointer indigo-dark-variant"
-          onClick={handleRemoveRow(item.id ?? '')}
-        />
-      ),
-    },
-  ];
+  const priceColumn: TableColumnsType<VolumePrice> = useMemo(
+    () => [
+      {
+        title: '#',
+        dataIndex: 'key',
+        width: '28px',
+        align: 'center',
+      },
+      {
+        title: 'Discount Price',
+        dataIndex: 'discount_price',
+        align: 'center',
+        width: '132px',
+      },
+      {
+        title: 'Discount Rate',
+        dataIndex: 'discount_rate',
+        align: 'center',
+        width: '78px',
+        render: (_, item) =>
+          renderUpdatableCell(
+            item,
+            'discount_rate',
+            `${item.discount_rate}${item.discount_rate ? '%' : ''}`,
+          ),
+      },
+      {
+        title: 'Min. Quantity',
+        dataIndex: 'min_quantity',
+        align: 'center',
+        width: '78px',
+        render: (_, item) => renderUpdatableCell(item, 'min_quantity', item.min_quantity),
+      },
+      {
+        title: 'Max. Quantity',
+        dataIndex: 'max_quantity',
+        align: 'center',
+        width: '78px',
+        render: (_, item) => renderUpdatableCell(item, 'max_quantity', item.max_quantity),
+      },
+      {
+        title: 'Unit Type',
+        dataIndex: 'unit_type',
+        align: 'center',
+        width: '69px',
+        render: () => (
+          <BodyText fontFamily="Roboto" level={5}>
+            {unitTypeCode}
+          </BodyText>
+        ),
+      },
+      {
+        width: '28px',
+        render: (_, item) => (
+          <TrashIcon
+            className="cursor-pointer indigo-dark-variant"
+            onClick={handleRemoveRow(item.id ?? '')}
+          />
+        ),
+      },
+    ],
+    [handleRemoveRow, renderUpdatableCell],
+  );
 
-  const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUnitPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
     setFormData((prev) => ({
       ...prev,
-      discount_rate: Number(event.target.value),
-      discount_price: (Number(event.target.value) * Number(prev.unit_price)) / 100,
+      unit_price: value,
+      discount_price: prev.discount_rate && (value * Number(prev.discount_rate)) / 100,
+    }));
+
+    setTableData((prev) =>
+      prev.map((item) => ({
+        ...item,
+        discount_price: (value * Number(item.discount_rate)) / 100,
+      })),
+    );
+  };
+
+  const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const discountRate = Number(event.target.value);
+    setFormData((prev) => ({
+      ...prev,
+      discount_rate: discountRate,
+      discount_price: discountRate && (discountRate * Number(prev.unit_price)) / 100,
     }));
   };
 
@@ -182,7 +202,7 @@ const PriceForm = ({
     () => [
       {
         prefix: 'Price',
-        value: formData.discount_price ?? '0.00',
+        value: formData.discount_price ? formData.discount_price : '0.00',
         customClass: 'discount-price-area',
         readOnly: true,
         label: 'Volume Discount Price/Percentage :',
@@ -192,7 +212,7 @@ const PriceForm = ({
       {
         placeholder: '%',
         prefix: '% Rate',
-        value: formData.discount_rate,
+        value: formData.discount_rate ? formData.discount_rate : undefined,
         onChange: handleRateChange,
         fontLevel: 3,
         type: 'number',
@@ -227,9 +247,6 @@ const PriceForm = ({
     ],
     [formData.min_quantity, formData.max_quantity],
   );
-
-  const handleImageChange = (fileList: UploadFile[]) =>
-    setFormData((prev) => ({ ...prev, image: fileList }));
 
   const handleClearInputValue = (field: keyof PriceAndInventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
@@ -375,11 +392,7 @@ const PriceForm = ({
 
   return (
     <>
-      <div
-        className={`${styles.category_form_content} ${
-          isLgScreen ? 'border-right-black-inset' : 'border-bottom-black-inset'
-        }`}
-      >
+      <div className={`${styles.category_form_content}`}>
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
           <Title customClass={`${styles.category_form_content_title} d-flex items-center`}>
             BASE PRICE
@@ -388,48 +401,61 @@ const PriceForm = ({
               onClick={onToggleModal('Base & Volume')}
             />
           </Title>
-          <UploadIcon width={18} height={18} className="mb-6" />
         </article>
 
         <form className="d-flex gap-16">
           <div className="d-flex items-center justify-between w-full">
-            <InputGroup
-              label="Product ID (SKU Code)"
-              required
-              fontLevel={3}
-              hasPadding
-              hasHeight
-              hasBoxShadow
-              colorPrimaryDark
-              colorRequired="tertiary"
-              value={formData.sku}
-              placeholder="type text"
-              deleteIcon
-              onChange={handleFormChange('sku')}
-              onDelete={handleClearInputValue('sku')}
-            />
-            <UploadImageInput
-              listType="picture-card"
-              fileList={formData.image}
-              onChange={handleImageChange}
-              additonalContainerStyle={{ width: '20%' }}
-            />
+            <div className="w-full">
+              <InputGroup
+                label="Product ID (SKU Code)"
+                required
+                fontLevel={3}
+                hasPadding
+                hasHeight
+                hasBoxShadow
+                colorPrimaryDark
+                colorRequired="tertiary"
+                value={formData.sku}
+                placeholder="eg. SKU code"
+                deleteIcon
+                onChange={handleFormChange('sku')}
+                onDelete={handleClearInputValue('sku')}
+              />
+              <InputGroup
+                label="Description :"
+                fontLevel={3}
+                hasPadding
+                hasHeight
+                hasBoxShadow
+                colorPrimaryDark
+                colorRequired="tertiary"
+                value={formData.description}
+                placeholder="type text"
+                deleteIcon
+                onChange={handleFormChange('description')}
+                onDelete={handleClearInputValue('description')}
+              />
+            </div>
+
+            <div className={styles.category_form_upload_image_wrapper}>
+              <ProductImagePreview
+                forceEdit
+                hideInquiryRequest
+                disabledAssignProduct
+                disabledShareViaEmail
+                contentImage={
+                  <CormorantBodyText
+                    style={{ marginTop: -22 }}
+                    customClass="pure-black font-light "
+                    level={3}
+                  >
+                    Image
+                  </CormorantBodyText>
+                }
+              />
+            </div>
           </div>
         </form>
-        <InputGroup
-          label="Description :"
-          fontLevel={3}
-          hasPadding
-          hasHeight
-          hasBoxShadow
-          colorPrimaryDark
-          colorRequired="tertiary"
-          value={formData.description}
-          placeholder="type text"
-          deleteIcon
-          onChange={handleFormChange('description')}
-          onDelete={handleClearInputValue('description')}
-        />
         <form className="d-flex gap-16">
           <InputGroup
             label="Unit Price"
@@ -444,7 +470,7 @@ const PriceForm = ({
             hasHeight
             colorPrimaryDark
             colorRequired="tertiary"
-            onChange={handleFormChange('unit_price')}
+            onChange={handleUnitPriceChange}
             onDelete={handleClearInputValue('unit_price')}
             deleteIcon
           />

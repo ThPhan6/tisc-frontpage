@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, memo, useEffect, useState } from 'react';
 
 import { Input } from 'antd';
 import { useLocation } from 'umi';
@@ -106,4 +106,4 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
   );
 };
 
-export default InventoryHeader;
+export default memo(InventoryHeader);

@@ -6,7 +6,7 @@ import { Popover, Switch, TableColumnProps, TableProps, message } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
-import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-blue-color.svg';
+import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
@@ -19,12 +19,11 @@ import {
   getListInventories,
   updateInventories,
 } from '@/services';
-import { debounce, isEmpty, reduce, set } from 'lodash';
+import { debounce, forEach, get, isEmpty, last, pick, reduce, set } from 'lodash';
 
 import { ModalType } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
-import ImportExportCSV from '@/components/ImportExportCSV';
 import InventoryHeader from '@/components/InventoryHeader';
 import CustomTable from '@/components/Table';
 import { TableHeader } from '@/components/Table/TableHeader';
@@ -47,7 +46,10 @@ export interface VolumePrice {
 
 export interface InventoryColumn {
   id: string;
-  image: string;
+  image: {
+    large: string;
+    small: string;
+  };
   sku: string;
   description: string;
   price: {
@@ -129,8 +131,26 @@ const CategoryTable: React.FC = () => {
     set(editedRows, [id, 'volume_prices'], volumePrices);
   };
 
-  const debouncedUpdateInventories = debounce(async (editedRows) => {
-    const res = await updateInventories(editedRows);
+  const debouncedUpdateInventories = debounce(async () => {
+    const pickPayload: Record<
+      string,
+      Pick<InventoryColumn['price'], 'unit_price' | 'volume_prices'>
+    > = {};
+
+    forEach(editedRows, (value, key) => {
+      pickPayload[key] = {
+        ...value,
+        volume_prices: isEmpty(value.volume_prices)
+          ? null
+          : value.volume_prices.map((el: VolumePrice) =>
+              pick(el, ['discount_rate', 'max_quantity', 'min_quantity']),
+            ),
+      };
+    });
+
+    console.log(pickPayload);
+
+    const res = await updateInventories(pickPayload);
     if (res) {
       setTimeout(() => {
         tableRef.current.reload();
@@ -141,13 +161,17 @@ const CategoryTable: React.FC = () => {
 
   const handleToggleSwitch = () => {
     if (isEditMode && !isEmpty(editedRows)) {
-      debouncedUpdateInventories(editedRows);
+      debouncedUpdateInventories();
     }
 
     setIsEditMode(!isEditMode);
   };
 
-  const isRowSelected = (record: InventoryColumn) => selectedRowKeys.includes(record.id);
+  const rowSelectedValue = (record: InventoryColumn, value: string | number) => (
+    <span className={` ${selectedRowKeys.includes(record.id) ? 'font-medium' : ''} w-1-2`}>
+      {value}
+    </span>
+  );
 
   const renderEditableCell = (item: InventoryColumn, columnKey: string, value: string | number) =>
     isEditMode ? (
@@ -159,10 +183,9 @@ const CategoryTable: React.FC = () => {
         onSave={(id, colKey, newValue) =>
           handleSaveOnCell(id, colKey, newValue, item.price.unit_type, item.price.volume_prices)
         }
-        autoWidth
       />
     ) : (
-      <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>{value}</span>
+      rowSelectedValue(item, value)
     );
 
   const columns: TableColumnProps<InventoryColumn>[] = useMemo(
@@ -170,10 +193,10 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Image',
         dataIndex: 'image',
-        render: (src: string) => {
-          return src ? (
+        render: (image: { small: string }) => {
+          return image ? (
             <figure className={styles.category_table_figure}>
-              <img src={showImageUrl(src)} alt="Image" />
+              <img src={showImageUrl(`/${image?.small}`)} alt="Image" />
             </figure>
           ) : (
             <PhotoIcon width={35} height={32} />
@@ -184,16 +207,12 @@ const CategoryTable: React.FC = () => {
         title: 'Product ID',
         sorter: true,
         dataIndex: 'sku',
-        render: (_, item) => (
-          <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>{item.sku}</span>
-        ),
+        render: (_, item) => rowSelectedValue(item, item.sku),
       },
       {
         title: 'Description',
         dataIndex: 'description',
-        render: (_, item) => (
-          <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>{item.description}</span>
-        ),
+        render: (_, item) => rowSelectedValue(item, item.description),
       },
       {
         title: 'Unit Price',
@@ -225,33 +244,30 @@ const CategoryTable: React.FC = () => {
         dataIndex: 'unit_type',
         align: 'center',
         render: (_, item) => {
-          return (
-            <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>
-              {item?.price?.currency}
-            </span>
-          );
+          const currencyUnitType = !isEmpty(get(item, 'price.exchange_histories'))
+            ? last(item?.price?.exchange_histories)?.to_currency
+            : item?.price?.currency;
+
+          return rowSelectedValue(item, currencyUnitType ?? 0);
         },
       },
       {
         title: 'Total Stock',
         dataIndex: 'total_stock',
-        align: 'center',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span className={`${isRowSelected(item) ? 'font-medium' : ''} flex-1`}>1</span>
-            {isEditMode && (
-              <div style={{ position: 'relative' }}>
-                <Popover
-                  content={<WareHouse />}
-                  trigger="hover"
-                  placement="bottom"
-                  showArrow={false}
-                  overlayStyle={{ width: 'fit-content' }}
-                >
-                  <FileSearchIcon />
-                </Popover>
-              </div>
-            )}
+            {rowSelectedValue(item, 1)}
+            <div style={{ position: 'relative' }}>
+              <Popover
+                content={<WareHouse />}
+                trigger="hover"
+                placement="bottom"
+                showArrow={false}
+                overlayStyle={{ width: 'fit-content' }}
+              >
+                <FileSearchIcon />
+              </Popover>
+            </div>
           </div>
         ),
       },
@@ -259,9 +275,7 @@ const CategoryTable: React.FC = () => {
         title: 'Out stock',
         dataIndex: 'out_stock',
         align: 'center',
-        render: (_, item) => (
-          <span className={`${isRowSelected(item) ? 'font-medium' : ''} red-magenta`}>-7</span>
-        ),
+        render: (_, item) => <div className="red-magenta">{rowSelectedValue(item, -7)}</div>,
       },
 
       {
@@ -273,10 +287,12 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Backorder',
         dataIndex: 'back_order',
-        align: 'center',
+        align: isEditMode ? 'left' : 'center',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span className="flex-1">{renderEditableCell(item, 'unit_price', 12)}</span>
+            <span className={`${isEditMode ? 'w-1-2' : 'w-full'}`}>
+              {renderEditableCell(item, 'unit_price', 12)}
+            </span>
             {isEditMode && <CDownLeftIcon onClick={handleToggleModal('BackOrder')} />}
           </div>
         ),
@@ -286,27 +302,17 @@ const CategoryTable: React.FC = () => {
         dataIndex: 'volumn_price',
         width: '7%',
         align: 'center',
-        render: (_, item) => (
-          <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>
-            {item?.price?.volume_prices?.length}
-          </span>
-        ),
+        render: (_, item) => rowSelectedValue(item, item?.price?.volume_prices?.length),
       },
       {
         title: 'Stock Value',
         dataIndex: 'stock_value',
-        render: (_, item) => (
-          <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>US$ 105.00</span>
-        ),
+        render: (_, item) => rowSelectedValue(item, 'US$ 105.00'),
       },
       {
         title: 'Revision',
         dataIndex: 'revision',
-        render: (_, item) => (
-          <span className={`${isRowSelected(item) ? 'font-medium' : ''}`}>
-            {item.price?.created_at?.split(' ')[0]}
-          </span>
-        ),
+        render: (_, item) => rowSelectedValue(item, item.price?.created_at?.split(' ')[0]),
       },
       {
         title: 'Action',
@@ -330,7 +336,7 @@ const CategoryTable: React.FC = () => {
         ),
       },
     ],
-    [handlePushToUpdate, handleDelete, renderEditableCell, isRowSelected],
+    [handlePushToUpdate, handleDelete, renderEditableCell, rowSelectedValue],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {
@@ -369,9 +375,7 @@ const CategoryTable: React.FC = () => {
     }
 
     const res = await exchangeCurrency(location.state.brandId, currency);
-    if (res) {
-      tableRef.current.reload();
-    }
+    if (res) tableRef.current.reload();
   };
 
   const pageHeaderRender = () => (
@@ -473,13 +477,13 @@ const CategoryTable: React.FC = () => {
         isShowBackorder={isShowModal === 'BackOrder'}
         onCancel={handleToggleModal('none')}
       />
-      <ImportExportCSV
+      {/* <ImportExportCSV
         open={isShowModal === 'Import/Export'}
         onCancel={handleToggleModal('none')}
         onImport={handleImport}
         onExport={handleExport}
         dbHeaders={dbHeaders}
-      />
+      /> */}
     </PageContainer>
   );
 };

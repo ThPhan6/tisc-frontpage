@@ -10,12 +10,11 @@ import {
 } from '@/components/Table/types';
 import store from '@/reducers';
 import { setSummaryFinancialRecords, setUnitType } from '@/reducers/summary';
-import { CategoryEntity, type FinancialRecords } from '@/types';
+import { CategoryEntity, type FinancialRecords, PriceAndInventoryAttribute } from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
 import { UnitItem } from '@/components/Modal/UnitType';
 import { type InventoryColumn } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -195,10 +194,10 @@ export async function updateInventory(id: string, payload: PriceAndInventoryAttr
     method: 'PATCH',
     data: payload,
   })
-    .then((res) => {
+    .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_INVENTORY_SUCCESS);
       hidePageLoading();
-      return res.data;
+      return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INVENTORY_ERROR);

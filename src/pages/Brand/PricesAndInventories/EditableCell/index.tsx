@@ -5,6 +5,8 @@ import { message } from 'antd';
 import { CustomInputProps } from '@/components/Form/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
+import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
+import styles from '@/pages/Brand/PricesAndInventories/EditableCell/EditableCell.less';
 
 interface EditStatus {
   [key: string]: {
@@ -12,16 +14,17 @@ interface EditStatus {
   };
 }
 
-interface EditableCell extends CustomInputProps {
+interface EditableCell<T extends string | number | readonly string[] | undefined>
+  extends CustomInputProps {
   inputStyle?: CSSProperties;
-  item: { id: string };
+  item: VolumePrice;
   columnKey: string;
-  defaultValue: any;
+  defaultValue: T;
   valueClass?: string;
   onSave: (id: string, columnKey: string, newValue: string) => void;
 }
 
-const EditableCell = ({
+const EditableCell = <T extends string | number | readonly string[] | undefined>({
   onSave,
   columnKey,
   inputStyle,
@@ -29,12 +32,13 @@ const EditableCell = ({
   valueClass = '',
   item,
   ...rest
-}: EditableCell) => {
+}: EditableCell<T>) => {
   const [editStatus, setEditStatus] = useState<EditStatus>({});
   const inputRef = useRef<HTMLInputElement>(null);
+  const columndId = item.id ?? '';
 
-  const isEditing = editStatus[item.id]?.[columnKey]?.isEditing;
-  const inputValue = editStatus[item.id]?.[columnKey]?.value ?? defaultValue;
+  const isEditing = editStatus[columndId]?.[columnKey]?.isEditing;
+  const inputValue = editStatus[columndId]?.[columnKey]?.value ?? defaultValue;
 
   const handleClick = (id: string, colKey: string, value: string) => () => {
     setEditStatus((prev) => ({
@@ -95,46 +99,42 @@ const EditableCell = ({
 
   const handleBlur = (id: string, colKey: string) => () => handleSave(id, colKey);
 
-  return isEditing ? (
-    <CustomInput
-      autoFocus={isEditing}
-      value={inputValue}
-      onChange={handleOnChange(item.id, columnKey)}
-      onBlur={handleBlur(item.id, columnKey)}
-      onKeyDown={handleKeyDown(item.id, columnKey)}
-      style={inputStyle}
-      ref={inputRef}
-      className="indigo-dark-variant text-center"
-      type="number"
-      message={
-        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
-          ? 'Max discount rate is 100'
-          : undefined
-      }
-      messageType={
-        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
-          ? 'error'
-          : undefined
-      }
-      {...rest}
-    />
-  ) : (
-    <CustomInput
-      value={inputValue}
-      onClick={handleClick(item.id, columnKey, inputValue)}
-      className={` flex-1 indigo-dark-variant text-center ${valueClass}`}
-      type="number"
-      message={
-        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
-          ? 'Max discount rate is 100'
-          : undefined
-      }
-      messageType={
-        columnKey === 'discount_rate' && Number(editStatus[item.id]?.[columnKey]?.value) > 100
-          ? 'error'
-          : undefined
-      }
-    />
+  return (
+    <div className={styles.editable_cell}>
+      {isEditing ? (
+        <CustomInput
+          autoFocus={isEditing}
+          value={inputValue}
+          onChange={handleOnChange(columndId, columnKey)}
+          onBlur={handleBlur(columndId, columnKey)}
+          onKeyDown={handleKeyDown(columndId, columnKey)}
+          additionalInputClass={styles.editable_cell_input}
+          style={inputStyle}
+          ref={inputRef}
+          className="indigo-dark-variant text-center"
+          type="number"
+          autoWidth
+          message={
+            columnKey === 'discount_rate' && Number(editStatus[columndId]?.[columnKey]?.value) > 100
+              ? 'Max discount rate is 100'
+              : undefined
+          }
+          messageType={
+            columnKey === 'discount_rate' && Number(editStatus[columndId]?.[columnKey]?.value) > 100
+              ? 'error'
+              : undefined
+          }
+          {...rest}
+        />
+      ) : (
+        <span
+          onClick={handleClick(columndId, columnKey, inputValue)}
+          className={`indigo-dark-variant text-center ${valueClass}`}
+        >
+          {inputValue}
+        </span>
+      )}
+    </div>
   );
 };
 

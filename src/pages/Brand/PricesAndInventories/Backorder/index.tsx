@@ -46,7 +46,6 @@ const Backorder = ({ isShowBackorder, onCancel }: BackorderProps) => {
         <EditableCell
           item={item}
           columnKey="add_to"
-          autoWidth
           defaultValue="6"
           valueClass="indigo-dark-variant"
           onSave={() => {}}

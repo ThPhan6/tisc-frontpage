@@ -47,7 +47,6 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
           columnKey="add_to"
           defaultValue="6"
           valueClass="indigo-dark-variant"
-          autoWidth
           onSave={() => {}}
         />
       ),
