@@ -150,6 +150,7 @@
 
   :global(.ant-input) {
     color: #2b39d4;
+    resize: none;
   }
 
   :global(.ant-table-cell-row-hover) {
@@ -190,6 +191,24 @@
     svg {
       color: #000;
     }
+  }
+
+  :global(.ant-col-4) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px !important;
+    min-width: 100px !important;
+    height: 100px !important;
+  }
+
+  :global(.sub-photo-action) {
+    bottom: 0;
+    z-index: 1;
+  }
+
+  :global(.delete-button) {
+    margin-top: 70px;
   }
 
   @media screen and (min-width: @screen-lg) {

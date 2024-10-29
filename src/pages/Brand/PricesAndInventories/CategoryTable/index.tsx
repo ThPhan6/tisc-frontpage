@@ -46,10 +46,7 @@ export interface VolumePrice {
 
 export interface InventoryColumn {
   id: string;
-  image: {
-    large: string;
-    small: string;
-  };
+  image: string;
   sku: string;
   description: string;
   price: {

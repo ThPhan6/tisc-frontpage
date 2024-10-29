@@ -6,7 +6,6 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { fetchUnitType } from '@/services';
-import { isEmpty, isNil } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -15,13 +14,16 @@ import { PriceAndInventoryAttribute } from '@/types';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
 import volumeInputStyles from '@/components/EntryForm/styles/VolumeInput.less';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
-import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+
+import CollectionGallery from '@/features/gallery/CollectionGallery';
 
 interface PriceFormProps {
   isShowModal: ModalType;
@@ -43,7 +45,6 @@ const PriceForm = ({
   setHasUnsavedChanges,
 }: PriceFormProps) => {
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
-  const images = useAppSelector((state) => state.product.details.images);
 
   const disableAddPrice =
     !formData.unit_price ||
@@ -225,10 +226,14 @@ const PriceForm = ({
   );
 
   const handleFormChange =
-    (field: keyof PriceAndInventoryAttribute) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (field: keyof PriceAndInventoryAttribute) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setFormData((prev) => ({ ...prev, [field]: event.target.value }));
       setHasUnsavedChanges(true);
     };
+
+  const handleImageChange = (updatedImages: []) =>
+    setFormData((prev) => ({ ...prev, image: updatedImages }));
 
   const minMaxInput: InputGroupProps[] = useMemo(
     () => [
@@ -408,60 +413,43 @@ const PriceForm = ({
           </Title>
         </article>
 
-        <form className="d-flex gap-16">
-          <div className="d-flex items-center justify-between w-full">
-            <div className="w-full">
-              <InputGroup
-                label="Product ID (SKU Code)"
-                required
-                fontLevel={3}
-                hasPadding
-                hasHeight
-                hasBoxShadow
-                colorPrimaryDark
-                colorRequired="tertiary"
-                value={formData.sku}
-                placeholder="eg. SKU code"
-                deleteIcon
-                onChange={handleFormChange('sku')}
-                onDelete={handleClearInputValue('sku')}
-              />
-              <InputGroup
-                label="Description :"
-                fontLevel={3}
-                hasPadding
-                hasHeight
-                hasBoxShadow
-                colorPrimaryDark
-                colorRequired="tertiary"
+        <div className="d-flex items-center justify-between w-full">
+          <div style={{ width: '83%' }}>
+            <InputGroup
+              label="Product ID (SKU Code)"
+              required
+              fontLevel={3}
+              hasPadding
+              hasHeight
+              hasBoxShadow
+              colorPrimaryDark
+              colorRequired="tertiary"
+              value={formData.sku}
+              placeholder="eg. SKU code"
+              deleteIcon
+              onChange={handleFormChange('sku')}
+              onDelete={handleClearInputValue('sku')}
+            />
+            <FormGroup label="Description" layout="vertical">
+              <CustomTextArea
+                maxLength={120}
+                boxShadow
                 value={formData.description}
                 placeholder="type text"
-                deleteIcon
                 onChange={handleFormChange('description')}
-                onDelete={handleClearInputValue('description')}
               />
-            </div>
-
-            <div className={styles.category_form_upload_image_wrapper}>
-              <ProductImagePreview
-                forceEdit={!images.length}
-                forceUpload
-                hideInquiryRequest
-                disabledAssignProduct
-                disabledShareViaEmail
-                contentImage={
-                  <CormorantBodyText
-                    style={{ marginTop: -22 }}
-                    customClass="pure-black font-light "
-                    level={3}
-                  >
-                    Image
-                  </CormorantBodyText>
-                }
-              />
-            </div>
+            </FormGroup>
           </div>
-        </form>
+
+          <div className={styles.category_form_upload_image_wrapper}>
+            <CollectionGallery
+              onChangeImages={handleImageChange}
+              data={formData.image}
+              forceUpload
+            />
+          </div>
+        </div>
+
         <form className="d-flex gap-16">
           <InputGroup
             label="Unit Price"

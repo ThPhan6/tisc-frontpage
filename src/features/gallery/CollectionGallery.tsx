@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
-import { Col, Row, message } from 'antd';
+import { Col, Form, Row, message } from 'antd';
 import Upload, { UploadProps } from 'antd/lib/upload/Upload';
 import { UploadFile } from 'antd/lib/upload/interface';
 
+import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
 import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
 
@@ -21,6 +22,7 @@ import styles from './CollectionGallery.less';
 type CollectionGalleryProps = {
   data: string[];
   onChangeImages: (images: any) => void;
+  forceUpload?: boolean;
 };
 const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
   const isTablet = useScreen().isTablet;
@@ -36,8 +38,12 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
     }
   }, [JSON.stringify(props.data)]);
 
+  useEffect(() => {
+    props.onChangeImages(images);
+  }, [images]);
+
   const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
-  const isEditable = !isTablet && isTiscUser;
+  const isEditable = (!isTablet && isTiscUser) || props.forceUpload;
   const emptyImages = isEditable
     ? [null, null, null, null, null]
     : [null, null, null, null, null, null];
@@ -105,6 +111,7 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
       />
     ) : null;
   };
+
   return (
     <div style={{ padding: isTiscUser || images[0] ? 16 : 0 }}>
       <Row className={styles.imagesContainer} gutter={16}>
@@ -136,9 +143,10 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
                   }}
                 />
                 {isEditable ? (
-                  <div className={styles.subPhotoAction}>
+                  <div className={`${styles.subPhotoAction} sub-photo-action`}>
                     <SmallIconButton
                       icon={<DeleteIcon />}
+                      className="delete-button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -160,22 +168,72 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
           <Col span={4}>
             <div
               style={{
-                width: '100%',
-                height: 0,
+                width: !props.forceUpload ? '100%' : '100px',
+                height: !props.forceUpload ? '0' : '100px',
                 position: 'relative',
                 paddingTop: '100%',
               }}
             >
               <Upload {...uploadProps}>
-                <div className={styles.addMorePhotocontent}>
-                  <BodyText level={6} fontFamily="Roboto" style={{ paddingBottom: 16 }}>
-                    Add more images
-                  </BodyText>
-                  <AddMoreIcon />
-                  <BodyText level={6} fontFamily="Roboto" style={{ paddingTop: 16 }}>
-                    (max.5)
-                  </BodyText>
-                </div>
+                {props.forceUpload ? (
+                  props.data.length > 0 ? (
+                    <div></div>
+                  ) : (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '1.5rem',
+                        right: '6px',
+                        background: '#E6E6E6',
+                        width: 100,
+                        height: 100,
+                      }}
+                    >
+                      <>
+                        <BodyText
+                          level={3}
+                          style={{ textAlign: 'center', margin: '16px 0 24px 0' }}
+                        >
+                          Image
+                        </BodyText>
+                        <div
+                          style={{
+                            margin: '0 24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12,
+                          }}
+                        >
+                          <SmallIconButton
+                            className="bg-white"
+                            icon={<UploadIcon />}
+                            onClick={(e) => {
+                              e.preventDefault();
+                            }}
+                          />
+                          <SmallIconButton
+                            className="bg-white"
+                            icon={<DeleteIcon />}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                          />
+                        </div>
+                      </>
+                    </div>
+                  )
+                ) : (
+                  <div className={styles.addMorePhotocontent}>
+                    <BodyText level={6} fontFamily="Roboto" style={{ paddingBottom: 16 }}>
+                      Add more images
+                    </BodyText>
+                    <AddMoreIcon />
+                    <BodyText level={6} fontFamily="Roboto" style={{ paddingTop: 16 }}>
+                      (max.5)
+                    </BodyText>
+                  </div>
+                )}
               </Upload>
             </div>
           </Col>

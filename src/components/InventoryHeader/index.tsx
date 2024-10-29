@@ -63,7 +63,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
     },
     {
       id: '3',
-      value: summaryFinancialRecords.total_stock,
+      value: summaryFinancialRecords.total_stock.toFixed(2),
       label: 'TOTAL STOCK VALUE',
     },
   ];

@@ -12,8 +12,6 @@ import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
 import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
 import { isEmpty, omit, pick, reduce } from 'lodash';
 
-import { setPartialProductDetail } from '@/features/product/reducers';
-import store, { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
 import type { PriceAndInventoryAttribute } from '@/types';
 
@@ -41,7 +39,6 @@ const PriceAndInventoryForm = () => {
   const [formData, setFormData] = useState<PriceAndInventoryAttribute>(initialFormData);
   const [tableData, setTableData] = useState<VolumePrice[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
-  const images = useAppSelector((state) => state.product.details.images);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const location = useLocation<{ categoryId: string; brandId: string }>();
@@ -51,11 +48,6 @@ const PriceAndInventoryForm = () => {
   const category = queryParams.get('categories');
 
   useEffect(() => {
-    store.dispatch(
-      setPartialProductDetail({
-        images: [],
-      }),
-    );
     setFormData(initialFormData);
     setTableData([]);
   }, []);
@@ -81,15 +73,10 @@ const PriceAndInventoryForm = () => {
 
       setFormData({
         ...res,
+        image: !isEmpty(res.image) ? [`/${res.image}`] : [],
         unit_price: inventoryId ? Number(res.price.unit_price) * rate : res.price?.unit_price,
         unit_type: res.price?.unit_type,
       });
-
-      store.dispatch(
-        setPartialProductDetail({
-          images: res?.image ? [`/${res.image}`] : [],
-        }),
-      );
 
       const volumePrices = res.price.volume_prices?.map((price, index: number) => ({
         key: `${index + 1}`,
@@ -132,7 +119,7 @@ const PriceAndInventoryForm = () => {
       return;
     }
 
-    const image = !isEmpty(images) ? extractDataBase64(images[0]) : null;
+    const image = !isEmpty(formData.image) ? extractDataBase64(formData.image[0]) : null;
 
     const newVolumePrices = transformTableDataToVolumePrices?.() || [];
     const existingVolumePrices = (formData as any).volume_prices || [];
