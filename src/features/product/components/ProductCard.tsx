@@ -512,6 +512,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     });
     setGalleryImages(newImages);
   };
+
   return (
     <>
       {customLoading ? (

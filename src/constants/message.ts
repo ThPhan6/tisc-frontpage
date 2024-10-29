@@ -54,6 +54,15 @@ export const MESSAGE_NOTIFICATION = {
   MOVE_CATEGORY_TO_SUB_CATEGORY_SUCCESS: 'Move category successfully',
   MOVE_CATEGORY_TO_SUB_CATEGORY_ERROR: 'Move category unsuccessfully',
 
+  // Inventory
+  CREATE_INVENTORY_SUCCESS: 'Create inventory successfully',
+  CREATE_INVENTORY_ERROR: 'Create inventory error',
+  DELETE_INVENTORY_SUCCESS: 'Delete inventory successfully',
+  DELETE_INVENTORY_ERROR: 'Delete inventory error',
+  UPDATE_INVENTORY_SUCCESS: 'Update inventory successfully',
+  UPDATE_INVENTORY_ERROR: 'Update inventory error',
+  GET_INVENTORY_ERROR: 'Get inventory error',
+
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',
   CREATE_PRODUCT_ERROR: 'Failed to create product card',
