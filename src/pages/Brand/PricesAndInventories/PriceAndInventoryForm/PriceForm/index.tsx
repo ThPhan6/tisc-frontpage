@@ -13,7 +13,6 @@ import { PriceAndInventoryAttribute } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
-import volumeInputStyles from '@/components/EntryForm/styles/VolumeInput.less';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
@@ -501,9 +500,7 @@ const PriceForm = ({
           </Title>
         </article>
 
-        <form
-          className={`d-flex items-center gap-16 mb-8-px ${volumeInputStyles.volume_discount_input}`}
-        >
+        <form className={`d-flex items-center gap-16 mb-8-px`}>
           <div className="d-flex items-center items-end border-bottom-light w-full">
             {volumnDiscountInput.map((input, index) => (
               <InputGroup

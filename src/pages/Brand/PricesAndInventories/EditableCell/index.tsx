@@ -114,16 +114,6 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
           className="indigo-dark-variant text-center"
           type="number"
           autoWidth
-          message={
-            columnKey === 'discount_rate' && Number(editStatus[columndId]?.[columnKey]?.value) > 100
-              ? 'Max discount rate is 100'
-              : undefined
-          }
-          messageType={
-            columnKey === 'discount_rate' && Number(editStatus[columndId]?.[columnKey]?.value) > 100
-              ? 'error'
-              : undefined
-          }
           {...rest}
         />
       ) : (

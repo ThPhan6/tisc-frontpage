@@ -5,8 +5,6 @@ import { Collapse, Modal, Radio } from 'antd';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { useSelectableData } from '@/helper/hook';
-
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import styles from '@/components/Modal/styles/LocationOffice.less';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
@@ -37,7 +35,7 @@ interface LocationOfficeProps {
 }
 
 const LocationOffice = ({ title, countries, onSave, isOpen, onClose }: LocationOfficeProps) => {
-  const [selectedValue, handleRadioChange] = useSelectableData(countries);
+  const [selectedValue, handleRadioChange] = useState<any>();
   const [activePanel, setActivePanel] = useState<string[]>([countries[0]?.id]);
 
   const expandIcon = (panelProps: any) => {

@@ -191,16 +191,3 @@ export const useNavigationHandler = () => {
 
   return navigate;
 };
-
-export const useSelectableData = <T extends { items: { id: string }[] }>(data: T[]) => {
-  const [selectedValue, setSelectedValue] = useState<any>(null);
-
-  const handleRadioChange = (event: any) => {
-    const selectedItem = data
-      .flatMap((category) => category.items)
-      .find((item) => item.id === event.target.value);
-    setSelectedValue(selectedItem ?? null);
-  };
-
-  return [selectedValue, handleRadioChange] as const;
-};
