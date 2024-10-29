@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -16,11 +16,13 @@ import { showImageUrl } from '@/helper/utils';
 import {
   deleteInventory,
   exchangeCurrency,
+  fetchUnitType,
   getListInventories,
   updateInventories,
 } from '@/services';
-import { debounce, forEach, get, isEmpty, last, pick, reduce, set } from 'lodash';
+import { debounce, forEach, isEmpty, pick, reduce, set } from 'lodash';
 
+import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -74,6 +76,19 @@ const CategoryTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [editedRows, setEditedRows] = useState<Record<string, any>>({});
   const [filter, setFilter] = useState('');
+  const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+
+  useEffect(() => {
+    const getUnitType = async () => await fetchUnitType();
+    getUnitType();
+  }, []);
+
+  const getUnitTypeCode = useCallback(
+    (unit_type: string) => {
+      return unitTypeData.find((item) => item.id === unit_type)?.code || '';
+    },
+    [unitTypeData],
+  );
 
   const tableRef = useRef<any>();
   const location = useLocation<{ categoryId: string; brandId: string }>();
@@ -239,13 +254,7 @@ const CategoryTable: React.FC = () => {
         title: 'Unit Type',
         dataIndex: 'unit_type',
         align: 'center',
-        render: (_, item) => {
-          const currencyUnitType = !isEmpty(get(item, 'price.exchange_histories'))
-            ? last(item?.price?.exchange_histories)?.to_currency
-            : item?.price?.currency;
-
-          return rowSelectedValue(item, currencyUnitType ?? 0);
-        },
+        render: (_, item) => rowSelectedValue(item, getUnitTypeCode(item.price.unit_type)),
       },
       {
         title: 'Total Stock',
@@ -286,7 +295,7 @@ const CategoryTable: React.FC = () => {
         align: isEditMode ? 'left' : 'center',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span className={`${isEditMode ? 'w-1-2' : 'w-full'}`}>
+            <span style={{ flexBasis: isEditMode ? '50%' : '100%' }}>
               {renderEditableCell(item, 'unit_price', 12)}
             </span>
             {isEditMode && <CDownLeftIcon onClick={handleToggleModal('BackOrder')} />}
@@ -294,7 +303,7 @@ const CategoryTable: React.FC = () => {
         ),
       },
       {
-        title: 'Volumn Price',
+        title: 'Volume Price',
         dataIndex: 'volumn_price',
         width: '7%',
         align: 'center',

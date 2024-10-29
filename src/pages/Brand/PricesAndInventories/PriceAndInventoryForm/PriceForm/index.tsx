@@ -187,7 +187,7 @@ const PriceForm = ({
         discount_price: (value * Number(item.discount_rate)) / 100,
       })),
     );
-    setHasUnsavedChanges(true);
+    setHasUnsavedChanges(!isNaN(value) && value !== 0);
   };
 
   const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,7 +197,7 @@ const PriceForm = ({
       discount_rate: discountRate,
       discount_price: discountRate && (discountRate * Number(prev.unit_price)) / 100,
     }));
-    setHasUnsavedChanges(true);
+    setHasUnsavedChanges(!isNaN(discountRate) && discountRate !== 0);
   };
 
   const volumnDiscountInput: InputGroupProps[] = useMemo(
@@ -228,8 +228,9 @@ const PriceForm = ({
   const handleFormChange =
     (field: keyof PriceAndInventoryAttribute) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData((prev) => ({ ...prev, [field]: event.target.value }));
-      setHasUnsavedChanges(true);
+      const value = event.target.value;
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      setHasUnsavedChanges(value.trim() !== '');
     };
 
   const handleImageChange = (updatedImages: []) =>
