@@ -51,6 +51,11 @@ const CustomResource = () => {
 
   const MainColumns: TableColumnItem<CustomResources>[] = [
     {
+      title: 'Code',
+      sorter: true,
+      dataIndex: 'type_code',
+    },
+    {
       title: customResourceType === CustomResourceType.Brand ? 'Brand Name' : 'Distributor Name',
       sorter: true,
       dataIndex: 'business_name',

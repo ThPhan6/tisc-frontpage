@@ -217,16 +217,17 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       centered
       width={1100}
       footer={
-        <CustomButton
-          disabled={isDisableDone}
-          size="small"
-          variant="primary"
-          properties="rounded"
-          buttonClass="done-btn"
-          onClick={onSubmit}
-        >
-          Done
-        </CustomButton>
+        <div className="done-btn">
+          <CustomButton
+            disabled={isDisableDone}
+            size="small"
+            variant="primary"
+            properties="rounded"
+            onClick={onSubmit}
+          >
+            Done
+          </CustomButton>
+        </div>
       }
     >
       <BrandProductBasicHeader

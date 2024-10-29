@@ -13,6 +13,7 @@ export interface CustomResources {
   distributors: number;
   cards: number;
   brands: number;
+  type_code: string;
 }
 
 export interface ContactDetail {
