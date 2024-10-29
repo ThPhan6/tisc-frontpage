@@ -56,6 +56,7 @@ export type ModalType =
   | 'Inventory Header'
   | 'Base & Volume'
   | 'Inventory'
+  | 'Import/Export'
   | 'Unit Type';
 
 export interface ModalState {

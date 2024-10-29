@@ -182,10 +182,10 @@ button {
 }
 
 .primary-color {
-  color: @primary-color;
+  color: @primary-color !important;
 }
 .primary-color-dark {
-  color: @primary-color-dark;
+  color: @primary-color-dark !important;
 }
 .primary-color-medium {
   color: @primary-color-medium;
@@ -202,7 +202,7 @@ button {
 }
 
 .indigo-dark-variant {
-  color: #2b39d4;
+  color: #2b39d4 !important;
 }
 
 .red-magenta {
@@ -272,6 +272,10 @@ button {
 
 .w-full {
   width: 100%;
+}
+
+.w-1-2 {
+  width: 50%;
 }
 
 .h-full {
@@ -372,6 +376,10 @@ button {
 
 .pb-16 {
   padding-bottom: 16px;
+}
+
+.p-16 {
+  padding: 16px;
 }
 
 .py-10 {
@@ -835,4 +843,26 @@ li.ant-menu-submenu {
 
 .font-medium {
   font-weight: 500;
+}
+
+.font-light {
+  font-weight: 300 !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.items-end {
+  align-items: flex-end;
 }

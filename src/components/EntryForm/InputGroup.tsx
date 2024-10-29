@@ -4,7 +4,7 @@ import { Col, Row } from 'antd';
 
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
-import { CustomTypography } from '../Typography/types';
+import { BodyTextProps, CustomTypography } from '../Typography/types';
 import { MainContentProps } from './types';
 import type { CustomInputProps } from '@/components/Form/types';
 
@@ -29,7 +29,7 @@ const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap, 
   </Row>
 );
 
-interface InputGroupProps extends Omit<CustomInputProps, 'title'> {
+export interface InputGroupProps extends Omit<CustomInputProps, 'title'> {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
   deleteIcon?: boolean;
@@ -54,6 +54,7 @@ interface InputGroupProps extends Omit<CustomInputProps, 'title'> {
   inputClass?: string;
   customClass?: string;
   labelTitle?: string;
+  labelProps?: BodyTextProps;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -84,6 +85,7 @@ const InputGroup: FC<InputGroupProps> = ({
   inputClass = '',
   labelTitle,
   customClass,
+  labelProps,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -101,6 +103,7 @@ const InputGroup: FC<InputGroupProps> = ({
           level={fontLevel ?? 5}
           customClass={`${'input-label'} ${labelColor}`}
           title={labelTitle}
+          {...labelProps}
         >
           {label}
           {required ? (
@@ -174,7 +177,7 @@ const InputGroup: FC<InputGroupProps> = ({
 
   const renderMessage = () => {
     return message ? (
-      <div className={styles.message}>
+      <div className={`${styles.message} input-message`}>
         <BodyText fontFamily="Roboto" level={6} customClass={messageType}>
           {message}
         </BodyText>

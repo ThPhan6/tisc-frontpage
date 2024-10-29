@@ -2,7 +2,11 @@ import { CSSProperties, useRef, useState } from 'react';
 
 import { message } from 'antd';
 
+import { CustomInputProps } from '@/components/Form/types';
+
 import { CustomInput } from '@/components/Form/CustomInput';
+import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
+import styles from '@/pages/Brand/PricesAndInventories/EditableCell/EditableCell.less';
 
 interface EditStatus {
   [key: string]: {
@@ -10,25 +14,31 @@ interface EditStatus {
   };
 }
 
-interface EditableCell {
+interface EditableCell<T extends string | number | readonly string[] | undefined>
+  extends CustomInputProps {
   inputStyle?: CSSProperties;
-  item: { id: string };
+  item: VolumePrice;
   columnKey: string;
-  defaultValue: any;
+  defaultValue: T;
   valueClass?: string;
   onSave: (id: string, columnKey: string, newValue: string) => void;
 }
 
-const EditableCell = ({
+const EditableCell = <T extends string | number | readonly string[] | undefined>({
   onSave,
   columnKey,
   inputStyle,
   defaultValue,
   valueClass = '',
   item,
-}: EditableCell) => {
+  ...rest
+}: EditableCell<T>) => {
   const [editStatus, setEditStatus] = useState<EditStatus>({});
   const inputRef = useRef<HTMLInputElement>(null);
+  const columndId = item.id ?? '';
+
+  const isEditing = editStatus[columndId]?.[columnKey]?.isEditing;
+  const inputValue = editStatus[columndId]?.[columnKey]?.value ?? defaultValue;
 
   const handleClick = (id: string, colKey: string, value: string) => () => {
     setEditStatus((prev) => ({
@@ -42,6 +52,7 @@ const EditableCell = ({
 
   const handleOnChange =
     (id: string, colKey: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      event.stopPropagation();
       setEditStatus((prev) => ({
         ...prev,
         [id]: {
@@ -52,8 +63,19 @@ const EditableCell = ({
     };
 
   const handleSave = (id: string, colKey: string) => {
-    const value = editStatus[id]?.[colKey]?.value ?? defaultValue;
-    if (!value) {
+    const newValue = editStatus[id]?.[colKey]?.value ?? defaultValue;
+    if (newValue === defaultValue) {
+      setEditStatus((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          [colKey]: { ...prev[id]?.[colKey], isEditing: false },
+        },
+      }));
+      return;
+    }
+
+    if (!newValue) {
       message.warn('Please fill in the value');
       inputRef.current?.focus();
       return;
@@ -67,7 +89,7 @@ const EditableCell = ({
       },
     }));
 
-    onSave(id, colKey, value);
+    onSave(id, colKey, inputValue);
   };
 
   const handleKeyDown =
@@ -77,23 +99,43 @@ const EditableCell = ({
 
   const handleBlur = (id: string, colKey: string) => () => handleSave(id, colKey);
 
-  const isEditing = editStatus[item.id]?.[columnKey]?.isEditing;
-  const value = editStatus[item.id]?.[columnKey]?.value ?? defaultValue;
-
-  return isEditing ? (
-    <CustomInput
-      autoFocus={isEditing}
-      value={value}
-      onChange={handleOnChange(item.id, columnKey)}
-      onBlur={handleBlur(item.id, columnKey)}
-      onKeyDown={handleKeyDown(item.id, columnKey)}
-      style={inputStyle}
-      ref={inputRef}
-    />
-  ) : (
-    <span onClick={handleClick(item.id, columnKey, value)} className={`${valueClass} flex-1`}>
-      {value}
-    </span>
+  return (
+    <div className={styles.editable_cell}>
+      {isEditing ? (
+        <CustomInput
+          autoFocus={isEditing}
+          value={inputValue}
+          onChange={handleOnChange(columndId, columnKey)}
+          onBlur={handleBlur(columndId, columnKey)}
+          onKeyDown={handleKeyDown(columndId, columnKey)}
+          additionalInputClass={styles.editable_cell_input}
+          style={inputStyle}
+          ref={inputRef}
+          className="indigo-dark-variant text-center"
+          type="number"
+          autoWidth
+          message={
+            columnKey === 'discount_rate' && Number(editStatus[columndId]?.[columnKey]?.value) > 100
+              ? 'Max discount rate is 100'
+              : undefined
+          }
+          messageType={
+            columnKey === 'discount_rate' && Number(editStatus[columndId]?.[columnKey]?.value) > 100
+              ? 'error'
+              : undefined
+          }
+          {...rest}
+        />
+      ) : (
+        <span
+          onClick={handleClick(columndId, columnKey, inputValue)}
+          className={`indigo-dark-variant text-center ${valueClass}`}
+        >
+          {inputValue}
+          {columnKey === 'discount_rate' ? '%' : ''}
+        </span>
+      )}
+    </div>
   );
 };
 

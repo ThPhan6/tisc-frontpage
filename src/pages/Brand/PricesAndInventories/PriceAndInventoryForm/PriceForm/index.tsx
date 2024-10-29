@@ -1,26 +1,29 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { Table, type TableColumnsType, type UploadFile, message } from 'antd';
+import { Table, type TableColumnsType, message } from 'antd';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { fetchUnitType } from '@/services';
 
+import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
+import { PriceAndInventoryAttribute } from '@/types';
 
-import InputGroup from '@/components/EntryForm/InputGroup';
-import UploadImageInput from '@/components/EntryForm/UploadImageInput';
-import VolumeInput, { type InputFieldProps } from '@/components/EntryForm/VolumeInput';
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
+import volumeInputStyles from '@/components/EntryForm/styles/VolumeInput.less';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
-import type { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+
+import CollectionGallery from '@/features/gallery/CollectionGallery';
 
 interface PriceFormProps {
   isShowModal: ModalType;
@@ -29,6 +32,7 @@ interface PriceFormProps {
   setFormData: React.Dispatch<React.SetStateAction<PriceAndInventoryAttribute>>;
   tableData: VolumePrice[];
   setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
+  setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PriceForm = ({
@@ -38,41 +42,50 @@ const PriceForm = ({
   setFormData,
   tableData,
   setTableData,
+  setHasUnsavedChanges,
 }: PriceFormProps) => {
-  const [unitData, setUnitData] = useState<UnitItem[]>([]);
-  const [isLgScreen, setIsLgScreen] = useState(window.innerWidth > 1500);
+  const { currencySelected, unitType } = useAppSelector((state) => state.summary);
+
+  const disableAddPrice =
+    !formData.unit_price ||
+    !formData.unit_type ||
+    !formData.discount_rate ||
+    Number(formData.discount_rate) > 100 ||
+    Number(formData.discount_rate) < 0;
+
+  const unitTypeCode = useMemo(
+    () => unitType.find((item) => item.id === formData.unit_type)?.code,
+    [unitType, formData.unit_type],
+  );
 
   useEffect(() => {
-    const handleResize = () => setIsLgScreen(window.innerWidth >= 1500);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const getUnitType = async () => {
-      const res = await fetchUnitType();
-      setUnitData(res);
-    };
-
+    const getUnitType = async () => await fetchUnitType();
     getUnitType();
   }, []);
 
   const ensureValidPricesAndQuantities = () => {
-    const { unit_price, unit_type, min_quantity, max_quantity } = formData;
+    const {
+      unit_price,
+      unit_type,
+      min_quantity = 0,
+      max_quantity = 1,
+      discount_rate = 0,
+    } = formData;
     const parsedUnitPrice = parseFloat(unit_price?.toString() ?? '0');
-    const minQuantity = min_quantity ? parseFloat(min_quantity) : null;
-    const maxQuantity = max_quantity ? parseFloat(max_quantity) : null;
+    const minQuantity = min_quantity;
+    const maxQuantity = max_quantity;
 
     if (!unit_price || !unit_type || isNaN(parsedUnitPrice)) {
       message.warn('Unit price and type are required and must be valid.');
       return false;
     }
 
-    if (
-      (minQuantity !== null && (!Number.isInteger(minQuantity) || isNaN(minQuantity))) ||
-      (maxQuantity !== null && (!Number.isInteger(maxQuantity) || isNaN(maxQuantity))) ||
-      (minQuantity !== null && maxQuantity !== null && minQuantity > maxQuantity)
-    ) {
+    if (discount_rate > 100) {
+      message.warn('Discount rate must not exceed 100.');
+      return false;
+    }
+
+    if (isNaN(Number(minQuantity)) || isNaN(Number(maxQuantity)) || minQuantity > maxQuantity) {
       message.warn('Quantities must be valid integers and min cannot exceed max.');
       return false;
     }
@@ -86,13 +99,12 @@ const PriceForm = ({
     );
   };
 
-  const renderUpdatableCell = (item: any, columnKey: string, defaultValue: any) => {
+  const renderUpdatableCell = (item: VolumePrice, columnKey: string, defaultValue: any) => {
     return (
       <EditableCell
         item={item}
         columnKey={columnKey}
         defaultValue={defaultValue}
-        inputStyle={{ width: 60, height: 20 }}
         valueClass="indigo-dark-variant"
         onSave={handleSaveCell}
       />
@@ -102,121 +114,149 @@ const PriceForm = ({
   const handleRemoveRow = (id: string) => () =>
     setTableData((prev) => prev.filter((item) => item.id !== id));
 
-  const priceColumn: TableColumnsType<VolumePrice> = [
-    {
-      title: '#',
-      dataIndex: 'key',
-      width: '28px',
-      align: 'center',
-    },
-    {
-      title: 'Discount Price',
-      dataIndex: 'discount_price',
-      align: 'center',
-      width: '132px',
-      render: (_, item) => renderUpdatableCell(item, 'discount_price', item.discount_price),
-    },
-    {
-      title: 'Discount Rate',
-      dataIndex: 'discount_rate',
-      align: 'center',
-      width: '78px',
-      render: (_, item) =>
-        renderUpdatableCell(
-          item,
-          'discount_rate',
-          `${item.discount_rate}${item.discount_rate ? '%' : ''}`,
+  const priceColumn: TableColumnsType<VolumePrice> = useMemo(
+    () => [
+      {
+        title: '#',
+        dataIndex: 'key',
+        width: '28px',
+        align: 'center',
+      },
+      {
+        title: 'Discount Price',
+        dataIndex: 'discount_price',
+        align: 'center',
+        width: '132px',
+      },
+      {
+        title: 'Discount Rate',
+        dataIndex: 'discount_rate',
+        align: 'center',
+        width: '78px',
+        render: (_, item) => renderUpdatableCell(item, 'discount_rate', item.discount_rate),
+      },
+      {
+        title: 'Min. Quantity',
+        dataIndex: 'min_quantity',
+        align: 'center',
+        width: '78px',
+        render: (_, item) => renderUpdatableCell(item, 'min_quantity', item.min_quantity),
+      },
+      {
+        title: 'Max. Quantity',
+        dataIndex: 'max_quantity',
+        align: 'center',
+        width: '78px',
+        render: (_, item) => renderUpdatableCell(item, 'max_quantity', item.max_quantity),
+      },
+      {
+        title: 'Unit Type',
+        dataIndex: 'unit_type',
+        align: 'center',
+        width: '69px',
+        render: () => (
+          <BodyText fontFamily="Roboto" level={5}>
+            {unitTypeCode}
+          </BodyText>
         ),
-    },
-    {
-      title: 'Min. Quantity',
-      dataIndex: 'min_quantity',
-      align: 'center',
-      width: '78px',
-      render: (_, item) => renderUpdatableCell(item, 'min_quantity', item.min_quantity),
-    },
-    {
-      title: 'Max. Quantity',
-      dataIndex: 'max_quantity',
-      align: 'center',
-      width: '78px',
-      render: (_, item) => renderUpdatableCell(item, 'max_quantity', item.max_quantity),
-    },
-    {
-      title: 'Unit Type',
-      dataIndex: 'unit_type',
-      align: 'center',
-      width: '69px',
-    },
-    {
-      width: '28px',
-      render: (_, item) => (
-        <TrashIcon
-          className="cursor-pointer indigo-dark-variant"
-          onClick={handleRemoveRow(item.id ?? '')}
-        />
-      ),
-    },
-  ];
+      },
+      {
+        width: '28px',
+        render: (_, item) => (
+          <TrashIcon
+            className="cursor-pointer indigo-dark-variant"
+            onClick={handleRemoveRow(item.id ?? '')}
+          />
+        ),
+      },
+    ],
+    [handleRemoveRow, renderUpdatableCell],
+  );
 
-  const calculateDiscountPrice = (rate: number) => {
-    const unitPrice = parseFloat(formData.unit_price?.toString() ?? '0');
-    if (!unitPrice || isNaN(unitPrice)) return '0';
-    return (unitPrice * (1 - rate / 100)).toString();
+  const handleUnitPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+    setFormData((prev) => ({
+      ...prev,
+      unit_price: value,
+      discount_price: prev.discount_rate && (value * Number(prev.discount_rate)) / 100,
+    }));
+
+    setTableData((prev) =>
+      prev.map((item) => ({
+        ...item,
+        discount_price: (value * Number(item.discount_rate)) / 100,
+      })),
+    );
+    setHasUnsavedChanges(!isNaN(value) && value !== 0);
   };
 
   const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const rate = parseFloat(event.target.value);
-    const price = calculateDiscountPrice(rate);
-
+    const discountRate = Number(event.target.value);
     setFormData((prev) => ({
       ...prev,
-      discount_rate: event.target.value,
-      discount_price: price,
+      discount_rate: discountRate,
+      discount_price: discountRate && (discountRate * Number(prev.unit_price)) / 100,
     }));
+    setHasUnsavedChanges(!isNaN(discountRate) && discountRate !== 0);
   };
 
-  const volumnDiscountInput: InputFieldProps[] = useMemo(
+  const volumnDiscountInput: InputGroupProps[] = useMemo(
     () => [
       {
-        placeholder: 'Type number',
         prefix: 'Price',
-        value: formData.discount_price,
+        value: formData.discount_price ? formData.discount_price : '0.00',
+        customClass: 'discount-price-area',
         readOnly: true,
-        className: styles.category_form_input,
+        label: 'Volume Discount Price/Percentage :',
+        fontLevel: 3,
+        type: 'number',
       },
       {
         placeholder: '%',
         prefix: '% Rate',
-        value: formData.discount_rate,
+        value: formData.discount_rate ? formData.discount_rate : undefined,
         onChange: handleRateChange,
+        fontLevel: 3,
+        type: 'number',
+        max: 100,
+        readOnly: !formData.unit_price,
       },
     ],
     [formData.discount_price, formData.discount_rate, formData.unit_price],
   );
 
   const handleFormChange =
-    (field: keyof PriceAndInventoryAttribute) => (event: React.ChangeEvent<HTMLInputElement>) =>
-      setFormData((prev) => ({ ...prev, [field]: event.target.value }));
+    (field: keyof PriceAndInventoryAttribute) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const value = event.target.value;
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      setHasUnsavedChanges(value.trim() !== '');
+    };
 
-  const minMaxInput: InputFieldProps[] = useMemo(
+  const handleImageChange = (updatedImages: []) =>
+    setFormData((prev) => ({ ...prev, image: updatedImages }));
+
+  const minMaxInput: InputGroupProps[] = useMemo(
     () => [
       {
         placeholder: 'min. #',
         value: formData.min_quantity,
         onChange: handleFormChange('min_quantity'),
+        fontLevel: 3,
+        label: 'Min./Max. Quantity :',
+        type: 'number',
       },
       {
         placeholder: 'max. #',
         value: formData.max_quantity,
         onChange: handleFormChange('max_quantity'),
+        fontLevel: 3,
+        type: 'number',
+        prefix: 'to',
       },
     ],
     [formData.min_quantity, formData.max_quantity],
   );
-
-  const handleImageChange = (fileList: UploadFile[]) =>
-    setFormData((prev) => ({ ...prev, image: fileList }));
 
   const handleClearInputValue = (field: keyof PriceAndInventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
@@ -225,28 +265,35 @@ const PriceForm = ({
     if (!ensureValidPricesAndQuantities()) return;
 
     const newRow = {
-      key: `${tableData?.length + 1}`,
+      key: Number(tableData?.length + 1),
       id: `${tableData?.length + 1}`,
-      discount_price: formData.discount_price || '',
-      discount_rate: formData.discount_rate || '',
-      min_quantity: formData.min_quantity || '',
-      max_quantity: formData.max_quantity || '',
+      discount_price: formData.discount_price,
+      discount_rate: formData.discount_rate,
+      min_quantity: formData.min_quantity,
+      max_quantity: formData.max_quantity,
       unit_type: formData.unit_type,
     };
 
-    setTableData((prev) => [...prev, newRow]);
+    setTableData((prev = []) => [...prev, newRow]);
 
     setFormData({
       ...formData,
-      discount_price: '',
-      discount_rate: '',
-      min_quantity: '',
-      max_quantity: '',
+      discount_price: 0.0,
+      discount_rate: undefined,
+      min_quantity: undefined,
+      max_quantity: undefined,
     });
+    setHasUnsavedChanges(false);
   };
 
-  const handeSaveUnitType = (value: UnitItem | null) =>
-    setFormData((prev) => ({ ...prev, unit_type: value?.code ?? '' }));
+  const handeSaveUnitType = (value: UnitItem | undefined) => {
+    if (!value?.id) {
+      message.error('Please select a unit type');
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, unit_type: value.id, unit_type_code: value?.code }));
+  };
 
   const baseAndVolumePriceInfo = {
     title: 'BASE & VOLUME PRICE',
@@ -356,11 +403,7 @@ const PriceForm = ({
 
   return (
     <>
-      <div
-        className={`${styles.category_form_content} ${
-          isLgScreen ? 'border-right-black-inset' : 'border-bottom-black-inset'
-        }`}
-      >
+      <div className={`${styles.category_form_content}`}>
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
           <Title customClass={`${styles.category_form_content_title} d-flex items-center`}>
             BASE PRICE
@@ -369,11 +412,10 @@ const PriceForm = ({
               onClick={onToggleModal('Base & Volume')}
             />
           </Title>
-          <UploadIcon width={18} height={18} className="mb-6" />
         </article>
 
-        <form className="d-flex gap-16">
-          <div className="d-flex items-center justify-between w-full">
+        <div className="d-flex items-center justify-between w-full">
+          <div style={{ width: '85%' }}>
             <InputGroup
               label="Product ID (SKU Code)"
               required
@@ -384,55 +426,55 @@ const PriceForm = ({
               colorPrimaryDark
               colorRequired="tertiary"
               value={formData.sku}
-              placeholder="type text"
+              placeholder="eg. SKU code"
               deleteIcon
               onChange={handleFormChange('sku')}
               onDelete={handleClearInputValue('sku')}
             />
-            <UploadImageInput
-              listType="picture-card"
-              fileList={formData.image}
-              onChange={handleImageChange}
-              additonalContainerStyle={{ width: '20%' }}
+            <FormGroup label="Description" layout="vertical">
+              <CustomTextArea
+                maxLength={120}
+                boxShadow
+                value={formData.description}
+                placeholder="type text"
+                onChange={handleFormChange('description')}
+              />
+            </FormGroup>
+          </div>
+
+          <div className={styles.category_form_upload_image_wrapper}>
+            <CollectionGallery
+              onChangeImages={handleImageChange}
+              data={formData.image}
+              forceUpload
             />
           </div>
-        </form>
-        <InputGroup
-          label="Description :"
-          fontLevel={3}
-          hasPadding
-          hasHeight
-          hasBoxShadow
-          colorPrimaryDark
-          colorRequired="tertiary"
-          value={formData.description}
-          placeholder="type text"
-          deleteIcon
-          onChange={handleFormChange('description')}
-          onDelete={handleClearInputValue('description')}
-        />
+        </div>
+
         <form className="d-flex gap-16">
           <InputGroup
             label="Unit Price"
+            placeholder="type price"
             required
             fontLevel={3}
-            hasPadding
-            hasHeight
+            addonBefore={currencySelected}
+            value={formData.unit_price}
             hasBoxShadow
+            hasPadding
+            type="number"
+            hasHeight
             colorPrimaryDark
             colorRequired="tertiary"
-            value={formData.unit_price}
-            placeholder="type price"
-            deleteIcon
-            onChange={handleFormChange('unit_price')}
+            onChange={handleUnitPriceChange}
             onDelete={handleClearInputValue('unit_price')}
+            deleteIcon
           />
           <InputGroup
             label="Unit Type"
             required
             fontLevel={3}
             placeholder="select from the list"
-            value={formData.unit_type}
+            value={unitTypeCode}
             hasBoxShadow
             hasPadding
             rightIcon
@@ -457,13 +499,65 @@ const PriceForm = ({
               onClick={onToggleModal('Base & Volume')}
             />
           </Title>
-          <CustomPlusButton customClass="pb-16" onClick={handleAddRow} />
         </article>
 
-        <form className="d-flex items-center gap-16 mb-16">
-          <VolumeInput label="Volume Discount Price/Percentage :" inputs={volumnDiscountInput} />
-          <VolumeInput label="Min./Max. Quantity :" inputs={minMaxInput} />
+        <form
+          className={`d-flex items-center gap-16 mb-8-px ${volumeInputStyles.volume_discount_input}`}
+        >
+          <div className="d-flex items-center items-end border-bottom-light w-full">
+            {volumnDiscountInput.map((input, index) => (
+              <InputGroup
+                key={index}
+                customClass={`volume_price_area ${input.customClass ?? ''}`}
+                {...input}
+                message={
+                  index == 1 && formData.discount_rate && formData.discount_rate > 100
+                    ? 'Max discount rate is 100'
+                    : undefined
+                }
+                messageType={
+                  index == 1 && formData.discount_rate && formData.discount_rate > 100
+                    ? 'error'
+                    : undefined
+                }
+                labelProps={{
+                  style: { whiteSpace: 'nowrap' },
+                }}
+                prefix={
+                  <BodyText level={5} fontFamily="Roboto">
+                    {input.prefix}
+                  </BodyText>
+                }
+              />
+            ))}
+          </div>
+
+          <div className="d-flex items-center items-end border-bottom-light w-full">
+            {minMaxInput.map((input, index) => (
+              <InputGroup
+                key={index}
+                {...input}
+                prefix={
+                  <BodyText level={5} fontFamily="Roboto">
+                    {input.prefix}
+                  </BodyText>
+                }
+              />
+            ))}
+          </div>
         </form>
+
+        <div className="pb-16 border-bottom-black-inset" style={{ textAlign: 'right' }}>
+          <CustomSaveButton
+            contentButton="Add"
+            style={{
+              background: disableAddPrice ? '#bfbfbf' : '',
+              minWidth: 48,
+            }}
+            onClick={disableAddPrice ? undefined : handleAddRow}
+            disabled={disableAddPrice}
+          />
+        </div>
 
         <Table
           dataSource={tableData}
@@ -476,10 +570,10 @@ const PriceForm = ({
 
       <UnitType
         title="SELECT UNIT TYPE"
-        unitData={unitData}
         visible={isShowModal === 'Unit Type'}
         onCancel={onToggleModal('none')}
         onSave={handeSaveUnitType}
+        defaultValue={formData.unit_type}
       />
 
       <InfoModal

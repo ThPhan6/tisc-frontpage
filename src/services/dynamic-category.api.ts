@@ -8,19 +8,20 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { CategoryEntity } from '@/types';
+import store from '@/reducers';
+import { setSummaryFinancialRecords, setUnitType } from '@/reducers/summary';
+import { CategoryEntity, type FinancialRecords, PriceAndInventoryAttribute } from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
 import { UnitItem } from '@/components/Modal/UnitType';
-import type { InventoryColumn } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import { PriceAndInventoryAttribute } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm';
+import { type InventoryColumn } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface InventoryReponse {
   data: {
     pagination: PaginationResponse;
-    inventories: PriceAndInventoryAttribute;
+    inventories: PriceAndInventoryAttribute[];
   };
 }
 
@@ -116,8 +117,8 @@ export async function moveCategoryToSubCategory(sub_id: string, parent_id: strin
 }
 
 export const getListInventories = (
-  params: PaginationRequestParams,
-  callback: (data: DataTableResponse) => void,
+  params?: PaginationRequestParams & { search?: string },
+  callback?: (data: DataTableResponse) => void,
 ) => {
   request(`/api/inventory/get-list`, {
     method: 'GET',
@@ -126,7 +127,7 @@ export const getListInventories = (
     .then((response: InventoryReponse) => {
       const { pagination, inventories } = response.data;
 
-      callback({
+      callback?.({
         data: inventories,
         pagination: {
           current: pagination.page,
@@ -147,10 +148,10 @@ export async function createInventory(data: PriceAndInventoryAttribute) {
     method: 'POST',
     data,
   })
-    .then((response) => {
+    .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_INVENTORY_SUCCESS);
       hidePageLoading();
-      return response.data;
+      return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INVENTORY_ERROR);
@@ -193,10 +194,10 @@ export async function updateInventory(id: string, payload: PriceAndInventoryAttr
     method: 'PATCH',
     data: payload,
   })
-    .then((res) => {
+    .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_INVENTORY_SUCCESS);
       hidePageLoading();
-      return res.data;
+      return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INVENTORY_ERROR);
@@ -209,9 +210,54 @@ export async function fetchUnitType() {
   return request<{ data: UnitItem[] }>(`/api/setting/common-type/${COMMON_TYPES.INVENTORY_UNIT}`, {
     method: 'GET',
   })
-    .then((response) => response.data)
+    .then((response) => store.dispatch(setUnitType(response.data)))
     .catch((error) => {
       console.log('getUnitTypeList error', error);
       return [];
+    });
+}
+
+export async function getSummary(brandId: string) {
+  return request<{ data: FinancialRecords }>(`/api/inventory/summary/brand/${brandId}`, {
+    method: 'GET',
+  })
+    .then((response) => store.dispatch(setSummaryFinancialRecords(response.data)))
+    .catch((error) => {
+      console.log('getSummary error', error);
+      return null;
+    });
+}
+
+export async function exchangeCurrency(brandId: string, currency: string) {
+  showPageLoading();
+  return request<{ data: FinancialRecords }>(`/api/inventory/exchange/brand/${brandId}`, {
+    method: 'POST',
+    data: { to_currency: currency },
+  })
+    .then(() => {
+      hidePageLoading();
+      message.success('Exchange currency success');
+      return true;
+    })
+    .catch((error) => {
+      hidePageLoading();
+      console.log('Exchange currency failed', error);
+      message.error('Exchange currency unsuccessful');
+      return false;
+    });
+}
+
+export async function updateInventories(payload: any) {
+  return request<{ data: any }>(`/api/inventory/update/inventories`, {
+    method: 'PATCH',
+    data: payload,
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_INVENTORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INVENTORY_ERROR);
+      return false;
     });
 }

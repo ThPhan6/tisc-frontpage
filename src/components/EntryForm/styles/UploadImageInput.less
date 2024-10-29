@@ -35,7 +35,24 @@
   }
 
   :global(.ant-upload-list-picture-card-container) {
-    width: 48px;
-    height: 48px;
+    width: 80px;
+    height: 80px;
+  }
+
+  :global(.ant-upload-list-item-actions) {
+    svg {
+      display: none;
+    }
+  }
+
+  :global(.ant-upload-list-item-info) {
+    &::before {
+      background: none;
+      background-color: none;
+    }
+  }
+
+  :global(.ant-btn) {
+    display: none;
   }
 }

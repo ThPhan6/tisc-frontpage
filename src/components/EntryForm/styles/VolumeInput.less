@@ -1,5 +1,22 @@
 .volume_discount_input {
+  align-items: flex-end;
   width: 100%;
+
+  :global(.volume_price_area) {
+    position: relative;
+  }
+
+  :global(.discount-price-area) {
+    :global(.ant-input) {
+      color: @mono-color !important;
+    }
+  }
+
+  :global(.input-message) {
+    position: absolute;
+    top: 35px;
+    right: 50px;
+  }
 
   :global(.ant-space-compact) {
     width: 100%;

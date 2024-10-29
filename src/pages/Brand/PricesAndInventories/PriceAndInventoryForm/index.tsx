@@ -2,57 +2,34 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Switch } from 'antd';
+import { Switch, message } from 'antd';
 import { useLocation } from 'umi';
 
-import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
-import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
-import { extractDataBase64, showImageUrl, validateRequiredFields } from '@/helper/utils';
-import { createInventory, getInventory, updateInventory } from '@/services';
+import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
+import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
+import { isEmpty, omit, pick, reduce } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
+import type { PriceAndInventoryAttribute } from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
-import InventoryHeader, { DataItem } from '@/components/InventoryHeader';
-import CurrencyModal from '@/components/Modal/CurrencyModal';
+import { EntryFormWrapper } from '@/components/EntryForm';
+import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
-import type {
-  InventoryColumn,
-  VolumePrice,
-} from '@/pages/Brand/PricesAndInventories/CategoryTable';
+import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import categoryTableStyle from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
-import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
-
-export interface PriceAndInventoryAttribute {
-  id?: string;
-  sku?: string;
-  description?: string;
-  unit_price?: string | number;
-  discount_price?: string;
-  discount_rate?: string;
-  min_quantity?: string;
-  max_quantity?: string;
-  unit_type: string;
-  inventory_category_id?: string;
-  image?: any;
-}
 
 const initialFormData = {
   sku: '',
   description: '',
-  unit_price: '',
-  discount_price: '0.00',
-  discount_rate: '',
-  min_quantity: '',
-  max_quantity: '',
   unit_type: '',
   inventory_category_id: '',
   image: [],
@@ -62,12 +39,18 @@ const PriceAndInventoryForm = () => {
   const [formData, setFormData] = useState<PriceAndInventoryAttribute>(initialFormData);
   const [tableData, setTableData] = useState<VolumePrice[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const location = useLocation<{ categoryId: string }>();
+  const location = useLocation<{ categoryId: string; brandId: string }>();
   const navigate = useNavigationHandler();
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
+
+  useEffect(() => {
+    setFormData(initialFormData);
+    setTableData([]);
+  }, []);
 
   const getRequiredFields = (): {
     field: keyof PriceAndInventoryAttribute;
@@ -78,42 +61,21 @@ const PriceAndInventoryForm = () => {
     { field: 'unit_type', messageField: 'Unit type is required' },
   ];
 
-  const setFormDataAfterAction = (data: InventoryColumn) => {
-    setFormData({
-      ...data,
-      unit_price: data.price.unit_price.toString(),
-      unit_type: data.price.unit_type,
-      image: data.image
-        ? [
-            {
-              uid: '-1',
-              name: 'image.png',
-              status: 'done',
-              url: showImageUrl(data.image),
-            },
-          ]
-        : [],
-    });
-  };
-
   const fetchInventory = async () => {
     const res = await getInventory(inventoryId);
+
     if (res) {
+      const rate = reduce(
+        res.price?.exchange_histories?.map((item) => item.rate),
+        (acc, el) => acc * el,
+        1,
+      );
+
       setFormData({
         ...res,
-        unit_price: res.price.unit_price.toString(),
-        unit_type: res.price.unit_type,
-        discount_price: '0.00',
-        image: res.image
-          ? [
-              {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',
-                url: showImageUrl(res.image),
-              },
-            ]
-          : [],
+        image: !isEmpty(res.image) ? [`/${res.image}`] : [],
+        unit_price: inventoryId ? Number(res.price.unit_price) * rate : res.price?.unit_price,
+        unit_type: res.price?.unit_type,
       });
 
       const volumePrices = res.price.volume_prices?.map((price, index: number) => ({
@@ -134,6 +96,11 @@ const PriceAndInventoryForm = () => {
   }, [inventoryId]);
 
   const transformTableDataToVolumePrices = useMemo(() => {
+    if (!tableData) {
+      setTableData([]);
+      return;
+    }
+
     return () =>
       tableData.map((item) => ({
         unit_type: item.unit_type,
@@ -147,13 +114,16 @@ const PriceAndInventoryForm = () => {
   const handleSave = useCallback(async () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
 
-    const image =
-      formData.image && formData.image.length > 0
-        ? extractDataBase64(formData.image[0].thumbUrl as string)
-        : null;
+    if (hasUnsavedChanges) {
+      message.warn('There is a draft volume that has not added yet. Please check it.');
+      return;
+    }
 
-    const newVolumePrices = transformTableDataToVolumePrices();
+    const image = !isEmpty(formData.image) ? extractDataBase64(formData.image[0]) : null;
+
+    const newVolumePrices = transformTableDataToVolumePrices?.() || [];
     const existingVolumePrices = (formData as any).volume_prices || [];
+
     const mergedVolumePrices = [
       ...existingVolumePrices,
       ...newVolumePrices.filter(
@@ -172,60 +142,60 @@ const PriceAndInventoryForm = () => {
       volume_prices: mergedVolumePrices,
     };
 
+    const pickPayload = pick(
+      {
+        ...payload,
+        volume_prices: isEmpty(payload.volume_prices)
+          ? null
+          : payload.volume_prices.map((el) =>
+              pick(el, ['discount_rate', 'max_quantity', 'min_quantity']),
+            ),
+      },
+      [
+        'sku',
+        'description',
+        'unit_price',
+        'unit_type',
+        'image',
+        'volume_prices',
+        'inventory_category_id',
+      ],
+    );
+
     const res: any = inventoryId
-      ? await updateInventory(inventoryId, payload)
-      : await createInventory(payload);
+      ? await updateInventory(inventoryId, omit(pickPayload, 'inventory_category_id'))
+      : await createInventory(pickPayload);
 
     if (!res) return;
 
     if (inventoryId) {
-      setFormDataAfterAction(res);
+      fetchInventory();
       return;
     }
 
     navigate({
       path: PATH.brandPricesInventoriesTable,
       query: { categories: category },
-      state: { categoryId: location.state?.categoryId },
+      state: { categoryId: location.state?.categoryId, brandId: location.state?.brandId },
     })();
-  }, [
-    formData,
-    inventoryId,
-    location.state?.categoryId,
-    category,
-    navigate,
-    setFormDataAfterAction,
-  ]);
+  }, [hasUnsavedChanges, formData, inventoryId, location.state?.categoryId, category, navigate]);
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
-  const inventoryHeaderData: DataItem[] = [
-    {
-      id: '1',
-      value: 'USD',
-      label: 'BASE CURRENTCY',
-      rightAction: (
-        <SingleRightFormIcon
-          className="cursor-pointer"
-          width={16}
-          height={16}
-          onClick={handleToggleModal('Inventory Header')}
-        />
-      ),
-    },
-    {
-      id: '2',
-      value: '1043',
-      label: 'TOTAL PRODUCT RECORDS',
-    },
-    {
-      id: '3',
-      value: 'US$ 00,000',
-      label: 'TOTAL STOCK VALUE',
-    },
-  ];
+  const handleSaveCurrecy = useCallback(
+    async (currency: string) => {
+      if (!currency) {
+        message.error('Please select a currency');
+        return;
+      }
 
-  const pageHeaderRender = () => <InventoryHeader data={inventoryHeaderData} onSearch={() => {}} />;
+      const res = await exchangeCurrency(location.state.brandId, currency);
+      if (res) fetchInventory();
+    },
+    [location.state?.brandId],
+  );
+
+  const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
@@ -281,49 +251,37 @@ const PriceAndInventoryForm = () => {
           }
         />
 
-        <hgroup
-          className={`d-flex items-center justify-between ${styles.category_form_heading_group}`}
+        <EntryFormWrapper
+          title={category ?? ''}
+          titleClassName={styles.category_form_heading_group_title}
+          handleCancel={navigate({
+            path: PATH.brandPricesInventoriesTable,
+            query: { categories: category },
+            state: {
+              categoryId: location.state?.categoryId,
+              brandId: location.state?.brandId,
+            },
+          })}
+          contentStyles={{
+            height: 'calc(var(--vh) * 100 - 312px)',
+          }}
+          extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
-          <BodyText level={3} customClass={styles.category_form_heading_group_title}>
-            {category}
-          </BodyText>
-          <CloseIcon
-            onClick={navigate({
-              path: PATH.brandPricesInventoriesTable,
-              query: { categories: category },
-              state: {
-                categoryId: location.state?.categoryId,
-              },
-            })}
-          />
-        </hgroup>
+          <div className={styles.category_form_wrapper}>
+            <PriceForm
+              isShowModal={isShowModal}
+              onToggleModal={handleToggleModal}
+              formData={formData}
+              setFormData={setFormData}
+              tableData={tableData}
+              setTableData={setTableData}
+              setHasUnsavedChanges={setHasUnsavedChanges}
+            />
 
-        <div className={styles.category_form_wrapper}>
-          <PriceForm
-            isShowModal={isShowModal}
-            onToggleModal={handleToggleModal}
-            formData={formData}
-            setFormData={setFormData}
-            tableData={tableData}
-            setTableData={setTableData}
-          />
-          <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} />
-        </div>
-
-        <footer className={styles.category_form_footer}>
-          <CustomSaveButton contentButton="Save" onClick={handleSave} />
-        </footer>
+            {/* <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} /> */}
+          </div>
+        </EntryFormWrapper>
       </div>
-
-      <CurrencyModal
-        annouceContent="Beware that changing this currency will impact ALL of your price settings for the existing product cards and partner price rates. Proceed with caution."
-        isShowAnnouncement={true}
-        onCancel={handleToggleModal('none')}
-        onOk={() => {}}
-        open={isShowModal === 'Inventory Header'}
-        title="SELECT CURRENTCY"
-        data={[]}
-      />
     </PageContainer>
   );
 };
