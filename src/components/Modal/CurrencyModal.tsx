@@ -55,7 +55,7 @@ const CurrencyModal = ({
   return (
     <Modal
       className={styles.currency}
-      open={isShowModal}
+      visible={isShowModal}
       onCancel={onCancel}
       title={
         <BodyText level={3} customClass={styles.currency_title}>

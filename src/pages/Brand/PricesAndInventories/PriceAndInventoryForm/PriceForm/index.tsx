@@ -71,8 +71,8 @@ const PriceForm = ({
       discount_rate = 0,
     } = formData;
     const parsedUnitPrice = parseFloat(unit_price?.toString() ?? '0');
-    const minQuantity = min_quantity;
-    const maxQuantity = max_quantity;
+    const minQuantity = Number(min_quantity);
+    const maxQuantity = Number(max_quantity);
 
     if (!unit_price || !unit_type || isNaN(parsedUnitPrice)) {
       message.warn('Unit price and type are required and must be valid.');
@@ -84,7 +84,7 @@ const PriceForm = ({
       return false;
     }
 
-    if (isNaN(Number(minQuantity)) || isNaN(Number(maxQuantity)) || minQuantity > maxQuantity) {
+    if (isNaN(minQuantity) || isNaN(maxQuantity) || minQuantity > maxQuantity) {
       message.warn('Quantities must be valid integers and min cannot exceed max.');
       return false;
     }
@@ -173,20 +173,24 @@ const PriceForm = ({
   );
 
   const handleUnitPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
+    const value = event.target.value === '' ? undefined : Number(event.target.value);
+
     setFormData((prev) => ({
       ...prev,
       unit_price: value,
-      discount_price: prev.discount_rate && (value * Number(prev.discount_rate)) / 100,
+      discount_price:
+        value && prev.discount_rate ? (value * Number(prev.discount_rate)) / 100 : undefined,
     }));
 
     setTableData((prev) =>
       prev.map((item) => ({
         ...item,
-        discount_price: (value * Number(item.discount_rate)) / 100,
+        discount_price:
+          value && item.discount_rate ? (value * Number(item.discount_rate)) / 100 : undefined,
       })),
     );
-    setHasUnsavedChanges(!isNaN(value) && value !== 0);
+
+    setHasUnsavedChanges(value !== undefined);
   };
 
   const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,7 +232,9 @@ const PriceForm = ({
     (field: keyof PriceAndInventoryAttribute) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = event.target.value;
-      setFormData((prev) => ({ ...prev, [field]: value }));
+      const parsedValue =
+        field === 'min_quantity' || field === 'max_quantity' ? Number(value) || undefined : value;
+      setFormData((prev) => ({ ...prev, [field]: parsedValue }));
       setHasUnsavedChanges(value.trim() !== '');
     };
 
