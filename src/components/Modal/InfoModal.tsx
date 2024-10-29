@@ -5,13 +5,20 @@ import styles from '@/components/Modal/styles/InfoModal.less';
 import { BodyText, CormorantBodyText } from '@/components/Typography';
 
 interface InfoModalProps {
-  isOpen: boolean;
   title: string;
+  isOpen: boolean;
   onCancel: () => void;
-  content: { id: number | string; heading: string; description: ReactNode }[];
+  additionalContentClass?: string;
+  content: { id: number | string; heading?: ReactNode; description: ReactNode }[];
 }
 
-const InfoModal = ({ isOpen, title, onCancel, content }: InfoModalProps) => {
+const InfoModal = ({
+  isOpen,
+  title,
+  onCancel,
+  additionalContentClass = '',
+  content,
+}: InfoModalProps) => {
   return (
     <CustomModal
       className={styles.info_modal}
@@ -25,7 +32,7 @@ const InfoModal = ({ isOpen, title, onCancel, content }: InfoModalProps) => {
       footer={null}
     >
       {content.map((item) => (
-        <section key={item.id} className={`${styles.info_modal_content}`}>
+        <section key={item.id} className={`${styles.info_modal_content} ${additionalContentClass}`}>
           <CormorantBodyText customClass={`${styles.info_modal_content_heading}`}>
             {item.heading}
           </CormorantBodyText>

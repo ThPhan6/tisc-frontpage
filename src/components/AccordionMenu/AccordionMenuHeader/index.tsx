@@ -20,7 +20,7 @@ const AccordionMenuHeader = ({ title, isEditMode, onToggleSwtich }: AccordionMen
           checked={isEditMode}
           onChange={onToggleSwtich}
           size="default"
-          checkedChildren="SAVE & CLOSE"
+          checkedChildren="CLOSE EDIT"
           unCheckedChildren="EDIT NOW"
           className={`${styles.accordion_menu_header_btn_switch} ${
             isEditMode
