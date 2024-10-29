@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
-import { Col, Form, Row, message } from 'antd';
+import { Col, Row, message } from 'antd';
 import Upload, { UploadProps } from 'antd/lib/upload/Upload';
 import { UploadFile } from 'antd/lib/upload/interface';
 
@@ -132,7 +132,11 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
                 });
               }}
             >
-              <div className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}>
+              <div
+                className={`${styles.filePreview} file-preview${
+                  !isEditable ? styles.lightBorder : ''
+                }`}
+              >
                 <img
                   src={showImageUrl(image)}
                   onClick={() => {
@@ -182,8 +186,8 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
                     <div
                       style={{
                         position: 'absolute',
-                        bottom: '1.5rem',
-                        right: '6px',
+                        bottom: '2.5rem',
+                        right: '-1px',
                         background: '#E6E6E6',
                         width: 100,
                         height: 100,

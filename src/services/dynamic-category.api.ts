@@ -21,7 +21,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 interface InventoryReponse {
   data: {
     pagination: PaginationResponse;
-    inventories: PriceAndInventoryAttribute;
+    inventories: PriceAndInventoryAttribute[];
   };
 }
 
@@ -117,7 +117,7 @@ export async function moveCategoryToSubCategory(sub_id: string, parent_id: strin
 }
 
 export const getListInventories = (
-  params?: PaginationRequestParams,
+  params?: PaginationRequestParams & { search?: string },
   callback?: (data: DataTableResponse) => void,
 ) => {
   request(`/api/inventory/get-list`, {

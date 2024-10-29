@@ -115,7 +115,7 @@ const PriceAndInventoryForm = () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
 
     if (hasUnsavedChanges) {
-      message.warn('Please add volume prices and click plus button after entering the unit price.');
+      message.warn('There is a draft volume that has not added yet. Please check it.');
       return;
     }
 

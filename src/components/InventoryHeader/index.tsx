@@ -1,4 +1,4 @@
-import { ReactNode, memo, useEffect, useState } from 'react';
+import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useState } from 'react';
 
 import { Input } from 'antd';
 import { useLocation } from 'umi';
@@ -7,6 +7,7 @@ import { ReactComponent as MagnifyingGlassIcon } from '@/assets/icons/ic-search.
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { getSummary } from '@/services';
+import { debounce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 
@@ -68,6 +69,16 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
     },
   ];
 
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      onSearch?.(value);
+    }, 300),
+    [onSearch],
+  );
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
+    debouncedSearch(event.target.value);
+
   return (
     <div className={styles.inventory_header}>
       <section className={styles.inventory_header_content}>
@@ -87,7 +98,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
       </section>
 
       <div className={styles.inventory_header_search_container}>
-        <Input placeholder="Search" disabled={!onSearch} />
+        <Input placeholder="Search" disabled={!onSearch} onChange={handleSearchChange} />
         <div className="d-flex items-center" style={{ opacity: !onSearch ? 0.5 : 1 }}>
           <BodyText fontFamily="Roboto" level={6} customClass="mr-16 pl-12">
             Product ID / SKU

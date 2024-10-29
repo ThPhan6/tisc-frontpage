@@ -414,7 +414,7 @@ const PriceForm = ({
         </article>
 
         <div className="d-flex items-center justify-between w-full">
-          <div style={{ width: '83%' }}>
+          <div style={{ width: '85%' }}>
             <InputGroup
               label="Product ID (SKU Code)"
               required

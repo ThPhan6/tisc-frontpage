@@ -73,6 +73,7 @@ const CategoryTable: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [editedRows, setEditedRows] = useState<Record<string, any>>({});
+  const [filter, setFilter] = useState('');
 
   const tableRef = useRef<any>();
   const location = useLocation<{ categoryId: string; brandId: string }>();
@@ -144,8 +145,6 @@ const CategoryTable: React.FC = () => {
             ),
       };
     });
-
-    console.log(pickPayload);
 
     const res = await updateInventories(pickPayload);
     if (res) {
@@ -375,8 +374,13 @@ const CategoryTable: React.FC = () => {
     if (res) tableRef.current.reload();
   };
 
+  const handleSearch = (value: string) => {
+    setFilter(value);
+    tableRef.current.reload({ search: value });
+  };
+
   const pageHeaderRender = () => (
-    <InventoryHeader onSearch={() => {}} onSaveCurrency={handleSaveCurrecy} />
+    <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrecy} />
   );
 
   return (
@@ -466,7 +470,9 @@ const CategoryTable: React.FC = () => {
           hoverOnRow={false}
           extraParams={{
             category_id: location.state.categoryId,
+            ...(!isEmpty(filter) && { search: filter }),
           }}
+          onFilterLoad
         />
       </section>
 

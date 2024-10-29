@@ -149,6 +149,8 @@
   }
 
   :global(.ant-input) {
+    height: 22px;
+    padding: 0 11px;
     color: #2b39d4;
     resize: none;
   }
@@ -195,8 +197,7 @@
 
   :global(.ant-col-4) {
     position: absolute;
-    top: 0;
-    right: 0;
+    right: 8px;
     width: 100px !important;
     min-width: 100px !important;
     height: 100px !important;
@@ -205,10 +206,18 @@
   :global(.sub-photo-action) {
     bottom: 0;
     z-index: 1;
+    width: 100px;
+    height: 100px;
   }
 
   :global(.delete-button) {
-    margin-top: 70px;
+    margin-top: 68px;
+  }
+
+  :global(.file-preview) {
+    top: -2.6rem;
+    width: 100px;
+    height: 100px;
   }
 
   @media screen and (min-width: @screen-lg) {
