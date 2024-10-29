@@ -52,8 +52,11 @@ export type ModalType =
   // Color AI
   | 'Color AI'
   | 'Location'
+  | 'BackOrder'
+  | 'Inventory Header'
   | 'Base & Volume'
   | 'Inventory'
+  | 'Import/Export'
   | 'Unit Type';
 
 export interface ModalState {

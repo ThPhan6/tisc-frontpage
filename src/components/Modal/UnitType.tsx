@@ -1,7 +1,8 @@
-import { Fragment, ReactNode, useMemo, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { Modal, ModalProps, Radio } from 'antd';
 
+import { useAppSelector } from '@/reducers';
 import { CommonUnitTypeGroup } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -16,11 +17,11 @@ export interface UnitItem {
 }
 
 interface UnitTypeProps extends ModalProps {
+  defaultValue?: string;
   title: ReactNode;
   visible: boolean;
   onCancel: () => void;
-  onSave: (selectedItem: UnitItem | null) => void;
-  unitData: UnitItem[];
+  onSave: (selectedItem: UnitItem | undefined) => void;
 }
 
 // Unit type group to label mapping
@@ -33,13 +34,20 @@ const unitGroupLabels: Record<CommonUnitTypeGroup, string> = {
   [CommonUnitTypeGroup.INV_COUNT]: 'Count',
 };
 
-const UnitType = ({ title, visible, onCancel, onSave, unitData }: UnitTypeProps) => {
-  const [selectedValue, setSelectedValue] = useState<UnitItem | null>(null);
+const UnitType = ({ title, visible, onCancel, onSave, defaultValue }: UnitTypeProps) => {
+  const [selectedValue, setSelectedValue] = useState<UnitItem | undefined>();
+  const { unitType } = useAppSelector((state) => state.summary);
+
+  useEffect(() => {
+    if (unitType.length > 0) {
+      setSelectedValue(unitType.find((item) => item.id === defaultValue));
+    }
+  }, [unitType, defaultValue]);
 
   const getUnitByType = (group: CommonUnitTypeGroup): string => unitGroupLabels[group] || 'Unknown';
 
   const groupedData = useMemo(() => {
-    return unitData.reduce<Record<string, UnitItem[]>>((acc, item) => {
+    return unitType.reduce<Record<string, UnitItem[]>>((acc, item) => {
       const type = getUnitByType(item.group);
       if (!acc[type]) {
         acc[type] = [];
@@ -47,10 +55,9 @@ const UnitType = ({ title, visible, onCancel, onSave, unitData }: UnitTypeProps)
       acc[type].push(item);
       return acc;
     }, {});
-  }, [unitData, getUnitByType]);
+  }, [unitType, getUnitByType]);
 
-  const handleRadioChange = (item: UnitItem) => () =>
-    selectedValue?.id === item.id ? setSelectedValue(null) : setSelectedValue(item);
+  const handleRadioChange = (item: UnitItem) => () => setSelectedValue(item);
 
   const handleSave = () => {
     onSave(selectedValue);
@@ -74,19 +81,28 @@ const UnitType = ({ title, visible, onCancel, onSave, unitData }: UnitTypeProps)
         <Fragment key={category}>
           <h4 className={styles.unit_type_heading}>{category}</h4>
           {groupedData[category].map((item) => (
-            <div key={item.id} className={styles.unit_type_wrapper}>
-              <BodyText customClass={styles.unit_type_wrapper_unit} fontFamily="Roboto" level={6}>
+            <div
+              key={item.id}
+              className={styles.unit_type_wrapper}
+              onClick={handleRadioChange(item)}
+            >
+              <BodyText
+                style={{ color: selectedValue?.id === item.id ? '#2B39D4' : '#000' }}
+                customClass={styles.unit_type_wrapper_unit}
+                fontFamily="Roboto"
+                level={6}
+              >
                 {item.code}
               </BodyText>
-              <BodyText customClass={styles.unit_type_wrapper_label} fontFamily="Roboto" level={6}>
+              <BodyText
+                style={{ color: selectedValue?.id === item.id ? '#2B39D4' : '#000' }}
+                customClass={styles.unit_type_wrapper_label}
+                fontFamily="Roboto"
+                level={6}
+              >
                 {item.name}
               </BodyText>
-              <Radio
-                value={item.id}
-                className="mr-16"
-                checked={selectedValue?.id === item.id}
-                onChange={handleRadioChange(item)}
-              />
+              <Radio value={item.id} className="mr-16" checked={selectedValue?.id === item.id} />
             </div>
           ))}
         </Fragment>

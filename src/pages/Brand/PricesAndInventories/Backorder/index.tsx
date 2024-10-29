@@ -2,6 +2,7 @@ import { Modal, Table, TableColumnsType } from 'antd';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import styles from '@/pages/Brand/PricesAndInventories/Backorder/Backorder.less';
+import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 
 interface BackorderProps {
   isShowBackorder: boolean;
@@ -42,13 +43,13 @@ const Backorder = ({ isShowBackorder, onCancel }: BackorderProps) => {
       width: '10%',
       align: 'center',
       render: (_: any, item: any) => (
-        <></>
-        // <UpdatableCell
-        //   item={item}
-        //   columnKey="add_to"
-        //   defaultValue="6"
-        //   valueClass="indigo-dark-variant"
-        // />
+        <EditableCell
+          item={item}
+          columnKey="add_to"
+          defaultValue="6"
+          valueClass="indigo-dark-variant"
+          onSave={() => {}}
+        />
       ),
     },
   ];

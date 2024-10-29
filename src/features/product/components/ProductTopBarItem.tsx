@@ -384,7 +384,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                   onClick={handleSelect(sub)}
                 >
                   <span
-                    className={`sub-label-name text-hover-medium mb-7 ${
+                    className={`sub-label-name text-hover-medium mb-6${
                       styles['label-name-width']
                     } ${isSubLabelNameSelected(sub.id!) ? styles['color-checked'] : ''}`}
                     style={{

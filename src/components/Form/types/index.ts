@@ -62,6 +62,7 @@ export interface CustomInputProps extends InputProps {
   fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   defaultWidth?: string | number;
   maxWords?: number;
+  additionalInputClass?: string;
   ref?: any;
   inputValidation?: (value: string) => boolean;
 }

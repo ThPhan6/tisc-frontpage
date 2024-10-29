@@ -65,6 +65,8 @@ export default defineConfig({
     'border-all-light': 'inset 0 0 0 .7px rgba(0, 0, 0, 0.3)',
     'border-bottom-black-inset': '0 -0.5px 0 0 #000 inset',
     'border-top-black-inset': '0 0.5px 0 0 #000 inset',
+    'border-right-black-inset': '-0.5px 0 0 0 #000 inset',
+    'screen-lg': '1500px',
 
     //font fontFamily
     'font-primary': 'Roboto',

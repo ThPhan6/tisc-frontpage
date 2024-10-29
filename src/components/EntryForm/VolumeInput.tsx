@@ -1,11 +1,14 @@
 import { memo } from 'react';
 
-import { Input, InputProps, Space } from 'antd';
+import { Space } from 'antd';
+
+import { CustomInputProps } from '@/components/Form/types';
 
 import styles from '@/components/EntryForm/styles/VolumeInput.less';
+import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
-export interface InputFieldProps extends InputProps {
+export interface InputFieldProps extends CustomInputProps {
   placeholder?: string;
   prefix?: string;
   suffix?: React.ReactNode;
@@ -25,7 +28,7 @@ const VolumeInput = ({ label, inputs, containerClass = '', containerStyle }: Vol
       <BodyText level={3}>{label}</BodyText>
       <Space.Compact>
         {inputs.map((input, index) => (
-          <Input
+          <CustomInput
             key={index}
             {...input}
             prefix={
@@ -33,6 +36,8 @@ const VolumeInput = ({ label, inputs, containerClass = '', containerStyle }: Vol
                 {input.prefix}
               </BodyText>
             }
+            type="number"
+            max={100}
           />
         ))}
       </Space.Compact>
