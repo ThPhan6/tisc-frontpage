@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
 
+import { PageContainer } from '@ant-design/pro-layout';
+
 import { confirmDelete } from '@/helper/common';
 import {
   createDynamicCategory,
   deleteDynamicCategory,
   getDynamicCategories,
   getGroupCategories,
+  getSummary,
   moveCategoryToSubCategory,
   updateDynamicCategory,
 } from '@/services';
 
 import AccordionMenu, { AccordionItem } from '@/components/AccordionMenu';
+import InventoryHeader from '@/components/InventoryHeader';
 
 const PricesAndInventories = () => {
   const [accordionItems, setAccordionItems] = useState<AccordionItem[]>([]);
@@ -83,6 +87,15 @@ const PricesAndInventories = () => {
     Promise.all([fetchCategories(), fetchGroupCategories()]);
   }, []);
 
+  useEffect(() => {
+    const brandId = [...new Set(accordionItems.map((item) => item.relation_id))][0];
+
+    if (brandId) {
+      const fetchSummary = async () => await getSummary(brandId);
+      fetchSummary();
+    }
+  }, [accordionItems]);
+
   const handleSelect = async (sub_id: string, parent_id: string) => {
     const res = await moveCategoryToSubCategory(sub_id, parent_id);
 
@@ -109,18 +122,22 @@ const PricesAndInventories = () => {
     return false;
   };
 
+  const pageHeaderRender = () => <InventoryHeader />;
+
   return (
-    <AccordionMenu
-      title="PRODUCT INVENTORY CATEGORY"
-      levels={3}
-      accordionItems={accordionItems}
-      groupItems={groupItems}
-      accordionConfig={categoryConfig}
-      onAdd={handleAdd}
-      onDelete={handleDelete}
-      onSelect={handleSelect}
-      onUpdate={handleUpdate}
-    />
+    <PageContainer pageHeaderRender={pageHeaderRender}>
+      <AccordionMenu
+        title="PRODUCT INVENTORY CATEGORY"
+        levels={3}
+        accordionItems={accordionItems}
+        groupItems={groupItems}
+        accordionConfig={categoryConfig}
+        onAdd={handleAdd}
+        onDelete={handleDelete}
+        onSelect={handleSelect}
+        onUpdate={handleUpdate}
+      />
+    </PageContainer>
   );
 };
 

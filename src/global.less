@@ -182,10 +182,10 @@ button {
 }
 
 .primary-color {
-  color: @primary-color;
+  color: @primary-color !important;
 }
 .primary-color-dark {
-  color: @primary-color-dark;
+  color: @primary-color-dark !important;
 }
 .primary-color-medium {
   color: @primary-color-medium;
@@ -202,7 +202,7 @@ button {
 }
 
 .indigo-dark-variant {
-  color: #2b39d4;
+  color: #2b39d4 !important;
 }
 
 .red-magenta {
@@ -274,6 +274,10 @@ button {
   width: 100%;
 }
 
+.w-1-2 {
+  width: 50%;
+}
+
 .h-full {
   height: 100%;
 }
@@ -306,6 +310,10 @@ button {
   margin-bottom: 16px;
 }
 
+.mt-16 {
+  margin-top: 16px;
+}
+
 .mb-10 {
   margin-bottom: 10px;
 }
@@ -314,12 +322,16 @@ button {
   margin-right: 16px;
 }
 
+.ml-16 {
+  margin-left: 16px;
+}
+
 .mb-4 {
   margin-bottom: 4px;
 }
 
-.mb-7 {
-  margin-bottom: 7px;
+.mb-6 {
+  margin-bottom: 6px;
 }
 
 .mb-24 {
@@ -332,6 +344,10 @@ button {
 
 .mr-8 {
   margin-right: 8px;
+}
+
+.mt-8 {
+  margin-top: 8px;
 }
 
 .mb-8-px {
@@ -352,6 +368,18 @@ button {
 
 .pb-12 {
   padding-bottom: 12px;
+}
+
+.pl-12 {
+  padding-left: 12px;
+}
+
+.pb-16 {
+  padding-bottom: 16px;
+}
+
+.p-16 {
+  padding: 16px;
 }
 
 .py-10 {
@@ -768,7 +796,7 @@ li.ant-menu-submenu {
 }
 
 .shadow-none {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .ellipsis {
@@ -783,4 +811,58 @@ li.ant-menu-submenu {
   font-size: 14px;
   line-height: calc(21 / 14);
   letter-spacing: 0.28px;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.border-bottom-black-inset {
+  box-shadow: @border-bottom-black-inset;
+}
+
+.border-right-black-inset {
+  box-shadow: @border-right-black-inset;
+}
+
+.border-bottom-light {
+  box-shadow: @border-bottom-light;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-light {
+  font-weight: 300 !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.items-end {
+  align-items: flex-end;
 }

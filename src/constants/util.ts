@@ -103,6 +103,7 @@ export const COMMON_TYPES = {
   ISSUE_FOR: 13,
   CAPABILITIES: 14,
   INVOICE: 15,
+  INVENTORY_UNIT: 20,
 };
 
 export const ACTION_TASK_MODEL = {
