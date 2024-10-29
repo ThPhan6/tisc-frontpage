@@ -118,41 +118,41 @@ const PriceForm = ({
       {
         title: '#',
         dataIndex: 'key',
-        width: '28px',
+        width: '5%',
         align: 'center',
       },
       {
         title: 'Discount Price',
         dataIndex: 'discount_price',
         align: 'center',
-        width: '132px',
+        width: '20%',
       },
       {
         title: 'Discount Rate',
         dataIndex: 'discount_rate',
         align: 'center',
-        width: '78px',
+        width: '18%',
         render: (_, item) => renderUpdatableCell(item, 'discount_rate', item.discount_rate),
       },
       {
         title: 'Min. Quantity',
         dataIndex: 'min_quantity',
         align: 'center',
-        width: '78px',
+        width: '15%',
         render: (_, item) => renderUpdatableCell(item, 'min_quantity', item.min_quantity),
       },
       {
         title: 'Max. Quantity',
         dataIndex: 'max_quantity',
         align: 'center',
-        width: '78px',
+        width: '15%',
         render: (_, item) => renderUpdatableCell(item, 'max_quantity', item.max_quantity),
       },
       {
         title: 'Unit Type',
         dataIndex: 'unit_type',
         align: 'center',
-        width: '69px',
+        width: '18%',
         render: () => (
           <BodyText fontFamily="Roboto" level={5}>
             {unitTypeCode}
@@ -160,7 +160,7 @@ const PriceForm = ({
         ),
       },
       {
-        width: '28px',
+        width: '5%',
         render: (_, item) => (
           <TrashIcon
             className="cursor-pointer indigo-dark-variant"
