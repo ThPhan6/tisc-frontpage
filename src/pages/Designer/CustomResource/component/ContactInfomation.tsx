@@ -263,7 +263,6 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           <FormGroup
             label="Work Phone"
             layout="vertical"
-            required
             style={{ marginBottom: '16px' }}
             labelFontSize={3}
             labelColor={labelColor}
@@ -288,7 +287,6 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           <FormGroup
             label="Work Mobile"
             layout="vertical"
-            required
             labelFontSize={3}
             style={{ marginBottom: '16px' }}
             labelColor={labelColor}
