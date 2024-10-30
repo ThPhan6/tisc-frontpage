@@ -9,7 +9,7 @@ import { fetchUnitType } from '@/services';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
-import { PriceAndInventoryAttribute } from '@/types';
+import { PriceAttribute } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
@@ -27,8 +27,8 @@ import CollectionGallery from '@/features/gallery/CollectionGallery';
 interface PriceFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
-  formData: PriceAndInventoryAttribute;
-  setFormData: React.Dispatch<React.SetStateAction<PriceAndInventoryAttribute>>;
+  formData: PriceAttribute;
+  setFormData: React.Dispatch<React.SetStateAction<PriceAttribute>>;
   tableData: VolumePrice[];
   setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
   setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
@@ -227,7 +227,7 @@ const PriceForm = ({
   );
 
   const handleFormChange =
-    (field: keyof PriceAndInventoryAttribute) =>
+    (field: keyof PriceAttribute) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = event.target.value;
       const parsedValue =
@@ -261,7 +261,7 @@ const PriceForm = ({
     [formData.min_quantity, formData.max_quantity],
   );
 
-  const handleClearInputValue = (field: keyof PriceAndInventoryAttribute) => () =>
+  const handleClearInputValue = (field: keyof PriceAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
   const handleAddRow = () => {
@@ -406,7 +406,7 @@ const PriceForm = ({
 
   return (
     <>
-      <div className={`${styles.category_form_content}`}>
+      <div className={`${styles.category_form_content} border-right-black-inset`}>
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
           <Title customClass={`${styles.category_form_content_title} d-flex items-center`}>
             BASE PRICE
@@ -491,7 +491,7 @@ const PriceForm = ({
 
         <article
           style={{ height: 28 }}
-          className="d-flex items-center justify-between w-full border-bottom-black-inset mt-16 mb-8-px"
+          className="d-flex items-center justify-between w-full mt-16 mb-8-px"
         >
           <Title
             customClass={`${styles.category_form_content_title} shadow-none d-flex items-center`}

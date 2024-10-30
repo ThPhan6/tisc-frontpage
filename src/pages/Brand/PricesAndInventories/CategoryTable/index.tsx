@@ -46,7 +46,7 @@ export interface VolumePrice {
   unit_type?: string;
 }
 
-export interface InventoryColumn {
+export interface PriceAndInventoryColumn {
   id: string;
   image: string;
   sku: string;
@@ -117,7 +117,7 @@ const CategoryTable: React.FC = () => {
       },
     })();
 
-  const handleRowClick = (record: InventoryColumn) => {
+  const handleRowClick = (record: PriceAndInventoryColumn) => {
     if (isEditMode) return;
 
     const newSelectedRowKeys = [...selectedRowKeys];
@@ -147,7 +147,7 @@ const CategoryTable: React.FC = () => {
   const debouncedUpdateInventories = debounce(async () => {
     const pickPayload: Record<
       string,
-      Pick<InventoryColumn['price'], 'unit_price' | 'volume_prices'>
+      Pick<PriceAndInventoryColumn['price'], 'unit_price' | 'volume_prices'>
     > = {};
 
     forEach(editedRows, (value, key) => {
@@ -178,13 +178,17 @@ const CategoryTable: React.FC = () => {
     setIsEditMode(!isEditMode);
   };
 
-  const rowSelectedValue = (record: InventoryColumn, value: string | number) => (
+  const rowSelectedValue = (record: PriceAndInventoryColumn, value: string | number) => (
     <span className={` ${selectedRowKeys.includes(record.id) ? 'font-medium' : ''} w-1-2`}>
       {value}
     </span>
   );
 
-  const renderEditableCell = (item: InventoryColumn, columnKey: string, value: string | number) =>
+  const renderEditableCell = (
+    item: PriceAndInventoryColumn,
+    columnKey: string,
+    value: string | number,
+  ) =>
     isEditMode ? (
       <EditableCell
         item={item}
@@ -199,7 +203,7 @@ const CategoryTable: React.FC = () => {
       rowSelectedValue(item, value)
     );
 
-  const columns: TableColumnProps<InventoryColumn>[] = useMemo(
+  const columns: TableColumnProps<PriceAndInventoryColumn>[] = useMemo(
     () => [
       {
         title: 'Image',
@@ -295,7 +299,7 @@ const CategoryTable: React.FC = () => {
         align: isEditMode ? 'left' : 'center',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span style={{ flexBasis: isEditMode ? '50%' : '100%' }}>
+            <span className={`${isEditMode ? 'w-1-2' : 'w-full'}`}>
               {renderEditableCell(item, 'unit_price', 12)}
             </span>
             {isEditMode && <CDownLeftIcon onClick={handleToggleModal('BackOrder')} />}
@@ -351,7 +355,7 @@ const CategoryTable: React.FC = () => {
     },
   };
 
-  const createRowHandler = (record: InventoryColumn) => ({
+  const createRowHandler = (record: PriceAndInventoryColumn) => ({
     onClick: () => handleRowClick(record),
   });
 
