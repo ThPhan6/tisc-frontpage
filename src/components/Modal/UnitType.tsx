@@ -67,7 +67,7 @@ const UnitType = ({ title, visible, onCancel, onSave, defaultValue }: UnitTypePr
   return (
     <Modal
       className={styles.unit_type}
-      open={visible}
+      visible={visible}
       onCancel={onCancel}
       closable={false}
       title={
