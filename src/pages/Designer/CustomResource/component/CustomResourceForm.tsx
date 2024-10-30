@@ -201,7 +201,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
         <InputGroup
           label="Country Location"
-          required
           fontLevel={3}
           value={countryData.label}
           hasPadding
@@ -216,7 +215,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
         <InputGroup
           label="State / Province"
-          required
           fontLevel={3}
           value={stateData.label}
           hasPadding
@@ -232,7 +230,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
         <InputGroup
           label="City / Town"
-          required
           fontLevel={3}
           value={cityData.label?.toString()}
           hasPadding
@@ -247,13 +244,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           labelColor={labelColor}
         />
         <div className={styles.addressForm}>
-          <FormGroup
-            label="Address"
-            layout="vertical"
-            required
-            labelFontSize={3}
-            labelColor={labelColor}
-          >
+          <FormGroup label="Address" layout="vertical" labelFontSize={3} labelColor={labelColor}>
             <CustomTextArea
               className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
               maxLength={100}
@@ -271,7 +262,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <InputGroup
           label="Postal / Zip Code"
           placeholder="postal / zip code"
-          required
           deleteIcon={isEdit}
           fontLevel={3}
           value={data.postal_code}
