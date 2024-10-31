@@ -407,7 +407,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const firstLoad = useBoolean(true);
   const [delayDuration, setDelayDuration] = useState<number>(20000);
   const location = useLocation();
+  const [showBackTop, setShowBackTop] = useState(false);
   console.log(groups);
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackTop(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   useEffect(() => {
     if (data) {
       const activeProducts =
@@ -802,24 +814,26 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         ))}
       </div>
       {/* Scroll to top Button */}
-      <BackTop>
-        <CustomButton
-          style={{
-            position: 'fixed',
-            bottom: 40,
-            right: 25,
-            zIndex: 1,
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: 40,
-          }}
-          properties={'rounded'}
-          variant={'primaryDark'}
-          size={'medium'}
-        >
-          <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
-        </CustomButton>
-      </BackTop>
+      {showBackTop && (
+        <BackTop>
+          <CustomButton
+            style={{
+              position: 'fixed',
+              bottom: 40,
+              right: 25,
+              zIndex: 1,
+              paddingLeft: 20,
+              paddingRight: 20,
+              borderRadius: 40,
+            }}
+            properties={'rounded'}
+            variant={'primaryDark'}
+            size={'medium'}
+          >
+            <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
+          </CustomButton>
+        </BackTop>
+      )}
     </>
   );
 };

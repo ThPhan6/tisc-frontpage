@@ -194,8 +194,8 @@ export const ProductBasicInfo: React.FC = () => {
             </div>
           }
           noWrap
-          inputTitle={collectionValue}
-          value={collectionValue}
+          inputTitle={collectionValue ? collectionValue : 'X Collection'}
+          value={collectionValue ? collectionValue : 'X Collection'}
           readOnly={editable === false}
           containerClass={!editable ? styles.viewInfo : ''}
         />

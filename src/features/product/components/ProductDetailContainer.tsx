@@ -146,10 +146,10 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    if (!details.collections?.length) {
-      message.error('Please select collection');
-      return;
-    }
+    // if (!details.collections?.length) {
+    //   message.error('Please select collection');
+    //   return;
+    // }
 
     // check urls is valid
     const haveInvaliDownloadURL = details.downloads.some(
