@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 
 import { formatPhoneCode } from '@/helper/utils';
 
@@ -18,6 +18,7 @@ const CountryModal: FC<{
   hasGlobal?: boolean;
 }> = ({ visible, setVisible, chosenValue, setChosenValue, withPhoneCode, hasGlobal = true }) => {
   const [countries, setCountries] = useState<Country[]>([]);
+  const [orgCountries, setOrgCountries] = useState<Country[]>([]);
   const GlobalItem: Country = { name: 'Global', id: '-1', phone_code: '00' };
   const getCountryList = () => {
     getCountries().then((res) => {
@@ -37,6 +38,19 @@ const CountryModal: FC<{
     });
   };
 
+  const onCountrySearch = (e: ChangeEvent<HTMLInputElement>) => {
+    // Store original countries array in 1st Search
+    if (orgCountries.length == 0) setOrgCountries(countries);
+    if (e.target.value === '') {
+      setCountries(orgCountries);
+      return;
+    }
+    const newCountries = orgCountries.filter((country) =>
+      country.name.toLowerCase().includes(e.target.value.toLowerCase()),
+    );
+    setCountries(newCountries);
+  };
+
   useEffect(() => {
     getCountryList();
   }, []);
@@ -47,6 +61,7 @@ const CountryModal: FC<{
       visible={visible}
       setVisible={setVisible}
       secondaryModal
+      onCountrySearch={onCountrySearch}
       chosenValue={chosenValue}
       setChosenValue={(data) => {
         const selectedCountry = countries.find((country) => country.id === data.value);
