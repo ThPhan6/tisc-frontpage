@@ -7,6 +7,7 @@ import { useLocation } from 'umi';
 
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
+import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
 import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
 import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
@@ -47,6 +48,7 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
+  const { isExtraLarge } = useScreen();
 
   useEffect(() => {
     setFormData(initialFormData);
@@ -198,6 +200,12 @@ const PriceAndInventoryForm = () => {
 
   const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
 
+  const entryFormWrapperStyle = {
+    height: 'calc(var(--vh) * 100 - 312px)',
+    padding: 0,
+    overflow: isExtraLarge ? 'unset' : 'auto',
+  };
+
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
       <div className={styles.category_form}>
@@ -264,13 +272,10 @@ const PriceAndInventoryForm = () => {
               brandId: location.state?.brandId,
             },
           })}
-          contentStyles={{
-            height: 'calc(var(--vh) * 100 - 312px)',
-            padding: 0,
-          }}
+          contentStyles={entryFormWrapperStyle}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
-          <div className={styles.category_form_wrapper}>
+          <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>
             <PriceForm
               isShowModal={isShowModal}
               onToggleModal={handleToggleModal}

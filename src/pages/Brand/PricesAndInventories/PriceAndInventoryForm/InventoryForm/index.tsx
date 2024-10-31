@@ -5,6 +5,8 @@ import { Table, type TableColumnsType } from 'antd';
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import store from '@/reducers';
 import { type ModalType, openModal } from '@/reducers/modal';
 import { InventoryAttribute } from '@/types';
@@ -48,6 +50,8 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
   });
   const [inventoryTableData, setInventoryTableData] = useState<WarehouseItemMetrics[]>([]);
 
+  const { isExtraLarge } = useScreen();
+
   useEffect(() => {
     setWorkLocation((prev) => ({
       value: inventoryFormData.location_id || prev.value,
@@ -81,7 +85,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
       {
         title: 'WareHouse Name',
         dataIndex: 'warehouse_name',
-        width: '5%',
+        width: '20%',
       },
       {
         title: 'City',
@@ -91,13 +95,13 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
       {
         title: 'Country',
         dataIndex: 'country',
-        width: '65%',
+        width: '40%',
       },
       {
         title: 'In stock',
         dataIndex: 'in_stock',
         align: 'center',
-        width: '5%',
+        width: '10%',
         render: (_: any, item) => (
           <EditableCell
             item={item}
@@ -112,7 +116,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
         title: 'Convert',
         dataIndex: 'convert',
         align: 'center',
-        width: '5%',
+        width: '10%',
         render: (_: any, item) => (
           <EditableCell
             item={item}
@@ -230,9 +234,14 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
     ],
   };
 
+  const saveBtnStyle = {
+    background: true ? '#bfbfbf' : '',
+    minWidth: 48,
+  };
+
   return (
     <>
-      <div className={styles.category_form_content}>
+      <div className={`${styles.category_form_content} ${isExtraLarge ? 'w-1-2' : 'w-full'}`}>
         <section className="d-flex items-center justify-between w-full">
           <Title
             style={{ paddingBottom: '32px' }}
@@ -317,23 +326,22 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
           />
         </form>
 
-        <div className="pb-16 border-bottom-black-inset" style={{ textAlign: 'right' }}>
+        <div className="pb-16 border-bottom-black-inset text-right">
           <CustomSaveButton
             contentButton="Add"
-            style={{
-              background: true ? '#bfbfbf' : '',
-              minWidth: 48,
-            }}
+            style={saveBtnStyle}
             onClick={() => {}}
             disabled={false}
           />
         </div>
 
         <Table
-          dataSource={inventoryTableData}
+          dataSource={[]}
           columns={inventoryColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
+          scroll={{ x: 'max-content', y: 380 }}
+          tableLayout="fixed"
         />
       </div>
 
