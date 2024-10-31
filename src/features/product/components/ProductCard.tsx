@@ -165,11 +165,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const params = {
           brand_id: product.brand?.id,
         } as ProductGetListParameter;
-        if (filter.name === 'category_id') {
-          params.category_id = filter.value === 'all' ? 'all' : filter.value;
+        const cateFilter = filter.find((item) => item.name === 'category_id');
+        const collFilter = filter.find((item) => item.name === 'collection_id');
+        if (cateFilter) {
+          params.category_id = cateFilter.value === 'all' ? 'all' : cateFilter.value;
         }
-        if (filter.name === 'collection_id') {
-          params.collection_id = filter.value === 'all' ? 'all' : filter.value;
+        if (collFilter) {
+          params.collection_id = collFilter.value === 'all' ? 'all' : collFilter.value;
         }
         getProductListByBrandId(params);
       });
@@ -405,7 +407,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const firstLoad = useBoolean(true);
   const [delayDuration, setDelayDuration] = useState<number>(20000);
   const location = useLocation();
+  const [showBackTop, setShowBackTop] = useState(false);
   console.log(groups);
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackTop(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   useEffect(() => {
     if (data) {
       const activeProducts =
@@ -438,7 +452,11 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     }
   }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
 
-  const filterByCategory = filter?.name.toLowerCase() === 'category_id';
+  const filterByCategory = filter
+    ? filter.find((item) => item.name === 'category_id')
+      ? true
+      : false
+    : false;
 
   const onChangeDescription = (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!data) {
@@ -457,22 +475,19 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     return null;
   }
 
-  if (typeof filter == 'undefined') {
-    if (firstLoad.value) {
-      if (location.pathname == PATH.designerBrandProduct) {
-        // First time load to Designer/Brand-Product
-        if (allProducts?.length) firstLoad.setValue(false);
-        else
-          return (
-            <div className={loadingStyles.container}>
-              <Spin size="large" />
-            </div>
-          );
-      } else if (location.pathname == PATH.productConfiguration) {
+  if (typeof filter == 'undefined' || filter.length == 0) {
+    if (location.pathname == PATH.designerBrandProduct && !allProducts?.length) {
+      return (
+        <div className={loadingStyles.container}>
+          <Spin size="large" />
+        </div>
+      );
+    } else if (firstLoad.value) {
+      if (location.pathname == PATH.productConfiguration) {
         // First time load to TISC-Conf but login as Designer or Brand previously
         store.dispatch(resetProductState());
         firstLoad.setValue(false);
-      } else {
+      } else if (location.pathname == PATH.designerFavourite) {
         // First time load to Designer Favourite
         if (allProducts?.length) store.dispatch(resetProductState());
         setTimeout(() => {
@@ -800,24 +815,26 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         ))}
       </div>
       {/* Scroll to top Button */}
-      <BackTop>
-        <CustomButton
-          style={{
-            position: 'fixed',
-            bottom: 40,
-            right: 25,
-            zIndex: 1,
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: 40,
-          }}
-          properties={'rounded'}
-          variant={'primaryDark'}
-          size={'medium'}
-        >
-          <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
-        </CustomButton>
-      </BackTop>
+      {showBackTop && (
+        <BackTop>
+          <CustomButton
+            style={{
+              position: 'fixed',
+              bottom: 40,
+              right: 25,
+              zIndex: 1,
+              paddingLeft: 20,
+              paddingRight: 20,
+              borderRadius: 40,
+            }}
+            properties={'rounded'}
+            variant={'primaryDark'}
+            size={'medium'}
+          >
+            <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
+          </CustomButton>
+        </BackTop>
+      )}
     </>
   );
 };

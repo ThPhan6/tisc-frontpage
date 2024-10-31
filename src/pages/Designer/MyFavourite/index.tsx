@@ -39,13 +39,15 @@ const MyFavourite = () => {
         firstLoad.setValue(false);
         return;
       }
+      const cateFilter = filter?.find((item) => item.name === 'category_id');
+      const brandFilter = filter?.find((item) => item.name === 'brand_id');
       getFavouriteProductList({
-        category_id: filter?.name === 'category_id' ? filter.value : undefined,
-        brand_id: filter?.name === 'brand_id' ? filter.value : undefined,
+        category_id: cateFilter ? cateFilter.value : undefined,
+        brand_id: brandFilter ? brandFilter.value : undefined,
         order: sort?.order,
       });
     }
-  }, [filter?.value, sort?.order, retrievedFavourite]);
+  }, [filter, sort?.order, retrievedFavourite]);
 
   return (
     <div>
