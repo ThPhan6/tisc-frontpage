@@ -1,3 +1,5 @@
+import { type CSSProperties, type MouseEvent } from 'react';
+
 import { Menu, MenuProps } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
@@ -20,6 +22,7 @@ interface TreeSelectProps<T> extends MenuProps {
   isSingleExpand?: boolean;
   showAllLevels?: boolean;
   additionalClassName?: string;
+  additonalStyle?: CSSProperties;
   onItemSelect: (item: TreeItem) => void;
 }
 
@@ -29,6 +32,7 @@ const TreeSelect = <T,>({
   showAllLevels = false,
   additionalClassName = '',
   onItemSelect,
+  additonalStyle,
   ...props
 }: TreeSelectProps<T>) => {
   const { expandedKeys, handleToggleExpand } = useToggleExpand(isSingleExpand);
@@ -54,8 +58,15 @@ const TreeSelect = <T,>({
   const shouldDisplayItem = (item: TreeItem): boolean =>
     showAllLevels ? true : item.level < maxLevel;
 
-  const handleItemClick = (item: TreeItem) => () =>
-    isItemSelectable(item) ? onItemSelect(item) : handleToggleExpand(item.id);
+  const handleItemClick = (item: TreeItem) => (event: MouseEvent<HTMLDivElement>) => {
+    if (isItemSelectable(item)) {
+      onItemSelect(item);
+      return;
+    }
+
+    event.stopPropagation();
+    handleToggleExpand(item.id);
+  };
 
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
     const stack: { item: TreeItem; indent: number }[] = items.map((item) => ({ item, indent: 0 }));
@@ -106,7 +117,11 @@ const TreeSelect = <T,>({
   };
 
   return (
-    <Menu {...props} className={`${styles.tree_select} ${additionalClassName}`}>
+    <Menu
+      {...props}
+      className={`${styles.tree_select} ${additionalClassName}`}
+      style={additonalStyle}
+    >
       {renderTreeItems(data as TreeItem[])}
     </Menu>
   );

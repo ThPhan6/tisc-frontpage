@@ -261,3 +261,18 @@ export async function updateInventories(payload: any) {
       return false;
     });
 }
+
+export async function moveInventoryToCategory(inventoryId: string, categoryId: string) {
+  return request<boolean>(`/api/inventory/move/${inventoryId}`, {
+    method: 'PATCH',
+    data: { categoryId },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.MOVE_INVENTORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.MOVE_INVENTORY_ERROR);
+      return false;
+    });
+}

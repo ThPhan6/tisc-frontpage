@@ -6,6 +6,12 @@
   overflow: auto;
   box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px !important;
   transform: translate(-2.4rem, 2.3rem);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   :global(.ant-menu-item) {
     height: 28px !important;
@@ -16,6 +22,10 @@
   :global(.ant-menu-title-content) {
     display: flex;
     padding: 8px 12px;
+  }
+
+  :global(.ant-dropdown-menu-item) {
+    background: #fff;
   }
 
   &_item {

@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -9,6 +17,7 @@ import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg'
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
+import { ReactComponent as SquareCDownLeft } from '@/assets/icons/square-c-down-left.svg';
 
 import { confirmDelete } from '@/helper/common';
 import { useNavigationHandler } from '@/helper/hook';
@@ -18,6 +27,7 @@ import {
   exchangeCurrency,
   fetchUnitType,
   getListInventories,
+  moveInventoryToCategory,
   updateInventories,
 } from '@/services';
 import { debounce, forEach, isEmpty, pick, reduce, set } from 'lodash';
@@ -25,12 +35,14 @@ import { debounce, forEach, isEmpty, pick, reduce, set } from 'lodash';
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
+import { AccordionItem } from '@/components/AccordionMenu';
 import CustomButton from '@/components/Button';
 import InventoryHeader from '@/components/InventoryHeader';
 import CustomTable from '@/components/Table';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
+import TreeSelect, { TreeItem } from '@/components/TreeSelect';
 import { BodyText } from '@/components/Typography';
 import Backorder from '@/pages/Brand/PricesAndInventories/Backorder';
 import styles from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
@@ -76,7 +88,30 @@ const CategoryTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [editedRows, setEditedRows] = useState<Record<string, any>>({});
   const [filter, setFilter] = useState('');
+  const [currentInventory, setCurrentInventory] = useState<string>('');
+
+  const treeSelectRef = useRef<HTMLDivElement>(null);
   const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+  const tableRef = useRef<any>();
+  const location = useLocation<{
+    categoryId: string;
+    brandId: string;
+    groupItems: AccordionItem[];
+  }>();
+  const navigate = useNavigationHandler();
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get('categories');
+
+  const treeSelectStyle = {
+    padding: '6px 16px',
+    width: '420px',
+  };
+
+  const wrapperTreeSelectStyle: CSSProperties = {
+    position: 'absolute',
+    right: '29.4rem',
+    bottom: '4rem',
+  };
 
   useEffect(() => {
     const getUnitType = async () => await fetchUnitType();
@@ -89,14 +124,6 @@ const CategoryTable: React.FC = () => {
     },
     [unitTypeData],
   );
-
-  const tableRef = useRef<any>();
-  const location = useLocation<{ categoryId: string; brandId: string }>();
-
-  const navigate = useNavigationHandler();
-
-  const queryParams = new URLSearchParams(location.search);
-  const category = queryParams.get('categories');
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
@@ -177,6 +204,23 @@ const CategoryTable: React.FC = () => {
 
     setIsEditMode(!isEditMode);
   };
+
+  const handleToggleTreeSelect =
+    (record: PriceAndInventoryColumn) => (event: MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      setCurrentInventory(record.id === currentInventory ? '' : record.id);
+    };
+
+  const handleClickOutside = (event: any) => {
+    if (treeSelectRef.current && !treeSelectRef.current.contains(event.target as Node)) {
+      setCurrentInventory('');
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const rowSelectedValue = (record: PriceAndInventoryColumn, value: string | number) => (
     <span className={` ${selectedRowKeys.includes(record.id) ? 'font-medium' : ''} w-1-2`}>
@@ -328,21 +372,59 @@ const CategoryTable: React.FC = () => {
         dataIndex: 'action',
         align: 'center',
         width: '5%',
-        render: (_, record) => (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'updated',
-                label: 'Edit Row',
-                onClick: handlePushToUpdate(record.id ?? ''),
-              },
-              {
-                type: 'deleted',
-                onClick: handleDelete(record.id ?? ''),
-              },
-            ]}
-          />
-        ),
+        render: (_, record) => {
+          const handleItemMoveToSelect = async (item: TreeItem) => {
+            if (item.id === location.state.categoryId) {
+              message.warn('Cannot move to the category itself');
+              return;
+            }
+            const res = await moveInventoryToCategory(record.id, item.id);
+            if (res) {
+              setCurrentInventory('');
+              tableRef.current.reload();
+            }
+          };
+
+          return (
+            <ActionMenu
+              customVisible={currentInventory === record.id}
+              actionItems={[
+                {
+                  type: 'updated',
+                  label: 'Edit Row',
+                  onClick: handlePushToUpdate(record.id ?? ''),
+                },
+                {
+                  type: '',
+                  label: (
+                    <div onClick={handleToggleTreeSelect(record)} className="relative">
+                      <div className="d-flex items-center gap-12">
+                        <SquareCDownLeft />
+                        Move to
+                      </div>
+
+                      {currentInventory === record.id && (
+                        <div ref={treeSelectRef} style={wrapperTreeSelectStyle}>
+                          <TreeSelect
+                            additonalStyle={treeSelectStyle}
+                            showAllLevels={true}
+                            isSingleExpand={false}
+                            onItemSelect={handleItemMoveToSelect}
+                            data={location.state.groupItems}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ),
+                },
+                {
+                  type: 'deleted',
+                  onClick: handleDelete(record.id ?? ''),
+                },
+              ]}
+            />
+          );
+        },
       },
     ],
     [handlePushToUpdate, handleDelete, renderEditableCell, rowSelectedValue],
@@ -396,83 +478,87 @@ const CategoryTable: React.FC = () => {
     <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrecy} />
   );
 
+  const renrderTableHeader = () => (
+    <TableHeader
+      title={
+        <article className={styles.category_table_header}>
+          <div
+            className="d-flex items-center cursor-pointer"
+            onClick={navigate({
+              path: PATH.brandPricesInventories,
+            })}
+          >
+            <BodyText
+              fontFamily="Roboto"
+              level={5}
+              customClass={styles.category_table_header_title}
+            >
+              HOME
+            </BodyText>
+            <HomeIcon />
+          </div>
+          <BodyText
+            fontFamily="Roboto"
+            level={5}
+            customClass={styles.category_table_header_category}
+          >
+            {category}
+          </BodyText>
+        </article>
+      }
+      rightAction={
+        <div className={styles.category_table_header_action}>
+          <CustomPlusButton
+            size={24}
+            disabled={isEditMode}
+            onClick={navigate({
+              path: PATH.brandPricesInventoriesForm,
+              query: { categories: category },
+              state: {
+                categoryId: location.state?.categoryId,
+                brandId: location.state?.brandId,
+              },
+            })}
+          />
+          <CustomButton
+            size="small"
+            variant="primary"
+            buttonClass={`${styles.category_table_header_action_btn_import} ${
+              isEditMode ? 'disabled' : ''
+            }`}
+            disabled={isEditMode}
+          >
+            <BodyText
+              fontFamily="Roboto"
+              level={6}
+              style={{ color: `${isEditMode ? '#808080' : '#000'}` }}
+              customClass={`${styles.category_table_header_action_btn_import_text}`}
+              onClick={handleToggleModal('Import/Export')}
+            >
+              IMPORT
+            </BodyText>
+          </CustomButton>
+          <Switch
+            checked={isEditMode}
+            onChange={handleToggleSwitch}
+            size="default"
+            checkedChildren="SAVE & CLOSE"
+            unCheckedChildren="EDIT NOW"
+            className={`${styles.category_table_header_btn_switch} ${
+              isEditMode
+                ? styles.category_table_header_btn_switch_on
+                : styles.category_table_header_btn_switch_off
+            }`}
+          />
+        </div>
+      }
+    />
+  );
+
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
       <section className={styles.category_table}>
-        <TableHeader
-          title={
-            <article className={styles.category_table_header}>
-              <div
-                className="d-flex items-center cursor-pointer"
-                onClick={navigate({
-                  path: PATH.brandPricesInventories,
-                })}
-              >
-                <BodyText
-                  fontFamily="Roboto"
-                  level={5}
-                  customClass={styles.category_table_header_title}
-                >
-                  HOME
-                </BodyText>
-                <HomeIcon />
-              </div>
-              <BodyText
-                fontFamily="Roboto"
-                level={5}
-                customClass={styles.category_table_header_category}
-              >
-                {category}
-              </BodyText>
-            </article>
-          }
-          rightAction={
-            <div className={styles.category_table_header_action}>
-              <CustomPlusButton
-                size={24}
-                disabled={isEditMode}
-                onClick={navigate({
-                  path: PATH.brandPricesInventoriesForm,
-                  query: { categories: category },
-                  state: {
-                    categoryId: location.state?.categoryId,
-                    brandId: location.state?.brandId,
-                  },
-                })}
-              />
-              <CustomButton
-                size="small"
-                variant="primary"
-                buttonClass={`${styles.category_table_header_action_btn_import} ${
-                  isEditMode ? 'disabled' : ''
-                }`}
-                disabled={isEditMode}
-              >
-                <BodyText
-                  fontFamily="Roboto"
-                  level={6}
-                  style={{ color: `${isEditMode ? '#808080' : '#000'}` }}
-                  customClass={`${styles.category_table_header_action_btn_import_text}`}
-                  onClick={handleToggleModal('Import/Export')}
-                >
-                  IMPORT
-                </BodyText>
-              </CustomButton>
-              <Switch
-                checked={isEditMode}
-                onChange={handleToggleSwitch}
-                size="default"
-                checkedChildren="SAVE & CLOSE"
-                unCheckedChildren="EDIT NOW"
-                className={`${styles.category_table_header_btn_switch} ${
-                  isEditMode
-                    ? styles.category_table_header_btn_switch_on
-                    : styles.category_table_header_btn_switch_off
-                }`}
-              />
-            </div>
-          }
-        />
+        {renrderTableHeader()}
         <CustomTable
           rowSelection={rowSelection}
           columns={columns}
