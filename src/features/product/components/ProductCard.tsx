@@ -9,14 +9,20 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as CarbonIcon } from '@/assets/icons/carbon-footprint.svg';
+import { ReactComponent as ClearIcon } from '@/assets/icons/clear-energy.svg';
 import { ReactComponent as DoubleupIcon } from '@/assets/icons/double-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import { ReactComponent as EcoIcon } from '@/assets/icons/eco-green.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as ShareIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as PowerIcon } from '@/assets/icons/power-saving.svg';
+import { ReactComponent as RecycleIcon } from '@/assets/icons/recycle.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
+import { ReactComponent as WaterIcon } from '@/assets/icons/water-saving.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 
 import {
@@ -220,6 +226,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
     zIndex: 1,
   };
 
+  const ecoLabelsProps: Partial<TooltipProps> = {
+    placement: 'left',
+    zIndex: 1,
+    mouseEnterDelay: 0,
+    showArrow: false,
+    align: {
+      offset: [41, 0],
+    },
+    overlayClassName: `${styles.ecoTooltip}`,
+  };
+
   const rightActions: {
     tooltipText: string;
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -379,6 +396,26 @@ const ProductCard: React.FC<ProductCardProps> = ({
               ) : null,
             )}
           </div>
+        </div>
+        <div className={`${styles.ecoLabels}`}>
+          <Tooltip title="Carbon Footprint Reduction" {...ecoLabelsProps}>
+            <CarbonIcon />
+          </Tooltip>
+          <Tooltip title="Clear & Renewable Energy" {...ecoLabelsProps}>
+            <ClearIcon />
+          </Tooltip>
+          <Tooltip title="Eco & Green Certification" {...ecoLabelsProps}>
+            <EcoIcon />
+          </Tooltip>
+          <Tooltip title="Power Saving Technology" {...ecoLabelsProps}>
+            <PowerIcon />
+          </Tooltip>
+          <Tooltip title="Recycle, Reuse, Repurpose" {...ecoLabelsProps}>
+            <RecycleIcon />
+          </Tooltip>
+          <Tooltip title="Water Saving Technology" {...ecoLabelsProps}>
+            <WaterIcon />
+          </Tooltip>
         </div>
       </div>
     </div>
