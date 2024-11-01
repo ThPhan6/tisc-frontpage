@@ -15,8 +15,8 @@ import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
-import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules';
 
 export interface WarehouseItemMetrics {
   id: string;
@@ -340,8 +340,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
           columns={inventoryColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ x: 'max-content', y: 380 }}
-          tableLayout="fixed"
+          scroll={{ y: 380 }}
         />
       </div>
 

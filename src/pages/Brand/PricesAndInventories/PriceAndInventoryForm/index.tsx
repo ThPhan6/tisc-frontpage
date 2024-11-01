@@ -23,11 +23,11 @@ import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
-import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import categoryTableStyle from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
 import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
+import PriceAndInventoryTableStyle from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
 const initialFormData = {
   sku: '',
@@ -69,7 +69,7 @@ const PriceAndInventoryForm = () => {
 
     if (res) {
       const rate = reduce(
-        res.price?.exchange_histories?.map((item) => item.rate),
+        res.price?.exchange_histories?.map((item: any) => item.rate),
         (acc, el) => acc * el,
         1,
       );
@@ -81,7 +81,7 @@ const PriceAndInventoryForm = () => {
         unit_type: res.price?.unit_type,
       });
 
-      const volumePrices = res.price.volume_prices?.map((price, index: number) => ({
+      const volumePrices = res.price.volume_prices?.map((price: any, index: number) => ({
         key: `${index + 1}`,
         id: price.id,
         discount_price: price.discount_price,
@@ -211,12 +211,12 @@ const PriceAndInventoryForm = () => {
       <div className={styles.category_form}>
         <TableHeader
           title={
-            <article className={`${categoryTableStyle.category_table_header} opacity-50`}>
+            <article className={`${PriceAndInventoryTableStyle.category_table_header} opacity-50`}>
               <div className="d-flex items-center">
                 <BodyText
                   fontFamily="Roboto"
                   level={5}
-                  customClass={categoryTableStyle.category_table_header_title}
+                  customClass={PriceAndInventoryTableStyle.category_table_header_title}
                 >
                   HOME
                 </BodyText>
@@ -225,26 +225,26 @@ const PriceAndInventoryForm = () => {
               <BodyText
                 fontFamily="Roboto"
                 level={5}
-                customClass={categoryTableStyle.category_table_header_category}
+                customClass={PriceAndInventoryTableStyle.category_table_header_category}
               >
                 {category}
               </BodyText>
             </article>
           }
           rightAction={
-            <div className={categoryTableStyle.category_table_header_action}>
+            <div className={PriceAndInventoryTableStyle.category_table_header_action}>
               <CustomPlusButton size={24} disabled={true} />
               <CustomButton
                 size="small"
                 variant="primary"
                 disabled={true}
-                buttonClass={`${categoryTableStyle.category_table_header_action_btn_import} cursor-disabled `}
+                buttonClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import} cursor-disabled `}
               >
                 <BodyText
                   fontFamily="Roboto"
                   level={6}
                   style={{ color: '#808080' }}
-                  customClass={`${categoryTableStyle.category_table_header_action_btn_import_text}`}
+                  customClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import_text}`}
                 >
                   IMPORT
                 </BodyText>
@@ -254,7 +254,7 @@ const PriceAndInventoryForm = () => {
                 size="default"
                 checkedChildren="SAVE & CLOSE"
                 unCheckedChildren="EDIT OFF"
-                className={`${categoryTableStyle.category_table_header_btn_switch} ${categoryTableStyle.category_table_header_btn_switch_off}`}
+                className={`${PriceAndInventoryTableStyle.category_table_header_btn_switch} ${PriceAndInventoryTableStyle.category_table_header_btn_switch_off}`}
               />
             </div>
           }

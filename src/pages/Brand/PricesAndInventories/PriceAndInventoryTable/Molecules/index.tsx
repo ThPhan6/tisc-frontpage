@@ -5,8 +5,8 @@ import { message } from 'antd';
 import { CustomInputProps } from '@/components/Form/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
-import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import styles from '@/pages/Brand/PricesAndInventories/EditableCell/EditableCell.less';
+import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell.less';
+import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 interface EditStatus {
   [key: string]: {

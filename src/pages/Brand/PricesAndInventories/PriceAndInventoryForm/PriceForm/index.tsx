@@ -19,9 +19,9 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
-import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules';
+import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 import CollectionGallery from '@/features/gallery/CollectionGallery';
 

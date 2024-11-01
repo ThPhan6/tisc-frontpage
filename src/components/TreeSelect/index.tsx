@@ -24,6 +24,8 @@ interface TreeSelectProps<T> extends MenuProps {
   additionalClassName?: string;
   additonalStyle?: CSSProperties;
   onItemSelect: (item: TreeItem) => void;
+  defaultExpandedKeys?: string[];
+  onExpandedKeys?: (value: string[]) => void;
 }
 
 const TreeSelect = <T,>({
@@ -33,9 +35,15 @@ const TreeSelect = <T,>({
   additionalClassName = '',
   onItemSelect,
   additonalStyle,
+  defaultExpandedKeys = [],
+  onExpandedKeys = () => {},
   ...props
 }: TreeSelectProps<T>) => {
-  const { expandedKeys, handleToggleExpand } = useToggleExpand(isSingleExpand);
+  const { expandedKeys, handleToggleExpand } = useToggleExpand(
+    isSingleExpand,
+    defaultExpandedKeys,
+    onExpandedKeys,
+  );
 
   const findMaxLevel = (items: TreeItem[]): number => {
     let maxLevel = 0;
@@ -59,12 +67,11 @@ const TreeSelect = <T,>({
     showAllLevels ? true : item.level < maxLevel;
 
   const handleItemClick = (item: TreeItem) => (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
     if (isItemSelectable(item)) {
       onItemSelect(item);
       return;
     }
-
-    event.stopPropagation();
     handleToggleExpand(item.id);
   };
 
@@ -102,7 +109,9 @@ const TreeSelect = <T,>({
               {item.name}
             </BodyText>
           </Menu.Item>
-          {hasSubs && !selectable && (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
+          {(hasSubs || showAllLevels) &&
+            !selectable &&
+            (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
         </div>,
       );
 

@@ -14,7 +14,7 @@ import { CategoryEntity, type FinancialRecords, PriceAttribute } from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
 import { UnitItem } from '@/components/Modal/UnitType';
-import { type PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/CategoryTable';
+import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 

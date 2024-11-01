@@ -1,8 +1,8 @@
 import { Modal, Table, TableColumnsType } from 'antd';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
-import styles from '@/pages/Brand/PricesAndInventories/Backorder/Backorder.less';
-import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
+import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules';
+import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder.less';
 
 interface BackorderProps {
   isShowBackorder: boolean;

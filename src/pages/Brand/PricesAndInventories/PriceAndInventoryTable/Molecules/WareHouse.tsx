@@ -1,6 +1,6 @@
 import { Table, TableColumnsType } from 'antd';
 
-import styles from '@/pages/Brand/PricesAndInventories/WareHouse/WareHouse.less';
+import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse.less';
 
 const WareHouse = () => {
   const columns: TableColumnsType<any> = [
