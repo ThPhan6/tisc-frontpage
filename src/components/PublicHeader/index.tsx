@@ -1,6 +1,6 @@
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as HomeButton } from '@/assets/icons/home-icon.svg';
+import { ReactComponent as HomeButton } from '@/assets/icons/home.svg';
 import { ReactComponent as LogoBeta } from '@/assets/icons/logo-beta.svg';
 
 import { pushTo } from '@/helper/history';
@@ -21,7 +21,8 @@ export const PublicHeader = () => {
         icon={<HomeButton />}
         width="104px"
         buttonClass={styles.homeButton}
-        onClick={() => pushTo(PATH.landingPage)}>
+        onClick={() => pushTo(PATH.landingPage)}
+      >
         Home
       </CustomButton>
     </div>

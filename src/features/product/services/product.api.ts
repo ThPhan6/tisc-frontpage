@@ -362,6 +362,11 @@ export const updateProductCard = async (productId: string, data: ProductFormData
       // const newSpecificationAttributeGroup = res.data.specification_attribute_groups.map((el) =>
       //   autoStepData?.length ? { ...el, steps: autoStepData } : el,
       // );
+      store.dispatch(
+        setPartialProductDetail({
+          ecoLabel: res.ecoLabel,
+        }),
+      );
 
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
 

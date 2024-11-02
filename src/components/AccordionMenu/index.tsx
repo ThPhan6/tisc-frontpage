@@ -6,6 +6,7 @@ import AccordionMenuItems from '@/components/AccordionMenu/MultipleExpandItems';
 
 export interface AccordionItem {
   id?: string;
+  relation_id?: string;
   name: string;
   level: number;
   parent_id: string;
