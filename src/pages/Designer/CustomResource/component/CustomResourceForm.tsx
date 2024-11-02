@@ -123,7 +123,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
     <>
       <div className={styles.header}>
         <MainTitle level={3} textAlign={'center'} customClass={styles.header__title}>
-          Entry Form
+          {customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'} Information
         </MainTitle>
         <CloseIcon
           style={{ cursor: 'pointer', width: '24px', height: '24px' }}
