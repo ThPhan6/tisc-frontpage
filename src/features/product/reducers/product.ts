@@ -118,6 +118,7 @@ const initialState: ProductState = {
     tips: [],
     downloads: [],
     catelogue_downloads: [],
+    ecoLabel: undefined,
   },
   relatedProduct: [],
   list: {

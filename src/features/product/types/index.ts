@@ -173,6 +173,8 @@ export interface ProductItem {
   downloads: ProductDownloadData[];
   catelogue_downloads: ProductCatelogueData[];
   custom_product?: boolean;
+  // Feature Label
+  ecoLabel?: FeatureLabelPros;
 }
 
 export interface RoomItem {
@@ -210,6 +212,7 @@ export interface ProductFormData {
   tips: ProductTipData[];
   downloads: ProductDownloadData[];
   catelogue_downloads: ProductCatelogueData[];
+  ecoLabel?: FeatureLabelPros;
 }
 export interface RelatedCollection {
   id: string;
@@ -320,4 +323,12 @@ export interface ProjectRequestForm {
   title: string;
   message: string;
   request_for_ids: string[];
+}
+
+// Feature Label
+export interface FeatureLabelPros {
+  [key: string]: {
+    name: string;
+    value: boolean;
+  };
 }
