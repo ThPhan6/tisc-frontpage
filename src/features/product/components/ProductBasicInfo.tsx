@@ -186,6 +186,7 @@ export const ProductBasicInfo: React.FC = () => {
       <CustomCollapse
         showActiveBoxShadow
         defaultActiveKey={['1']}
+        nestedCollapse={true}
         header={
           <div className="header-group">
             <BodyText level={4} customClass="brand-label">
@@ -293,7 +294,6 @@ export const ProductBasicInfo: React.FC = () => {
           <Row>
             <ResponsiveCol>
               <CustomCollapse
-                showActiveBoxShadow
                 defaultActiveKey={['1']}
                 header={<BodyText level={4}>Production-Labels</BodyText>}
                 customHeaderClass={styles.labelCollapse}
