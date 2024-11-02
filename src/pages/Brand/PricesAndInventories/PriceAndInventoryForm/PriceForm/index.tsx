@@ -174,6 +174,7 @@ const PriceForm = ({
 
   const handleUnitPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value === '' ? undefined : Number(event.target.value);
+
     setFormData((prev) => ({
       ...prev,
       unit_price: value,
@@ -188,6 +189,7 @@ const PriceForm = ({
           value && item.discount_rate ? (value * Number(item.discount_rate)) / 100 : undefined,
       })),
     );
+
     setHasUnsavedChanges(value !== undefined);
   };
 
