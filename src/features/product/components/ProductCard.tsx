@@ -397,26 +397,40 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
-        <div className={`${styles.ecoLabels}`}>
-          <Tooltip title="Carbon Footprint Reduction" {...ecoLabelsProps}>
-            <CarbonIcon />
-          </Tooltip>
-          <Tooltip title="Clear & Renewable Energy" {...ecoLabelsProps}>
-            <ClearIcon />
-          </Tooltip>
-          <Tooltip title="Eco & Green Certification" {...ecoLabelsProps}>
-            <EcoIcon />
-          </Tooltip>
-          <Tooltip title="Power Saving Technology" {...ecoLabelsProps}>
-            <PowerIcon />
-          </Tooltip>
-          <Tooltip title="Recycle, Reuse, Repurpose" {...ecoLabelsProps}>
-            <RecycleIcon />
-          </Tooltip>
-          <Tooltip title="Water Saving Technology" {...ecoLabelsProps}>
-            <WaterIcon />
-          </Tooltip>
-        </div>
+        {product.ecoLabel && (
+          <div className={`${styles.ecoLabels}`}>
+            {product.ecoLabel['carbon_footprint'].value && (
+              <Tooltip title={product.ecoLabel['carbon_footprint'].name} {...ecoLabelsProps}>
+                <CarbonIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['clear_energy'].value && (
+              <Tooltip title={product.ecoLabel['clear_energy'].name} {...ecoLabelsProps}>
+                <ClearIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['eco_green'].value && (
+              <Tooltip title={product.ecoLabel['eco_green'].name} {...ecoLabelsProps}>
+                <EcoIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['power_saving'].value && (
+              <Tooltip title={product.ecoLabel['power_saving'].name} {...ecoLabelsProps}>
+                <PowerIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['recycle_reuse'].value && (
+              <Tooltip title={product.ecoLabel['recycle_reuse'].name} {...ecoLabelsProps}>
+                <RecycleIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['water_saving'].value && (
+              <Tooltip title={product.ecoLabel['water_saving'].name} {...ecoLabelsProps}>
+                <WaterIcon />
+              </Tooltip>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
