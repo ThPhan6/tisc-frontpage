@@ -23,7 +23,9 @@ import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
-import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
+import InventoryForm, {
+  WarehouseItemMetrics,
+} from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
@@ -35,11 +37,18 @@ const initialFormData = {
   unit_type: '',
   inventory_category_id: '',
   image: [],
+  work_location: '',
+  location_id: '',
+  total_stock: null,
+  out_of_stock: null,
+  on_order: null,
+  back_order: null,
 };
 
 const PriceAndInventoryForm = () => {
-  const [formData, setFormData] = useState<PriceAttribute>(initialFormData);
-  const [tableData, setTableData] = useState<VolumePrice[]>([]);
+  const [formData, setFormData] = useState<any>(initialFormData);
+  const [priceTableData, setPriceTableData] = useState<VolumePrice[]>([]);
+  const [inventoryTableData, setInventoryTableData] = useState<WarehouseItemMetrics[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -52,7 +61,7 @@ const PriceAndInventoryForm = () => {
 
   useEffect(() => {
     setFormData(initialFormData);
-    setTableData([]);
+    setPriceTableData([]);
   }, []);
 
   const getRequiredFields = (): {
@@ -90,7 +99,7 @@ const PriceAndInventoryForm = () => {
         max_quantity: price.max_quantity,
         unit_type: res.price.unit_type,
       }));
-      setTableData(volumePrices);
+      setPriceTableData(volumePrices);
     }
   };
 
@@ -99,20 +108,20 @@ const PriceAndInventoryForm = () => {
   }, [inventoryId]);
 
   const transformTableDataToVolumePrices = useMemo(() => {
-    if (!tableData) {
-      setTableData([]);
+    if (!priceTableData) {
+      setPriceTableData([]);
       return;
     }
 
     return () =>
-      tableData.map((item) => ({
+      priceTableData.map((item) => ({
         unit_type: item.unit_type,
         discount_rate: parseFloat(String(item.discount_rate)),
         discount_price: parseFloat(String(item.discount_price)),
         min_quantity: item.min_quantity ? parseInt(String(item.min_quantity)) : undefined,
         max_quantity: item.max_quantity ? parseInt(String(item.max_quantity)) : undefined,
       }));
-  }, [tableData]);
+  }, [priceTableData]);
 
   const handleSave = useCallback(async () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
@@ -150,7 +159,7 @@ const PriceAndInventoryForm = () => {
         ...payload,
         volume_prices: isEmpty(payload.volume_prices)
           ? null
-          : payload.volume_prices.map((el) =>
+          : payload.volume_prices.map((el: VolumePrice) =>
               pick(el, ['discount_rate', 'max_quantity', 'min_quantity']),
             ),
       },
@@ -233,22 +242,6 @@ const PriceAndInventoryForm = () => {
           }
           rightAction={
             <div className={PriceAndInventoryTableStyle.category_table_header_action}>
-              <CustomPlusButton size={24} disabled={true} />
-              <CustomButton
-                size="small"
-                variant="primary"
-                disabled={true}
-                buttonClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import} cursor-disabled `}
-              >
-                <BodyText
-                  fontFamily="Roboto"
-                  level={6}
-                  style={{ color: '#808080' }}
-                  customClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import_text}`}
-                >
-                  IMPORT
-                </BodyText>
-              </CustomButton>
               <Switch
                 disabled={true}
                 size="default"
@@ -256,6 +249,21 @@ const PriceAndInventoryForm = () => {
                 unCheckedChildren="EDIT OFF"
                 className={`${PriceAndInventoryTableStyle.category_table_header_btn_switch} ${PriceAndInventoryTableStyle.category_table_header_btn_switch_off}`}
               />
+              <CustomButton
+                size="small"
+                variant="primary"
+                disabled={true}
+                buttonClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import} cursor-disabled`}
+              >
+                <BodyText
+                  fontFamily="Roboto"
+                  level={6}
+                  customClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import_text} mono-color-dark`}
+                >
+                  IMPORT/EXPORT
+                </BodyText>
+              </CustomButton>
+              <CustomPlusButton size={24} disabled={true} />
             </div>
           }
         />
@@ -281,12 +289,19 @@ const PriceAndInventoryForm = () => {
               onToggleModal={handleToggleModal}
               formData={formData}
               setFormData={setFormData}
-              tableData={tableData}
-              setTableData={setTableData}
+              tableData={priceTableData}
+              setTableData={setPriceTableData}
               setHasUnsavedChanges={setHasUnsavedChanges}
             />
 
-            <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} />
+            <InventoryForm
+              formData={formData}
+              isShowModal={isShowModal}
+              onToggleModal={handleToggleModal}
+              setFormData={setFormData}
+              setTableData={setInventoryTableData}
+              tableData={inventoryTableData}
+            />
           </div>
         </EntryFormWrapper>
       </div>

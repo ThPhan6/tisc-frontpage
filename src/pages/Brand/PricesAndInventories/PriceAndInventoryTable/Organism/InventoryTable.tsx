@@ -15,7 +15,7 @@ import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
 import CustomTable from '@/components/Table';
-import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules';
+import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 import InventoryTableActionMenu from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/InventoryTableActionMenu';
 import WareHouse from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse';
 import {
@@ -171,7 +171,7 @@ const InventoryTable = ({
         dataIndex: 'total_stock',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            {rowSelectedValue(item, 1)}
+            {rowSelectedValue(item, item.total_stock)}
             <div style={{ position: 'relative' }}>
               <Popover
                 content={<WareHouse />}
@@ -190,27 +190,32 @@ const InventoryTable = ({
         title: 'Out stock',
         dataIndex: 'out_stock',
         align: 'center',
-        render: (_, item) => <div className="red-magenta">{rowSelectedValue(item, -7)}</div>,
+        render: (_, item) => (
+          <div className="red-magenta">
+            {rowSelectedValue(item, item.total_stock - item.on_order)}
+          </div>
+        ),
       },
-
       {
         title: 'On Order',
         dataIndex: 'on_order',
         align: 'center',
-        render: (_, item) => renderEditableCell(item, 'on_order', 37),
+        render: (_, item) => renderEditableCell(item, 'on_order', item.on_order),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
-        align: isEditMode ? 'left' : 'center',
-        render: (_, item) => (
-          <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span className={`${isEditMode ? 'w-1-2' : 'w-full'}`}>
-              {renderEditableCell(item, 'unit_price', 12)}
-            </span>
-            {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder')} />}
-          </div>
-        ),
+        align: 'center',
+        render: (_, item) => {
+          return (
+            <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
+              <p className={`${isEditMode ? 'w-1-2 mr-16' : 'w-full'} my-0`}>
+                {renderEditableCell(item, 'back_order', item.back_order)}
+              </p>
+              {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder')} />}
+            </div>
+          );
+        },
       },
       {
         title: 'Volume Price',

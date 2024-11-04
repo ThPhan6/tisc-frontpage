@@ -14,17 +14,17 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
-interface CategoryTableHeaderProps {
+interface PriceAndInventoryTableHeaderProps {
   isEditMode: boolean;
   onToggleSwitch: () => void;
   onToggleModal: (type: ModalType) => () => void;
 }
 
-const CategoryTableHeader = ({
+const PriceAndInventoryTableHeader = ({
   isEditMode,
   onToggleSwitch,
   onToggleModal,
-}: CategoryTableHeaderProps) => {
+}: PriceAndInventoryTableHeaderProps) => {
   const navigate = useNavigationHandler();
   const location = useLocation<{
     categoryId: string;
@@ -63,17 +63,17 @@ const CategoryTableHeader = ({
       }
       rightAction={
         <div className={styles.category_table_header_action}>
-          <CustomPlusButton
-            size={24}
-            disabled={isEditMode}
-            onClick={navigate({
-              path: PATH.brandPricesInventoriesForm,
-              query: { categories: category },
-              state: {
-                categoryId: location.state?.categoryId,
-                brandId: location.state?.brandId,
-              },
-            })}
+          <Switch
+            checked={isEditMode}
+            onChange={onToggleSwitch}
+            size="default"
+            checkedChildren="SAVE & CLOSE"
+            unCheckedChildren="EDIT NOW"
+            className={`${styles.category_table_header_btn_switch} ${
+              isEditMode
+                ? styles.category_table_header_btn_switch_on
+                : styles.category_table_header_btn_switch_off
+            }`}
           />
           <CustomButton
             size="small"
@@ -90,20 +90,20 @@ const CategoryTableHeader = ({
               customClass={`${styles.category_table_header_action_btn_import_text}`}
               onClick={onToggleModal('Import/Export')}
             >
-              IMPORT
+              IMPORT/EXPORT
             </BodyText>
           </CustomButton>
-          <Switch
-            checked={isEditMode}
-            onChange={onToggleSwitch}
-            size="default"
-            checkedChildren="SAVE & CLOSE"
-            unCheckedChildren="EDIT NOW"
-            className={`${styles.category_table_header_btn_switch} ${
-              isEditMode
-                ? styles.category_table_header_btn_switch_on
-                : styles.category_table_header_btn_switch_off
-            }`}
+          <CustomPlusButton
+            size={24}
+            disabled={isEditMode}
+            onClick={navigate({
+              path: PATH.brandPricesInventoriesForm,
+              query: { categories: category },
+              state: {
+                categoryId: location.state?.categoryId,
+                brandId: location.state?.brandId,
+              },
+            })}
           />
         </div>
       }
@@ -111,4 +111,4 @@ const CategoryTableHeader = ({
   );
 };
 
-export default CategoryTableHeader;
+export default PriceAndInventoryTableHeader;

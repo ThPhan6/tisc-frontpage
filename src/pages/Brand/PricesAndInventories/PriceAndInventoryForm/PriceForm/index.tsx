@@ -20,7 +20,7 @@ import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
-import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules';
+import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 import CollectionGallery from '@/features/gallery/CollectionGallery';

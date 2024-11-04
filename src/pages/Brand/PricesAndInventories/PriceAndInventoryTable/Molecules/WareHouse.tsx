@@ -7,33 +7,53 @@ const WareHouse = () => {
     {
       title: '#',
       dataIndex: 'key',
-      width: 50,
+      width: '5%',
     },
     {
       title: 'Warehouse Name',
-      dataIndex: 'warehouseName',
-      width: 150,
+      dataIndex: 'warehouse_name',
+      width: '5%',
     },
     {
       title: 'City',
       dataIndex: 'city',
-      width: 100,
+      width: '5%',
     },
     {
       title: 'Country',
       dataIndex: 'country',
-      width: 100,
+      width: '80%',
     },
     {
       title: 'In Stock',
-      dataIndex: 'inStock',
-      width: 80,
+      dataIndex: 'in_stock',
+      width: '5%',
       align: 'center',
     },
   ];
 
   return (
-    <Table pagination={false} columns={columns} dataSource={[]} className={styles.warehouse} />
+    <Table
+      pagination={false}
+      columns={columns}
+      dataSource={[
+        {
+          key: 1,
+          warehouse_name: 'Warehouse 1',
+          city: 'New York',
+          country: 'USA',
+          in_stock: 1000,
+        },
+        {
+          key: 2,
+          warehouse_name: 'Warehouse 2',
+          city: 'Los Angeles',
+          country: 'USA',
+          in_stock: 2000,
+        },
+      ]}
+      className={styles.warehouse}
+    />
   );
 };
 

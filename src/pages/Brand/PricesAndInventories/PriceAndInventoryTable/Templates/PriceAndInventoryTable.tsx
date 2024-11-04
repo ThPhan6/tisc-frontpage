@@ -12,7 +12,7 @@ import { ModalType } from '@/reducers/modal';
 import InventoryHeader from '@/components/InventoryHeader';
 import Backorder from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder';
 import InventoryTable from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Organism/InventoryTable';
-import CategoryTableHeader from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Organism/TableHeader';
+import PriceAndInventoryTableHeader from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Organism/TableHeader';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
 export interface VolumePrice {
@@ -27,6 +27,10 @@ export interface VolumePrice {
 export interface PriceAndInventoryColumn {
   id: string;
   image: string;
+  back_order: number;
+  out_stock: number;
+  total_stock: number;
+  on_order: number;
   sku: string;
   description: string;
   price: {
@@ -48,7 +52,7 @@ export interface PriceAndInventoryColumn {
 
 export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
 
-const CategoryTable: React.FC = () => {
+const PriceAndInventoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [filter, setFilter] = useState('');
@@ -64,7 +68,7 @@ const CategoryTable: React.FC = () => {
     getUnitType();
   }, []);
 
-  const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
+  const handleToggleModal = (type: ModalType, rowId?: string) => () => setIsShowModal(type);
 
   const debouncedUpdateInventories = debounce(async () => {
     const pickPayload: Record<
@@ -140,7 +144,7 @@ const CategoryTable: React.FC = () => {
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
       <section className={styles.category_table}>
-        <CategoryTableHeader
+        <PriceAndInventoryTableHeader
           isEditMode={isEditMode}
           onToggleModal={handleToggleModal}
           onToggleSwitch={handleToggleSwitch}
@@ -169,4 +173,4 @@ const CategoryTable: React.FC = () => {
   );
 };
 
-export default CategoryTable;
+export default PriceAndInventoryTable;
