@@ -347,6 +347,30 @@
   }
   .labelContainer {
     box-shadow: @border-bottom-black-inset;
+
+    .labelRow {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      .labelCol {
+        flex: 1;
+      }
+      .firstCol {
+        order: -1;
+      }
+      &::before {
+        align-self: stretch;
+        border: 0.5px solid rgba(0, 0, 0, 0.2);
+        content: '';
+      }
+    }
+
+    @media screen and (max-width: @screen-lg) {
+      .labelRow {
+        flex-direction: column;
+      }
+    }
+
     .labelCollapse {
       // padding-top: 4px;
       border-bottom: 0 !important;

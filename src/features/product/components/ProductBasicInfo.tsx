@@ -291,8 +291,8 @@ export const ProductBasicInfo: React.FC = () => {
         />
         {/* Label featuring */}
         <div className={styles.labelContainer} style={{ paddingBottom: 6, paddingTop: 8 }}>
-          <Row>
-            <ResponsiveCol>
+          <Row className={styles.labelRow}>
+            <ResponsiveCol className={`${styles.labelCol} ${styles.firstCol}`}>
               <CustomCollapse
                 header={<BodyText level={4}>Production-Labels</BodyText>}
                 customHeaderClass={styles.labelCollapse}
@@ -302,7 +302,7 @@ export const ProductBasicInfo: React.FC = () => {
                 <ProductLabelSwitch data={prodLabels} editable={editable} />
               </CustomCollapse>
             </ResponsiveCol>
-            <ResponsiveCol>
+            <ResponsiveCol className={styles.labelCol}>
               <CustomCollapse
                 header={<BodyText level={4}>Eco-Labels</BodyText>}
                 customHeaderClass={styles.labelCollapse}
