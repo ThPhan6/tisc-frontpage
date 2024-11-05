@@ -302,7 +302,7 @@ const CategoryTable: React.FC = () => {
           <div
             className={`${styles.category_table_additional_action_wrapper} ${styles.back_order_card} cursor-pointer`}
           >
-            <p className={`${isEditMode ? 'w-full' : 'w-full'} my-0`}>
+            <p className={`w-full my-0`}>
               {renderEditableCell(item, 'back_order', item.back_order ?? '-')}
             </p>
             {isEditMode && (
