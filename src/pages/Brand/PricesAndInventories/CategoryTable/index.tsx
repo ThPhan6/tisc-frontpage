@@ -46,26 +46,31 @@ export interface VolumePrice {
   unit_type?: string;
 }
 
+export interface InventoryExchangeHistory {
+  created_at: string;
+  from_currency: string;
+  rate: number;
+  relation_id: string;
+  to_currency: string;
+  updated_at: string;
+}
+
+export interface InventoryPriceItem {
+  created_at: string;
+  currency?: string;
+  unit_price: number;
+  unit_type: string;
+  volume_prices: VolumePrice[];
+  exchange_histories: InventoryExchangeHistory[];
+}
 export interface InventoryColumn {
   id: string;
   image: string;
   sku: string;
   description: string;
-  price: {
-    created_at: string;
-    currency?: string;
-    unit_price: number;
-    unit_type: string;
-    volume_prices: VolumePrice[];
-    exchange_histories: {
-      created_at: string;
-      from_currency: string;
-      rate: number;
-      relation_id: string;
-      to_currency: string;
-      updated_at: string;
-    }[];
-  };
+  price: InventoryPriceItem;
+  on_order?: number;
+  back_order?: number;
 }
 
 export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
@@ -136,12 +141,15 @@ const CategoryTable: React.FC = () => {
     id: string,
     columnKey: string,
     newValue: string,
-    unitType: string,
-    volumePrices: VolumePrice[],
+    price: InventoryPriceItem,
   ) => {
+    const { unit_type, volume_prices, unit_price } = price;
     set(editedRows, [id, columnKey], Number(newValue));
-    set(editedRows, [id, 'unit_type'], unitType);
-    set(editedRows, [id, 'volume_prices'], volumePrices);
+    set(editedRows, [id, 'unit_type'], unit_type);
+    set(editedRows, [id, 'volume_prices'], volume_prices);
+    if (columnKey !== 'unit_price') {
+      set(editedRows, [id, 'unit_price'], unit_price);
+    }
   };
 
   const debouncedUpdateInventories = debounce(async () => {
@@ -149,7 +157,6 @@ const CategoryTable: React.FC = () => {
       string,
       Pick<InventoryColumn['price'], 'unit_price' | 'volume_prices'>
     > = {};
-
     forEach(editedRows, (value, key) => {
       pickPayload[key] = {
         ...value,
@@ -191,9 +198,7 @@ const CategoryTable: React.FC = () => {
         columnKey={columnKey}
         defaultValue={value}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
-        onSave={(id, colKey, newValue) =>
-          handleSaveOnCell(id, colKey, newValue, item.price.unit_type, item.price.volume_prices)
-        }
+        onSave={(id, colKey, newValue) => handleSaveOnCell(id, colKey, newValue, item.price)}
       />
     ) : (
       rowSelectedValue(item, value)
@@ -287,18 +292,25 @@ const CategoryTable: React.FC = () => {
         title: 'On Order',
         dataIndex: 'on_order',
         align: 'center',
-        render: (_, item) => renderEditableCell(item, 'on_order', 37),
+        render: (_, item) => renderEditableCell(item, 'on_order', item.on_order ?? '-'),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
-        align: isEditMode ? 'left' : 'center',
+        align: 'center',
         render: (_, item) => (
-          <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span style={{ flexBasis: isEditMode ? '50%' : '100%' }}>
-              {renderEditableCell(item, 'unit_price', 12)}
-            </span>
-            {isEditMode && <CDownLeftIcon onClick={handleToggleModal('BackOrder')} />}
+          <div
+            className={`${styles.category_table_additional_action_wrapper} ${styles.back_order_card} cursor-pointer`}
+          >
+            <p className={`${isEditMode ? 'w-full' : 'w-full'} my-0`}>
+              {renderEditableCell(item, 'back_order', item.back_order ?? '-')}
+            </p>
+            {isEditMode && (
+              <CDownLeftIcon
+                className={styles.down_left_icon}
+                onClick={handleToggleModal('BackOrder')}
+              />
+            )}
           </div>
         ),
       },
