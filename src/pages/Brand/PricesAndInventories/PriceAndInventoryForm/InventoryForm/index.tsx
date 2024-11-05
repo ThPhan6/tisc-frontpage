@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { Table, type TableColumnsType } from 'antd';
+import { Table, type TableColumnsType, message } from 'antd';
+import { useLocation } from 'umi';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useScreen } from '@/helper/common';
+import { isNil } from 'lodash';
 
-import store from '@/reducers';
-import { ModalType, openModal } from '@/reducers/modal';
+import { LocationDetail } from '@/features/locations/type';
+import { ModalType } from '@/reducers/modal';
 import { InventoryAttribute } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -17,14 +19,15 @@ import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
+import LocationOffice from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/LocationOffice';
 
 export interface WarehouseItemMetrics {
   id: string;
   warehouse_name: string;
   city: string;
   country: string;
-  in_stock: number;
-  convert: number;
+  in_stock?: number;
+  convert?: number;
 }
 
 export interface InventoryFormProps {
@@ -34,6 +37,7 @@ export interface InventoryFormProps {
   setFormData: React.Dispatch<React.SetStateAction<InventoryAttribute>>;
   tableData: WarehouseItemMetrics[];
   setTableData: React.Dispatch<React.SetStateAction<WarehouseItemMetrics[]>>;
+  setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const InventoryForm = ({
@@ -43,74 +47,57 @@ const InventoryForm = ({
   setFormData,
   setTableData,
   tableData,
+  setHasUnsavedChanges,
 }: InventoryFormProps) => {
-  const [workLocation, setWorkLocation] = useState({
-    label: '',
-    value: formData.location_id,
-    phoneCode: '00',
-  });
-
   const { isExtraLarge } = useScreen();
+  const location = useLocation<{ brandId: string }>();
+  const disabledAddInventory =
+    !formData.warehouse_name || !formData.on_order || !formData.back_order;
+
+  const ensureValidInventory = () => {
+    const { on_order, back_order } = formData;
+
+    if (isNil(on_order) || isNil(back_order) || (+on_order < 1 && +back_order < 1)) {
+      message.warn('The value cannot be equal or smaller than zero');
+      return false;
+    }
+
+    return true;
+  };
 
   useEffect(() => {
-    setWorkLocation((prev) => ({
-      value: formData.location_id || prev.value,
-      label: formData.work_location || prev.label,
-      phoneCode: '00',
-    }));
-  }, [formData.location_id]);
+    const caculateStock = () => {
+      const { totalStock, backOrder } = tableData.reduce(
+        (acc, item) => {
+          acc.totalStock += Number(item.in_stock) || 0;
+          acc.backOrder += Number(item.convert) || 0;
+          return acc;
+        },
+        { totalStock: 0, backOrder: 0 },
+      );
 
-  useEffect(() => {
-    const { totalStock, backOrder } = tableData.reduce(
-      (acc, item) => {
-        acc.totalStock += Number(item.in_stock);
-        acc.backOrder += Number(item.convert);
-        return acc;
-      },
-      { totalStock: 0, backOrder: 0 },
-    );
+      const onOrderValue = Number(formData.on_order) || 0;
+      const finalTotalStock = Number(totalStock) || 0;
 
-    const outStock = Number(formData.total_stock) - Number(formData.on_order);
+      const outStock = finalTotalStock - onOrderValue;
 
-    setFormData((prev) => ({
-      ...prev,
-      total_stock: totalStock,
-      back_order: backOrder,
-      out_of_stock: outStock,
-    }));
-  }, [tableData, formData.total_stock, formData.on_order]);
-
-  const handleInventoryFormChange =
-    (field: keyof InventoryAttribute, fieldValue?: string) =>
-    (event?: React.ChangeEvent<HTMLInputElement>) => {
-      const value = field === 'location_id' ? fieldValue : event?.target.value;
-      setFormData((prev) => ({ ...prev, [field]: value }));
+      setFormData((prev) => ({
+        ...prev,
+        total_stock: finalTotalStock,
+        back_order: backOrder,
+        out_of_stock: outStock,
+      }));
     };
 
-  useEffect(() => {
-    handleInventoryFormChange('location_id', workLocation.value)();
-  }, [workLocation]);
+    caculateStock();
+  }, [tableData, formData.on_order]);
 
-  useEffect(() => {
-    setTableData([
-      {
-        id: '1',
-        warehouse_name: 'XXXX-Name A',
-        city: 'Singapore',
-        country: 'Singapore',
-        in_stock: 18,
-        convert: 6,
-      },
-      {
-        id: '2',
-        warehouse_name: 'XXXX-Name B',
-        city: 'Bangkok',
-        country: 'Thailand',
-        in_stock: 12,
-        convert: 6,
-      },
-    ]);
-  }, []);
+  const handleInventoryFormChange =
+    (field: keyof InventoryAttribute) => (event?: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event?.target.value;
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      setHasUnsavedChanges(value !== null);
+    };
 
   const handleRemoveRow = (id: string) => () =>
     setTableData((prev) => prev.filter((el) => el.id !== id));
@@ -119,6 +106,17 @@ const InventoryForm = ({
     setTableData((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [columnKey]: newValue } : item)),
     );
+  };
+
+  const handleSaveLocationOffice = (selectedLocation: LocationDetail) => {
+    setFormData((prev) => ({
+      ...prev,
+      location_id: selectedLocation.id,
+      warehouse_name: selectedLocation.business_name,
+      city: selectedLocation.city_name,
+      country: selectedLocation.country_name,
+    }));
+    setHasUnsavedChanges(false);
   };
 
   const renderUpdatableCell = (
@@ -153,26 +151,26 @@ const InventoryForm = ({
       {
         title: 'City',
         dataIndex: 'city',
-        width: '10%',
+        width: '15%',
       },
       {
         title: 'Country',
         dataIndex: 'country',
-        width: '40%',
+        width: '35%',
       },
       {
         title: 'In stock',
         dataIndex: 'in_stock',
         align: 'center',
         width: '10%',
-        render: (_, record) => renderUpdatableCell(record, 'in_stock', record.in_stock),
+        render: (_, record) => renderUpdatableCell(record, 'in_stock', record.in_stock ?? ''),
       },
       {
         title: 'Convert',
         dataIndex: 'convert',
         align: 'center',
         width: '10%',
-        render: (_, record) => renderUpdatableCell(record, 'convert', record.convert),
+        render: (_, record) => renderUpdatableCell(record, 'convert', record.convert ?? ''),
       },
       {
         align: 'center',
@@ -188,21 +186,35 @@ const InventoryForm = ({
     [handleRemoveRow],
   );
 
-  const handleOpenLocationModal = () => {
-    store.dispatch(
-      openModal({
-        type: 'Work Location',
-        title: 'Work Location',
-        props: { workLocation: { data: workLocation, onChange: setWorkLocation } },
-      }),
-    );
-  };
-
   const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
+  const handleAddRow = () => {
+    if (!ensureValidInventory()) return;
+
+    const newRow = {
+      key: Number(tableData?.length + 1),
+      id: (tableData?.length + 1).toString(),
+      warehouse_name: formData.warehouse_name ?? '',
+      city: formData.city ?? '',
+      country: formData.country ?? '',
+      in_stock: 0,
+      convert: 0,
+    };
+
+    setTableData((prev = []) => [...prev, newRow]);
+    setFormData({
+      ...formData,
+      on_order: null,
+      back_order: null,
+      total_stock: null,
+      out_of_stock: null,
+    });
+    setHasUnsavedChanges(false);
+  };
+
   const inventoryInfo = {
-    title: 'BASE & VOLUME PRICE',
+    title: 'INVENTORY MANAGEMENT',
     content: [
       {
         id: 1,
@@ -282,7 +294,7 @@ const InventoryForm = ({
   };
 
   const saveBtnStyle = {
-    background: true ? '#bfbfbf' : '',
+    background: disabledAddInventory ? '#bfbfbf' : '',
     minWidth: 48,
   };
 
@@ -303,14 +315,14 @@ const InventoryForm = ({
             label="Location :"
             fontLevel={3}
             placeholder="select from the list"
-            value={workLocation.label}
+            value={formData.warehouse_name}
             hasBoxShadow
             hasPadding
             rightIcon
             hasHeight
             colorPrimaryDark
             colorRequired="tertiary"
-            onRightIconClick={handleOpenLocationModal}
+            onRightIconClick={onToggleModal('Location')}
           />
         </div>
         <form className="d-flex items-center gap-16 " style={{ height: 56 }}>
@@ -341,44 +353,61 @@ const InventoryForm = ({
               formData.out_of_stock ? 'red-magenta' : ''
             }`}
           />
-          <InputGroup
-            label="On Order :"
-            fontLevel={3}
-            placeholder="type number"
-            value={formData.on_order!}
-            hasBoxShadow
-            hasPadding
-            hasHeight
-            deleteIcon
-            type="number"
-            colorPrimaryDark
-            colorRequired="tertiary"
-            onChange={handleInventoryFormChange('on_order')}
-            onDelete={handleClearInputValue('on_order')}
-          />
-          <InputGroup
-            label="Back Order :"
-            fontLevel={3}
-            placeholder="type number"
-            value={formData.back_order ? formData.back_order : ''}
-            hasBoxShadow
-            hasPadding
-            hasHeight
-            deleteIcon
-            type="number"
-            colorPrimaryDark
-            colorRequired="tertiary"
-            onChange={handleInventoryFormChange('back_order')}
-            onDelete={handleClearInputValue('back_order')}
-          />
+          <div className={styles.category_form_on_order_input_wrapper}>
+            <InputGroup
+              label="On Order :"
+              fontLevel={3}
+              placeholder="type number"
+              value={formData.on_order!}
+              hasBoxShadow
+              hasPadding
+              hasHeight
+              deleteIcon
+              type="number"
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onChange={handleInventoryFormChange('on_order')}
+              onDelete={handleClearInputValue('on_order')}
+              message={
+                formData.on_order && formData.on_order <= 0
+                  ? 'On order cannot equal or smaller than zero'
+                  : undefined
+              }
+              messageType={formData.on_order && formData.on_order <= 0 ? 'error' : undefined}
+            />
+          </div>
+
+          <div className={styles.category_form_back_order_input_wrapper}>
+            <InputGroup
+              label="Back Order :"
+              fontLevel={3}
+              placeholder="type number"
+              value={formData.back_order ? formData.back_order : ''}
+              hasBoxShadow
+              hasPadding
+              hasHeight
+              deleteIcon
+              type="number"
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onChange={handleInventoryFormChange('back_order')}
+              onDelete={handleClearInputValue('back_order')}
+              message={
+                formData.back_order && formData.back_order <= 0
+                  ? 'Back order cannot equal or smaller than zero'
+                  : undefined
+              }
+              messageType={formData.back_order && formData.back_order <= 0 ? 'error' : undefined}
+            />
+          </div>
         </form>
 
         <div className="pb-16 border-bottom-black-inset text-right">
           <CustomSaveButton
             contentButton="Add"
             style={saveBtnStyle}
-            onClick={() => {}}
-            disabled={false}
+            onClick={disabledAddInventory ? undefined : handleAddRow}
+            disabled={disabledAddInventory}
           />
         </div>
 
@@ -387,7 +416,7 @@ const InventoryForm = ({
           columns={inventoryColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ y: 380 }}
+          scroll={{ x: 600, y: 380 }}
         />
       </div>
 
@@ -397,6 +426,14 @@ const InventoryForm = ({
         title={inventoryInfo.title}
         content={inventoryInfo.content}
         additionalContentClass={styles.category_form_info_modal}
+        additionalContainerClasses={styles.category_form_info_modal_wrapper}
+      />
+
+      <LocationOffice
+        brandId={location.state.brandId}
+        isOpen={isShowModal === 'Location'}
+        onClose={onToggleModal('none')}
+        onSave={handleSaveLocationOffice}
       />
     </>
   );

@@ -92,7 +92,17 @@
     box-shadow: 0 0.5px 0 0 @mono-color inset;
   }
 
+  &_info_modal_wrapper {
+    height: 672px;
+
+    :global(.ant-modal-content) {
+      height: 100%;
+    }
+  }
+
   &_info_modal {
+    padding: 16px 12px 8px 12px;
+
     &:first-child {
       padding-top: 0;
     }
@@ -116,6 +126,19 @@
   &_input {
     &::placeholder {
       color: @mono-color !important;
+    }
+  }
+
+  &_on_order_input_wrapper,
+  &_back_order_input_wrapper {
+    position: relative;
+    width: 100%;
+
+    :global(.error) {
+      position: absolute;
+      top: 32px;
+      left: 0;
+      width: max-content;
     }
   }
 

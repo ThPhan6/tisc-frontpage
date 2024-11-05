@@ -5,7 +5,7 @@ import { message } from 'antd';
 import { useLocation } from 'umi';
 
 import { exchangeCurrency, fetchUnitType, updateInventories } from '@/services';
-import { debounce, forEach, isEmpty, pick } from 'lodash';
+import { debounce, forEach, isEmpty, pick, set } from 'lodash';
 
 import { ModalType } from '@/reducers/modal';
 
@@ -57,6 +57,7 @@ const PriceAndInventoryTable: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [filter, setFilter] = useState('');
   const [editedRows, setEditedRows] = useState<Record<string, any>>({});
+  const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
 
   const tableRef = useRef<any>();
   const location = useLocation<{
@@ -68,7 +69,10 @@ const PriceAndInventoryTable: React.FC = () => {
     getUnitType();
   }, []);
 
-  const handleToggleModal = (type: ModalType, rowId?: string) => () => setIsShowModal(type);
+  const handleToggleModal = (type: ModalType, rowId?: string) => () => {
+    setIsShowModal(type);
+    if (rowId) setSelectedRowId(rowId);
+  };
 
   const debouncedUpdateInventories = debounce(async () => {
     const pickPayload: Record<
@@ -137,6 +141,10 @@ const PriceAndInventoryTable: React.FC = () => {
     tableRef.current.reload({ search: value });
   };
 
+  const handleUpdateBackOrder = (newBackOrderValue: number) => {
+    if (selectedRowId) set(editedRows, [selectedRowId, 'back_order'], newBackOrderValue);
+  };
+
   const pageHeaderRender = () => (
     <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrecy} />
   );
@@ -158,10 +166,6 @@ const PriceAndInventoryTable: React.FC = () => {
         />
       </section>
 
-      <Backorder
-        isShowBackorder={isShowModal === 'BackOrder'}
-        onCancel={handleToggleModal('none')}
-      />
       {/* <ImportExportCSV
         open={isShowModal === 'Import/Export'}
         onCancel={handleToggleModal('none')}
@@ -169,6 +173,11 @@ const PriceAndInventoryTable: React.FC = () => {
         onExport={handleExport}
         dbHeaders={dbHeaders}
       /> */}
+      <Backorder
+        isShowBackorder={isShowModal === 'BackOrder'}
+        onCancel={handleToggleModal('none')}
+        onUpdateBackOrder={handleUpdateBackOrder}
+      />
     </PageContainer>
   );
 };

@@ -591,6 +591,7 @@ const PriceForm = ({
         title={baseAndVolumePriceInfo.title}
         content={baseAndVolumePriceInfo.content}
         additionalContentClass={styles.category_form_info_modal}
+        additionalContainerClasses={styles.category_form_info_modal_wrapper}
       />
     </>
   );

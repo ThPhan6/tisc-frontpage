@@ -16,7 +16,6 @@ export interface PriceAttribute {
 }
 
 export interface InventoryAttribute extends Partial<WarehouseItemMetrics> {
-  work_location: string;
   location_id: string;
   total_stock: number | null;
   out_of_stock: number | null;

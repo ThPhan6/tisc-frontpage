@@ -2,8 +2,16 @@ import { Table, TableColumnsType } from 'antd';
 
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse.less';
 
+interface WareHouseColumn {
+  id: string;
+  warehouse_name: string;
+  city: string;
+  country: string;
+  in_stock: number;
+}
+
 const WareHouse = () => {
-  const columns: TableColumnsType<any> = [
+  const columns: TableColumnsType<WareHouseColumn> = [
     {
       title: '#',
       dataIndex: 'key',
@@ -38,14 +46,14 @@ const WareHouse = () => {
       columns={columns}
       dataSource={[
         {
-          key: 1,
+          id: '1',
           warehouse_name: 'Warehouse 1',
           city: 'New York',
           country: 'USA',
           in_stock: 1000,
         },
         {
-          key: 2,
+          id: '2',
           warehouse_name: 'Warehouse 2',
           city: 'Los Angeles',
           country: 'USA',

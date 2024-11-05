@@ -301,6 +301,7 @@ const PriceAndInventoryForm = () => {
               setFormData={setFormData}
               setTableData={setInventoryTableData}
               tableData={inventoryTableData}
+              setHasUnsavedChanges={setHasUnsavedChanges}
             />
           </div>
         </EntryFormWrapper>

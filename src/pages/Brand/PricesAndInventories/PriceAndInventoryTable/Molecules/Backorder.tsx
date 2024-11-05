@@ -1,17 +1,31 @@
+import { useMemo, useState } from 'react';
+
 import { Modal, Table, TableColumnsType } from 'antd';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import { CustomInput } from '@/components/Form/CustomInput';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder.less';
-import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 
 interface BackorderProps {
   onCancel: () => void;
   isShowBackorder: boolean;
+  onUpdateBackOrder: (newBackOrderValue: number) => void;
 }
 
-const Backorder = ({ isShowBackorder, onCancel }: BackorderProps) => {
+interface BackorderColumn {
+  id: string;
+  warehouse_name: string;
+  city: string;
+  country: string;
+  in_stock: number;
+  convert: number;
+}
+
+const Backorder = ({ isShowBackorder, onCancel, onUpdateBackOrder }: BackorderProps) => {
+  const [editedConverts, setEditedConverts] = useState<Record<string, number>>({});
+
   const dataSource = [
     {
       id: '1',
@@ -31,49 +45,68 @@ const Backorder = ({ isShowBackorder, onCancel }: BackorderProps) => {
     },
   ];
 
-  const columns: TableColumnsType<any> = [
-    {
-      title: '#',
-      dataIndex: 'key',
-      width: '5%',
-    },
-    {
-      title: 'Warehouse Name',
-      dataIndex: 'warehouse_name',
-      width: '5%',
-    },
-    {
-      title: 'City',
-      dataIndex: 'city',
-      width: '5%',
-    },
-    {
-      title: 'Country',
-      dataIndex: 'country',
-      width: '75%',
-    },
-    {
-      title: 'In Stock',
-      dataIndex: 'in_stock',
-      width: '5%',
-      align: 'center',
-    },
-    {
-      title: 'Convert',
-      dataIndex: 'convert',
-      width: '5%',
-      align: 'center',
-      render: (_, item) => (
-        <EditableCell
-          item={item}
-          columnKey="convert"
-          defaultValue="6"
-          valueClass="indigo-dark-variant"
-          onSave={() => {}}
-        />
-      ),
-    },
-  ];
+  const handleOnChange =
+    (record: BackorderColumn) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      const parsedValue = parseFloat(value);
+      if (!isNaN(parsedValue)) {
+        setEditedConverts((prev) => ({
+          ...prev,
+          [record.id]: parsedValue,
+        }));
+      }
+    };
+
+  const handleSave = () => {
+    const totalBackOrder = Object.values(editedConverts).reduce((sum, convert) => sum + convert, 0);
+    onUpdateBackOrder(totalBackOrder);
+    onCancel();
+  };
+
+  const columns: TableColumnsType<BackorderColumn> = useMemo(
+    () => [
+      {
+        title: '#',
+        dataIndex: 'key',
+        width: '5%',
+      },
+      {
+        title: 'Warehouse Name',
+        dataIndex: 'warehouse_name',
+        width: '5%',
+      },
+      {
+        title: 'City',
+        dataIndex: 'city',
+        width: '5%',
+      },
+      {
+        title: 'Country',
+        dataIndex: 'country',
+        width: '75%',
+      },
+      {
+        title: 'In Stock',
+        dataIndex: 'in_stock',
+        width: '5%',
+        align: 'center',
+      },
+      {
+        title: 'Convert',
+        dataIndex: 'convert',
+        width: '5%',
+        align: 'center',
+        render: (_, item) => (
+          <CustomInput
+            value={editedConverts[item.id] ?? item.convert}
+            onChange={handleOnChange(item)}
+            additionalInputClass="indigo-dark-variant"
+          />
+        ),
+      },
+    ],
+    [editedConverts],
+  );
 
   return (
     <Modal
@@ -92,7 +125,7 @@ const Backorder = ({ isShowBackorder, onCancel }: BackorderProps) => {
       open={isShowBackorder}
       onCancel={onCancel}
       closable={false}
-      footer={<CustomSaveButton contentButton="Done" onClick={() => {}} />}
+      footer={<CustomSaveButton contentButton="Done" onClick={handleSave} />}
     >
       <Table pagination={false} columns={columns} dataSource={dataSource} />
     </Modal>

@@ -8,6 +8,7 @@ interface InfoModalProps {
   title: string;
   isOpen: boolean;
   onCancel: () => void;
+  additionalContainerClasses?: string;
   additionalContentClass?: string;
   content: { id: number | string; heading?: ReactNode; description: ReactNode }[];
 }
@@ -16,12 +17,13 @@ const InfoModal = ({
   isOpen,
   title,
   onCancel,
+  additionalContainerClasses = '',
   additionalContentClass = '',
   content,
 }: InfoModalProps) => {
   return (
     <CustomModal
-      className={styles.info_modal}
+      className={`${styles.info_modal} ${additionalContainerClasses}`}
       title={
         <>
           <CormorantBodyText customClass={`${styles.info_modal_title}`}>{title}</CormorantBodyText>

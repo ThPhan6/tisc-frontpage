@@ -9,7 +9,7 @@ import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { showImageUrl } from '@/helper/utils';
 import { getListInventories } from '@/services';
-import { isEmpty, reduce, set } from 'lodash';
+import { get, isEmpty, reduce, set } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
@@ -29,7 +29,7 @@ interface InventoryTableProps {
   isEditMode: boolean;
   editedRows: Record<string, any>;
   tableRef: React.MutableRefObject<any>;
-  onToggleModal: (type: ModalType) => () => void;
+  onToggleModal: (type: ModalType, rowId?: string) => () => void;
 }
 
 const InventoryTable = ({
@@ -172,7 +172,7 @@ const InventoryTable = ({
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
             {rowSelectedValue(item, item.total_stock)}
-            <div style={{ position: 'relative' }}>
+            <div className="relative">
               <Popover
                 content={<WareHouse />}
                 trigger="hover"
@@ -207,12 +207,14 @@ const InventoryTable = ({
         dataIndex: 'back_order',
         align: 'center',
         render: (_, item) => {
+          const backOrder = get(editedRows, [item.id, 'back_order'], 0);
+
           return (
             <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
               <p className={`${isEditMode ? 'w-1-2 mr-16' : 'w-full'} my-0`}>
-                {renderEditableCell(item, 'back_order', item.back_order)}
+                {renderEditableCell(item, 'back_order', backOrder ? backOrder : item.back_order)}
               </p>
-              {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder')} />}
+              {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item.id)} />}
             </div>
           );
         },

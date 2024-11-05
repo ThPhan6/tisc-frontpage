@@ -1,0 +1,84 @@
+.location_office {
+  :global(.ant-modal-header) {
+    padding: 16px;
+    border-bottom: none;
+    box-shadow: 0 -0.5px 0 0 @mono-color inset;
+  }
+
+  :global(.ant-modal-body) {
+    padding: 16px;
+  }
+
+  :global(.ant-modal-footer) {
+    border-top: none;
+    box-shadow: 0 0.5px 0 0 @mono-color inset;
+  }
+
+  :global(.ant-collapse) {
+    border: none;
+  }
+
+  :global(.ant-collapse-item) {
+    margin-bottom: 16px;
+  }
+
+  :global(.ant-collapse-header) {
+    padding: 0 !important;
+    padding-bottom: 8px !important;
+  }
+
+  :global(.ant-collapse-content-box) {
+    padding: 16px 0;
+  }
+
+  :global(.ant-collapse-arrow) {
+    right: 0 !important;
+  }
+
+  :global(.ant-collapse-content) {
+    border-top: none;
+  }
+
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+
+  &_title {
+    font-weight: 500;
+  }
+
+  &_country_name {
+    font-size: 16px;
+  }
+
+  &_country_length {
+    margin-left: 8px;
+    font-weight: 300;
+  }
+
+  &_location_name {
+    padding-right: 16px;
+    font-weight: 500;
+  }
+
+  &_location_wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    &:hover {
+      .location_office_location_name,
+      .location_office_location_type,
+      .location_office_location_address,
+      .location_office_location_email,
+      .location_office_location_phone {
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
