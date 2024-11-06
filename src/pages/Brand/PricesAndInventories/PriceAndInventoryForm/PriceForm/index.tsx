@@ -6,6 +6,7 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useScreen } from '@/helper/common';
+import { useGetParamId } from '@/helper/hook';
 import { fetchUnitType } from '@/services';
 
 import { useAppSelector } from '@/reducers';
@@ -46,6 +47,7 @@ const PriceForm = ({
 }: PriceFormProps) => {
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
   const { isExtraLarge } = useScreen();
+  const inventoryId = useGetParamId();
 
   const disableAddPrice =
     !formData.unit_price ||
@@ -415,7 +417,7 @@ const PriceForm = ({
     <>
       <div
         className={`${styles.category_form_content} ${
-          isExtraLarge ? 'border-right-black-inset w-1-2' : 'border-bottom-black-inset w-full'
+          isExtraLarge && inventoryId ? ' w-1-2 border-right-black-inset' : 'w-full'
         }`}
       >
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">

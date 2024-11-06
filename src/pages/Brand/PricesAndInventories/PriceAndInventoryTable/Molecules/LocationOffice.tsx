@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { getBusinessAddress } from '@/helper/utils';
-import { getPartnerGroupByCountry } from '@/services';
 
 import { DropdownRadioItem } from '@/components/CustomRadio/types';
 import { LocationDetail, LocationGroupedByCountry } from '@/features/locations/type';
 
 import Popover from '@/components/Modal/Popover';
 import { BusinessDetail } from '@/features/product/components/BrandContact';
+
+import { getLocationByBrandId } from '@/features/locations/api';
 
 interface LocationOfficeProps {
   brandId: string;
@@ -21,7 +22,7 @@ const LocationOffice = ({ brandId, isOpen, onClose, onSave }: LocationOfficeProp
 
   useEffect(() => {
     const fetchPartnerGroupByCountry = async () => {
-      const res = await getPartnerGroupByCountry(brandId);
+      const res = await getLocationByBrandId(brandId);
       if (res) setGroupedLocations(res);
     };
 

@@ -403,6 +403,14 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PARTNER_CONTACT_SUCCESS: 'Delete partner contact successfully',
   DELETE_PARTNER_CONTACT_ERROR: 'Delete partner contact unsuccessfully',
 
+  // warehouse
+  CREATE_WAREHOUSE_SUCCESS: 'Create warehouse successfully',
+  CREATE_WAREHOUSE_ERROR: 'Create warehouse unsuccessfully',
+  UPDATE_WAREHOUSE_SUCCESS: 'Update warehouse successfully',
+  UPDATE_WAREHOUSE_ERROR: 'Update warehouse unsuccessfully',
+  DELETE_WAREHOUSE_SUCCESS: 'Delete warehouse successfully',
+  DELETE_WAREHOUSE_ERROR: 'Delete warehouse unsuccessfully',
+
   // company
   GET_COMPANY_SUMMARY_ERROR: 'Get company unsuccessfully',
 };

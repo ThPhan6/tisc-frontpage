@@ -10,7 +10,13 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
 import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
-import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
+import {
+  createInventory,
+  exchangeCurrency,
+  getInventory,
+  updateInventory,
+  updateMultiple,
+} from '@/services';
 import { isEmpty, omit, pick, reduce } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
@@ -123,20 +129,11 @@ const PriceAndInventoryForm = () => {
       }));
   }, [priceTableData]);
 
-  const handleSave = useCallback(async () => {
-    if (!validateRequiredFields(formData, getRequiredFields())) return;
-
-    if (hasUnsavedChanges) {
-      message.warn('There is a draft volume that has not added yet. Please check it.');
-      return;
-    }
-
-    const image = !isEmpty(formData.image) ? extractDataBase64(formData.image[0]) : null;
-
+  const mergeVolumePrices = () => {
     const newVolumePrices = transformTableDataToVolumePrices?.() || [];
     const existingVolumePrices = (formData as any).volume_prices || [];
 
-    const mergedVolumePrices = [
+    return [
       ...existingVolumePrices,
       ...newVolumePrices.filter(
         (newItem: any) =>
@@ -145,38 +142,70 @@ const PriceAndInventoryForm = () => {
           ),
       ),
     ];
+  };
 
-    const payload = {
-      ...formData,
+  const formatVolumePrices = (volumePrices: VolumePrice[]) =>
+    volumePrices.map((el) => pick(el, ['discount_rate', 'max_quantity', 'min_quantity']));
+
+  const preparePayload = () => {
+    const image = !isEmpty(formData.image) ? extractDataBase64(formData.image[0]) : null;
+    const volumePrices = mergeVolumePrices();
+
+    return {
+      ...pick(formData, ['sku', 'description', 'unit_price', 'unit_type', 'inventory_category_id']),
       image,
       unit_price: parseFloat(formData.unit_price?.toString() || '0'),
       inventory_category_id: location.state?.categoryId,
-      volume_prices: mergedVolumePrices,
+      volume_prices: isEmpty(volumePrices) ? null : formatVolumePrices(volumePrices),
     };
+  };
 
-    const pickPayload = pick(
-      {
-        ...payload,
-        volume_prices: isEmpty(payload.volume_prices)
-          ? null
-          : payload.volume_prices.map((el: VolumePrice) =>
-              pick(el, ['discount_rate', 'max_quantity', 'min_quantity']),
-            ),
-      },
-      [
-        'sku',
-        'description',
-        'unit_price',
-        'unit_type',
-        'image',
-        'volume_prices',
-        'inventory_category_id',
-      ],
-    );
+  const calculateQuantity = () => {
+    const updatedPayload: { [key: string]: { changeQuantity: number } } = {};
 
-    const res: any = inventoryId
-      ? await updateInventory(inventoryId, omit(pickPayload, 'inventory_category_id'))
-      : await createInventory(pickPayload);
+    inventoryTableData.forEach((item) => {
+      const initialInStock = item.initial_in_stock || 0;
+      const currentInStock = item.in_stock || 0;
+      const convertValue = item.convert || 0;
+      let quantityChange = convertValue;
+
+      if (currentInStock > Number(initialInStock))
+        quantityChange = currentInStock - Number(initialInStock);
+
+      if (currentInStock < Number(initialInStock))
+        quantityChange = Number(initialInStock) - (currentInStock + convertValue);
+
+      updatedPayload[item.id ?? ''] = { changeQuantity: quantityChange };
+    });
+
+    return updatedPayload;
+  };
+
+  const redirectToInventoryTable = () => {
+    navigate({
+      path: PATH.brandPricesInventoriesTable,
+      query: { categories: category },
+      state: { categoryId: location.state?.categoryId, brandId: location.state?.brandId },
+    })();
+  };
+
+  const handleSave = useCallback(async () => {
+    if (!validateRequiredFields(formData, getRequiredFields())) return;
+
+    if (hasUnsavedChanges) {
+      message.warn('There is a draft volume that has not been added yet. Please check it.');
+      return;
+    }
+
+    const payload = preparePayload();
+    const updatedPayload = calculateQuantity();
+
+    const res = inventoryId
+      ? await Promise.all([
+          updateInventory(inventoryId, omit(payload, 'inventory_category_id')),
+          updateMultiple(updatedPayload),
+        ])
+      : await createInventory(payload);
 
     if (!res) return;
 
@@ -185,11 +214,7 @@ const PriceAndInventoryForm = () => {
       return;
     }
 
-    navigate({
-      path: PATH.brandPricesInventoriesTable,
-      query: { categories: category },
-      state: { categoryId: location.state?.categoryId, brandId: location.state?.brandId },
-    })();
+    redirectToInventoryTable();
   }, [hasUnsavedChanges, formData, inventoryId, location.state?.categoryId, category, navigate]);
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
@@ -269,7 +294,7 @@ const PriceAndInventoryForm = () => {
         />
 
         <EntryFormWrapper
-          customClass={`${styles.category_form_entry_wrapper}`}
+          customClass={`${styles.category_form_entry_wrapper} ${inventoryId ? 'w-full' : 'w-1-2'}`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -294,15 +319,17 @@ const PriceAndInventoryForm = () => {
               setHasUnsavedChanges={setHasUnsavedChanges}
             />
 
-            <InventoryForm
-              formData={formData}
-              isShowModal={isShowModal}
-              onToggleModal={handleToggleModal}
-              setFormData={setFormData}
-              setTableData={setInventoryTableData}
-              tableData={inventoryTableData}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-            />
+            {inventoryId && (
+              <InventoryForm
+                formData={formData}
+                isShowModal={isShowModal}
+                onToggleModal={handleToggleModal}
+                setFormData={setFormData}
+                setTableData={setInventoryTableData}
+                tableData={inventoryTableData}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+              />
+            )}
           </div>
         </EntryFormWrapper>
       </div>

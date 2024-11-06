@@ -6,8 +6,10 @@ import { useLocation } from 'umi';
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { useScreen } from '@/helper/common';
-import { isNil } from 'lodash';
+import { confirmDelete, useScreen } from '@/helper/common';
+import { useGetParamId } from '@/helper/hook';
+import { createWarehouse, deleteWarehouse, getListWithInventory } from '@/services';
+import { pick } from 'lodash';
 
 import { LocationDetail } from '@/features/locations/type';
 import { ModalType } from '@/reducers/modal';
@@ -28,6 +30,7 @@ export interface WarehouseItemMetrics {
   country: string;
   in_stock?: number;
   convert?: number;
+  initial_in_stock?: number;
 }
 
 export interface InventoryFormProps {
@@ -51,13 +54,13 @@ const InventoryForm = ({
 }: InventoryFormProps) => {
   const { isExtraLarge } = useScreen();
   const location = useLocation<{ brandId: string }>();
-  const disabledAddInventory =
-    !formData.warehouse_name || !formData.on_order || !formData.back_order;
+  const inventoryId = useGetParamId();
+  const disabledAddInventory = !formData.warehouse_name;
 
   const ensureValidInventory = () => {
     const { on_order, back_order } = formData;
 
-    if (isNil(on_order) || isNil(back_order) || (+on_order < 1 && +back_order < 1)) {
+    if (+on_order! < 1 && +back_order! < 1) {
       message.warn('The value cannot be equal or smaller than zero');
       return false;
     }
@@ -65,31 +68,41 @@ const InventoryForm = ({
     return true;
   };
 
+  const fetchListWithInventory = async () => {
+    const res = await getListWithInventory(inventoryId);
+    if (res) {
+      const updatedTableData: any = res.warehouses?.map((item: Partial<WarehouseItemMetrics>) => ({
+        ...item,
+        initial_in_stock: item.in_stock || 0,
+      }));
+      setTableData(updatedTableData);
+    }
+  };
+
   useEffect(() => {
-    const caculateStock = () => {
-      const { totalStock, backOrder } = tableData.reduce(
-        (acc, item) => {
-          acc.totalStock += Number(item.in_stock) || 0;
-          acc.backOrder += Number(item.convert) || 0;
-          return acc;
-        },
-        { totalStock: 0, backOrder: 0 },
-      );
+    fetchListWithInventory();
+  }, []);
+
+  useEffect(() => {
+    const calculateStock = () => {
+      const totalStock =
+        tableData?.reduce((accumulator, item) => {
+          const updatedAccumulator = accumulator + (Number(item.in_stock) || 0);
+          return updatedAccumulator;
+        }, 0) || 0;
 
       const onOrderValue = Number(formData.on_order) || 0;
-      const finalTotalStock = Number(totalStock) || 0;
+      const finalTotalStock = totalStock;
 
       const outStock = finalTotalStock - onOrderValue;
-
       setFormData((prev) => ({
         ...prev,
         total_stock: finalTotalStock,
-        back_order: backOrder,
         out_of_stock: outStock,
       }));
     };
 
-    caculateStock();
+    calculateStock();
   }, [tableData, formData.on_order]);
 
   const handleInventoryFormChange =
@@ -99,8 +112,15 @@ const InventoryForm = ({
       setHasUnsavedChanges(value !== null);
     };
 
-  const handleRemoveRow = (id: string) => () =>
-    setTableData((prev) => prev.filter((el) => el.id !== id));
+  const handleRemoveRow = (id: string) => () => {
+    confirmDelete(async () => {
+      const res = await deleteWarehouse(id);
+      if (res) {
+        setTableData((prev) => prev.filter((el) => el.id !== id));
+        await fetchListWithInventory();
+      }
+    });
+  };
 
   const handleSaveCell = (id: string, columnKey: string, newValue: string) => {
     setTableData((prev) =>
@@ -145,18 +165,18 @@ const InventoryForm = ({
       },
       {
         title: 'WareHouse Name',
-        dataIndex: 'warehouse_name',
+        dataIndex: 'name',
         width: '20%',
       },
       {
         title: 'City',
-        dataIndex: 'city',
-        width: '15%',
+        dataIndex: 'city_name',
+        width: '20%',
       },
       {
         title: 'Country',
-        dataIndex: 'country',
-        width: '35%',
+        dataIndex: 'country_name',
+        width: '30%',
       },
       {
         title: 'In stock',
@@ -170,7 +190,7 @@ const InventoryForm = ({
         dataIndex: 'convert',
         align: 'center',
         width: '10%',
-        render: (_, record) => renderUpdatableCell(record, 'convert', record.convert ?? ''),
+        render: (_, record) => renderUpdatableCell(record, 'convert', record.convert ?? 0),
       },
       {
         align: 'center',
@@ -189,7 +209,7 @@ const InventoryForm = ({
   const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
-  const handleAddRow = () => {
+  const handleAddRow = async () => {
     if (!ensureValidInventory()) return;
 
     const newRow = {
@@ -200,17 +220,26 @@ const InventoryForm = ({
       country: formData.country ?? '',
       in_stock: 0,
       convert: 0,
+      location_id: formData.location_id,
+      inventory_id: inventoryId,
     };
 
-    setTableData((prev = []) => [...prev, newRow]);
-    setFormData({
-      ...formData,
-      on_order: null,
-      back_order: null,
-      total_stock: null,
-      out_of_stock: null,
-    });
-    setHasUnsavedChanges(false);
+    const payload = pick(newRow, ['location_id', 'inventory_id']);
+
+    const res = await createWarehouse(payload);
+
+    if (res) {
+      await fetchListWithInventory();
+      setTableData((prev = []) => [...prev, newRow]);
+      setFormData({
+        ...formData,
+        on_order: null,
+        back_order: null,
+        total_stock: null,
+        out_of_stock: null,
+      });
+      setHasUnsavedChanges(false);
+    }
   };
 
   const inventoryInfo = {
