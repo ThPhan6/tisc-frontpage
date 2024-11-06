@@ -7,13 +7,14 @@ import { useLocation } from 'umi';
 
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
+import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
 import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
 import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
 import { isEmpty, omit, pick, reduce } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
-import type { PriceAndInventoryAttribute } from '@/types';
+import type { PriceAttribute } from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -24,6 +25,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 import categoryTableStyle from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
+import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
@@ -36,7 +38,7 @@ const initialFormData = {
 };
 
 const PriceAndInventoryForm = () => {
-  const [formData, setFormData] = useState<PriceAndInventoryAttribute>(initialFormData);
+  const [formData, setFormData] = useState<PriceAttribute>(initialFormData);
   const [tableData, setTableData] = useState<VolumePrice[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -46,6 +48,7 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
+  const { isExtraLarge } = useScreen();
 
   useEffect(() => {
     setFormData(initialFormData);
@@ -53,7 +56,7 @@ const PriceAndInventoryForm = () => {
   }, []);
 
   const getRequiredFields = (): {
-    field: keyof PriceAndInventoryAttribute;
+    field: keyof PriceAttribute;
     messageField: string;
   }[] => [
     { field: 'sku', messageField: 'Product ID is required' },
@@ -197,6 +200,12 @@ const PriceAndInventoryForm = () => {
 
   const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
 
+  const entryFormWrapperStyle = {
+    height: 'calc(var(--vh) * 100 - 312px)',
+    padding: 0,
+    overflow: isExtraLarge ? 'unset' : 'auto',
+  };
+
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
       <div className={styles.category_form}>
@@ -252,6 +261,7 @@ const PriceAndInventoryForm = () => {
         />
 
         <EntryFormWrapper
+          customClass={`${styles.category_form_entry_wrapper}`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -262,12 +272,10 @@ const PriceAndInventoryForm = () => {
               brandId: location.state?.brandId,
             },
           })}
-          contentStyles={{
-            height: 'calc(var(--vh) * 100 - 312px)',
-          }}
+          contentStyles={entryFormWrapperStyle}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
-          <div className={styles.category_form_wrapper}>
+          <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>
             <PriceForm
               isShowModal={isShowModal}
               onToggleModal={handleToggleModal}
@@ -278,7 +286,7 @@ const PriceAndInventoryForm = () => {
               setHasUnsavedChanges={setHasUnsavedChanges}
             />
 
-            {/* <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} /> */}
+            <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} />
           </div>
         </EntryFormWrapper>
       </div>

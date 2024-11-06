@@ -5,11 +5,12 @@ import { Table, type TableColumnsType, message } from 'antd';
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { fetchUnitType } from '@/services';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
-import { PriceAndInventoryAttribute } from '@/types';
+import { PriceAttribute } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
@@ -27,8 +28,8 @@ import CollectionGallery from '@/features/gallery/CollectionGallery';
 interface PriceFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
-  formData: PriceAndInventoryAttribute;
-  setFormData: React.Dispatch<React.SetStateAction<PriceAndInventoryAttribute>>;
+  formData: PriceAttribute;
+  setFormData: React.Dispatch<React.SetStateAction<PriceAttribute>>;
   tableData: VolumePrice[];
   setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
   setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,6 +45,7 @@ const PriceForm = ({
   setHasUnsavedChanges,
 }: PriceFormProps) => {
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
+  const { isExtraLarge } = useScreen();
 
   const disableAddPrice =
     !formData.unit_price ||
@@ -227,7 +229,7 @@ const PriceForm = ({
   );
 
   const handleFormChange =
-    (field: keyof PriceAndInventoryAttribute) =>
+    (field: keyof PriceAttribute) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = event.target.value;
       const parsedValue =
@@ -246,7 +248,7 @@ const PriceForm = ({
         value: formData.min_quantity,
         onChange: handleFormChange('min_quantity'),
         fontLevel: 3,
-        label: 'Min./Max. Quantity :',
+        label: <span className="w-max block">Min./Max. Quantity :</span>,
         type: 'number',
       },
       {
@@ -261,7 +263,7 @@ const PriceForm = ({
     [formData.min_quantity, formData.max_quantity],
   );
 
-  const handleClearInputValue = (field: keyof PriceAndInventoryAttribute) => () =>
+  const handleClearInputValue = (field: keyof PriceAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
   const handleAddRow = () => {
@@ -404,9 +406,18 @@ const PriceForm = ({
     ],
   };
 
+  const saveBtnStyle = {
+    background: disableAddPrice ? '#bfbfbf' : '',
+    minWidth: 48,
+  };
+
   return (
     <>
-      <div className={`${styles.category_form_content}`}>
+      <div
+        className={`${styles.category_form_content} ${
+          isExtraLarge ? 'border-right-black-inset w-1-2' : 'border-bottom-black-inset w-full'
+        }`}
+      >
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
           <Title customClass={`${styles.category_form_content_title} d-flex items-center`}>
             BASE PRICE
@@ -418,7 +429,7 @@ const PriceForm = ({
         </article>
 
         <div className="d-flex items-center justify-between w-full">
-          <div style={{ width: '85%' }}>
+          <div style={{ width: isExtraLarge ? '85%' : '79%' }}>
             <InputGroup
               label="Product ID (SKU Code)"
               required
@@ -491,7 +502,7 @@ const PriceForm = ({
 
         <article
           style={{ height: 28 }}
-          className="d-flex items-center justify-between w-full border-bottom-black-inset mt-16 mb-8-px"
+          className="d-flex items-center justify-between w-full mt-16 mb-8-px"
         >
           <Title
             customClass={`${styles.category_form_content_title} shadow-none d-flex items-center`}
@@ -504,8 +515,8 @@ const PriceForm = ({
           </Title>
         </article>
 
-        <form className={`d-flex items-center gap-16 mb-8-px`}>
-          <div className="d-flex items-center items-end border-bottom-light w-full">
+        <form className="d-flex gap-16 mb-8-px w-full">
+          <div className="d-flex items-center items-end border-bottom-light w-1-2">
             {volumnDiscountInput.map((input, index) => (
               <InputGroup
                 key={index}
@@ -533,7 +544,7 @@ const PriceForm = ({
             ))}
           </div>
 
-          <div className="d-flex items-center items-end border-bottom-light w-full">
+          <div className="d-flex items-center items-end border-bottom-light w-1-2">
             {minMaxInput.map((input, index) => (
               <InputGroup
                 key={index}
@@ -548,13 +559,10 @@ const PriceForm = ({
           </div>
         </form>
 
-        <div className="pb-16 border-bottom-black-inset" style={{ textAlign: 'right' }}>
+        <div className="pb-16 border-bottom-black-inset text-right">
           <CustomSaveButton
             contentButton="Add"
-            style={{
-              background: disableAddPrice ? '#bfbfbf' : '',
-              minWidth: 48,
-            }}
+            style={saveBtnStyle}
             onClick={disableAddPrice ? undefined : handleAddRow}
             disabled={disableAddPrice}
           />
@@ -565,7 +573,7 @@ const PriceForm = ({
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ y: 200 }}
+          scroll={{ y: 185 }}
         />
       </div>
 
