@@ -305,7 +305,7 @@ export const ProductBasicInfo: React.FC = () => {
             <ResponsiveCol className={styles.labelCol}>
               <CustomCollapse
                 header={<BodyText level={4}>Eco-Labels</BodyText>}
-                customHeaderClass={styles.labelCollapse}
+                customHeaderClass={`${styles.labelCollapse} ${styles.ecoLabel}`}
                 bordered={false}
                 noBorder={true}
               >
