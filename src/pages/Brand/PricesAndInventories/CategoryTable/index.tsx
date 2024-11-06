@@ -71,6 +71,7 @@ export interface PriceAndInventoryColumn {
   price: InventoryPriceItem;
   on_order?: number;
   back_order?: number;
+  total_stock: number;
 }
 
 const CategoryTable: React.FC = () => {
@@ -266,7 +267,7 @@ const CategoryTable: React.FC = () => {
         dataIndex: 'total_stock',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            {rowSelectedValue(item, 1)}
+            {rowSelectedValue(item, item.total_stock)}
             <div style={{ position: 'relative' }}>
               <Popover
                 content={<WareHouse />}
@@ -285,7 +286,11 @@ const CategoryTable: React.FC = () => {
         title: 'Out stock',
         dataIndex: 'out_stock',
         align: 'center',
-        render: (_, item) => <div className="red-magenta">{rowSelectedValue(item, -7)}</div>,
+        render: (_, item) => (
+          <div className={item.on_order ? 'red-magenta' : 'pure-black'}>
+            {rowSelectedValue(item, item.on_order ? item.total_stock - item.on_order : '-')}
+          </div>
+        ),
       },
 
       {
