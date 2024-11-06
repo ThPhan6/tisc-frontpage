@@ -248,6 +248,7 @@ export async function exchangeCurrency(brandId: string, currency: string) {
 }
 
 export async function updateInventories(payload: any) {
+  showPageLoading();
   return request<{ data: any }>(`/api/inventory/update/inventories`, {
     method: 'PATCH',
     data: payload,
@@ -257,6 +258,7 @@ export async function updateInventories(payload: any) {
       return true;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INVENTORY_ERROR);
       return false;
     });

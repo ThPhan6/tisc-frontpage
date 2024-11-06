@@ -46,29 +46,33 @@ export interface VolumePrice {
   unit_type?: string;
 }
 
+export interface InventoryExchangeHistory {
+  created_at: string;
+  from_currency: string;
+  rate: number;
+  relation_id: string;
+  to_currency: string;
+  updated_at: string;
+}
+
+export interface InventoryPriceItem {
+  created_at: string;
+  currency?: string;
+  unit_price: number;
+  unit_type: string;
+  volume_prices: VolumePrice[];
+  exchange_histories: InventoryExchangeHistory[];
+}
 export interface PriceAndInventoryColumn {
   id: string;
   image: string;
   sku: string;
   description: string;
-  price: {
-    created_at: string;
-    currency?: string;
-    unit_price: number;
-    unit_type: string;
-    volume_prices: VolumePrice[];
-    exchange_histories: {
-      created_at: string;
-      from_currency: string;
-      rate: number;
-      relation_id: string;
-      to_currency: string;
-      updated_at: string;
-    }[];
-  };
+  price: InventoryPriceItem;
+  on_order?: number;
+  back_order?: number;
+  total_stock: number;
 }
-
-export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
 
 const CategoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -136,12 +140,15 @@ const CategoryTable: React.FC = () => {
     id: string,
     columnKey: string,
     newValue: string,
-    unitType: string,
-    volumePrices: VolumePrice[],
+    price: InventoryPriceItem,
   ) => {
+    const { unit_type, volume_prices, unit_price } = price;
     set(editedRows, [id, columnKey], Number(newValue));
-    set(editedRows, [id, 'unit_type'], unitType);
-    set(editedRows, [id, 'volume_prices'], volumePrices);
+    set(editedRows, [id, 'unit_type'], unit_type);
+    set(editedRows, [id, 'volume_prices'], volume_prices);
+    if (columnKey !== 'unit_price') {
+      set(editedRows, [id, 'unit_price'], unit_price);
+    }
   };
 
   const debouncedUpdateInventories = debounce(async () => {
@@ -149,7 +156,6 @@ const CategoryTable: React.FC = () => {
       string,
       Pick<PriceAndInventoryColumn['price'], 'unit_price' | 'volume_prices'>
     > = {};
-
     forEach(editedRows, (value, key) => {
       pickPayload[key] = {
         ...value,
@@ -163,16 +169,14 @@ const CategoryTable: React.FC = () => {
 
     const res = await updateInventories(pickPayload);
     if (res) {
-      setTimeout(() => {
-        tableRef.current.reload();
-        setEditedRows({});
-      }, 100);
+      tableRef.current.reload();
     }
   }, 500);
 
   const handleToggleSwitch = () => {
     if (isEditMode && !isEmpty(editedRows)) {
       debouncedUpdateInventories();
+      return;
     }
 
     setIsEditMode(!isEditMode);
@@ -195,9 +199,7 @@ const CategoryTable: React.FC = () => {
         columnKey={columnKey}
         defaultValue={value}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
-        onSave={(id, colKey, newValue) =>
-          handleSaveOnCell(id, colKey, newValue, item.price.unit_type, item.price.volume_prices)
-        }
+        onSave={(id, colKey, newValue) => handleSaveOnCell(id, colKey, newValue, item.price)}
       />
     ) : (
       rowSelectedValue(item, value)
@@ -265,7 +267,7 @@ const CategoryTable: React.FC = () => {
         dataIndex: 'total_stock',
         render: (_, item) => (
           <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            {rowSelectedValue(item, 1)}
+            {rowSelectedValue(item, item.total_stock)}
             <div style={{ position: 'relative' }}>
               <Popover
                 content={<WareHouse />}
@@ -284,25 +286,36 @@ const CategoryTable: React.FC = () => {
         title: 'Out stock',
         dataIndex: 'out_stock',
         align: 'center',
-        render: (_, item) => <div className="red-magenta">{rowSelectedValue(item, -7)}</div>,
+        render: (_, item) => (
+          <div className={item.on_order ? 'red-magenta' : 'pure-black'}>
+            {rowSelectedValue(item, item.on_order ? item.total_stock - item.on_order : '-')}
+          </div>
+        ),
       },
 
       {
         title: 'On Order',
         dataIndex: 'on_order',
         align: 'center',
-        render: (_, item) => renderEditableCell(item, 'on_order', 37),
+        render: (_, item) => renderEditableCell(item, 'on_order', item.on_order ?? '-'),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
-        align: isEditMode ? 'left' : 'center',
+        align: 'center',
         render: (_, item) => (
-          <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-            <span className={`${isEditMode ? 'w-1-2' : 'w-full'}`}>
-              {renderEditableCell(item, 'unit_price', 12)}
-            </span>
-            {isEditMode && <CDownLeftIcon onClick={handleToggleModal('BackOrder')} />}
+          <div
+            className={`${styles.category_table_additional_action_wrapper} ${styles.back_order_card} cursor-pointer`}
+          >
+            <p className={`w-full my-0`}>
+              {renderEditableCell(item, 'back_order', item.back_order ?? '-')}
+            </p>
+            {isEditMode && (
+              <CDownLeftIcon
+                className={styles.down_left_icon}
+                onClick={handleToggleModal('BackOrder')}
+              />
+            )}
           </div>
         ),
       },
@@ -486,6 +499,10 @@ const CategoryTable: React.FC = () => {
             ...(!isEmpty(filter) && { search: filter }),
           }}
           onFilterLoad
+          callbackFinishApi={() => {
+            setEditedRows({});
+            setIsEditMode(false);
+          }}
         />
       </section>
 
