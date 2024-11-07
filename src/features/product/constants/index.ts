@@ -28,8 +28,24 @@ export const DEFAULT_ECO_LABELS: FeatureLabelPros = {
 };
 
 export const DEFAULT_PRODUCTION_LABELS: FeatureLabelPros = {
-  ['production']: {
-    name: 'Production',
+  ['new_release']: {
+    name: 'New Release',
+    value: false,
+  },
+  ['promotion']: {
+    name: 'Promotion',
+    value: false,
+  },
+  ['limited_edition']: {
+    name: 'Limited Edition',
+    value: false,
+  },
+  ['end_soon']: {
+    name: 'Production End Soon',
+    value: false,
+  },
+  ['discontinued']: {
+    name: 'Discontinued',
     value: false,
   },
 };
