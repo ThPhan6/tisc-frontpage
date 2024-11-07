@@ -333,10 +333,6 @@ const AttributeList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         onFormSubmit={handleCopyAttribute}
-        styleButtonCancel={{
-          justifyContent: 'center',
-          paddingLeft: 9,
-        }}
         groupRadioList={[
           {
             options: brands.map((brand) => {
