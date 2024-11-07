@@ -31,6 +31,7 @@ export interface ProductSummary {
   card_count: number;
   product_count: number;
   brandId: string;
+  x_collection: boolean;
 }
 
 export type ProductAttributeType = 'Text' | 'Conversions' | 'Presets' | 'Options';
