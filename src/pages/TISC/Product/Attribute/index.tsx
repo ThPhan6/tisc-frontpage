@@ -102,7 +102,12 @@ const AttributeList: React.FC = () => {
       return;
     }
 
-    await copyAttributeToBrand(attrSelected, brandChosen.value as string);
+    const dataRes = await copyAttributeToBrand(attrSelected, brandChosen.value as string);
+    const brandId = param.brandId;
+
+    if (dataRes && dataRes?.brand_id === brandId) {
+      tableRef.current.reload();
+    }
 
     setVisible(false);
   };
@@ -328,6 +333,10 @@ const AttributeList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         onFormSubmit={handleCopyAttribute}
+        styleButtonCancel={{
+          justifyContent: 'center',
+          paddingLeft: 9,
+        }}
         groupRadioList={[
           {
             options: brands.map((brand) => {
