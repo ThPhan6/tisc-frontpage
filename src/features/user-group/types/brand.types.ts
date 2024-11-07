@@ -41,6 +41,7 @@ export interface BrandAttributeSummary {
 export interface BrandDetail {
   id: string;
   location_ids: any;
+  brand_id?: string;
   logo: string;
   mission_n_vision: string;
   name: string;
