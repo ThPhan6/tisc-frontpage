@@ -301,13 +301,18 @@ export const TopBar: React.FC = () => {
               bottomValue={renderFilterDropdown(
                 'Collections',
                 productSummary?.collections
-                  ? [
-                      ...productSummary?.collections.map((collection) => ({
+                  ? productSummary?.x_collection
+                    ? [
+                        ...productSummary?.collections.map((collection) => ({
+                          key: collection.id,
+                          label: collection.name,
+                        })),
+                        { key: '-1', label: 'X Collection' },
+                      ]
+                    : productSummary?.collections.map((collection) => ({
                         key: collection.id,
                         label: collection.name,
-                      })),
-                      { key: '-1', label: 'X Collection' },
-                    ]
+                      }))
                   : [],
                 true,
                 'View by Collections',
