@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -9,6 +17,7 @@ import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg'
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
+import { ReactComponent as SquareCDownLeft } from '@/assets/icons/square-c-down-left.svg';
 
 import { confirmDelete } from '@/helper/common';
 import { useNavigationHandler } from '@/helper/hook';
@@ -18,6 +27,7 @@ import {
   exchangeCurrency,
   fetchUnitType,
   getListInventories,
+  moveInventoryToCategory,
   updateInventories,
 } from '@/services';
 import { debounce, forEach, isEmpty, pick, reduce, set } from 'lodash';
@@ -25,12 +35,14 @@ import { debounce, forEach, isEmpty, pick, reduce, set } from 'lodash';
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
+import { AccordionItem } from '@/components/AccordionMenu';
 import CustomButton from '@/components/Button';
 import InventoryHeader from '@/components/InventoryHeader';
 import CustomTable from '@/components/Table';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
+import TreeSelect, { TreeItem } from '@/components/TreeSelect';
 import { BodyText } from '@/components/Typography';
 import Backorder from '@/pages/Brand/PricesAndInventories/Backorder';
 import styles from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
@@ -81,6 +93,8 @@ const CategoryTable: React.FC = () => {
   const [editedRows, setEditedRows] = useState<Record<string, any>>({});
   const [filter, setFilter] = useState('');
   const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+  const [currentInventory, setCurrentInventory] = useState<string>('');
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
   useEffect(() => {
     const getUnitType = async () => await fetchUnitType();
@@ -93,16 +107,45 @@ const CategoryTable: React.FC = () => {
     },
     [unitTypeData],
   );
-
+  const treeSelectRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<any>();
-  const location = useLocation<{ categoryId: string; brandId: string }>();
+  const location = useLocation<{
+    categoryId: string;
+    brandId: string;
+    groupItems: AccordionItem[];
+  }>();
 
   const navigate = useNavigationHandler();
 
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
 
+  const treeSelectStyle = {
+    padding: '6px 16px',
+    width: '420px',
+  };
+
+  const wrapperTreeSelectStyle: CSSProperties = {
+    position: 'absolute',
+    right: '29.3rem',
+    bottom: '4.5rem',
+  };
+
+  const handleToggleExpand = () => (newKeys: string[]) => setExpandedKeys(newKeys);
+
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
+
+  const handleItemMoveToSelect = async (record: PriceAndInventoryColumn, item: TreeItem) => {
+    if (item.id === location.state.categoryId) {
+      message.warn('Cannot move to the category itself');
+      return;
+    }
+    const res = await moveInventoryToCategory(record.id, item.id);
+    if (res) {
+      setCurrentInventory('');
+      tableRef.current.reload();
+    }
+  };
 
   const handleDelete = (id: string) => () => {
     confirmDelete(async () => {
@@ -135,6 +178,23 @@ const CategoryTable: React.FC = () => {
     newSelectedRowKeys.push(record.id);
     setSelectedRowKeys(newSelectedRowKeys);
   };
+
+  const handleToggleTreeSelect =
+    (el: PriceAndInventoryColumn) => (event: MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      setCurrentInventory(el.id === currentInventory ? '' : el.id);
+    };
+
+  const handleClickOutside = (event: any) => {
+    if (treeSelectRef.current && !treeSelectRef.current.contains(event.target as Node)) {
+      setCurrentInventory('');
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const handleSaveOnCell = (
     id: string,
@@ -348,6 +408,33 @@ const CategoryTable: React.FC = () => {
                 type: 'updated',
                 label: 'Edit Row',
                 onClick: handlePushToUpdate(record.id ?? ''),
+              },
+              {
+                type: '',
+                label: (
+                  <div onClick={handleToggleTreeSelect(record)} className="relative">
+                    <div className="d-flex items-center gap-12">
+                      <SquareCDownLeft />
+                      Move to
+                    </div>
+
+                    {currentInventory === record.id && (
+                      <div ref={treeSelectRef} style={wrapperTreeSelectStyle}>
+                        <TreeSelect
+                          additonalStyle={treeSelectStyle}
+                          showAllLevels={true}
+                          isSingleExpand={false}
+                          onItemSelect={(categoryItem: TreeItem) =>
+                            handleItemMoveToSelect(record, categoryItem)
+                          }
+                          data={location.state.groupItems}
+                          defaultExpandedKeys={expandedKeys}
+                          onExpandedKeys={handleToggleExpand()}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ),
               },
               {
                 type: 'deleted',

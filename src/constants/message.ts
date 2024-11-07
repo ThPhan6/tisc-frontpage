@@ -62,6 +62,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_INVENTORY_SUCCESS: 'Update inventory successfully',
   UPDATE_INVENTORY_ERROR: 'Update inventory error',
   GET_INVENTORY_ERROR: 'Get inventory error',
+  MOVE_INVENTORY_SUCCESS: 'Move inventory successfully',
+  MOVE_INVENTORY_ERROR: 'Move inventory error',
 
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',
