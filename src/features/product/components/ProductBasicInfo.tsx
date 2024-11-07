@@ -72,6 +72,7 @@ export const ProductBasicInfo: React.FC = () => {
   const productVariant = useAppSelector(productVariantsSelector);
 
   const {
+    id,
     name,
     description,
     collections,
@@ -229,8 +230,8 @@ export const ProductBasicInfo: React.FC = () => {
             </div>
           }
           noWrap
-          inputTitle={collectionValue ? collectionValue : 'X Collection'}
-          value={collectionValue ? collectionValue : 'X Collection'}
+          inputTitle={collectionValue ? collectionValue : id ? 'X Collection' : ''}
+          value={collectionValue ? collectionValue : id ? 'X Collection' : ''}
           readOnly={editable === false}
           containerClass={!editable ? styles.viewInfo : ''}
         />
