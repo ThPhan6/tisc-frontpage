@@ -60,7 +60,7 @@ const BrandProductListPage: React.FC = () => {
     }
 
     /// show product list defailt by collection
-    if (!filter) {
+    if (!filter || filter.length === 0) {
       getProductListByBrandId({
         brand_id: userBrand.id,
         collection_id: 'all',
