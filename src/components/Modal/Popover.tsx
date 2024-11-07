@@ -364,7 +364,6 @@ const Popover: FC<PopoverProps> = ({
       return (
         <div className={`${styles.footerButtons} flex-end`} style={{ gap: 16 }}>
           <CustomButton
-            style={styleButtonCancel}
             size="small"
             variant="primary"
             properties="rounded"
