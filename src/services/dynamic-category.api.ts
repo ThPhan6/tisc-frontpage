@@ -190,7 +190,7 @@ export async function getInventory(id: string) {
 
 export async function updateInventory(id: string, payload: PriceAttribute) {
   showPageLoading();
-  return request<{ data: PriceAttribute }>(`/api/inventory/update/${id}`, {
+  return request<boolean>(`/api/inventory/update/${id}`, {
     method: 'PATCH',
     data: payload,
   })

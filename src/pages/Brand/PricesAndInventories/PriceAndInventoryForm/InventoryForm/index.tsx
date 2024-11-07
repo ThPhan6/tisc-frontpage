@@ -1,45 +1,32 @@
 import { useEffect, useMemo } from 'react';
 
-import { Table, type TableColumnsType, message } from 'antd';
-import { useLocation } from 'umi';
+import { Table, type TableColumnsType } from 'antd';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { confirmDelete, useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
-import { createWarehouse, deleteWarehouse, getListWithInventory } from '@/services';
-import { pick } from 'lodash';
+import { cloneDeep } from 'lodash';
 
-import { LocationDetail } from '@/features/locations/type';
-import { ModalType } from '@/reducers/modal';
-import { InventoryAttribute } from '@/types';
+import store from '@/reducers';
+import { ModalType, openModal } from '@/reducers/modal';
+import { InventoryAttribute, WarehouseItemMetric } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { CustomInput } from '@/components/Form/CustomInput';
 import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
-import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
-import LocationOffice from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/LocationOffice';
-
-export interface WarehouseItemMetrics {
-  id: string;
-  warehouse_name: string;
-  city: string;
-  country: string;
-  in_stock?: number;
-  convert?: number;
-  initial_in_stock?: number;
-}
 
 export interface InventoryFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
   formData: InventoryAttribute;
   setFormData: React.Dispatch<React.SetStateAction<InventoryAttribute>>;
-  tableData: WarehouseItemMetrics[];
-  setTableData: React.Dispatch<React.SetStateAction<WarehouseItemMetrics[]>>;
+  tableData: WarehouseItemMetric[];
+  setTableData: React.Dispatch<React.SetStateAction<WarehouseItemMetric[]>>;
   setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -53,35 +40,8 @@ const InventoryForm = ({
   setHasUnsavedChanges,
 }: InventoryFormProps) => {
   const { isExtraLarge } = useScreen();
-  const location = useLocation<{ brandId: string }>();
   const inventoryId = useGetParamId();
-  const disabledAddInventory = !formData.warehouse_name;
-
-  const ensureValidInventory = () => {
-    const { on_order, back_order } = formData;
-
-    if (+on_order! < 1 && +back_order! < 1) {
-      message.warn('The value cannot be equal or smaller than zero');
-      return false;
-    }
-
-    return true;
-  };
-
-  const fetchListWithInventory = async () => {
-    const res = await getListWithInventory(inventoryId);
-    if (res) {
-      const updatedTableData: any = res.warehouses?.map((item: Partial<WarehouseItemMetrics>) => ({
-        ...item,
-        initial_in_stock: item.in_stock || 0,
-      }));
-      setTableData(updatedTableData);
-    }
-  };
-
-  useEffect(() => {
-    fetchListWithInventory();
-  }, []);
+  const disabledAddInventory = !formData.name;
 
   useEffect(() => {
     const calculateStock = () => {
@@ -113,84 +73,95 @@ const InventoryForm = ({
     };
 
   const handleRemoveRow = (id: string) => () => {
-    confirmDelete(async () => {
-      const res = await deleteWarehouse(id);
-      if (res) {
-        setTableData((prev) => prev.filter((el) => el.id !== id));
-        await fetchListWithInventory();
-      }
+    confirmDelete(() => {
+      setTableData((prev) => {
+        const updatedTableData = prev.filter((el) => el.id !== id);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          warehouses: updatedTableData,
+        }));
+        return updatedTableData;
+      });
     });
   };
 
-  const handleSaveCell = (id: string, columnKey: string, newValue: string) => {
-    setTableData((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [columnKey]: newValue } : item)),
-    );
-  };
+  const handleChangeWarehouse =
+    (
+      warehouse: WarehouseItemMetric,
+      type: keyof Pick<WarehouseItemMetric, 'in_stock' | 'convert'>,
+    ) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newWarehouses = cloneDeep(tableData).map((el) => {
+        if (el.id === warehouse.id) {
+          return {
+            ...el,
+            [type]: Number(event.target.value),
+          };
+        }
 
-  const handleSaveLocationOffice = (selectedLocation: LocationDetail) => {
-    setFormData((prev) => ({
-      ...prev,
-      location_id: selectedLocation.id,
-      warehouse_name: selectedLocation.business_name,
-      city: selectedLocation.city_name,
-      country: selectedLocation.country_name,
-    }));
-    setHasUnsavedChanges(false);
-  };
+        return el;
+      });
 
-  const renderUpdatableCell = (
-    record: WarehouseItemMetrics,
-    columnKey: string,
-    defaultValue: string | number,
-  ) => {
-    return (
-      <EditableCell
-        item={record}
-        columnKey={columnKey}
-        defaultValue={defaultValue}
-        valueClass="indigo-dark-variant"
-        onSave={handleSaveCell}
-      />
-    );
-  };
+      setTableData(newWarehouses);
+      setFormData((prev) => ({ ...prev, warehouses: newWarehouses }));
+    };
 
-  const inventoryColumn: TableColumnsType<WarehouseItemMetrics> = useMemo(
+  const warehouseColumns: TableColumnsType<WarehouseItemMetric> = useMemo(
     () => [
       {
         title: '#',
-        dataIndex: 'key',
+        dataIndex: '',
         align: 'center',
         width: '5%',
+        render: (_, __, index) => index + 1,
       },
       {
         title: 'WareHouse Name',
         dataIndex: 'name',
-        width: '20%',
+        width: '30%',
+        ellipsis: true,
       },
       {
         title: 'City',
         dataIndex: 'city_name',
-        width: '20%',
+        width: '15%',
+        ellipsis: true,
       },
       {
         title: 'Country',
         dataIndex: 'country_name',
         width: '30%',
+        ellipsis: true,
       },
       {
         title: 'In stock',
         dataIndex: 'in_stock',
         align: 'center',
         width: '10%',
-        render: (_, record) => renderUpdatableCell(record, 'in_stock', record.in_stock ?? ''),
+        render: (_, record) => (
+          <CustomInput
+            type="number"
+            value={tableData?.find((ws) => ws.id === record.id)?.in_stock}
+            additionalInputClass="indigo-dark-variant"
+            onChange={handleChangeWarehouse(record, 'in_stock')}
+            style={{ width: 50, padding: 0, margin: 0 }}
+          />
+        ),
       },
       {
         title: 'Convert',
         dataIndex: 'convert',
         align: 'center',
         width: '10%',
-        render: (_, record) => renderUpdatableCell(record, 'convert', record.convert ?? 0),
+        render: (_, record) => (
+          <CustomInput
+            type="number"
+            value={tableData?.find((ws) => ws.id === record.id)?.convert}
+            additionalInputClass="indigo-dark-variant"
+            onChange={handleChangeWarehouse(record, 'convert')}
+            style={{ width: 50, padding: 0, margin: 0 }}
+          />
+        ),
       },
       {
         align: 'center',
@@ -198,48 +169,70 @@ const InventoryForm = ({
         render: (_, record) => (
           <TrashIcon
             className="cursor-pointer primary-color-dark"
-            onClick={handleRemoveRow(record.id)}
+            onClick={handleRemoveRow(record.id ?? '')}
           />
         ),
       },
     ],
-    [handleRemoveRow],
+    [JSON.stringify(tableData)],
   );
 
   const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
   const handleAddRow = async () => {
-    if (!ensureValidInventory()) return;
-
     const newRow = {
       key: Number(tableData?.length + 1),
-      id: (tableData?.length + 1).toString(),
-      warehouse_name: formData.warehouse_name ?? '',
-      city: formData.city ?? '',
-      country: formData.country ?? '',
+      name: formData.name ?? '',
+      city_name: formData.city_name ?? '',
+      country_name: formData.country_name ?? '',
       in_stock: 0,
       convert: 0,
       location_id: formData.location_id,
       inventory_id: inventoryId,
     };
 
-    const payload = pick(newRow, ['location_id', 'inventory_id']);
+    setTableData((prev = []) => [...prev, newRow]);
 
-    const res = await createWarehouse(payload);
+    setFormData({
+      ...formData,
+      on_order: null,
+      back_order: null,
+      total_stock: null,
+      out_of_stock: null,
+      name: '',
+      location_id: '',
+      warehouses: [...tableData, newRow],
+    });
 
-    if (res) {
-      await fetchListWithInventory();
-      setTableData((prev = []) => [...prev, newRow]);
-      setFormData({
-        ...formData,
-        on_order: null,
-        back_order: null,
-        total_stock: null,
-        out_of_stock: null,
-      });
-      setHasUnsavedChanges(false);
-    }
+    setHasUnsavedChanges(false);
+  };
+
+  const handleOpenLocationModal = () => {
+    store.dispatch(
+      openModal({
+        type: 'Work Location',
+        title: 'Work Location',
+        props: {
+          workLocation: {
+            data: {
+              label: '',
+              value: '',
+              phoneCode: '00',
+            },
+            onChange: (data) => {
+              setFormData((prev) => ({
+                ...prev,
+                location_id: data.value,
+                name: data.label,
+                city_name: data?.city_name ?? '',
+                country_name: data?.country_name ?? '',
+              }));
+            },
+          },
+        },
+      }),
+    );
   };
 
   const inventoryInfo = {
@@ -329,7 +322,11 @@ const InventoryForm = ({
 
   return (
     <>
-      <div className={`${styles.category_form_content} ${isExtraLarge ? 'w-1-2' : 'w-full'}`}>
+      <div
+        className={`${styles.category_form_content} ${
+          isExtraLarge ? 'w-1-2' : 'w-full border-top-black-inset'
+        }`}
+      >
         <section className="d-flex items-center justify-between w-full">
           <Title
             style={{ paddingBottom: '32px' }}
@@ -344,14 +341,14 @@ const InventoryForm = ({
             label="Location :"
             fontLevel={3}
             placeholder="select from the list"
-            value={formData.warehouse_name}
+            value={formData.name}
             hasBoxShadow
             hasPadding
             rightIcon
             hasHeight
             colorPrimaryDark
             colorRequired="tertiary"
-            onRightIconClick={onToggleModal('Location')}
+            onRightIconClick={handleOpenLocationModal}
           />
         </div>
         <form className="d-flex items-center gap-16 " style={{ height: 56 }}>
@@ -387,7 +384,7 @@ const InventoryForm = ({
               label="On Order :"
               fontLevel={3}
               placeholder="type number"
-              value={formData.on_order!}
+              value={formData.on_order || ''}
               hasBoxShadow
               hasPadding
               hasHeight
@@ -442,7 +439,7 @@ const InventoryForm = ({
 
         <Table
           dataSource={tableData}
-          columns={inventoryColumn}
+          columns={warehouseColumns}
           pagination={false}
           className={`${styles.category_form_table}`}
           scroll={{ x: 600, y: 380 }}
@@ -456,13 +453,6 @@ const InventoryForm = ({
         content={inventoryInfo.content}
         additionalContentClass={styles.category_form_info_modal}
         additionalContainerClasses={styles.category_form_info_modal_wrapper}
-      />
-
-      <LocationOffice
-        brandId={location.state.brandId}
-        isOpen={isShowModal === 'Location'}
-        onClose={onToggleModal('none')}
-        onSave={handleSaveLocationOffice}
       />
     </>
   );

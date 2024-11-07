@@ -14,13 +14,13 @@ import {
   createInventory,
   exchangeCurrency,
   getInventory,
+  getListWarehouseByInventoryId,
   updateInventory,
-  updateMultiple,
 } from '@/services';
-import { isEmpty, omit, pick, reduce } from 'lodash';
+import { isEmpty, isNil, omit, pick, reduce } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
-import type { PriceAttribute } from '@/types';
+import type { PriceAttribute, WarehouseItemMetric } from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -29,9 +29,7 @@ import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
-import InventoryForm, {
-  WarehouseItemMetrics,
-} from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
+import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
@@ -54,7 +52,7 @@ const initialFormData = {
 const PriceAndInventoryForm = () => {
   const [formData, setFormData] = useState<any>(initialFormData);
   const [priceTableData, setPriceTableData] = useState<VolumePrice[]>([]);
-  const [inventoryTableData, setInventoryTableData] = useState<WarehouseItemMetrics[]>([]);
+  const [inventoryTableData, setInventoryTableData] = useState<WarehouseItemMetric[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -70,6 +68,17 @@ const PriceAndInventoryForm = () => {
     setPriceTableData([]);
   }, []);
 
+  const checkValidField = () => {
+    const { on_order, back_order } = formData;
+
+    if (+on_order < 1 || +back_order < 1) {
+      message.warn('The value cannot be equal or smaller than zero');
+      return false;
+    }
+
+    return true;
+  };
+
   const getRequiredFields = (): {
     field: keyof PriceAttribute;
     messageField: string;
@@ -78,6 +87,30 @@ const PriceAndInventoryForm = () => {
     { field: 'unit_price', messageField: 'Unit price is required' },
     { field: 'unit_type', messageField: 'Unit type is required' },
   ];
+
+  const fetchListWarehouses = async () => {
+    const res = await getListWarehouseByInventoryId(inventoryId);
+
+    if (res) {
+      const warehouseRes = {
+        total_stock: res.total_stock,
+        warehouses: !res?.warehouses?.length
+          ? []
+          : res.warehouses?.map((el) => ({
+              ...el,
+              convert: 0,
+              initial_in_stock: el.in_stock || 0,
+            })),
+      };
+
+      setInventoryTableData(warehouseRes.warehouses);
+
+      setFormData((prev: any) => ({
+        ...prev,
+        ...warehouseRes,
+      }));
+    }
+  };
 
   const fetchInventory = async () => {
     const res = await getInventory(inventoryId);
@@ -109,8 +142,14 @@ const PriceAndInventoryForm = () => {
     }
   };
 
+  const fetchData = async () => {
+    if (inventoryId) {
+      await Promise.all([fetchInventory(), fetchListWarehouses()]);
+    }
+  };
+
   useEffect(() => {
-    if (inventoryId) fetchInventory();
+    fetchData();
   }, [inventoryId]);
 
   const transformTableDataToVolumePrices = useMemo(() => {
@@ -152,33 +191,28 @@ const PriceAndInventoryForm = () => {
     const volumePrices = mergeVolumePrices();
 
     return {
-      ...pick(formData, ['sku', 'description', 'unit_price', 'unit_type', 'inventory_category_id']),
+      ...pick(formData, [
+        'sku',
+        'description',
+        'unit_price',
+        'unit_type',
+        'inventory_category_id',
+        'on_order',
+        'back_order',
+      ]),
+      warehouses: isNil(formData.warehouses)
+        ? undefined
+        : formData.warehouses.map((el: any) => ({
+            location_id: el.location_id,
+            quantity: el.convert,
+          })),
       image,
+      on_order: +formData.on_order,
+      back_order: +formData.back_order,
       unit_price: parseFloat(formData.unit_price?.toString() || '0'),
       inventory_category_id: location.state?.categoryId,
       volume_prices: isEmpty(volumePrices) ? null : formatVolumePrices(volumePrices),
     };
-  };
-
-  const calculateQuantity = () => {
-    const updatedPayload: { [key: string]: { changeQuantity: number } } = {};
-
-    inventoryTableData.forEach((item) => {
-      const initialInStock = item.initial_in_stock || 0;
-      const currentInStock = item.in_stock || 0;
-      const convertValue = item.convert || 0;
-      let quantityChange = convertValue;
-
-      if (currentInStock > Number(initialInStock))
-        quantityChange = currentInStock - Number(initialInStock);
-
-      if (currentInStock < Number(initialInStock))
-        quantityChange = Number(initialInStock) - (currentInStock + convertValue);
-
-      updatedPayload[item.id ?? ''] = { changeQuantity: quantityChange };
-    });
-
-    return updatedPayload;
   };
 
   const redirectToInventoryTable = () => {
@@ -192,25 +226,23 @@ const PriceAndInventoryForm = () => {
   const handleSave = useCallback(async () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
 
+    if (!checkValidField()) return;
+
     if (hasUnsavedChanges) {
       message.warn('There is a draft volume that has not been added yet. Please check it.');
       return;
     }
 
     const payload = preparePayload();
-    const updatedPayload = calculateQuantity();
 
     const res = inventoryId
-      ? await Promise.all([
-          updateInventory(inventoryId, omit(payload, 'inventory_category_id')),
-          updateMultiple(updatedPayload),
-        ])
-      : await createInventory(payload);
+      ? await updateInventory(inventoryId, omit(payload, 'inventory_category_id'))
+      : await createInventory(omit(payload, 'on_order', 'back_order'));
 
     if (!res) return;
 
     if (inventoryId) {
-      fetchInventory();
+      fetchData();
       return;
     }
 

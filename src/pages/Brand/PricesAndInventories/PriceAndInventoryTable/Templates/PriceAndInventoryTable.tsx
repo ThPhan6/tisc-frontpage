@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
@@ -57,7 +57,7 @@ const PriceAndInventoryTable: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [filter, setFilter] = useState('');
   const [editedRows, setEditedRows] = useState<Record<string, any>>({});
-  const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
+  const [selectedRow, setSelectedRow] = useState<PriceAndInventoryColumn | null>(null);
 
   const tableRef = useRef<any>();
   const location = useLocation<{
@@ -69,10 +69,13 @@ const PriceAndInventoryTable: React.FC = () => {
     getUnitType();
   }, []);
 
-  const handleToggleModal = (type: ModalType, rowId?: string) => () => {
-    setIsShowModal(type);
-    if (rowId) setSelectedRowId(rowId);
-  };
+  const handleToggleModal = useCallback(
+    (type: ModalType, row?: PriceAndInventoryColumn) => () => {
+      setIsShowModal(type);
+      if (row?.id) setSelectedRow(row);
+    },
+    [isShowModal, selectedRow],
+  );
 
   const debouncedUpdateInventories = debounce(async () => {
     const pickPayload: Record<
@@ -142,7 +145,7 @@ const PriceAndInventoryTable: React.FC = () => {
   };
 
   const handleUpdateBackOrder = (newBackOrderValue: number) => {
-    if (selectedRowId) set(editedRows, [selectedRowId, 'back_order'], newBackOrderValue);
+    if (selectedRow) set(editedRows, [selectedRow.id, 'back_order'], newBackOrderValue);
   };
 
   const pageHeaderRender = () => (
@@ -174,6 +177,7 @@ const PriceAndInventoryTable: React.FC = () => {
         dbHeaders={dbHeaders}
       /> */}
       <Backorder
+        inventoryItem={selectedRow}
         isShowBackorder={isShowModal === 'BackOrder'}
         onCancel={handleToggleModal('none')}
         onUpdateBackOrder={handleUpdateBackOrder}

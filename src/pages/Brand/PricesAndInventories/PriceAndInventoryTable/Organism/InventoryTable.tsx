@@ -29,7 +29,7 @@ interface InventoryTableProps {
   isEditMode: boolean;
   editedRows: Record<string, any>;
   tableRef: React.MutableRefObject<any>;
-  onToggleModal: (type: ModalType, rowId?: string) => () => void;
+  onToggleModal: (type: ModalType, rowId?: PriceAndInventoryColumn) => () => void;
 }
 
 const InventoryTable = ({
@@ -174,7 +174,7 @@ const InventoryTable = ({
             {rowSelectedValue(item, item.total_stock)}
             <div className="relative">
               <Popover
-                content={<WareHouse />}
+                content={<WareHouse inventoryId={item.id} />}
                 trigger="hover"
                 placement="bottom"
                 showArrow={false}
@@ -191,9 +191,7 @@ const InventoryTable = ({
         dataIndex: 'out_stock',
         align: 'center',
         render: (_, item) => (
-          <div className="red-magenta">
-            {rowSelectedValue(item, item.total_stock - item.on_order)}
-          </div>
+          <div className="red-magenta">{rowSelectedValue(item, item.out_stock || 0)}</div>
         ),
       },
       {
@@ -214,7 +212,7 @@ const InventoryTable = ({
               <p className={`${isEditMode ? 'w-1-2 mr-16' : 'w-full'} my-0`}>
                 {renderEditableCell(item, 'back_order', backOrder ? backOrder : item.back_order)}
               </p>
-              {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item.id)} />}
+              {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
             </div>
           );
         },
@@ -266,7 +264,7 @@ const InventoryTable = ({
       onRow={createRowHandler}
       hoverOnRow={false}
       extraParams={{
-        category_id: location.state.categoryId,
+        category_id: location.state?.categoryId,
         ...(!isEmpty(filter) && { search: filter }),
       }}
       onFilterLoad

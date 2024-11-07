@@ -1,64 +1,94 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Modal, Table, TableColumnsType } from 'antd';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 
+import { getListWarehouseByInventoryId } from '@/services';
+import { set } from 'lodash';
+
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomInput } from '@/components/Form/CustomInput';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder.less';
+import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
+
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface BackorderProps {
   onCancel: () => void;
   isShowBackorder: boolean;
+  inventoryItem: PriceAndInventoryColumn | null;
   onUpdateBackOrder: (newBackOrderValue: number) => void;
 }
 
 interface BackorderColumn {
   id: string;
-  warehouse_name: string;
-  city: string;
-  country: string;
+  name: string;
+  city_name: string;
+  country_name: string;
   in_stock: number;
   convert: number;
 }
 
-const Backorder = ({ isShowBackorder, onCancel, onUpdateBackOrder }: BackorderProps) => {
-  const [editedConverts, setEditedConverts] = useState<Record<string, number>>({});
+const Backorder = ({
+  isShowBackorder,
+  onCancel,
+  inventoryItem,
+  onUpdateBackOrder,
+}: BackorderProps) => {
+  const [editedConverts, setEditedConverts] = useState<Record<string, Record<string, number>>>({});
+  const [dataSource, setDataSource] = useState<BackorderColumn[]>([]);
 
-  const dataSource = [
-    {
-      id: '1',
-      warehouse_name: 'XXXXXX Name A',
-      city: 'Singapore',
-      country: 'Singapore',
-      in_stock: 18,
-      convert: 6,
-    },
-    {
-      id: '2',
-      warehouse_name: 'XXXXXX Name B',
-      city: 'Bangkok',
-      country: 'Thailand',
-      in_stock: 12,
-      convert: 6,
-    },
-  ];
+  const inventoryCache = useRef<Record<string, BackorderColumn[]>>({});
+
+  useEffect(() => {
+    if (!inventoryItem?.id) return;
+
+    if (inventoryCache.current[inventoryItem.id]) {
+      setDataSource(inventoryCache.current[inventoryItem.id]);
+      return;
+    }
+
+    const fetchListWithInventory = async () => {
+      showPageLoading();
+
+      const res: any = await getListWarehouseByInventoryId(inventoryItem.id);
+
+      if (res) {
+        inventoryCache.current[inventoryItem.id] = res.warehouses;
+        setDataSource(res.warehouses);
+      }
+
+      hidePageLoading();
+    };
+
+    fetchListWithInventory();
+  }, [inventoryItem?.id]);
 
   const handleOnChange =
     (record: BackorderColumn) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
       const parsedValue = parseFloat(value);
-      if (!isNaN(parsedValue)) {
-        setEditedConverts((prev) => ({
-          ...prev,
-          [record.id]: parsedValue,
-        }));
-      }
+
+      setEditedConverts((prev) => {
+        const updatedConverts = { ...prev };
+        set(
+          updatedConverts,
+          [inventoryItem?.id ?? '', record.id],
+          !isNaN(parsedValue) ? parsedValue : 0,
+        );
+        return updatedConverts;
+      });
     };
 
   const handleSave = () => {
-    const totalBackOrder = Object.values(editedConverts).reduce((sum, convert) => sum + convert, 0);
+    const totalBackOrder = Object.values(editedConverts[inventoryItem?.id || ''] || {}).reduce(
+      (sum, convert) => {
+        return sum + convert;
+      },
+      0,
+    );
+
     onUpdateBackOrder(totalBackOrder);
     onCancel();
   };
@@ -69,20 +99,21 @@ const Backorder = ({ isShowBackorder, onCancel, onUpdateBackOrder }: BackorderPr
         title: '#',
         dataIndex: 'key',
         width: '5%',
+        render: (_, __, index) => index + 1,
       },
       {
         title: 'Warehouse Name',
-        dataIndex: 'warehouse_name',
+        dataIndex: 'name',
         width: '5%',
       },
       {
         title: 'City',
-        dataIndex: 'city',
+        dataIndex: 'city_name',
         width: '5%',
       },
       {
         title: 'Country',
-        dataIndex: 'country',
+        dataIndex: 'country_name',
         width: '75%',
       },
       {
@@ -98,7 +129,7 @@ const Backorder = ({ isShowBackorder, onCancel, onUpdateBackOrder }: BackorderPr
         align: 'center',
         render: (_, item) => (
           <CustomInput
-            value={editedConverts[item.id] ?? item.convert}
+            value={editedConverts[inventoryItem?.id || '']?.[item.id] ?? 0}
             onChange={handleOnChange(item)}
             additionalInputClass="indigo-dark-variant"
           />
@@ -118,7 +149,7 @@ const Backorder = ({ isShowBackorder, onCancel, onUpdateBackOrder }: BackorderPr
           <h2 className={styles.backorder_heading_title}>BACKORDER COUNT</h2>
           <div className="d-flex items-center gap-12">
             <CDownLeftIcon className={styles.backorder_heading_icon} />
-            <p className={styles.backorder_heading_count}>12</p>
+            <p className={styles.backorder_heading_count}>{inventoryItem?.back_order}</p>
           </div>
         </article>
       }
@@ -127,7 +158,7 @@ const Backorder = ({ isShowBackorder, onCancel, onUpdateBackOrder }: BackorderPr
       closable={false}
       footer={<CustomSaveButton contentButton="Done" onClick={handleSave} />}
     >
-      <Table pagination={false} columns={columns} dataSource={dataSource} />
+      <Table pagination={false} columns={columns} dataSource={dataSource} scroll={{ x: 400 }} />
     </Modal>
   );
 };

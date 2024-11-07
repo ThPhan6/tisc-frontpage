@@ -25,17 +25,16 @@ export const createWarehouse = async (data: Warehouse) => {
     });
 };
 
-export const getListWithInventory = async (inventoryId: string): Promise<Warehouse | null> => {
-  showPageLoading();
+export const getListWarehouseByInventoryId = async (
+  inventoryId: string,
+): Promise<Pick<Warehouse, 'warehouses' | 'total_stock'>> => {
   return request<{ data: Warehouse }>(`/api/warehouse/get-list/inventory/${inventoryId}`)
     .then((response) => {
-      hidePageLoading();
       return response.data;
     })
     .catch((error) => {
-      message.error(error?.data?.message || 'Get list with inventory failed');
-      hidePageLoading();
-      return null;
+      message.error(error?.data?.message || 'Get list warehouses failed');
+      return [] as Pick<Warehouse, 'warehouses' | 'total_stock'>;
     });
 };
 
