@@ -78,7 +78,7 @@ export const createProductCard = async (data: ProductFormData) => {
 
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
   showPageLoading();
-  return request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
+  return await request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
     `/api/product/get-list`,
     {
       method: 'GET',
