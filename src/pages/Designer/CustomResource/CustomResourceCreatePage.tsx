@@ -43,6 +43,8 @@ const CustomResourceCreatePage = () => {
     phone_code: '',
     contacts: [],
     type: customResourceType,
+    type_code: '',
+    notes: '',
   });
 
   const [loadedData, setLoadedData] = useState(false);

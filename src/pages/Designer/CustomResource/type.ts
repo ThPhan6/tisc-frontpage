@@ -13,6 +13,7 @@ export interface CustomResources {
   distributors: number;
   cards: number;
   brands: number;
+  type_code: string;
 }
 
 export interface ContactDetail {
@@ -39,4 +40,6 @@ export interface CustomResourceForm {
   contacts: ContactDetail[];
   type: number;
   phone_code?: string;
+  type_code?: string;
+  notes?: string;
 }

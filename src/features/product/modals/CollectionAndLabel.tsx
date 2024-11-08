@@ -92,6 +92,9 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
   /// for handle edit
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
+  /// for X Collection
+  const [isX, setIsX] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const labels = useSelector((state: RootState) => state.label.labels);
 
@@ -119,23 +122,24 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
           ? selected
           : chosenValue;
 
-        if (updateCurrentSelect) {
-          setSelected(
-            res
-              .map((item) => {
-                if (
-                  curCollectionSelect?.some((el) => el.value === item.id && item.name === el.label)
-                ) {
-                  return {
-                    value: item.id,
-                    label: item.name,
-                  };
-                }
+        const collSelected = res
+          .map((item) => {
+            if (curCollectionSelect?.some((el) => el.value === item.id && item.name === el.label)) {
+              return {
+                value: item.id,
+                label: item.name,
+              };
+            }
 
-                return undefined;
-              })
-              .filter(Boolean) as DynamicCheckboxValue[],
-          );
+            return undefined;
+          })
+          .filter(Boolean) as DynamicCheckboxValue[];
+        if (updateCurrentSelect) {
+          if (collSelected.length > 0) setSelected(collSelected);
+          else {
+            setSelected([{ value: '-1', label: 'X Collection', name: 'X Collection' }]);
+            setIsX(true);
+          }
         }
 
         const currentData = res.map((item) => ({
@@ -146,11 +150,41 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
           editLabel: false,
         }));
 
-        curData.current = currentData;
+        const addedCurrentData = [
+          {
+            value: '-1',
+            label: 'X Collection',
+            name: 'X Collection',
+            disabled: false,
+            editLabel: false,
+            relation_type: 2,
+          },
+          ...currentData,
+        ];
 
-        setData(currentData);
+        const newCurrentData =
+          collSelected.length == 0
+            ? addedCurrentData.map((coll) =>
+                coll.value === '-1' ? coll : { ...coll, disabled: true },
+              )
+            : addedCurrentData;
+
+        curData.current = newCurrentData;
+
+        setData(newCurrentData);
       }
     });
+  };
+  const onCollClick = (value: string) => {
+    if (value === '-1') {
+      const newIsX = !isX;
+      setIsX(newIsX);
+      if (!newIsX) setData(data.map((coll) => ({ ...coll, disabled: false })));
+      else {
+        setData(data.map((coll) => (coll.value === '-1' ? coll : { ...coll, disabled: true })));
+        setSelected([{ value: '-1', label: 'X Collection', name: 'X Collection' }]);
+      }
+    }
   };
   useEffect(() => {
     getCollectionList();
@@ -500,6 +534,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
     <Popover
       title="SELECT COLLECTION & LABEL"
       notScrollWholeContent
+      onCollClick={onCollClick}
       className={styles.modal}
       visible={visible}
       setVisible={handleCloseModal}
@@ -526,7 +561,8 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
 
               return undefined;
             })
-            .filter(Boolean) as DynamicCheckboxValue[],
+            .filter(Boolean)
+            .filter((item) => item?.value !== '-1') as DynamicCheckboxValue[],
         );
 
         if (relatedProductOnView?.id) {

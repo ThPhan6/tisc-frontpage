@@ -112,6 +112,9 @@ const TreeSelect = <T,>({
           {(hasSubs || showAllLevels) &&
             !selectable &&
             (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
+          {(hasSubs || showAllLevels) &&
+            !selectable &&
+            (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
         </div>,
       );
 

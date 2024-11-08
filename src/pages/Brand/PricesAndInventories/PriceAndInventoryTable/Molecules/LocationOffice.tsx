@@ -19,6 +19,7 @@ interface LocationOfficeProps {
 
 const LocationOffice = ({ brandId, isOpen, onClose, onSave }: LocationOfficeProps) => {
   const [groupedLocations, setGroupedLocations] = useState<LocationGroupedByCountry[]>([]);
+  const [chosenValue, setChosenValue] = useState<LocationDetail | null>(null);
 
   useEffect(() => {
     const fetchPartnerGroupByCountry = async () => {
@@ -29,12 +30,20 @@ const LocationOffice = ({ brandId, isOpen, onClose, onSave }: LocationOfficeProp
     fetchPartnerGroupByCountry();
   }, []);
 
-  const handleLocationSelect = (el: { value: string }) => {
+  const handleLocationSelect = (type: 'select' | 'submit') => (el: { value: string }) => {
     const selectedLocation = groupedLocations
       ?.flatMap((country) => country.locations)
       .find((location) => location.id === el?.value);
 
-    if (selectedLocation) onSave(selectedLocation);
+    if (selectedLocation) {
+      if (type === 'select') {
+        setChosenValue(selectedLocation);
+        return;
+      }
+
+      onSave(selectedLocation);
+      onClose();
+    }
   };
 
   const dropDownTitle = (data: DropdownRadioItem) => data.country_name;
@@ -63,7 +72,10 @@ const LocationOffice = ({ brandId, isOpen, onClose, onSave }: LocationOfficeProp
       title="SELECT LOCATION"
       visible={isOpen}
       setVisible={onClose}
-      setChosenValue={handleLocationSelect}
+      maskClosable
+      onFormSubmit={handleLocationSelect('submit')}
+      setChosenValue={handleLocationSelect('select')}
+      chosenValue={chosenValue}
       dropDownRadioTitle={dropDownTitle}
       dropdownRadioList={radioList}
     />

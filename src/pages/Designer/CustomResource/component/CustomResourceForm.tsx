@@ -55,7 +55,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
   const [cityData, setCityData] = useState({ label: '', value: data.city_id });
 
   const [associated, setAssociated] = useState<CheckboxValue[]>(
-    data.associate_resource_ids.map((associate) => {
+    data?.associate_resource_ids?.map((associate) => {
       return {
         label: '',
         value: associate,
@@ -67,6 +67,18 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({ ...data, [fieldName]: fieldValue });
+  };
+
+  const onChangeTypeCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // only 10 chars and cannot type space
+    // Postal code has same rule to utilize it
+    if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
+      return;
+    }
+    setData({
+      ...data,
+      type_code: e.target.value,
+    });
   };
 
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +111,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
   useEffect(() => {
     onChangeData(
       'associate_resource_ids',
-      associated.map((item) => item.value),
+      associated?.map((item) => item.value),
     );
   }, [associated]);
 
@@ -119,6 +131,21 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
       </div>
       <div className={styles.form}>
+        <InputGroup
+          label="Company Type & Code"
+          fontLevel={3}
+          value={data.type_code}
+          hasPadding
+          colorPrimaryDark={isEdit}
+          hasBoxShadow
+          hasHeight
+          placeholder="type code, max. 10 letters"
+          onChange={(e) => onChangeTypeCode(e)}
+          deleteIcon={isEdit}
+          onDelete={() => onChangeData('type_code', '')}
+          readOnly={type === 'view'}
+          labelColor={labelColor}
+        />
         <InputGroup
           label={`${
             customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'
@@ -160,7 +187,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
             customResourceType === CustomResourceType.Brand ? 'Distributor(s)' : 'Brand(s)'
           } :`}
           fontLevel={3}
-          value={associated.map((item) => item.label).join(', ')}
+          value={associated?.map((item) => item.label).join(', ')}
           hasPadding
           colorPrimaryDark={isEdit}
           hasBoxShadow
@@ -174,7 +201,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
         <InputGroup
           label="Country Location"
-          required
           fontLevel={3}
           value={countryData.label}
           hasPadding
@@ -189,7 +215,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
         <InputGroup
           label="State / Province"
-          required
           fontLevel={3}
           value={stateData.label}
           hasPadding
@@ -205,7 +230,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         />
         <InputGroup
           label="City / Town"
-          required
           fontLevel={3}
           value={cityData.label?.toString()}
           hasPadding
@@ -220,13 +244,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           labelColor={labelColor}
         />
         <div className={styles.addressForm}>
-          <FormGroup
-            label="Address"
-            layout="vertical"
-            required
-            labelFontSize={3}
-            labelColor={labelColor}
-          >
+          <FormGroup label="Address" layout="vertical" labelFontSize={3} labelColor={labelColor}>
             <CustomTextArea
               className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
               maxLength={100}
@@ -244,7 +262,6 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <InputGroup
           label="Postal / Zip Code"
           placeholder="postal / zip code"
-          required
           deleteIcon={isEdit}
           fontLevel={3}
           value={data.postal_code}
@@ -254,8 +271,8 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           hasHeight
           onChange={(e) => onChangePostalCode(e)}
           onDelete={() => onChangeData('postal_code', '')}
-          message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
-          messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
+          message={messageError(data.postal_code ?? '', MESSAGE_ERROR.POSTAL_CODE, 10)}
+          messageType={messageErrorType(data.postal_code ?? '', 10, 'error', 'normal')}
           readOnly={type === 'view'}
           labelColor={labelColor}
         />
@@ -300,6 +317,21 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
           labelColor={labelColor}
         />
+        <div className={styles.addressForm}>
+          <FormGroup label="Notes" layout="vertical" labelFontSize={3} labelColor={labelColor}>
+            <CustomTextArea
+              className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
+              maxLength={100}
+              showCount
+              placeholder="type here"
+              borderBottomColor="mono-medium"
+              onChange={(e) => onChangeData('notes', e.target.value)}
+              value={data.notes}
+              boxShadow
+              readOnly={type === 'view'}
+            />
+          </FormGroup>
+        </div>
       </div>
       <CountryModal
         visible={openModal === 'country'}

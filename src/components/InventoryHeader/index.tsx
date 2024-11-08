@@ -6,6 +6,7 @@ import { useLocation } from 'umi';
 import { ReactComponent as MagnifyingGlassIcon } from '@/assets/icons/ic-search.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { formatCurrencyNumber } from '@/helper/utils';
 import { getSummary } from '@/services';
 import { debounce } from 'lodash';
 
@@ -64,7 +65,9 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
     },
     {
       id: '3',
-      value: summaryFinancialRecords.total_stock.toFixed(2),
+      value: formatCurrencyNumber(Number(summaryFinancialRecords.total_stock || 0), undefined, {
+        maximumFractionDigits: 2,
+      }),
       label: 'TOTAL STOCK VALUE',
     },
   ];
