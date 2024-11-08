@@ -88,6 +88,7 @@ export interface PriceAndInventoryColumn {
 }
 
 const CategoryTable: React.FC = () => {
+  const { currencySelected } = useAppSelector((state) => state.summary);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -394,8 +395,9 @@ const CategoryTable: React.FC = () => {
         title: 'Stock Value',
         dataIndex: 'stock_value',
         render: (_, item) => {
-          const currency = orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]
-            ?.to_currency;
+          const currency =
+            orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ||
+            currencySelected;
           return rowSelectedValue(
             item,
             `${currency} ${formatCurrencyNumber(Number(item.stockValue), undefined, {
