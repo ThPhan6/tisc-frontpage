@@ -4,6 +4,8 @@ import { request } from 'umi';
 
 import { Warehouse } from '@/types';
 
+import { BackorderPayload } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder';
+
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export const createWarehouse = async (data: Warehouse) => {
@@ -28,12 +30,15 @@ export const createWarehouse = async (data: Warehouse) => {
 export const getListWarehouseByInventoryId = async (
   inventoryId: string,
 ): Promise<Pick<Warehouse, 'warehouses' | 'total_stock'>> => {
+  showPageLoading();
   return request<{ data: Warehouse }>(`/api/warehouse/get-list/inventory/${inventoryId}`)
     .then((response) => {
+      hidePageLoading();
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message || 'Get list warehouses failed');
+      hidePageLoading();
       return [] as Pick<Warehouse, 'warehouses' | 'total_stock'>;
     });
 };
@@ -69,3 +74,21 @@ export async function deleteWarehouse(id: string) {
       return false;
     });
 }
+
+export const updateMultipleByBackorder = async (payload: BackorderPayload | null) => {
+  showPageLoading();
+  return request<boolean>(`/api/warehouse/update-multiple-back-order`, {
+    method: 'POST',
+    data: payload,
+  })
+    .then(() => {
+      message.success('Update successfully!');
+      hidePageLoading();
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'Update successfully failed!');
+      hidePageLoading();
+      return false;
+    });
+};

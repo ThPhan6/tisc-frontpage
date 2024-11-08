@@ -69,11 +69,20 @@ const PriceAndInventoryForm = () => {
   }, []);
 
   const checkValidField = () => {
-    const { on_order, back_order } = formData;
+    const { warehouses } = formData;
 
-    if (+on_order < 1 || +back_order < 1) {
-      message.warn('The value cannot be equal or smaller than zero');
-      return false;
+    for (const warehouse of warehouses) {
+      const { in_stock, convert } = warehouse;
+
+      if (in_stock < convert) {
+        message.warn('In Stock cannot be less than Convert');
+        return false;
+      }
+
+      if (convert > in_stock) {
+        message.warn('Convert value cannot exceed In Stock');
+        return false;
+      }
     }
 
     return true;
@@ -99,7 +108,6 @@ const PriceAndInventoryForm = () => {
           : res.warehouses?.map((el) => ({
               ...el,
               convert: 0,
-              initial_in_stock: el.in_stock || 0,
             })),
       };
 

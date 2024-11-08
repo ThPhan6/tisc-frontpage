@@ -1,24 +1,30 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Modal, Table, TableColumnsType } from 'antd';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 
-import { getListWarehouseByInventoryId } from '@/services';
-import { set } from 'lodash';
+import { cloneDeep, forEach } from 'lodash';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomInput } from '@/components/Form/CustomInput';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder.less';
 import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+export interface BackorderPayload {
+  inventoryId: string;
+  warehouses: {
+    changeQuantity: number;
+  }[];
+}
 
 interface BackorderProps {
   onCancel: () => void;
   isShowBackorder: boolean;
-  inventoryItem: PriceAndInventoryColumn | null;
-  onUpdateBackOrder: (newBackOrderValue: number) => void;
+  inventoryItem?: PriceAndInventoryColumn | null;
+  onUpdateBackOrder: (
+    payload: Pick<PriceAndInventoryColumn, 'back_order' | 'warehouses' | 'id'>,
+  ) => void;
 }
 
 interface BackorderColumn {
@@ -36,129 +42,147 @@ const Backorder = ({
   inventoryItem,
   onUpdateBackOrder,
 }: BackorderProps) => {
-  const [editedConverts, setEditedConverts] = useState<Record<string, Record<string, number>>>({});
-  const [dataSource, setDataSource] = useState<BackorderColumn[]>([]);
-
-  const inventoryCache = useRef<Record<string, BackorderColumn[]>>({});
+  const [convert, setConvert] = useState<Record<string, number>>({});
+  const [totalBackOrder, setTotalBackOrder] = useState(0);
+  const isQuantityInValid = totalBackOrder < 0;
 
   useEffect(() => {
-    if (!inventoryItem?.id) return;
+    if (isShowBackorder) {
+      setTotalBackOrder(inventoryItem?.back_order ?? 0);
+      if (inventoryItem?.warehouses.length) {
+        const newConvert: Record<string, number> = {};
 
-    if (inventoryCache.current[inventoryItem.id]) {
-      setDataSource(inventoryCache.current[inventoryItem.id]);
-      return;
-    }
+        inventoryItem.warehouses.forEach((warehouse) => {
+          if (warehouse?.id) {
+            newConvert[warehouse.id] = warehouse?.convert ?? 0;
+          }
+        });
 
-    const fetchListWithInventory = async () => {
-      showPageLoading();
-
-      const res: any = await getListWarehouseByInventoryId(inventoryItem.id);
-
-      if (res) {
-        inventoryCache.current[inventoryItem.id] = res.warehouses;
-        setDataSource(res.warehouses);
+        setConvert(newConvert);
       }
-
-      hidePageLoading();
-    };
-
-    fetchListWithInventory();
-  }, [inventoryItem?.id]);
+    }
+  }, [inventoryItem?.back_order, inventoryItem?.warehouses, isShowBackorder]);
 
   const handleOnChange =
     (record: BackorderColumn) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      const parsedValue = parseFloat(value);
+      if (!inventoryItem?.id) return;
 
-      setEditedConverts((prev) => {
-        const updatedConverts = { ...prev };
-        set(
-          updatedConverts,
-          [inventoryItem?.id ?? '', record.id],
-          !isNaN(parsedValue) ? parsedValue : 0,
-        );
-        return updatedConverts;
+      const quantity = Number(event.target.value);
+      const newEditedConverts = cloneDeep(convert);
+      newEditedConverts[record.id] = quantity;
+
+      let sumQuantity = 0;
+      forEach(convert, (warehouseQuantity, wsId) => {
+        if (record.id === wsId) {
+          sumQuantity += quantity;
+        } else {
+          sumQuantity += warehouseQuantity;
+        }
       });
+
+      setConvert(newEditedConverts);
+      setTotalBackOrder(Number(inventoryItem.back_order) - sumQuantity);
     };
 
-  const handleSave = () => {
-    const totalBackOrder = Object.values(editedConverts[inventoryItem?.id || ''] || {}).reduce(
-      (sum, convert) => {
-        return sum + convert;
-      },
-      0,
-    );
+  const handleCancel = () => {
+    setConvert({});
+    setTotalBackOrder(0);
 
-    onUpdateBackOrder(totalBackOrder);
     onCancel();
   };
 
-  const columns: TableColumnsType<BackorderColumn> = useMemo(
-    () => [
-      {
-        title: '#',
-        dataIndex: 'key',
-        width: '5%',
-        render: (_, __, index) => index + 1,
-      },
-      {
-        title: 'Warehouse Name',
-        dataIndex: 'name',
-        width: '5%',
-      },
-      {
-        title: 'City',
-        dataIndex: 'city_name',
-        width: '5%',
-      },
-      {
-        title: 'Country',
-        dataIndex: 'country_name',
-        width: '75%',
-      },
-      {
-        title: 'In Stock',
-        dataIndex: 'in_stock',
-        width: '5%',
-        align: 'center',
-      },
-      {
-        title: 'Convert',
-        dataIndex: 'convert',
-        width: '5%',
-        align: 'center',
-        render: (_, item) => (
-          <CustomInput
-            value={editedConverts[inventoryItem?.id || '']?.[item.id] ?? 0}
-            onChange={handleOnChange(item)}
-            additionalInputClass="indigo-dark-variant"
-          />
-        ),
-      },
-    ],
-    [editedConverts],
-  );
+  const handleSave = () => {
+    if (!inventoryItem?.id) return;
+
+    handleCancel();
+    onUpdateBackOrder({
+      back_order: totalBackOrder,
+      id: inventoryItem?.id,
+      warehouses: inventoryItem.warehouses.map((el) => ({
+        ...el,
+        convert: el?.id ? convert[el.id] : 0,
+      })),
+    });
+  };
+
+  const columns: TableColumnsType<BackorderColumn> = [
+    {
+      title: '#',
+      dataIndex: 'key',
+      width: '5%',
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: 'Warehouse Name',
+      dataIndex: 'name',
+      width: '5%',
+    },
+    {
+      title: 'City',
+      dataIndex: 'city_name',
+      width: '5%',
+    },
+    {
+      title: 'Country',
+      dataIndex: 'country_name',
+      width: '75%',
+    },
+    {
+      title: 'In Stock',
+      dataIndex: 'in_stock',
+      width: '5%',
+      align: 'center',
+    },
+    {
+      title: 'Convert',
+      dataIndex: 'convert',
+      width: '5%',
+      align: 'center',
+      render: (_, item) => (
+        <CustomInput
+          value={convert?.[item.id] ?? 0}
+          onChange={handleOnChange(item)}
+          additionalInputClass="indigo-dark-variant"
+        />
+      ),
+    },
+  ];
 
   return (
     <Modal
-      width={572}
       className={styles.backorder}
       confirmLoading={true}
       title={
         <article className={styles.backorder_heading}>
-          <h2 className={styles.backorder_heading_title}>BACKORDER COUNT</h2>
+          <h2 className={styles.backorder_heading_title}>BACKORDER CONVERSION</h2>
           <div className="d-flex items-center gap-12">
             <CDownLeftIcon className={styles.backorder_heading_icon} />
-            <p className={styles.backorder_heading_count}>{inventoryItem?.back_order}</p>
+            <p
+              className={`${styles.backorder_heading_count} ${
+                isQuantityInValid ? 'red-magenta' : ''
+              }`}
+            >
+              {totalBackOrder}
+            </p>
           </div>
         </article>
       }
-      open={isShowBackorder}
-      onCancel={onCancel}
+      visible={isShowBackorder}
+      onCancel={handleCancel}
       closable={false}
-      footer={<CustomSaveButton contentButton="Done" onClick={handleSave} />}
+      footer={
+        <CustomSaveButton
+          disabled={isQuantityInValid}
+          style={{
+            backgroundColor: isQuantityInValid ? '#bfbfbf' : undefined,
+            cursor: isQuantityInValid ? 'default' : 'pointer',
+          }}
+          contentButton="Done"
+          onClick={handleSave}
+        />
+      }
     >
-      <Table pagination={false} columns={columns} dataSource={dataSource} scroll={{ x: 400 }} />
+      <Table pagination={false} columns={columns as any} dataSource={inventoryItem?.warehouses} />
     </Modal>
   );
 };

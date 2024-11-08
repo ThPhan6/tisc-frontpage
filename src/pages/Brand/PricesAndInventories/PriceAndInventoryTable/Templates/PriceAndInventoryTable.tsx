@@ -4,10 +4,16 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
 import { useLocation } from 'umi';
 
-import { exchangeCurrency, fetchUnitType, updateInventories } from '@/services';
-import { debounce, forEach, isEmpty, pick, set } from 'lodash';
+import {
+  exchangeCurrency,
+  fetchUnitType,
+  updateInventories,
+  updateMultipleByBackorder,
+} from '@/services';
+import { debounce, forEach, isEmpty, pick } from 'lodash';
 
 import { ModalType } from '@/reducers/modal';
+import { WarehouseItemMetric } from '@/types';
 
 import InventoryHeader from '@/components/InventoryHeader';
 import Backorder from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder';
@@ -48,6 +54,7 @@ export interface PriceAndInventoryColumn {
       updated_at: string;
     }[];
   };
+  warehouses: WarehouseItemMetric[];
 }
 
 export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
@@ -56,8 +63,11 @@ const PriceAndInventoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [filter, setFilter] = useState('');
-  const [editedRows, setEditedRows] = useState<Record<string, any>>({});
-  const [selectedRow, setSelectedRow] = useState<PriceAndInventoryColumn | null>(null);
+  const [editedRows, setEditedRows] = useState<PriceAndInventoryColumn | null>(null);
+
+  const [selectedRows, setSelectedRows] = useState<Record<string, PriceAndInventoryColumn> | null>(
+    null,
+  );
 
   const tableRef = useRef<any>();
   const location = useLocation<{
@@ -72,33 +82,60 @@ const PriceAndInventoryTable: React.FC = () => {
   const handleToggleModal = useCallback(
     (type: ModalType, row?: PriceAndInventoryColumn) => () => {
       setIsShowModal(type);
-      if (row?.id) setSelectedRow(row);
+      if (row?.id) {
+        setSelectedRows((prev) => ({
+          ...prev,
+          [row.id]: editedRows?.id === row.id ? editedRows : row,
+        }));
+
+        if (!selectedRows?.[editedRows?.id ?? '']) {
+          setEditedRows(row);
+        }
+      }
     },
-    [isShowModal, selectedRow],
+    [isShowModal, editedRows],
   );
 
   const debouncedUpdateInventories = debounce(async () => {
-    const pickPayload: Record<
-      string,
-      Pick<PriceAndInventoryColumn['price'], 'unit_price' | 'volume_prices'>
-    > = {};
+    const inventoryPayload: any = {};
+    const warehousePayload: any = [];
 
-    forEach(editedRows, (value, key) => {
-      pickPayload[key] = {
-        ...value,
-        volume_prices: isEmpty(value.volume_prices)
-          ? null
-          : value.volume_prices.map((el: VolumePrice) =>
-              pick(el, ['discount_rate', 'max_quantity', 'min_quantity']),
-            ),
+    forEach(selectedRows, (row, id) => {
+      inventoryPayload[id] = {
+        ...pick(row, ['back_order', 'on_order']),
+        unit_price: row.price.unit_price,
+        unit_type: row.price.unit_type,
+        volume_prices: row.price.volume_prices.map((el) => ({
+          discount_rate: el?.discount_rate ?? 0,
+          min_quantity: el?.min_quantity ?? 0,
+          max_quantity: el?.max_quantity ?? 0,
+        })),
       };
+
+      const warehouse: any = {};
+      row.warehouses.forEach((ws) => {
+        if (ws.id) {
+          warehouse[ws.id] = {
+            changeQuantity: ws?.convert ?? 0,
+          };
+        }
+      });
+
+      warehousePayload.push({
+        inventoryId: id,
+        warehouses: warehouse,
+      });
     });
 
-    const res = await updateInventories(pickPayload);
+    const res = await Promise.all([
+      updateInventories(inventoryPayload),
+      updateMultipleByBackorder(warehousePayload),
+    ]);
+
     if (res) {
       setTimeout(() => {
         tableRef.current.reload();
-        setEditedRows({});
+        setEditedRows(null);
       }, 100);
     }
   }, 500);
@@ -144,8 +181,18 @@ const PriceAndInventoryTable: React.FC = () => {
     tableRef.current.reload({ search: value });
   };
 
-  const handleUpdateBackOrder = (newBackOrderValue: number) => {
-    if (selectedRow) set(editedRows, [selectedRow.id, 'back_order'], newBackOrderValue);
+  const handleUpdateBackOrder = (
+    backOrder: Pick<PriceAndInventoryColumn, 'back_order' | 'warehouses' | 'id'>,
+  ) => {
+    setEditedRows((prev) =>
+      !prev
+        ? null
+        : {
+            ...prev,
+            back_order: backOrder.back_order,
+            warehouses: backOrder.warehouses,
+          },
+    );
   };
 
   const pageHeaderRender = () => (
@@ -165,6 +212,7 @@ const PriceAndInventoryTable: React.FC = () => {
           onToggleModal={handleToggleModal}
           tableRef={tableRef}
           filter={filter}
+          setEditedRows={setEditedRows}
           editedRows={editedRows}
         />
       </section>
@@ -176,8 +224,9 @@ const PriceAndInventoryTable: React.FC = () => {
         onExport={handleExport}
         dbHeaders={dbHeaders}
       /> */}
+
       <Backorder
-        inventoryItem={selectedRow}
+        inventoryItem={editedRows}
         isShowBackorder={isShowModal === 'BackOrder'}
         onCancel={handleToggleModal('none')}
         onUpdateBackOrder={handleUpdateBackOrder}

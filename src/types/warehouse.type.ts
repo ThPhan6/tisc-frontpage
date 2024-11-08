@@ -5,7 +5,6 @@ export interface WarehouseItemMetric {
   country_name: string;
   in_stock?: number;
   convert?: number;
-  initial_in_stock?: number;
 }
 
 export interface Warehouse {

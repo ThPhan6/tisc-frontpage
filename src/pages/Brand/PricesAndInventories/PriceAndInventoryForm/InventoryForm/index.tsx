@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import { Table, type TableColumnsType } from 'antd';
+import { Table, type TableColumnsType, message } from 'antd';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
@@ -42,6 +42,11 @@ const InventoryForm = ({
   const { isExtraLarge } = useScreen();
   const inventoryId = useGetParamId();
   const disabledAddInventory = !formData.name;
+  const customInputStyle = {
+    width: 50,
+    padding: 0,
+    margin: 0,
+  };
 
   useEffect(() => {
     const calculateStock = () => {
@@ -91,11 +96,18 @@ const InventoryForm = ({
       type: keyof Pick<WarehouseItemMetric, 'in_stock' | 'convert'>,
     ) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      const parsedValue = Number(event.target.value);
+
+      if (type === 'in_stock' && (isNaN(parsedValue) || parsedValue < 0)) {
+        message.warn('In Stock cannot be negative and must be a number.');
+        return;
+      }
+
       const newWarehouses = cloneDeep(tableData).map((el) => {
         if (el.id === warehouse.id) {
           return {
             ...el,
-            [type]: Number(event.target.value),
+            [type]: parsedValue,
           };
         }
 
@@ -140,11 +152,10 @@ const InventoryForm = ({
         width: '10%',
         render: (_, record) => (
           <CustomInput
-            type="number"
             value={tableData?.find((ws) => ws.id === record.id)?.in_stock}
             additionalInputClass="indigo-dark-variant"
             onChange={handleChangeWarehouse(record, 'in_stock')}
-            style={{ width: 50, padding: 0, margin: 0 }}
+            style={customInputStyle}
           />
         ),
       },
@@ -159,7 +170,7 @@ const InventoryForm = ({
             value={tableData?.find((ws) => ws.id === record.id)?.convert}
             additionalInputClass="indigo-dark-variant"
             onChange={handleChangeWarehouse(record, 'convert')}
-            style={{ width: 50, padding: 0, margin: 0 }}
+            style={customInputStyle}
           />
         ),
       },

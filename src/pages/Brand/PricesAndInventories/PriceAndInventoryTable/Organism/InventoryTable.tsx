@@ -9,7 +9,7 @@ import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { showImageUrl } from '@/helper/utils';
 import { getListInventories } from '@/services';
-import { get, isEmpty, reduce, set } from 'lodash';
+import { get, isEmpty, reduce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
@@ -18,16 +18,14 @@ import CustomTable from '@/components/Table';
 import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 import InventoryTableActionMenu from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/InventoryTableActionMenu';
 import WareHouse from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse';
-import {
-  PriceAndInventoryColumn,
-  VolumePrice,
-} from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
+import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
 interface InventoryTableProps {
   filter: string;
   isEditMode: boolean;
-  editedRows: Record<string, any>;
+  editedRows?: PriceAndInventoryColumn | null;
+  setEditedRows: React.Dispatch<React.SetStateAction<PriceAndInventoryColumn | null>>;
   tableRef: React.MutableRefObject<any>;
   onToggleModal: (type: ModalType, rowId?: PriceAndInventoryColumn) => () => void;
 }
@@ -37,6 +35,7 @@ const InventoryTable = ({
   isEditMode,
   editedRows,
   tableRef,
+  setEditedRows,
   onToggleModal,
 }: InventoryTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -59,16 +58,18 @@ const InventoryTable = ({
     [unitTypeData],
   );
 
-  const handleSaveOnCell = (
-    id: string,
-    columnKey: string,
-    newValue: string,
-    unitType: string,
-    volumePrices: VolumePrice[],
-  ) => {
-    set(editedRows, [id, columnKey], Number(newValue));
-    set(editedRows, [id, 'unit_type'], unitType);
-    set(editedRows, [id, 'volume_prices'], volumePrices);
+  const handleSaveOnCell = (newValue: string) => {
+    setEditedRows((prev) =>
+      !prev
+        ? null
+        : {
+            ...prev,
+            price: {
+              ...prev.price,
+              unit_price: Number(newValue),
+            },
+          },
+    );
   };
 
   const renderEditableCell = (
@@ -82,9 +83,7 @@ const InventoryTable = ({
         columnKey={columnKey}
         defaultValue={value}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
-        onSave={(id, colKey, newValue) =>
-          handleSaveOnCell(id, colKey, newValue, item.price.unit_type, item.price.volume_prices)
-        }
+        onSave={(_id, _colKey, newValue) => handleSaveOnCell(newValue)}
       />
     ) : (
       rowSelectedValue(item, value)
@@ -174,8 +173,8 @@ const InventoryTable = ({
             {rowSelectedValue(item, item.total_stock)}
             <div className="relative">
               <Popover
-                content={<WareHouse inventoryId={item.id} />}
-                trigger="hover"
+                content={<WareHouse inventoryItem={item} />}
+                trigger="click"
                 placement="bottom"
                 showArrow={false}
                 overlayStyle={{ width: 'fit-content' }}
@@ -205,7 +204,7 @@ const InventoryTable = ({
         dataIndex: 'back_order',
         align: 'center',
         render: (_, item) => {
-          const backOrder = get(editedRows, [item.id, 'back_order'], 0);
+          const backOrder = get(editedRows, 'back_order', 0);
 
           return (
             <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>

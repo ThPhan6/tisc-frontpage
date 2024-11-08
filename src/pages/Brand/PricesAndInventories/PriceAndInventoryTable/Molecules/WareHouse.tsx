@@ -1,10 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-
-import { Spin, Table, TableColumnsType } from 'antd';
-
-import { getListWarehouseByInventoryId } from '@/services';
+import { Table, TableColumnsType } from 'antd';
 
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse.less';
+import type { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 interface WareHouseColumn {
   id: string;
@@ -14,33 +11,7 @@ interface WareHouseColumn {
   in_stock: number;
 }
 
-const WareHouse = ({ inventoryId }: { inventoryId: string }) => {
-  const [dataSource, setDataSource] = useState<WareHouseColumn[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const inventoryCache = useRef<Record<string, WareHouseColumn[]>>({});
-
-  useEffect(() => {
-    if (!inventoryId) return;
-
-    if (inventoryCache.current[inventoryId]) {
-      setDataSource(inventoryCache.current[inventoryId]);
-      return;
-    }
-
-    const fetchListWithInventory = async () => {
-      setLoading(true);
-      const res: any = await getListWarehouseByInventoryId(inventoryId);
-      if (res) {
-        inventoryCache.current[inventoryId] = res.warehouses;
-        setDataSource(res.warehouses);
-      }
-      setLoading(false);
-    };
-
-    fetchListWithInventory();
-  }, [inventoryId]);
-
+const WareHouse = ({ inventoryItem }: { inventoryItem: PriceAndInventoryColumn }) => {
   const columns: TableColumnsType<WareHouseColumn> = [
     {
       title: '#',
@@ -72,14 +43,12 @@ const WareHouse = ({ inventoryId }: { inventoryId: string }) => {
   ];
 
   return (
-    <Spin spinning={loading} tip="Loading data...">
-      <Table
-        pagination={false}
-        columns={columns}
-        dataSource={dataSource}
-        className={styles.warehouse}
-      />
-    </Spin>
+    <Table
+      pagination={false}
+      columns={columns}
+      dataSource={inventoryItem.warehouses}
+      className={styles.warehouse}
+    />
   );
 };
 
