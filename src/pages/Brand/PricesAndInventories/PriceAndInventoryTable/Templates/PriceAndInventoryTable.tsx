@@ -10,7 +10,7 @@ import {
   updateInventories,
   updateMultipleByBackorder,
 } from '@/services';
-import { debounce, forEach, isEmpty, pick } from 'lodash';
+import { debounce, forEach, isEmpty, pick, set } from 'lodash';
 
 import { ModalType } from '@/reducers/modal';
 import { WarehouseItemMetric } from '@/types';
@@ -63,11 +63,10 @@ const PriceAndInventoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [filter, setFilter] = useState('');
-  const [editedRows, setEditedRows] = useState<PriceAndInventoryColumn | null>(null);
+  // const [editedRows, setEditedRows] = useState<PriceAndInventoryColumn | null>(null);
 
-  const [selectedRows, setSelectedRows] = useState<Record<string, PriceAndInventoryColumn> | null>(
-    null,
-  );
+  const [inventoryId, setInventoryId] = useState<string>('');
+  const [selectedRows, setSelectedRows] = useState<Record<string, PriceAndInventoryColumn>>({});
 
   const tableRef = useRef<any>();
   const location = useLocation<{
@@ -79,33 +78,35 @@ const PriceAndInventoryTable: React.FC = () => {
     getUnitType();
   }, []);
 
-  const handleToggleModal = useCallback(
-    (type: ModalType, row?: PriceAndInventoryColumn) => () => {
-      setIsShowModal(type);
-      if (row?.id) {
-        setSelectedRows((prev) => ({
-          ...prev,
-          [row.id]: editedRows?.id === row.id ? editedRows : row,
-        }));
+  const handleToggleModal = (type: ModalType, row?: PriceAndInventoryColumn) => () => {
+    setIsShowModal(type);
 
-        if (!selectedRows?.[editedRows?.id ?? '']) {
-          setEditedRows(row);
-        }
-      }
-    },
-    [isShowModal, editedRows],
-  );
+    if (type === 'none') {
+      setInventoryId('');
+      return;
+    }
 
-  const debouncedUpdateInventories = debounce(async () => {
+    if (row?.id) {
+      setInventoryId(row.id);
+      setSelectedRows((prev) => ({
+        ...prev,
+        [row.id]: prev?.[row.id] ? prev[row.id] : row,
+      }));
+    }
+  };
+
+  // console.log('selectedRows', selectedRows);
+
+  const debouncedUpdateInventories = async () => {
     const inventoryPayload: any = {};
     const warehousePayload: any = [];
 
     forEach(selectedRows, (row, id) => {
       inventoryPayload[id] = {
-        ...pick(row, ['back_order', 'on_order']),
+        ...pick(row, ['on_order']),
+        back_order: row.back_order > 0 ? row.back_order : undefined,
         unit_price: row.price.unit_price,
-        unit_type: row.price.unit_type,
-        volume_prices: row.price.volume_prices.map((el) => ({
+        volume_prices: row.price.volume_prices?.map((el) => ({
           discount_rate: el?.discount_rate ?? 0,
           min_quantity: el?.min_quantity ?? 0,
           max_quantity: el?.max_quantity ?? 0,
@@ -113,7 +114,7 @@ const PriceAndInventoryTable: React.FC = () => {
       };
 
       const warehouse: any = {};
-      row.warehouses.forEach((ws) => {
+      row.warehouses?.forEach((ws) => {
         if (ws.id) {
           warehouse[ws.id] = {
             changeQuantity: ws?.convert ?? 0,
@@ -121,27 +122,28 @@ const PriceAndInventoryTable: React.FC = () => {
         }
       });
 
-      warehousePayload.push({
-        inventoryId: id,
-        warehouses: warehouse,
-      });
+      if (!isEmpty(warehouse)) {
+        warehousePayload.push({
+          inventoryId: id,
+          warehouses: warehouse,
+        });
+      }
     });
 
-    const res = await Promise.all([
-      updateInventories(inventoryPayload),
-      updateMultipleByBackorder(warehousePayload),
-    ]);
+    await updateInventories(inventoryPayload);
 
-    if (res) {
-      setTimeout(() => {
-        tableRef.current.reload();
-        setEditedRows(null);
-      }, 100);
+    if (warehousePayload.length) {
+      await updateMultipleByBackorder(warehousePayload);
     }
-  }, 500);
+
+    setTimeout(() => {
+      tableRef.current.reload();
+      setSelectedRows({});
+    }, 100);
+  };
 
   const handleToggleSwitch = () => {
-    if (isEditMode && !isEmpty(editedRows)) {
+    if (isEditMode && !isEmpty(selectedRows)) {
       debouncedUpdateInventories();
     }
 
@@ -182,17 +184,18 @@ const PriceAndInventoryTable: React.FC = () => {
   };
 
   const handleUpdateBackOrder = (
-    backOrder: Pick<PriceAndInventoryColumn, 'back_order' | 'warehouses' | 'id'>,
+    payload: Pick<PriceAndInventoryColumn, 'back_order' | 'warehouses' | 'id'>,
   ) => {
-    setEditedRows((prev) =>
-      !prev
-        ? null
-        : {
-            ...prev,
-            back_order: backOrder.back_order,
-            warehouses: backOrder.warehouses,
-          },
-    );
+    const { back_order: backOrder, id, warehouses } = payload;
+
+    setSelectedRows((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        back_order: backOrder,
+        warehouses,
+      },
+    }));
   };
 
   const pageHeaderRender = () => (
@@ -212,8 +215,8 @@ const PriceAndInventoryTable: React.FC = () => {
           onToggleModal={handleToggleModal}
           tableRef={tableRef}
           filter={filter}
-          setEditedRows={setEditedRows}
-          editedRows={editedRows}
+          setSelectedRows={setSelectedRows}
+          selectedRows={selectedRows}
         />
       </section>
 
@@ -226,7 +229,7 @@ const PriceAndInventoryTable: React.FC = () => {
       /> */}
 
       <Backorder
-        inventoryItem={editedRows}
+        inventoryItem={selectedRows?.[inventoryId]}
         isShowBackorder={isShowModal === 'BackOrder'}
         onCancel={handleToggleModal('none')}
         onUpdateBackOrder={handleUpdateBackOrder}

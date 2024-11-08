@@ -9,7 +9,7 @@ import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { showImageUrl } from '@/helper/utils';
 import { getListInventories } from '@/services';
-import { get, isEmpty, reduce } from 'lodash';
+import { get, isEmpty, omit, reduce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
@@ -24,8 +24,8 @@ import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Te
 interface InventoryTableProps {
   filter: string;
   isEditMode: boolean;
-  editedRows?: PriceAndInventoryColumn | null;
-  setEditedRows: React.Dispatch<React.SetStateAction<PriceAndInventoryColumn | null>>;
+  selectedRows?: Record<string, PriceAndInventoryColumn | null>;
+  setSelectedRows: React.Dispatch<React.SetStateAction<Record<string, PriceAndInventoryColumn>>>;
   tableRef: React.MutableRefObject<any>;
   onToggleModal: (type: ModalType, rowId?: PriceAndInventoryColumn) => () => void;
 }
@@ -33,9 +33,9 @@ interface InventoryTableProps {
 const InventoryTable = ({
   filter,
   isEditMode,
-  editedRows,
+  selectedRows,
+  setSelectedRows,
   tableRef,
-  setEditedRows,
   onToggleModal,
 }: InventoryTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -58,18 +58,34 @@ const InventoryTable = ({
     [unitTypeData],
   );
 
-  const handleSaveOnCell = (newValue: string) => {
-    setEditedRows((prev) =>
-      !prev
-        ? null
-        : {
-            ...prev,
-            price: {
-              ...prev.price,
-              unit_price: Number(newValue),
-            },
+  const handleSaveOnCell = (id: string, colKey: string, value: string, record: any) => {
+    setSelectedRows((prev) => {
+      const payload = {
+        ...prev,
+        [id]: {
+          ...omit(record, 'id'),
+          ...prev[id],
+          price: {
+            ...record[id]?.price,
+            ...prev[id]?.price,
           },
-    );
+        },
+      };
+
+      if (colKey === 'unit_price') {
+        payload[id].price.unit_price = Number(value);
+      }
+
+      if (colKey === 'on_order') {
+        payload[id].on_order = Number(value);
+      }
+
+      if (colKey === 'back_order') {
+        payload[id].back_order = Number(value);
+      }
+
+      return payload;
+    });
   };
 
   const renderEditableCell = (
@@ -83,7 +99,7 @@ const InventoryTable = ({
         columnKey={columnKey}
         defaultValue={value}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
-        onSave={(_id, _colKey, newValue) => handleSaveOnCell(newValue)}
+        onSave={(id, colKey, newValue) => handleSaveOnCell(id, colKey, newValue, item)}
       />
     ) : (
       rowSelectedValue(item, value)
@@ -138,19 +154,19 @@ const InventoryTable = ({
         title: 'Unit Price',
         dataIndex: 'unit_price',
         align: 'center',
-        render: (_, item) => {
+        render: (_, record) => {
           const rate = reduce(
-            item.price.exchange_histories?.map((unit) => unit.rate),
+            record.price.exchange_histories?.map((unit) => unit.rate),
             (acc, el) => acc * el,
             1,
           );
-          const unitPrice = Number(item.price.unit_price) * rate;
+          const unitPrice = Number(record.price.unit_price) * rate;
 
           return renderEditableCell(
             {
-              ...item,
+              ...record,
               price: {
-                ...item.price,
+                ...record.price,
                 unit_price: unitPrice,
               },
             },
@@ -197,19 +213,19 @@ const InventoryTable = ({
         title: 'On Order',
         dataIndex: 'on_order',
         align: 'center',
-        render: (_, item) => renderEditableCell(item, 'on_order', item.on_order),
+        render: (_, item) => renderEditableCell(item, 'on_order', item?.on_order || 0),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
         align: 'center',
         render: (_, item) => {
-          const backOrder = get(editedRows, 'back_order', 0);
+          const backOrder = selectedRows?.[item.id]?.back_order ?? item?.back_order ?? 0;
 
           return (
             <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-              <p className={`${isEditMode ? 'w-1-2 mr-16' : 'w-full'} my-0`}>
-                {renderEditableCell(item, 'back_order', backOrder ? backOrder : item.back_order)}
+              <p className={`${isEditMode ? 'w-1-2 mr-16' : 'w-full'}  my-0`}>
+                {renderEditableCell(item, 'back_order', backOrder)}
               </p>
               {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
             </div>
@@ -248,7 +264,7 @@ const InventoryTable = ({
 
   const rowSelection: TableProps<any>['rowSelection'] = {
     selectedRowKeys,
-    onChange: (newSelectedRowKeys: React.Key[], selectedRows: any[]) => {
+    onChange: (newSelectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(newSelectedRowKeys);
     },
   };
