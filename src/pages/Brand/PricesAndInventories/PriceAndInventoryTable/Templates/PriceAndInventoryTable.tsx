@@ -34,11 +34,13 @@ export interface PriceAndInventoryColumn {
   id: string;
   image: string;
   back_order: number;
+  originBackOrder: number;
   out_stock: number;
   total_stock: number;
   on_order: number;
   sku: string;
   description: string;
+  stockValue: number;
   price: {
     created_at: string;
     currency?: string;
@@ -90,7 +92,12 @@ const PriceAndInventoryTable: React.FC = () => {
       setInventoryId(row.id);
       setSelectedRows((prev) => ({
         ...prev,
-        [row.id]: prev?.[row.id] ? prev[row.id] : row,
+        [row.id]: prev?.[row.id]
+          ? prev[row.id]
+          : {
+              ...row,
+              originBackOrder: row.back_order,
+            },
       }));
     }
   };
@@ -100,11 +107,18 @@ const PriceAndInventoryTable: React.FC = () => {
   const debouncedUpdateInventories = async () => {
     const inventoryPayload: any = {};
     const warehousePayload: any = [];
-
+    console.log('selectedRows', selectedRows);
     forEach(selectedRows, (row, id) => {
+      const newWarehouses = (row.warehouses || []).filter((ws) => Number(ws.convert) > 0);
+
       inventoryPayload[id] = {
         ...pick(row, ['on_order']),
-        back_order: row.back_order > 0 ? row.back_order : undefined,
+        back_order:
+          newWarehouses.length && row.originBackOrder
+            ? row.originBackOrder
+            : row.back_order > 0
+            ? row.back_order
+            : undefined,
         unit_price: row.price.unit_price,
         volume_prices: row.price.volume_prices?.map((el) => ({
           discount_rate: el?.discount_rate ?? 0,
@@ -114,7 +128,7 @@ const PriceAndInventoryTable: React.FC = () => {
       };
 
       const warehouse: any = {};
-      row.warehouses?.forEach((ws) => {
+      newWarehouses.forEach((ws) => {
         if (ws.id) {
           warehouse[ws.id] = {
             changeQuantity: ws?.convert ?? 0,
@@ -129,22 +143,19 @@ const PriceAndInventoryTable: React.FC = () => {
         });
       }
     });
-
     await updateInventories(inventoryPayload);
 
     if (warehousePayload.length) {
       await updateMultipleByBackorder(warehousePayload);
     }
 
-    setTimeout(() => {
-      tableRef.current.reload();
-      setSelectedRows({});
-    }, 100);
+    tableRef.current.reload();
   };
 
   const handleToggleSwitch = () => {
     if (isEditMode && !isEmpty(selectedRows)) {
       debouncedUpdateInventories();
+      return;
     }
 
     setIsEditMode(!isEditMode);
@@ -198,6 +209,11 @@ const PriceAndInventoryTable: React.FC = () => {
     }));
   };
 
+  const callbackFinishApi = () => {
+    setIsEditMode(false);
+    setSelectedRows({});
+  };
+
   const pageHeaderRender = () => (
     <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrecy} />
   );
@@ -217,6 +233,7 @@ const PriceAndInventoryTable: React.FC = () => {
           filter={filter}
           setSelectedRows={setSelectedRows}
           selectedRows={selectedRows}
+          callbackFinishApi={callbackFinishApi}
         />
       </section>
 

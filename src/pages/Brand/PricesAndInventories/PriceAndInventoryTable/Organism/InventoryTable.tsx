@@ -7,9 +7,9 @@ import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg'
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
-import { showImageUrl } from '@/helper/utils';
+import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import { getListInventories } from '@/services';
-import { get, isEmpty, omit, reduce } from 'lodash';
+import { get, isEmpty, omit, orderBy, reduce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
@@ -28,6 +28,7 @@ interface InventoryTableProps {
   setSelectedRows: React.Dispatch<React.SetStateAction<Record<string, PriceAndInventoryColumn>>>;
   tableRef: React.MutableRefObject<any>;
   onToggleModal: (type: ModalType, rowId?: PriceAndInventoryColumn) => () => void;
+  callbackFinishApi: () => void;
 }
 
 const InventoryTable = ({
@@ -37,7 +38,10 @@ const InventoryTable = ({
   setSelectedRows,
   tableRef,
   onToggleModal,
+  callbackFinishApi,
 }: InventoryTableProps) => {
+  const { currencySelected } = useAppSelector((state) => state.summary);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const location = useLocation<{
     categoryId: string;
@@ -69,12 +73,13 @@ const InventoryTable = ({
             ...record[id]?.price,
             ...prev[id]?.price,
           },
+          volume_prices: record.volume_prices,
+          originBackOrder: record.back_order,
         },
       };
 
-      if (colKey === 'unit_price') {
-        payload[id].price.unit_price = Number(value);
-      }
+      payload[id].price.unit_price =
+        colKey === 'unit_price' ? Number(value) : record.price.unit_price;
 
       if (colKey === 'on_order') {
         payload[id].on_order = Number(value);
@@ -160,8 +165,11 @@ const InventoryTable = ({
             (acc, el) => acc * el,
             1,
           );
-          const unitPrice = Number(record.price.unit_price) * rate;
-
+          const unitPrice = Number(
+            formatCurrencyNumber(Number(record.price.unit_price) * rate, undefined, {
+              maximumFractionDigits: 2,
+            }),
+          );
           return renderEditableCell(
             {
               ...record,
@@ -223,10 +231,10 @@ const InventoryTable = ({
           const backOrder = selectedRows?.[item.id]?.back_order ?? item?.back_order ?? 0;
 
           return (
-            <div className={`${styles.category_table_additional_action_wrapper} cursor-pointer`}>
-              <p className={`${isEditMode ? 'w-1-2 mr-16' : 'w-full'}  my-0`}>
-                {renderEditableCell(item, 'back_order', backOrder)}
-              </p>
+            <div
+              className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
+            >
+              <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
               {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
             </div>
           );
@@ -242,7 +250,17 @@ const InventoryTable = ({
       {
         title: 'Stock Value',
         dataIndex: 'stock_value',
-        render: (_, item) => rowSelectedValue(item, 'US$ 105.00'),
+        render: (_, item) => {
+          const currency =
+            orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ||
+            currencySelected;
+          return rowSelectedValue(
+            item,
+            `${currency} ${formatCurrencyNumber(Number(item.stockValue), undefined, {
+              maximumFractionDigits: 2,
+            })}`,
+          );
+        },
       },
       {
         title: 'Revision',
@@ -283,6 +301,7 @@ const InventoryTable = ({
         ...(!isEmpty(filter) && { search: filter }),
       }}
       onFilterLoad
+      callbackFinishApi={callbackFinishApi}
     />
   );
 };
