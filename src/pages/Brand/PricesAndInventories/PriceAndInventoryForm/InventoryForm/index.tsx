@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { CSSProperties, useEffect, useMemo } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -6,12 +6,11 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { confirmDelete, useScreen } from '@/helper/common';
-import { useGetParamId } from '@/helper/hook';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash';
 
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
-import { InventoryAttribute, WarehouseItemMetric } from '@/types';
+import { IPriceAndInventoryForm, InventoryAttribute, WarehouseItemMetric } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -20,15 +19,20 @@ import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
-const regex = /^-?\d+(\.\d+)?$/;
+const customInputStyle: CSSProperties = {
+  width: 50,
+  padding: 0,
+  margin: 0,
+  textAlign: 'center',
+};
 
 export interface InventoryFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
   formData: InventoryAttribute;
-  setFormData: React.Dispatch<React.SetStateAction<InventoryAttribute>>;
+  setFormData: React.Dispatch<React.SetStateAction<IPriceAndInventoryForm>>;
   tableData: WarehouseItemMetric[];
-  setTableData: React.Dispatch<React.SetStateAction<WarehouseItemMetric[]>>;
+  setTableData: any;
   setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -41,14 +45,10 @@ const InventoryForm = ({
   tableData,
   setHasUnsavedChanges,
 }: InventoryFormProps) => {
+  const randomId = uniqueId();
+
   const { isExtraLarge } = useScreen();
-  const inventoryId = useGetParamId();
   const disabledAddInventory = !formData.name;
-  const customInputStyle = {
-    width: 50,
-    padding: 0,
-    margin: 0,
-  };
 
   useEffect(() => {
     const calculateStock = () => {
@@ -81,8 +81,8 @@ const InventoryForm = ({
 
   const handleRemoveRow = (id: string) => () => {
     confirmDelete(() => {
-      setTableData((prev) => {
-        const updatedTableData = prev.filter((el) => el.id !== id);
+      setTableData((prev: WarehouseItemMetric[]) => {
+        const updatedTableData = prev.filter((el: WarehouseItemMetric) => el.id !== id);
         setFormData((prevFormData) => ({
           ...prevFormData,
           warehouses: updatedTableData,
@@ -95,12 +95,12 @@ const InventoryForm = ({
   const handleChangeWarehouse =
     (
       warehouse: WarehouseItemMetric,
-      type: keyof Pick<WarehouseItemMetric, 'in_stock' | 'convert'>,
+      type: keyof Pick<WarehouseItemMetric, 'new_in_stock' | 'convert'>,
     ) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const parsedValue: any = event.target.value;
 
-      if (type === 'in_stock' && parsedValue < 0) {
+      if (type === 'new_in_stock' && parsedValue < 0) {
         message.warn('In Stock cannot be negative and must be a number.');
         return;
       }
@@ -155,9 +155,9 @@ const InventoryForm = ({
         render: (_, record) => (
           <CustomInput
             type="number"
-            value={tableData?.find((ws) => ws.id === record.id)?.in_stock}
+            value={tableData?.find((ws) => ws.id === record.id)?.new_in_stock}
             additionalInputClass="indigo-dark-variant"
-            onChange={handleChangeWarehouse(record, 'in_stock')}
+            onChange={handleChangeWarehouse(record, 'new_in_stock')}
             style={customInputStyle}
           />
         ),
@@ -195,29 +195,34 @@ const InventoryForm = ({
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
   const handleAddRow = async () => {
-    const newRow = {
-      key: Number(tableData?.length + 1),
-      name: formData.name ?? '',
-      city_name: formData.city_name ?? '',
-      country_name: formData.country_name ?? '',
+    if (!formData?.location_id) {
+      message.error('Please select a location');
+      return;
+    }
+
+    const newRow: WarehouseItemMetric = {
+      id: randomId,
+      name: formData?.name ?? '',
+      city_name: formData?.city_name ?? '',
+      country_name: formData?.country_name ?? '',
+      location_id: formData.location_id,
+      new_in_stock: 0,
       in_stock: 0,
       convert: 0,
-      location_id: formData.location_id,
-      inventory_id: inventoryId,
     };
 
-    setTableData((prev = []) => [...prev, newRow]);
+    setTableData((prev: WarehouseItemMetric[]) => [...prev, newRow]);
 
-    setFormData({
+    setFormData((prev) => ({
+      ...prev,
       ...formData,
-      on_order: null,
-      back_order: null,
-      total_stock: null,
-      out_of_stock: null,
+      on_order: 0,
+      back_order: 0,
+      total_stock: 0,
+      out_of_stock: 0,
       name: '',
       location_id: '',
-      warehouses: [...tableData, newRow],
-    });
+    }));
 
     setHasUnsavedChanges(false);
   };
@@ -238,7 +243,7 @@ const InventoryForm = ({
               setFormData((prev) => ({
                 ...prev,
                 location_id: data.value,
-                name: data.label,
+                name: data?.business_name,
                 city_name: data?.city_name ?? '',
                 country_name: data?.country_name ?? '',
               }));

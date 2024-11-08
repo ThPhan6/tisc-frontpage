@@ -15,11 +15,33 @@ export interface PriceAttribute {
   image?: any;
 }
 
-export interface InventoryAttribute extends Partial<WarehouseItemMetric> {
-  location_id: string;
-  total_stock: number | null;
-  out_of_stock: number | null;
-  on_order: number | null;
-  back_order: number | null;
+export interface InventoryAttribute {
+  total_stock: number;
+  out_of_stock: number;
+  on_order: number;
+  back_order: number;
+  location_id?: string;
+  name?: string;
+  city_name?: string;
+  country_name?: string;
   warehouses: WarehouseItemMetric[];
 }
+
+export interface IPriceAndInventoryForm extends PriceAttribute, InventoryAttribute {}
+
+export const initialInventoryFormData: IPriceAndInventoryForm = {
+  sku: '',
+  description: '',
+  unit_type: '',
+  inventory_category_id: '',
+  image: [],
+  total_stock: 0,
+  out_of_stock: 0,
+  on_order: 0,
+  back_order: 0,
+  warehouses: [],
+  city_name: '',
+  country_name: '',
+  location_id: '',
+  name: '',
+};

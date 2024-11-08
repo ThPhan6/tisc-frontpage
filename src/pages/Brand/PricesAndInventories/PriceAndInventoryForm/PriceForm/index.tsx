@@ -11,7 +11,7 @@ import { fetchUnitType } from '@/services';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
-import { PriceAttribute } from '@/types';
+import { IPriceAndInventoryForm, PriceAttribute } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
@@ -30,7 +30,7 @@ interface PriceFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
   formData: PriceAttribute;
-  setFormData: React.Dispatch<React.SetStateAction<PriceAttribute>>;
+  setFormData: React.Dispatch<React.SetStateAction<IPriceAndInventoryForm>>;
   tableData: VolumePrice[];
   setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
   setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
@@ -283,13 +283,14 @@ const PriceForm = ({
 
     setTableData((prev = []) => [...prev, newRow]);
 
-    setFormData({
+    setFormData((prev) => ({
+      ...prev,
       ...formData,
       discount_price: 0.0,
       discount_rate: undefined,
       min_quantity: undefined,
       max_quantity: undefined,
-    });
+    }));
     setHasUnsavedChanges(false);
   };
 

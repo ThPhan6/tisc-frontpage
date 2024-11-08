@@ -20,7 +20,12 @@ import {
 import { isEmpty, isNil, omit, pick, reduce } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
-import type { PriceAttribute, WarehouseItemMetric } from '@/types';
+import {
+  IPriceAndInventoryForm,
+  type PriceAttribute,
+  type WarehouseItemMetric,
+  initialInventoryFormData,
+} from '@/types';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -35,24 +40,10 @@ import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/Pri
 import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 import PriceAndInventoryTableStyle from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
-const initialFormData = {
-  sku: '',
-  description: '',
-  unit_type: '',
-  inventory_category_id: '',
-  image: [],
-  work_location: '',
-  location_id: '',
-  total_stock: null,
-  out_of_stock: null,
-  on_order: null,
-  back_order: null,
-};
-
 const PriceAndInventoryForm = () => {
-  const [formData, setFormData] = useState<any>(initialFormData);
+  const [formData, setFormData] = useState<IPriceAndInventoryForm>(initialInventoryFormData);
   const [priceTableData, setPriceTableData] = useState<VolumePrice[]>([]);
-  const [inventoryTableData, setInventoryTableData] = useState<WarehouseItemMetric[]>([]);
+  const [warehouseTable, setWarehouseTable] = useState<WarehouseItemMetric[]>([]);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -64,7 +55,7 @@ const PriceAndInventoryForm = () => {
   const { isExtraLarge } = useScreen();
 
   useEffect(() => {
-    setFormData(initialFormData);
+    setFormData(initialInventoryFormData);
     setPriceTableData([]);
   }, []);
 
@@ -77,21 +68,22 @@ const PriceAndInventoryForm = () => {
     { field: 'unit_type', messageField: 'Unit type is required' },
   ];
 
-  const fetchListWarehouses = async () => {
+  const fetchListwarehouseTable = async () => {
     const res = await getListWarehouseByInventoryId(inventoryId);
 
     if (res) {
       const warehouseRes = {
         total_stock: res.total_stock,
-        warehouses: !res?.warehouses?.length
+        warehouseTable: !res?.warehouses?.length
           ? []
           : res.warehouses?.map((el) => ({
               ...el,
               convert: 0,
+              new_in_stock: el.in_stock,
             })),
       };
 
-      setInventoryTableData(warehouseRes.warehouses);
+      setWarehouseTable(warehouseRes.warehouseTable);
 
       setFormData((prev: any) => ({
         ...prev,
@@ -111,6 +103,7 @@ const PriceAndInventoryForm = () => {
       );
 
       setFormData({
+        ...initialInventoryFormData,
         ...res,
         image: !isEmpty(res.image) ? [`/${res.image}`] : [],
         unit_price: inventoryId ? Number(res.price.unit_price) * rate : res.price?.unit_price,
@@ -132,7 +125,7 @@ const PriceAndInventoryForm = () => {
 
   const fetchData = async () => {
     if (inventoryId) {
-      await Promise.all([fetchInventory(), fetchListWarehouses()]);
+      await Promise.all([fetchInventory(), fetchListwarehouseTable()]);
     }
   };
 
@@ -188,12 +181,22 @@ const PriceAndInventoryForm = () => {
         'on_order',
         'back_order',
       ]),
-      warehouses: isNil(formData.warehouses)
+      warehouses: isNil(formData?.warehouses)
         ? undefined
-        : formData.warehouses.map((el: any) => ({
-            location_id: el.location_id,
-            quantity: el.convert,
-          })),
+        : formData.warehouses.map((el) => {
+            let quantity = el.new_in_stock;
+
+            if (el.in_stock === 0) {
+              quantity = el.new_in_stock + el.convert;
+            } else {
+              quantity = el.in_stock - el.new_in_stock + el.convert;
+            }
+
+            return {
+              location_id: el?.location_id,
+              quantity: quantity,
+            };
+          }),
       image,
       on_order: +formData.on_order,
       back_order: +formData.back_order,
@@ -343,8 +346,8 @@ const PriceAndInventoryForm = () => {
                 isShowModal={isShowModal}
                 onToggleModal={handleToggleModal}
                 setFormData={setFormData}
-                setTableData={setInventoryTableData}
-                tableData={inventoryTableData}
+                setTableData={setWarehouseTable}
+                tableData={warehouseTable}
                 setHasUnsavedChanges={setHasUnsavedChanges}
               />
             )}

@@ -237,7 +237,9 @@ const InventoryTable = ({
             <div
               className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
             >
-              <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
+              <p className={`${isEditMode ? 'w-1-2' : 'w-full'} my-0`}>
+                {renderEditableCell(item, 'back_order', backOrder)}
+              </p>
               {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
             </div>
           );

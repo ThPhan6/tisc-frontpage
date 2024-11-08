@@ -2,13 +2,13 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { Warehouse } from '@/types';
+import { WarehouseRequest, WarehouseResponse } from '@/types';
 
 import { BackorderPayload } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-export const createWarehouse = async (data: Warehouse) => {
+export const createWarehouse = async (data: WarehouseRequest) => {
   showPageLoading();
 
   return request<boolean>(`/api/warehouse/create`, {
@@ -29,9 +29,9 @@ export const createWarehouse = async (data: Warehouse) => {
 
 export const getListWarehouseByInventoryId = async (
   inventoryId: string,
-): Promise<Pick<Warehouse, 'warehouses' | 'total_stock'>> => {
+): Promise<WarehouseResponse> => {
   showPageLoading();
-  return request<{ data: Warehouse }>(`/api/warehouse/get-list/inventory/${inventoryId}`)
+  return request<{ data: WarehouseResponse }>(`/api/warehouse/get-list/inventory/${inventoryId}`)
     .then((response) => {
       hidePageLoading();
       return response.data;
@@ -39,7 +39,7 @@ export const getListWarehouseByInventoryId = async (
     .catch((error) => {
       message.error(error?.data?.message || 'Get list warehouses failed');
       hidePageLoading();
-      return [] as Pick<Warehouse, 'warehouses' | 'total_stock'>;
+      return {} as WarehouseResponse;
     });
 };
 
