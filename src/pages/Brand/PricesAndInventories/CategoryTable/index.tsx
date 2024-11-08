@@ -21,7 +21,7 @@ import { ReactComponent as SquareCDownLeft } from '@/assets/icons/square-c-down-
 
 import { confirmDelete } from '@/helper/common';
 import { useNavigationHandler } from '@/helper/hook';
-import { showImageUrl } from '@/helper/utils';
+import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import {
   deleteInventory,
   exchangeCurrency,
@@ -84,6 +84,7 @@ export interface PriceAndInventoryColumn {
   on_order?: number;
   back_order?: number;
   total_stock: number;
+  stockValue: number;
 }
 
 const CategoryTable: React.FC = () => {
@@ -389,7 +390,8 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Stock Value',
         dataIndex: 'stock_value',
-        render: (_, item) => rowSelectedValue(item, 'US$ 105.00'),
+        render: (_, item) =>
+          rowSelectedValue(item, `${formatCurrencyNumber(Number(item.stockValue))}`),
       },
       {
         title: 'Revision',
