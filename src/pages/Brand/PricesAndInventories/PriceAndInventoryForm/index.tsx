@@ -68,26 +68,6 @@ const PriceAndInventoryForm = () => {
     setPriceTableData([]);
   }, []);
 
-  const checkValidField = () => {
-    const { warehouses } = formData;
-
-    for (const warehouse of warehouses) {
-      const { in_stock, convert } = warehouse;
-
-      if (in_stock < convert) {
-        message.warn('In Stock cannot be less than Convert');
-        return false;
-      }
-
-      if (convert > in_stock) {
-        message.warn('Convert value cannot exceed In Stock');
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   const getRequiredFields = (): {
     field: keyof PriceAttribute;
     messageField: string;
@@ -233,8 +213,6 @@ const PriceAndInventoryForm = () => {
 
   const handleSave = useCallback(async () => {
     if (!validateRequiredFields(formData, getRequiredFields())) return;
-
-    if (!checkValidField()) return;
 
     if (hasUnsavedChanges) {
       message.warn('There is a draft volume that has not been added yet. Please check it.');

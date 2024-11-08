@@ -24,6 +24,7 @@ interface EditableCell<T extends string | number | readonly string[] | undefined
   columnKey: string;
   defaultValue: T;
   valueClass?: string;
+  labelStyle?: CSSProperties;
   onSave: (id: string, columnKey: string, newValue: string) => void;
 }
 
@@ -33,6 +34,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
   inputStyle,
   defaultValue,
   valueClass = '',
+  labelStyle,
   item,
   ...rest
 }: EditableCell<T>) => {
@@ -149,6 +151,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
         <span
           onClick={handleClick(columndId, columnKey, inputValue)}
           className={`indigo-dark-variant text-center ${valueClass}`}
+          style={labelStyle}
         >
           {inputValue}
           {columnKey === 'discount_rate' ? '%' : ''}

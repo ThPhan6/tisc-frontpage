@@ -20,6 +20,8 @@ import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
+const regex = /^-?\d+(\.\d+)?$/;
+
 export interface InventoryFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
@@ -96,9 +98,9 @@ const InventoryForm = ({
       type: keyof Pick<WarehouseItemMetric, 'in_stock' | 'convert'>,
     ) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const parsedValue = Number(event.target.value);
+      const parsedValue: any = event.target.value;
 
-      if (type === 'in_stock' && (isNaN(parsedValue) || parsedValue < 0)) {
+      if (type === 'in_stock' && parsedValue < 0) {
         message.warn('In Stock cannot be negative and must be a number.');
         return;
       }
@@ -107,7 +109,7 @@ const InventoryForm = ({
         if (el.id === warehouse.id) {
           return {
             ...el,
-            [type]: parsedValue,
+            [type]: Number(parsedValue),
           };
         }
 
@@ -152,6 +154,7 @@ const InventoryForm = ({
         width: '10%',
         render: (_, record) => (
           <CustomInput
+            type="number"
             value={tableData?.find((ws) => ws.id === record.id)?.in_stock}
             additionalInputClass="indigo-dark-variant"
             onChange={handleChangeWarehouse(record, 'in_stock')}
@@ -164,10 +167,10 @@ const InventoryForm = ({
         dataIndex: 'convert',
         align: 'center',
         width: '10%',
-        render: (_, record) => (
+        render: (_, record: any) => (
           <CustomInput
             type="number"
-            value={tableData?.find((ws) => ws.id === record.id)?.convert}
+            value={tableData?.find((ws) => ws.id === record.id)?.convert || undefined}
             additionalInputClass="indigo-dark-variant"
             onChange={handleChangeWarehouse(record, 'convert')}
             style={customInputStyle}

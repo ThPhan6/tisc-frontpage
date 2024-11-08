@@ -47,9 +47,9 @@ const TreeSelect = <T,>({
 
   const findMaxLevel = (items: TreeItem[]): number => {
     let maxLevel = 0;
-    const queue = items.map((item) => ({ item, level: item.level }));
+    const queue = items?.map((item) => ({ item, level: item.level }));
 
-    while (queue.length > 0) {
+    while (queue?.length > 0) {
       const { item, level } = queue.shift()!;
       if (level > maxLevel) maxLevel = level;
       item.subs?.forEach((sub) => queue.push({ item: sub, level: level + 1 }));
@@ -76,10 +76,10 @@ const TreeSelect = <T,>({
   };
 
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
-    const stack: { item: TreeItem; indent: number }[] = items.map((item) => ({ item, indent: 0 }));
+    const stack: { item: TreeItem; indent: number }[] = items?.map((item) => ({ item, indent: 0 }));
     const result: React.ReactNode[] = [];
 
-    while (stack.length > 0) {
+    while (stack?.length > 0) {
       const { item, indent } = stack.pop()!;
 
       if (!shouldDisplayItem(item)) continue;
@@ -109,9 +109,6 @@ const TreeSelect = <T,>({
               {item.name}
             </BodyText>
           </Menu.Item>
-          {(hasSubs || showAllLevels) &&
-            !selectable &&
-            (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
           {(hasSubs || showAllLevels) &&
             !selectable &&
             (isExpanded ? <DropupIcon /> : <DropdownIcon />)}

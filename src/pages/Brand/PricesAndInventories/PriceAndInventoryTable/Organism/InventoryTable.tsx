@@ -104,6 +104,7 @@ const InventoryTable = ({
         columnKey={columnKey}
         defaultValue={value}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
+        labelStyle={{ display: 'inline-block', minWidth: 20 }}
         onSave={(id, colKey, newValue) => handleSaveOnCell(id, colKey, newValue, item)}
       />
     ) : (
@@ -221,11 +222,13 @@ const InventoryTable = ({
         title: 'On Order',
         dataIndex: 'on_order',
         align: 'center',
+        width: '5%',
         render: (_, item) => renderEditableCell(item, 'on_order', item?.on_order || 0),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
+        width: '8%',
         align: 'center',
         render: (_, item) => {
           const backOrder = selectedRows?.[item.id]?.back_order ?? item?.back_order ?? 0;

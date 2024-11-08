@@ -118,7 +118,7 @@ const InventoryTableActionMenu = ({ record, tableRef }: InventoryTableActionMenu
                     showAllLevels={true}
                     isSingleExpand={false}
                     onItemSelect={handleItemMoveToSelect}
-                    data={location.state.groupItems}
+                    data={location.state?.groupItems}
                     defaultExpandedKeys={expandedKeys}
                     onExpandedKeys={handleToggleExpand()}
                   />
