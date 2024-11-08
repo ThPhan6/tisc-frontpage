@@ -14,7 +14,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 import styles from './LocationModal.less';
 import { getWorkLocations } from '@/features/locations/api';
 
-export interface WorkLocationData {
+export interface WorkLocationData extends Partial<LocationDetail> {
   label: string;
   value: string;
   phoneCode: string;
@@ -36,6 +36,7 @@ const LocationModal: FC = () => {
       workLocationText += upperCase(location.country_name);
     }
     onChange({
+      ...location,
       label: workLocationText,
       value: location.id,
       phoneCode: location.phone_code ?? '',

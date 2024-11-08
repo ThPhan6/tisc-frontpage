@@ -1,4 +1,4 @@
-import { WarehouseItemMetrics } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
+import { WarehouseItemMetric } from '@/types/warehouse.type';
 
 export interface PriceAttribute {
   id?: string;
@@ -15,11 +15,11 @@ export interface PriceAttribute {
   image?: any;
 }
 
-export interface InventoryAttribute extends Partial<WarehouseItemMetrics> {
-  work_location: string;
+export interface InventoryAttribute extends Partial<WarehouseItemMetric> {
   location_id: string;
   total_stock: number | null;
   out_of_stock: number | null;
   on_order: number | null;
   back_order: number | null;
+  warehouses: WarehouseItemMetric[];
 }

@@ -6,6 +6,7 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useScreen } from '@/helper/common';
+import { useGetParamId } from '@/helper/hook';
 import { fetchUnitType } from '@/services';
 
 import { useAppSelector } from '@/reducers';
@@ -19,9 +20,9 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
-import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
+import { VolumePrice } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 import CollectionGallery from '@/features/gallery/CollectionGallery';
 
@@ -46,6 +47,7 @@ const PriceForm = ({
 }: PriceFormProps) => {
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
   const { isExtraLarge } = useScreen();
+  const inventoryId = useGetParamId();
 
   const disableAddPrice =
     !formData.unit_price ||
@@ -415,7 +417,7 @@ const PriceForm = ({
     <>
       <div
         className={`${styles.category_form_content} ${
-          isExtraLarge ? 'border-right-black-inset w-1-2' : 'border-bottom-black-inset w-full'
+          isExtraLarge && inventoryId ? ' w-1-2 border-right-black-inset' : 'w-full'
         }`}
       >
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
@@ -591,6 +593,7 @@ const PriceForm = ({
         title={baseAndVolumePriceInfo.title}
         content={baseAndVolumePriceInfo.content}
         additionalContentClass={styles.category_form_info_modal}
+        additionalContainerClasses={styles.category_form_info_modal_wrapper}
       />
     </>
   );

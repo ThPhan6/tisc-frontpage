@@ -72,7 +72,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         htmlFor={`${randomID}_${option.value}_${index}`}
         style={optionStyle}
       >
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', paddingTop: 10 }}>
           {isRadioList ? (
             <div className={style['item-wrapper']}>
               <span className={getActiveClass(option)}>{option.label}</span>

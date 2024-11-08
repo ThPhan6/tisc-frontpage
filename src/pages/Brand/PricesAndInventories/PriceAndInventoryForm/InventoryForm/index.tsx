@@ -1,114 +1,161 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { Table, type TableColumnsType } from 'antd';
+import { Table, type TableColumnsType, message } from 'antd';
 
 import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { useScreen } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
+import { useGetParamId } from '@/helper/hook';
+import { cloneDeep } from 'lodash';
 
 import store from '@/reducers';
-import { type ModalType, openModal } from '@/reducers/modal';
-import { InventoryAttribute } from '@/types';
+import { ModalType, openModal } from '@/reducers/modal';
+import { InventoryAttribute, WarehouseItemMetric } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { CustomInput } from '@/components/Form/CustomInput';
 import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
-import EditableCell from '@/pages/Brand/PricesAndInventories/EditableCell';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
-export interface WarehouseItemMetrics {
-  id: string;
-  warehouse_name: string;
-  city: string;
-  country: string;
-  in_stock: string;
-  convert: string;
-}
-
-interface InventoryFromProps {
+export interface InventoryFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
+  formData: InventoryAttribute;
+  setFormData: React.Dispatch<React.SetStateAction<InventoryAttribute>>;
+  tableData: WarehouseItemMetric[];
+  setTableData: React.Dispatch<React.SetStateAction<WarehouseItemMetric[]>>;
+  setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const initialData = {
-  work_location: '',
-  location_id: '',
-  total_stock: null,
-  out_of_stock: null,
-  on_order: null,
-  back_order: null,
-};
-
-const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
-  const [inventoryFormData, setInventoryFormData] = useState<InventoryAttribute>(initialData);
-  const [workLocation, setWorkLocation] = useState({
-    label: '',
-    value: inventoryFormData.location_id,
-    phoneCode: '00',
-  });
-  const [inventoryTableData, setInventoryTableData] = useState<WarehouseItemMetrics[]>([]);
-
+const InventoryForm = ({
+  formData,
+  isShowModal,
+  onToggleModal,
+  setFormData,
+  setTableData,
+  tableData,
+  setHasUnsavedChanges,
+}: InventoryFormProps) => {
   const { isExtraLarge } = useScreen();
+  const inventoryId = useGetParamId();
+  const disabledAddInventory = !formData.name;
+  const customInputStyle = {
+    width: 50,
+    padding: 0,
+    margin: 0,
+  };
 
   useEffect(() => {
-    setWorkLocation((prev) => ({
-      value: inventoryFormData.location_id || prev.value,
-      label: inventoryFormData.work_location || prev.label,
-      phoneCode: '00',
-    }));
-  }, [inventoryFormData.location_id]);
+    const calculateStock = () => {
+      const totalStock =
+        tableData?.reduce((accumulator, item) => {
+          const updatedAccumulator = accumulator + (Number(item.in_stock) || 0);
+          return updatedAccumulator;
+        }, 0) || 0;
 
-  const handleInventoryFormChange =
-    (field: keyof InventoryAttribute, fieldValue?: string) =>
-    (event?: React.ChangeEvent<HTMLInputElement>) => {
-      const value = field === 'location_id' ? fieldValue : event?.target.value;
-      setInventoryFormData((prev) => ({ ...prev, [field]: value }));
+      const onOrderValue = Number(formData.on_order) || 0;
+      const finalTotalStock = totalStock;
+
+      const outStock = finalTotalStock - onOrderValue;
+      setFormData((prev) => ({
+        ...prev,
+        total_stock: finalTotalStock,
+        out_of_stock: outStock,
+      }));
     };
 
-  useEffect(() => {
-    handleInventoryFormChange('location_id', workLocation.value)();
-  }, [workLocation]);
+    calculateStock();
+  }, [tableData, formData.on_order]);
 
-  const handleRemoveRow = (id: string) => () =>
-    setInventoryTableData((prev) => prev.filter((el) => el.id !== id));
+  const handleInventoryFormChange =
+    (field: keyof InventoryAttribute) => (event?: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event?.target.value;
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      setHasUnsavedChanges(value !== null);
+    };
 
-  const inventoryColumn: TableColumnsType<any> = useMemo(
+  const handleRemoveRow = (id: string) => () => {
+    confirmDelete(() => {
+      setTableData((prev) => {
+        const updatedTableData = prev.filter((el) => el.id !== id);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          warehouses: updatedTableData,
+        }));
+        return updatedTableData;
+      });
+    });
+  };
+
+  const handleChangeWarehouse =
+    (
+      warehouse: WarehouseItemMetric,
+      type: keyof Pick<WarehouseItemMetric, 'in_stock' | 'convert'>,
+    ) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const parsedValue = Number(event.target.value);
+
+      if (type === 'in_stock' && (isNaN(parsedValue) || parsedValue < 0)) {
+        message.warn('In Stock cannot be negative and must be a number.');
+        return;
+      }
+
+      const newWarehouses = cloneDeep(tableData).map((el) => {
+        if (el.id === warehouse.id) {
+          return {
+            ...el,
+            [type]: parsedValue,
+          };
+        }
+
+        return el;
+      });
+
+      setTableData(newWarehouses);
+      setFormData((prev) => ({ ...prev, warehouses: newWarehouses }));
+    };
+
+  const warehouseColumns: TableColumnsType<WarehouseItemMetric> = useMemo(
     () => [
       {
         title: '#',
-        dataIndex: 'key',
+        dataIndex: '',
         align: 'center',
         width: '5%',
+        render: (_, __, index) => index + 1,
       },
       {
         title: 'WareHouse Name',
-        dataIndex: 'warehouse_name',
-        width: '20%',
+        dataIndex: 'name',
+        width: '30%',
+        ellipsis: true,
       },
       {
         title: 'City',
-        dataIndex: 'city',
-        width: '10%',
+        dataIndex: 'city_name',
+        width: '15%',
+        ellipsis: true,
       },
       {
         title: 'Country',
-        dataIndex: 'country',
-        width: '40%',
+        dataIndex: 'country_name',
+        width: '30%',
+        ellipsis: true,
       },
       {
         title: 'In stock',
         dataIndex: 'in_stock',
         align: 'center',
         width: '10%',
-        render: (_: any, item) => (
-          <EditableCell
-            item={item}
-            columnKey="add_to"
-            defaultValue="6"
-            valueClass="indigo-dark-variant"
-            onSave={() => {}}
+        render: (_, record) => (
+          <CustomInput
+            value={tableData?.find((ws) => ws.id === record.id)?.in_stock}
+            additionalInputClass="indigo-dark-variant"
+            onChange={handleChangeWarehouse(record, 'in_stock')}
+            style={customInputStyle}
           />
         ),
       },
@@ -117,13 +164,13 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
         dataIndex: 'convert',
         align: 'center',
         width: '10%',
-        render: (_: any, item) => (
-          <EditableCell
-            item={item}
-            columnKey="convert"
-            defaultValue="0"
-            valueClass="indigo-dark-variant"
-            onSave={() => {}}
+        render: (_, record) => (
+          <CustomInput
+            type="number"
+            value={tableData?.find((ws) => ws.id === record.id)?.convert}
+            additionalInputClass="indigo-dark-variant"
+            onChange={handleChangeWarehouse(record, 'convert')}
+            style={customInputStyle}
           />
         ),
       },
@@ -133,29 +180,74 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
         render: (_, record) => (
           <TrashIcon
             className="cursor-pointer primary-color-dark"
-            onClick={handleRemoveRow(record.id)}
+            onClick={handleRemoveRow(record.id ?? '')}
           />
         ),
       },
     ],
-    [handleRemoveRow],
+    [JSON.stringify(tableData)],
   );
+
+  const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
+    setFormData((prev) => ({ ...prev, [field]: '' }));
+
+  const handleAddRow = async () => {
+    const newRow = {
+      key: Number(tableData?.length + 1),
+      name: formData.name ?? '',
+      city_name: formData.city_name ?? '',
+      country_name: formData.country_name ?? '',
+      in_stock: 0,
+      convert: 0,
+      location_id: formData.location_id,
+      inventory_id: inventoryId,
+    };
+
+    setTableData((prev = []) => [...prev, newRow]);
+
+    setFormData({
+      ...formData,
+      on_order: null,
+      back_order: null,
+      total_stock: null,
+      out_of_stock: null,
+      name: '',
+      location_id: '',
+      warehouses: [...tableData, newRow],
+    });
+
+    setHasUnsavedChanges(false);
+  };
 
   const handleOpenLocationModal = () => {
     store.dispatch(
       openModal({
         type: 'Work Location',
         title: 'Work Location',
-        props: { workLocation: { data: workLocation, onChange: setWorkLocation } },
+        props: {
+          workLocation: {
+            data: {
+              label: '',
+              value: '',
+              phoneCode: '00',
+            },
+            onChange: (data) => {
+              setFormData((prev) => ({
+                ...prev,
+                location_id: data.value,
+                name: data.label,
+                city_name: data?.city_name ?? '',
+                country_name: data?.country_name ?? '',
+              }));
+            },
+          },
+        },
       }),
     );
   };
 
-  const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
-    setInventoryFormData((prev) => ({ ...prev, [field]: '' }));
-
   const inventoryInfo = {
-    title: 'BASE & VOLUME PRICE',
+    title: 'INVENTORY MANAGEMENT',
     content: [
       {
         id: 1,
@@ -235,13 +327,17 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
   };
 
   const saveBtnStyle = {
-    background: true ? '#bfbfbf' : '',
+    background: disabledAddInventory ? '#bfbfbf' : '',
     minWidth: 48,
   };
 
   return (
     <>
-      <div className={`${styles.category_form_content} ${isExtraLarge ? 'w-1-2' : 'w-full'}`}>
+      <div
+        className={`${styles.category_form_content} ${
+          isExtraLarge ? 'w-1-2' : 'w-full border-top-black-inset'
+        }`}
+      >
         <section className="d-flex items-center justify-between w-full">
           <Title
             style={{ paddingBottom: '32px' }}
@@ -256,7 +352,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             label="Location :"
             fontLevel={3}
             placeholder="select from the list"
-            value={workLocation.label}
+            value={formData.name}
             hasBoxShadow
             hasPadding
             rightIcon
@@ -270,7 +366,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
           <InputGroup
             label="Total Stock :"
             fontLevel={3}
-            value={inventoryFormData.total_stock ? inventoryFormData.total_stock : '0'}
+            value={formData.total_stock ? formData.total_stock : '0'}
             hasBoxShadow
             hasPadding
             hasHeight
@@ -283,65 +379,81 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
             label="Out of Stock :"
             fontLevel={3}
             placeholder="-"
-            value={inventoryFormData.out_of_stock!}
+            value={formData.out_of_stock ? formData.out_of_stock : ''}
             hasBoxShadow
             hasPadding
             hasHeight
-            deleteIcon
             type="number"
-            onDelete={handleClearInputValue('out_of_stock')}
             onChange={handleInventoryFormChange('out_of_stock')}
             readOnly
-            inputClass={styles.category_form_input}
+            inputClass={`${styles.category_form_input} ${
+              formData.out_of_stock ? 'red-magenta' : ''
+            }`}
           />
-          <InputGroup
-            label="On Order :"
-            fontLevel={3}
-            placeholder="type number"
-            value={inventoryFormData.on_order!}
-            hasBoxShadow
-            hasPadding
-            hasHeight
-            deleteIcon
-            type="number"
-            colorPrimaryDark
-            colorRequired="tertiary"
-            onChange={handleInventoryFormChange('on_order')}
-            onDelete={handleClearInputValue('on_order')}
-          />
-          <InputGroup
-            label="Back Order :"
-            fontLevel={3}
-            placeholder="type number"
-            value={inventoryFormData.back_order!}
-            hasBoxShadow
-            hasPadding
-            hasHeight
-            deleteIcon
-            type="number"
-            colorPrimaryDark
-            colorRequired="tertiary"
-            onChange={handleInventoryFormChange('back_order')}
-            onDelete={handleClearInputValue('back_order')}
-          />
+          <div className={styles.category_form_on_order_input_wrapper}>
+            <InputGroup
+              label="On Order :"
+              fontLevel={3}
+              placeholder="type number"
+              value={formData.on_order || ''}
+              hasBoxShadow
+              hasPadding
+              hasHeight
+              deleteIcon
+              type="number"
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onChange={handleInventoryFormChange('on_order')}
+              onDelete={handleClearInputValue('on_order')}
+              message={
+                formData.on_order && formData.on_order <= 0
+                  ? 'On order cannot equal or smaller than zero'
+                  : undefined
+              }
+              messageType={formData.on_order && formData.on_order <= 0 ? 'error' : undefined}
+            />
+          </div>
+
+          <div className={styles.category_form_back_order_input_wrapper}>
+            <InputGroup
+              label="Back Order :"
+              fontLevel={3}
+              placeholder="type number"
+              value={formData.back_order ? formData.back_order : ''}
+              hasBoxShadow
+              hasPadding
+              hasHeight
+              deleteIcon
+              type="number"
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onChange={handleInventoryFormChange('back_order')}
+              onDelete={handleClearInputValue('back_order')}
+              message={
+                formData.back_order && formData.back_order <= 0
+                  ? 'Back order cannot equal or smaller than zero'
+                  : undefined
+              }
+              messageType={formData.back_order && formData.back_order <= 0 ? 'error' : undefined}
+            />
+          </div>
         </form>
 
         <div className="pb-16 border-bottom-black-inset text-right">
           <CustomSaveButton
             contentButton="Add"
             style={saveBtnStyle}
-            onClick={() => {}}
-            disabled={false}
+            onClick={disabledAddInventory ? undefined : handleAddRow}
+            disabled={disabledAddInventory}
           />
         </div>
 
         <Table
-          dataSource={[]}
-          columns={inventoryColumn}
+          dataSource={tableData}
+          columns={warehouseColumns}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ x: 'max-content', y: 380 }}
-          tableLayout="fixed"
+          scroll={{ x: 600, y: 380 }}
         />
       </div>
 
@@ -351,6 +463,7 @@ const InventoryForm = ({ isShowModal, onToggleModal }: InventoryFromProps) => {
         title={inventoryInfo.title}
         content={inventoryInfo.content}
         additionalContentClass={styles.category_form_info_modal}
+        additionalContainerClasses={styles.category_form_info_modal_wrapper}
       />
     </>
   );

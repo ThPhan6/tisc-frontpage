@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent } from 'react';
+import { type CSSProperties, type MouseEvent } from 'react';
 
 import { Menu, MenuProps } from 'antd';
 
@@ -109,6 +109,9 @@ const TreeSelect = <T,>({
               {item.name}
             </BodyText>
           </Menu.Item>
+          {(hasSubs || showAllLevels) &&
+            !selectable &&
+            (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
           {(hasSubs || showAllLevels) &&
             !selectable &&
             (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
