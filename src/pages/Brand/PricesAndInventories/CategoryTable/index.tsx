@@ -30,7 +30,7 @@ import {
   moveInventoryToCategory,
   updateInventories,
 } from '@/services';
-import { debounce, forEach, isEmpty, pick, reduce, set } from 'lodash';
+import { debounce, forEach, isEmpty, orderBy, pick, reduce, set } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
@@ -390,8 +390,14 @@ const CategoryTable: React.FC = () => {
       {
         title: 'Stock Value',
         dataIndex: 'stock_value',
-        render: (_, item) =>
-          rowSelectedValue(item, `${formatCurrencyNumber(Number(item.stockValue))}`),
+        render: (_, item) => {
+          const currency = orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]
+            ?.to_currency;
+          return rowSelectedValue(
+            item,
+            `${currency} ${formatCurrencyNumber(Number(item.stockValue))}`,
+          );
+        },
       },
       {
         title: 'Revision',
