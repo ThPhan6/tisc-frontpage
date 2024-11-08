@@ -302,8 +302,11 @@ const CategoryTable: React.FC = () => {
             (acc, el) => acc * el,
             1,
           );
-          const unitPrice = Number(item.price.unit_price) * rate;
-
+          const unitPrice = Number(
+            formatCurrencyNumber(Number(item.price.unit_price) * rate, undefined, {
+              maximumFractionDigits: 2,
+            }),
+          );
           return renderEditableCell(
             {
               ...item,
@@ -395,7 +398,9 @@ const CategoryTable: React.FC = () => {
             ?.to_currency;
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stockValue))}`,
+            `${currency} ${formatCurrencyNumber(Number(item.stockValue), undefined, {
+              maximumFractionDigits: 2,
+            })}`,
           );
         },
       },

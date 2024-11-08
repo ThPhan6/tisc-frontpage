@@ -65,7 +65,9 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
     },
     {
       id: '3',
-      value: formatCurrencyNumber(Number(summaryFinancialRecords.total_stock || 0)),
+      value: formatCurrencyNumber(Number(summaryFinancialRecords.total_stock || 0), undefined, {
+        maximumFractionDigits: 2,
+      }),
       label: 'TOTAL STOCK VALUE',
     },
   ];
