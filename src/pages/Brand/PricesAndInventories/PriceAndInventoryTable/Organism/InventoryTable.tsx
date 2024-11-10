@@ -9,16 +9,16 @@ import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import { getListInventories } from '@/services';
-import { get, isEmpty, omit, orderBy, reduce } from 'lodash';
+import { isEmpty, omit, orderBy, reduce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
+import type { PriceAndInventoryColumn } from '@/types';
 
 import CustomTable from '@/components/Table';
 import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 import InventoryTableActionMenu from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/InventoryTableActionMenu';
 import WareHouse from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse';
-import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
 interface InventoryTableProps {

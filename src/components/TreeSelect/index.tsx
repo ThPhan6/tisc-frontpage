@@ -6,6 +6,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useToggleExpand } from '@/helper/hook';
+import { cloneDeep, isEmpty, sortBy } from 'lodash';
 
 import styles from '@/components/TreeSelect/TreeSelect.less';
 import { BodyText } from '@/components/Typography';
@@ -75,6 +76,21 @@ const TreeSelect = <T,>({
     handleToggleExpand(item.id);
   };
 
+  const sortedData = (): TreeItem[] => {
+    const cloneItems = cloneDeep(data as TreeItem[]);
+    const stack = [...cloneItems];
+
+    while (!isEmpty(stack)) {
+      const item = stack.pop()!;
+      if (!isEmpty(item.subs)) {
+        item.subs = sortBy(item.subs, 'name');
+        stack.push(...item.subs);
+      }
+    }
+
+    return sortBy(cloneItems, 'name').reverse();
+  };
+
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
     const stack: { item: TreeItem; indent: number }[] = items?.map((item) => ({ item, indent: 0 }));
     const result: React.ReactNode[] = [];
@@ -125,13 +141,15 @@ const TreeSelect = <T,>({
     return result;
   };
 
+  console.log('sortedData', sortedData);
+
   return (
     <Menu
       {...props}
       className={`${styles.tree_select} ${additionalClassName}`}
       style={additonalStyle}
     >
-      {renderTreeItems(data as TreeItem[])}
+      {renderTreeItems(sortedData())}
     </Menu>
   );
 };

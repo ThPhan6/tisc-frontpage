@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useMemo } from 'react';
+import { type CSSProperties, useEffect, useMemo } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -6,7 +6,7 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { confirmDelete, useScreen } from '@/helper/common';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep, isNil, uniqueId } from 'lodash';
 
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
@@ -19,41 +19,119 @@ import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 
-const customInputStyle: CSSProperties = {
-  width: 50,
-  padding: 0,
-  margin: 0,
-  textAlign: 'center',
-};
-
 export interface InventoryFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
   formData: InventoryAttribute;
   setFormData: React.Dispatch<React.SetStateAction<IPriceAndInventoryForm>>;
-  tableData: WarehouseItemMetric[];
-  setTableData: any;
-  setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const inventoryInfo = {
+  title: 'INVENTORY MANAGEMENT',
+  content: [
+    {
+      id: 1,
+      description: (
+        <>
+          The Inventory Management allows all stakeholders accurately and quickly monitoring the
+          stock and order movement.
+        </>
+      ),
+    },
+    {
+      id: 2,
+      heading: (
+        <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
+          Location
+        </BodyText>
+      ),
+      description: (
+        <>
+          Require pre-entry of the warehouse location under the{' '}
+          <CormorantBodyText customClass="common-cormorant-garamond-text">
+            Administration/Locations
+          </CormorantBodyText>{' '}
+          section.
+        </>
+      ),
+    },
+    {
+      id: 3,
+      heading: (
+        <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
+          Total Stock
+        </BodyText>
+      ),
+      description: <>Consolidated total number of products in the warehouse.</>,
+    },
+    {
+      id: 4,
+      heading: (
+        <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
+          Out of Stock
+        </BodyText>
+      ),
+      description: (
+        <>Also referred as the stock shortage. The shortage number highlights in red colour.</>
+      ),
+    },
+    {
+      id: 4,
+      heading: (
+        <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
+          On Order
+        </BodyText>
+      ),
+      description: <>Consolidated total number of orders from the project.</>,
+    },
+    {
+      id: 5,
+      heading: (
+        <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
+          Backorder
+        </BodyText>
+      ),
+      description: (
+        <>
+          Consolidated total number of orders that are under manufacturing but have not shipped out
+          yet to the warehouse. The number can be manually converted into each warehouse and the
+          system will update the{' '}
+          <CormorantBodyText customClass="common-cormorant-garamond-text">
+            Total Stock
+          </CormorantBodyText>{' '}
+          accordingly.
+        </>
+      ),
+    },
+  ],
+};
 
 const InventoryForm = ({
   formData,
   isShowModal,
   onToggleModal,
   setFormData,
-  setTableData,
-  tableData,
-  setHasUnsavedChanges,
 }: InventoryFormProps) => {
   const randomId = uniqueId();
 
   const { isExtraLarge } = useScreen();
   const disabledAddInventory = !formData.name;
 
+  const saveBtnStyle = {
+    background: disabledAddInventory ? '#bfbfbf' : '',
+    minWidth: 48,
+  };
+
+  const customInputStyle = (value: number | undefined): CSSProperties => ({
+    width: value === 0 ? 50 : 80,
+    padding: 0,
+    margin: 0,
+  });
+
   useEffect(() => {
     const calculateStock = () => {
       const totalStock =
-        tableData?.reduce((accumulator, item) => {
+        formData.warehouses?.reduce((accumulator, item) => {
           const updatedAccumulator = accumulator + (Number(item.in_stock) || 0);
           return updatedAccumulator;
         }, 0) || 0;
@@ -70,24 +148,20 @@ const InventoryForm = ({
     };
 
     calculateStock();
-  }, [tableData, formData.on_order]);
+  }, [formData.warehouses, formData.on_order]);
 
   const handleInventoryFormChange =
     (field: keyof InventoryAttribute) => (event?: React.ChangeEvent<HTMLInputElement>) => {
       const value = event?.target.value;
-      setFormData((prev) => ({ ...prev, [field]: value }));
-      setHasUnsavedChanges(value !== null);
+      setFormData((prev) => ({ ...prev, [field]: Number(value) }));
     };
 
   const handleRemoveRow = (id: string) => () => {
     confirmDelete(() => {
-      setTableData((prev: WarehouseItemMetric[]) => {
-        const updatedTableData = prev.filter((el: WarehouseItemMetric) => el.id !== id);
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          warehouses: updatedTableData,
-        }));
-        return updatedTableData;
+      setFormData((prev) => {
+        const newWarehouses = prev.warehouses.filter((el: WarehouseItemMetric) => el.id !== id);
+
+        return { ...prev, warehouses: newWarehouses };
       });
     });
   };
@@ -105,7 +179,7 @@ const InventoryForm = ({
         return;
       }
 
-      const newWarehouses = cloneDeep(tableData).map((el) => {
+      const newWarehouses = cloneDeep(formData.warehouses).map((el) => {
         if (el.id === warehouse.id) {
           return {
             ...el,
@@ -116,7 +190,6 @@ const InventoryForm = ({
         return el;
       });
 
-      setTableData(newWarehouses);
       setFormData((prev) => ({ ...prev, warehouses: newWarehouses }));
     };
 
@@ -152,30 +225,39 @@ const InventoryForm = ({
         dataIndex: 'in_stock',
         align: 'center',
         width: '10%',
-        render: (_, record) => (
-          <CustomInput
-            type="number"
-            value={tableData?.find((ws) => ws.id === record.id)?.new_in_stock}
-            additionalInputClass="indigo-dark-variant"
-            onChange={handleChangeWarehouse(record, 'new_in_stock')}
-            style={customInputStyle}
-          />
-        ),
+        render: (_, record: WarehouseItemMetric) => {
+          const inStockValue = formData.warehouses?.find((ws) => ws.id === record.id)?.new_in_stock;
+
+          return (
+            <CustomInput
+              type="number"
+              value={inStockValue}
+              additionalInputClass="indigo-dark-variant"
+              onChange={handleChangeWarehouse(record, 'new_in_stock')}
+              style={customInputStyle(inStockValue)}
+            />
+          );
+        },
       },
       {
         title: 'Convert',
         dataIndex: 'convert',
         align: 'center',
         width: '10%',
-        render: (_, record: any) => (
-          <CustomInput
-            type="number"
-            value={tableData?.find((ws) => ws.id === record.id)?.convert || undefined}
-            additionalInputClass="indigo-dark-variant"
-            onChange={handleChangeWarehouse(record, 'convert')}
-            style={customInputStyle}
-          />
-        ),
+        render: (_, record: WarehouseItemMetric) => {
+          const convertValue =
+            formData.warehouses?.find((ws) => ws.id === record.id)?.convert || undefined;
+
+          return (
+            <CustomInput
+              type="number"
+              value={convertValue}
+              additionalInputClass="indigo-dark-variant"
+              onChange={handleChangeWarehouse(record, 'convert')}
+              style={customInputStyle(convertValue)}
+            />
+          );
+        },
       },
       {
         align: 'center',
@@ -188,13 +270,13 @@ const InventoryForm = ({
         ),
       },
     ],
-    [JSON.stringify(tableData)],
+    [JSON.stringify(formData.warehouses)],
   );
 
   const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
-  const handleAddRow = async () => {
+  const handleAddWarehouse = async () => {
     if (!formData?.location_id) {
       message.error('Please select a location');
       return;
@@ -211,8 +293,6 @@ const InventoryForm = ({
       convert: 0,
     };
 
-    setTableData((prev: WarehouseItemMetric[]) => [...prev, newRow]);
-
     setFormData((prev) => ({
       ...prev,
       ...formData,
@@ -222,9 +302,8 @@ const InventoryForm = ({
       out_of_stock: 0,
       name: '',
       location_id: '',
+      warehouses: [...prev.warehouses, newRow],
     }));
-
-    setHasUnsavedChanges(false);
   };
 
   const handleOpenLocationModal = () => {
@@ -252,91 +331,6 @@ const InventoryForm = ({
         },
       }),
     );
-  };
-
-  const inventoryInfo = {
-    title: 'INVENTORY MANAGEMENT',
-    content: [
-      {
-        id: 1,
-        description: (
-          <>
-            The Inventory Management allows all stakeholders accurately and quickly monitoring the
-            stock and order movement.
-          </>
-        ),
-      },
-      {
-        id: 2,
-        heading: (
-          <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
-            Location
-          </BodyText>
-        ),
-        description: (
-          <>
-            Require pre-entry of the warehouse location under the{' '}
-            <CormorantBodyText customClass="common-cormorant-garamond-text">
-              Administration/Locations
-            </CormorantBodyText>{' '}
-            section.
-          </>
-        ),
-      },
-      {
-        id: 3,
-        heading: (
-          <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
-            Total Stock
-          </BodyText>
-        ),
-        description: <>Consolidated total number of products in the warehouse.</>,
-      },
-      {
-        id: 4,
-        heading: (
-          <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
-            Out of Stock
-          </BodyText>
-        ),
-        description: (
-          <>Also referred as the stock shortage. The shortage number highlights in red colour.</>
-        ),
-      },
-      {
-        id: 4,
-        heading: (
-          <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
-            On Order
-          </BodyText>
-        ),
-        description: <>Consolidated total number of orders from the project.</>,
-      },
-      {
-        id: 5,
-        heading: (
-          <BodyText fontFamily="Roboto" level={6} customClass="font-medium">
-            Backorder
-          </BodyText>
-        ),
-        description: (
-          <>
-            Consolidated total number of orders that are under manufacturing but have not shipped
-            out yet to the warehouse. The number can be manually converted into each warehouse and
-            the system will update the{' '}
-            <CormorantBodyText customClass="common-cormorant-garamond-text">
-              Total Stock
-            </CormorantBodyText>{' '}
-            accordingly.
-          </>
-        ),
-      },
-    ],
-  };
-
-  const saveBtnStyle = {
-    background: disabledAddInventory ? '#bfbfbf' : '',
-    minWidth: 48,
   };
 
   return (
@@ -387,7 +381,8 @@ const InventoryForm = ({
             label="Out of Stock :"
             fontLevel={3}
             placeholder="-"
-            value={formData.out_of_stock ? formData.out_of_stock : ''}
+            forceDisplayDeleteIcon
+            value={!isNil(formData.out_of_stock) ? formData.out_of_stock : '-'}
             hasBoxShadow
             hasPadding
             hasHeight
@@ -403,19 +398,20 @@ const InventoryForm = ({
               label="On Order :"
               fontLevel={3}
               placeholder="type number"
-              value={formData.on_order || ''}
+              value={formData?.on_order ?? 0}
               hasBoxShadow
               hasPadding
               hasHeight
               deleteIcon
               type="number"
+              forceDisplayDeleteIcon
               colorPrimaryDark
               colorRequired="tertiary"
               onChange={handleInventoryFormChange('on_order')}
               onDelete={handleClearInputValue('on_order')}
               message={
                 formData.on_order && formData.on_order <= 0
-                  ? 'On order cannot equal or smaller than zero'
+                  ? 'Value must be greater than zero'
                   : undefined
               }
               messageType={formData.on_order && formData.on_order <= 0 ? 'error' : undefined}
@@ -427,19 +423,20 @@ const InventoryForm = ({
               label="Back Order :"
               fontLevel={3}
               placeholder="type number"
-              value={formData.back_order ? formData.back_order : ''}
+              value={formData?.back_order ?? 0}
               hasBoxShadow
               hasPadding
               hasHeight
               deleteIcon
               type="number"
               colorPrimaryDark
+              forceDisplayDeleteIcon
               colorRequired="tertiary"
               onChange={handleInventoryFormChange('back_order')}
               onDelete={handleClearInputValue('back_order')}
               message={
                 formData.back_order && formData.back_order <= 0
-                  ? 'Back order cannot equal or smaller than zero'
+                  ? 'Value must be greater than zero'
                   : undefined
               }
               messageType={formData.back_order && formData.back_order <= 0 ? 'error' : undefined}
@@ -451,13 +448,13 @@ const InventoryForm = ({
           <CustomSaveButton
             contentButton="Add"
             style={saveBtnStyle}
-            onClick={disabledAddInventory ? undefined : handleAddRow}
+            onClick={disabledAddInventory ? undefined : handleAddWarehouse}
             disabled={disabledAddInventory}
           />
         </div>
 
         <Table
-          dataSource={tableData}
+          dataSource={formData.warehouses}
           columns={warehouseColumns}
           pagination={false}
           className={`${styles.category_form_table}`}

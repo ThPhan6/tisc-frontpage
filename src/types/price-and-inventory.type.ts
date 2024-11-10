@@ -1,14 +1,21 @@
+import type { ExchangeCurrencyHistory } from '@/types/currency.type';
 import { WarehouseItemMetric } from '@/types/warehouse.type';
+
+export interface VolumePrice
+  extends Pick<
+    PriceAttribute,
+    'id' | 'discount_price' | 'discount_rate' | 'min_quantity' | 'max_quantity' | 'unit_type'
+  > {}
 
 export interface PriceAttribute {
   id?: string;
   sku?: string;
   description?: string;
-  unit_price?: number;
-  discount_price?: number;
-  discount_rate?: number;
-  min_quantity?: number;
-  max_quantity?: number;
+  unit_price?: number | null;
+  discount_price?: number | null;
+  discount_rate?: number | null;
+  min_quantity?: number | null;
+  max_quantity?: number | null;
   unit_type: string;
   unit_type_code?: string;
   inventory_category_id?: string;
@@ -27,7 +34,9 @@ export interface InventoryAttribute {
   warehouses: WarehouseItemMetric[];
 }
 
-export interface IPriceAndInventoryForm extends PriceAttribute, InventoryAttribute {}
+export interface IPriceAndInventoryForm extends PriceAttribute, InventoryAttribute {
+  price: Partial<InventoryPrice>;
+}
 
 export const initialInventoryFormData: IPriceAndInventoryForm = {
   sku: '',
@@ -42,6 +51,44 @@ export const initialInventoryFormData: IPriceAndInventoryForm = {
   warehouses: [],
   city_name: '',
   country_name: '',
+  discount_price: null,
+  discount_rate: null,
+  min_quantity: null,
+  max_quantity: null,
   location_id: '',
   name: '',
+  price: {
+    created_at: '',
+    currency: '',
+    unit_price: 0,
+    unit_type: '',
+    volume_prices: [],
+    exchange_histories: [],
+  },
 };
+
+export interface InventoryPrice {
+  created_at: string;
+  currency?: string;
+  unit_price: number;
+  unit_type: string;
+  volume_prices: VolumePrice[];
+  exchange_histories: ExchangeCurrencyHistory[];
+}
+
+export interface PriceAndInventoryColumn {
+  id: string;
+  image: string;
+  back_order: number;
+  originBackOrder: number;
+  out_stock: number;
+  total_stock: number;
+  on_order: number;
+  sku: string;
+  description: string;
+  stockValue: number;
+  price: InventoryPrice;
+  warehouses: WarehouseItemMetric[];
+}
+
+export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
