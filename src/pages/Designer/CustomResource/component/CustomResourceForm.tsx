@@ -19,6 +19,7 @@ import { CustomResourceForm, CustomResourceType } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
 
+import CustomButton from '@/components/Button';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
@@ -123,12 +124,16 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
     <>
       <div className={styles.header}>
         <MainTitle level={3} textAlign={'center'} customClass={styles.header__title}>
-          Entry Form
+          {customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'} Information
         </MainTitle>
-        <CloseIcon
-          style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+        <CustomButton
+          size="small"
+          variant="primary"
+          properties="rounded"
           onClick={() => pushTo(PATH.designerCustomResource)}
-        />
+        >
+          Close
+        </CustomButton>
       </div>
       <div className={styles.form}>
         <InputGroup

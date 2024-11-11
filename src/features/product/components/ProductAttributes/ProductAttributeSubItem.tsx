@@ -76,7 +76,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   const [visible, setVisible] = useState<boolean>(false);
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
-  const [curAttributeData, setCurAtttributeData] = useState<any>();
+  const [curAttributeData, setCurAttributeData] = useState<any>();
   /// using for option have type Text and Conversion
   const [selected, setSelected] = useState<RadioValue>({
     label: attributeItem?.text ?? '',
@@ -89,17 +89,19 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   /// basis option selected
   const [basisOptions, setBasisOptions] = useState<SubBasisOption[]>([]);
 
-  const chosenValue = isSpecification
-    ? /// using for basis option selected, type is Option
-      basisOptionSelected.map((opt) => ({
-        value: opt.value,
-        label: String(opt.label),
-      }))
-    : /// another sub selected, type are Text and Conversion
-      {
-        value: selected.value,
-        label: selected.label,
-      };
+  const [chosenValue, setChosenValue] = useState<any>(
+    isSpecification
+      ? /// using for basis option selected, type is Option
+        basisOptionSelected.map((opt) => ({
+          value: opt.value,
+          label: String(opt.label),
+        }))
+      : /// another sub selected, type are Text and Conversion
+        {
+          value: selected.value,
+          label: selected.label,
+        },
+  );
 
   useEffect(() => {
     setBasisOptionSelected(
@@ -148,9 +150,19 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         }
       });
     });
-    setCurAtttributeData(currentAttribute);
+    setCurAttributeData(currentAttribute);
 
     setBasisOptions(currentAttribute.basis?.subs);
+
+    if (!isSpecification) {
+      const foundSub = currentAttribute.basis?.subs?.find(
+        (sub) =>
+          attributeItem.text.includes(sub.value_1) && attributeItem.text.includes(sub.value_2),
+      );
+      const mappedSelected = { label: attributeItem?.text ?? '', value: foundSub?.id ?? '' };
+      setSelected(mappedSelected);
+      setChosenValue(mappedSelected);
+    }
   }, []);
 
   useEffect(() => {
