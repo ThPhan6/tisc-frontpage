@@ -222,6 +222,13 @@ const PriceAndInventoryForm = () => {
           'warehouses',
         ],
       ),
+      ...((volumePricesChanged || isShouldHaveUnitPrice) && {
+        volume_prices: !payload.price?.volume_prices?.length
+          ? []
+          : payload.price?.volume_prices?.map((el) =>
+              pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
+            ),
+      }),
     };
 
     return payload;
@@ -258,7 +265,10 @@ const PriceAndInventoryForm = () => {
       ? await updateInventory(inventoryId, omit(payload, 'inventory_category_id'))
       : await createInventory(payload);
 
-    if (!res) return;
+    if (!res) {
+      fetchData();
+      return;
+    }
 
     if (inventoryId) {
       fetchData();
