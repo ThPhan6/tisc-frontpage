@@ -31,6 +31,7 @@ export interface CustomCheckboxProps {
   onChangeAdditionalSelected?: (value: string, option?: any, action?: 'add' | 'remove') => void;
   isExpanded?: boolean;
   onCollClick?: (value: string) => void;
+  isLabel?: boolean;
 }
 
 export interface DropdownCheckboxItem {
