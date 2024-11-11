@@ -28,7 +28,6 @@ import {
   initialInventoryFormData,
 } from '@/types';
 
-import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InventoryHeader from '@/components/InventoryHeader';
@@ -166,8 +165,7 @@ const PriceAndInventoryForm = () => {
 
     const warehousesChanged = !isEqual(formData.warehouses, originalData.warehouses);
 
-    const isShouldHaveUnitPrice =
-      (volumePricesChanged && !warehousesChanged) || (volumePricesChanged && warehousesChanged);
+    const isUnitPriceChanged = !isEqual(formData.unit_price, originalData.unit_price);
 
     if (volumePricesChanged) {
       payload.price = {
@@ -187,11 +185,13 @@ const PriceAndInventoryForm = () => {
       ...pick(
         {
           ...payload,
-          ...(isShouldHaveUnitPrice && { unit_price: formData.unit_price }),
-          ...(volumePricesChanged && {
-            volume_prices: payload.price?.volume_prices?.map((el) =>
-              pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
-            ),
+          ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
+          ...((volumePricesChanged || isUnitPriceChanged) && {
+            volume_prices: !payload?.price?.volume_prices?.length
+              ? []
+              : payload.price.volume_prices.map((el) =>
+                  pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
+                ),
           }),
           ...(warehousesChanged &&
             ({
