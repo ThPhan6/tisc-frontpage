@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
-import { useLocation, useModel, useParams } from 'umi';
+import { useHistory, useLocation, useModel, useParams } from 'umi';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
@@ -108,24 +108,33 @@ export const useGetParamId = () => {
   return params?.id ?? '';
 };
 
-export const useToggleExpand = (singleExpand = false) => {
-  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+export const useToggleExpand = (
+  singleExpand = false,
+  defaultValue: string[] = [],
+  callback?: (expandedKeys: string[]) => void,
+) => {
+  const [expandedKeys, setExpandedKeys] = useState<string[]>(defaultValue);
 
-  /**
-   * Function to toggle the expanded state of an item.
-   *
-   * @param key - The key of the item to toggle the expanded state.
-   */
   const handleToggleExpand = useCallback(
     (key: string) => {
       setExpandedKeys((prev) => {
-        if (singleExpand) return prev.includes(key) ? [] : [key];
-        if (prev.includes(key)) return prev.filter((id) => id !== key);
-        return prev.concat([key]);
+        let newKeys;
+        if (singleExpand) {
+          newKeys = prev.includes(key) ? [] : [key];
+        } else {
+          newKeys = prev.includes(key) ? prev.filter((id) => id !== key) : prev.concat([key]);
+        }
+
+        if (callback) callback(newKeys);
+        return newKeys;
       });
     },
-    [singleExpand],
+    [singleExpand, callback],
   );
+
+  useEffect(() => {
+    if (defaultValue.length) setExpandedKeys(defaultValue);
+  }, [defaultValue]);
 
   return { expandedKeys, setExpandedKeys, handleToggleExpand };
 };
@@ -165,4 +174,29 @@ export const useEntryFormHandlers = <T extends FormData>(initialData: T) => {
     handlePhoneChange,
     handleRadioChange,
   };
+};
+
+interface NavigateOptions {
+  path: string;
+  query?: Record<string, any>;
+  state?: Record<string, any>;
+}
+
+export const useNavigationHandler = () => {
+  const history = useHistory();
+
+  const navigate =
+    ({ path, query, state }: NavigateOptions) =>
+    () => {
+      const searchParams = query ? new URLSearchParams(query).toString() : '';
+      const search = searchParams ? `?${searchParams}` : '';
+
+      history.push({
+        pathname: path,
+        search,
+        state,
+      });
+    };
+
+  return navigate;
 };

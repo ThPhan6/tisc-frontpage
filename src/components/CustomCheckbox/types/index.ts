@@ -5,7 +5,6 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 export type CheckboxValue = {
   label: string | ReactNode;
   value: string | number;
-  name: string;
   disabled?: boolean;
 };
 
@@ -30,7 +29,6 @@ export interface CustomCheckboxProps {
   additionalSelected?: string[];
   onChangeAdditionalSelected?: (value: string, option?: any, action?: 'add' | 'remove') => void;
   isExpanded?: boolean;
-  onCollClick?: (value: string) => void;
 }
 
 export interface DropdownCheckboxItem {

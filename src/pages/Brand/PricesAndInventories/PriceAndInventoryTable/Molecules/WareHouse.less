@@ -1,0 +1,38 @@
+.warehouse {
+  table {
+    width: 420px;
+    padding: 4px 8px;
+  }
+
+  :global(.ant-table-cell) {
+    border-top: none !important;
+  }
+
+  :global(.ant-table-thead) {
+    tr {
+      th {
+        background: #fff;
+      }
+
+      :global(.ant-table-cell) {
+        box-shadow: 0 -0.5px 0 0 @mono-color inset;
+
+        &::before {
+          width: 0 !important;
+        }
+      }
+    }
+  }
+
+  :global(.ant-table-tbody) {
+    tr {
+      :global(.ant-table-cell) {
+        border-bottom: none !important;
+      }
+    }
+  }
+
+  :global(.ant-modal-body) {
+    padding: 16px;
+  }
+}

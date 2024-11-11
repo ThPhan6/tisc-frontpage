@@ -594,6 +594,22 @@ const routes = [
         component: './Brand/PricesAndInventories',
         hideInMenu: true,
       },
+      {
+        path: PATH.brandPricesInventoriesTable,
+        component:
+          './Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandPricesInventoriesForm,
+        component: './Brand/PricesAndInventories/PriceAndInventoryForm',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandPricesInventoriesFormUpdate,
+        component: './Brand/PricesAndInventories/PriceAndInventoryForm',
+        hideInMenu: true,
+      },
     ],
   },
   {

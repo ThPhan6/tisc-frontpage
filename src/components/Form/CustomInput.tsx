@@ -28,6 +28,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       inputValidation,
       message,
       messageType,
+      additionalInputClass = '',
       ...props
     },
     ref,
@@ -138,7 +139,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
                 }
                 return true;
               }}
-              className={`${setFontLevel()} ${props.className ?? ''}`}
+              className={`${setFontLevel()} ${props.className ?? ''} ${additionalInputClass}`}
               style={
                 autoWidth
                   ? {
