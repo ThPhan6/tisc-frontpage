@@ -305,6 +305,7 @@ const InventoryTable = ({
       hoverOnRow={false}
       extraParams={{
         sort: 'sku',
+        order: 'ASC',
         category_id: location.state?.categoryId,
         ...(!isEmpty(filter) && { search: filter }),
       }}

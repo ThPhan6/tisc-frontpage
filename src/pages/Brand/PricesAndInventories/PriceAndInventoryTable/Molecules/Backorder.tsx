@@ -4,12 +4,14 @@ import { Modal, Table, TableColumnsType } from 'antd';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 
+import { convertToNegative } from '@/helper/utils';
 import { cloneDeep, forEach } from 'lodash';
+
+import { PriceAndInventoryColumn } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomInput } from '@/components/Form/CustomInput';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder.less';
-import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 export interface BackorderPayload {
   inventoryId: string;
@@ -67,9 +69,13 @@ const Backorder = ({
     (record: BackorderColumn) => (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!inventoryItem?.id) return;
 
-      const quantity = Number(event.target.value);
+      const value = event.target.value as any;
+
+      const newQuantity = convertToNegative(value === -0 ? '-0' : String(value === '' ? 0 : value));
+      const quantity = isNaN(newQuantity) ? 0 : newQuantity;
+
       const newEditedConverts = cloneDeep(convert);
-      newEditedConverts[record.id] = quantity;
+      newEditedConverts[record.id] = isNaN(quantity) ? 0 : quantity;
 
       let sumQuantity = 0;
       forEach(convert, (warehouseQuantity, wsId) => {
