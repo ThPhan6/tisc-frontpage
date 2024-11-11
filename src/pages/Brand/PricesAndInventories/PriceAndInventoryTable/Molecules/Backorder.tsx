@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Modal, Table, TableColumnsType } from 'antd';
 
 import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 
 import { convertToNegative } from '@/helper/utils';
-import { cloneDeep, forEach } from 'lodash';
+import { cloneDeep, forEach, isEmpty, sum } from 'lodash';
 
 import { PriceAndInventoryColumn } from '@/types';
 
@@ -45,25 +45,22 @@ const Backorder = ({
   onUpdateBackOrder,
 }: BackorderProps) => {
   const [convert, setConvert] = useState<Record<string, number>>({});
-  const [totalBackOrder, setTotalBackOrder] = useState(0);
-  const isQuantityInValid = totalBackOrder < 0;
 
-  useEffect(() => {
-    if (isShowBackorder) {
-      setTotalBackOrder(inventoryItem?.back_order ?? 0);
-      if (inventoryItem?.warehouses.length) {
-        const newConvert: Record<string, number> = {};
+  const totalBackOrder = useMemo(() => {
+    const defaultBackOrder = inventoryItem?.back_order || 0;
+    const newBackOrder = sum(Object.values(convert)) || 0;
 
-        inventoryItem.warehouses.forEach((warehouse) => {
-          if (warehouse?.id) {
-            newConvert[warehouse.id] = warehouse?.convert ?? 0;
-          }
-        });
-
-        setConvert(newConvert);
-      }
+    if (isEmpty(convert)) {
+      return defaultBackOrder;
     }
-  }, [inventoryItem?.back_order, inventoryItem?.warehouses, isShowBackorder]);
+
+    return newBackOrder === 0 ? defaultBackOrder : defaultBackOrder - newBackOrder;
+  }, [JSON.stringify(convert), inventoryItem?.back_order]);
+
+  const isQuantityInValid =
+    totalBackOrder > (inventoryItem?.back_order || 0) ||
+    totalBackOrder < 0 ||
+    Object.values(convert).some((el) => el < 0);
 
   const handleOnChange =
     (record: BackorderColumn) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +69,7 @@ const Backorder = ({
       const value = event.target.value as any;
 
       const newQuantity = convertToNegative(value === -0 ? '-0' : String(value === '' ? 0 : value));
-      const quantity = isNaN(newQuantity) ? 0 : newQuantity;
+      const quantity = isNaN(newQuantity) ? 0 : Object.is(newQuantity, -0) ? 0 : newQuantity;
 
       const newEditedConverts = cloneDeep(convert);
       newEditedConverts[record.id] = isNaN(quantity) ? 0 : quantity;
@@ -87,13 +84,10 @@ const Backorder = ({
       });
 
       setConvert(newEditedConverts);
-      setTotalBackOrder(Number(inventoryItem.back_order) - sumQuantity);
     };
 
   const handleCancel = () => {
     setConvert({});
-    setTotalBackOrder(0);
-
     onCancel();
   };
 
