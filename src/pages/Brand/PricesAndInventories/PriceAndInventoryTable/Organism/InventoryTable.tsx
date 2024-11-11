@@ -103,6 +103,7 @@ const InventoryTable = ({
         item={item}
         columnKey={columnKey}
         defaultValue={value}
+        style={{ padding: 0, margin: 0 }}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
         labelStyle={{ display: 'inline-block', minWidth: 20 }}
         onSave={(id, colKey, newValue) => handleSaveOnCell(id, colKey, newValue, item)}
@@ -242,7 +243,11 @@ const InventoryTable = ({
               className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
             >
               <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
-              {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
+              {isEditMode && (
+                <div style={{ height: 18 }}>
+                  <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />
+                </div>
+              )}
             </div>
           );
         },
