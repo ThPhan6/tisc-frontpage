@@ -199,7 +199,7 @@ const PriceAndInventoryForm = () => {
                 const quantity =
                   warehouse.in_stock === 0
                     ? warehouse.new_in_stock + warehouse.convert
-                    : warehouse.in_stock - warehouse.new_in_stock + warehouse.convert;
+                    : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
 
                 return {
                   location_id: warehouse?.location_id,

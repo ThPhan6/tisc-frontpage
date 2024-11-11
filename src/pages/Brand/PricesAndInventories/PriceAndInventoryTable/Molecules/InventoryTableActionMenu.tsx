@@ -10,10 +10,11 @@ import { confirmDelete } from '@/helper/common';
 import { useNavigationHandler } from '@/helper/hook';
 import { deleteInventory, moveInventoryToCategory } from '@/services';
 
+import { PriceAndInventoryColumn } from '@/types';
+
 import { AccordionItem } from '@/components/AccordionMenu';
 import { ActionMenu } from '@/components/TableAction';
 import TreeSelect, { TreeItem } from '@/components/TreeSelect';
-import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 interface InventoryTableActionMenuProps {
   record: PriceAndInventoryColumn;
