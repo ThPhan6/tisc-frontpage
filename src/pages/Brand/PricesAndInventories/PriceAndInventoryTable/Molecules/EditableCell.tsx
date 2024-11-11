@@ -24,7 +24,9 @@ interface EditableCell<T extends string | number | readonly string[] | undefined
   columnKey: string;
   defaultValue: T;
   valueClass?: string;
+  includePercentage?: boolean;
   labelStyle?: CSSProperties;
+
   onSave: (id: string, columnKey: string, newValue: string) => void;
 }
 
@@ -35,6 +37,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
   defaultValue,
   valueClass = '',
   labelStyle,
+  includePercentage,
   item,
   ...rest
 }: EditableCell<T>) => {
@@ -132,7 +135,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
 
   return (
     <div className={styles.editable_cell}>
-      {isEditing ? (
+      {!includePercentage || (isEditing && includePercentage) ? (
         <CustomInput
           autoFocus={isEditing}
           value={inputValue}

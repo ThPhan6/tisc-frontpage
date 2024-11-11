@@ -199,7 +199,7 @@ const InventoryTable = ({
             <div className="relative">
               <Popover
                 content={<WareHouse inventoryItem={item} />}
-                trigger="click"
+                trigger="hover"
                 placement="bottom"
                 showArrow={false}
                 overlayStyle={{ width: 'fit-content' }}
@@ -214,9 +214,13 @@ const InventoryTable = ({
         title: 'Out stock',
         dataIndex: 'out_stock',
         align: 'center',
-        render: (_, item) => (
-          <div className="red-magenta">{rowSelectedValue(item, item.out_stock || 0)}</div>
-        ),
+        render: (_, item) => {
+          const totalStock = selectedRows?.[item.id]?.total_stock ?? 0;
+          const onOrder = selectedRows?.[item.id]?.on_order ?? 0;
+          const quantity = onOrder - totalStock;
+
+          return <div className="red-magenta">{quantity <= 0 ? 0 : -quantity}</div>;
+        },
       },
       {
         title: 'On Order',
@@ -237,9 +241,7 @@ const InventoryTable = ({
             <div
               className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
             >
-              <p className={`${isEditMode ? 'w-1-2' : 'w-full'} my-0`}>
-                {renderEditableCell(item, 'back_order', backOrder)}
-              </p>
+              <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
               {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
             </div>
           );

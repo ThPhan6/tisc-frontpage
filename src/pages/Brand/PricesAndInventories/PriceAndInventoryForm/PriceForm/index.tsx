@@ -214,6 +214,7 @@ const PriceForm = ({
         defaultValue={defaultValue}
         valueClass="indigo-dark-variant"
         onSave={handleSaveCell}
+        includePercentage={columnKey === 'discount_rate'}
       />
     );
   };

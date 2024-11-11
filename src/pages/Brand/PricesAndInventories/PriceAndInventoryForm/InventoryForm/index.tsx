@@ -6,6 +6,7 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { confirmDelete, useScreen } from '@/helper/common';
+import { convertToNegative } from '@/helper/utils';
 import { cloneDeep, isNil, uniqueId } from 'lodash';
 
 import store from '@/reducers';
@@ -106,6 +107,12 @@ const inventoryInfo = {
   ],
 };
 
+const customInputStyle = (value: number | undefined): CSSProperties => ({
+  width: value === 0 ? 50 : 80,
+  padding: 0,
+  margin: 0,
+});
+
 const InventoryForm = ({
   formData,
   isShowModal,
@@ -122,12 +129,6 @@ const InventoryForm = ({
     minWidth: 48,
   };
 
-  const customInputStyle = (value: number | undefined): CSSProperties => ({
-    width: value === 0 ? 50 : 80,
-    padding: 0,
-    margin: 0,
-  });
-
   useEffect(() => {
     const calculateStock = () => {
       const totalStock =
@@ -137,13 +138,12 @@ const InventoryForm = ({
         }, 0) || 0;
 
       const onOrderValue = Number(formData.on_order) || 0;
-      const finalTotalStock = totalStock;
+      const outStock = onOrderValue - totalStock;
 
-      const outStock = finalTotalStock - onOrderValue;
       setFormData((prev) => ({
         ...prev,
-        total_stock: finalTotalStock,
-        out_of_stock: outStock,
+        total_stock: totalStock,
+        out_of_stock: outStock <= 0 ? 0 : -outStock,
       }));
     };
 
@@ -172,18 +172,19 @@ const InventoryForm = ({
       type: keyof Pick<WarehouseItemMetric, 'new_in_stock' | 'convert'>,
     ) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const parsedValue: any = event.target.value;
+      const value = event.target.value as unknown as number;
 
-      if (type === 'new_in_stock' && parsedValue < 0) {
-        message.warn('In Stock cannot be negative and must be a number.');
-        return;
+      let quantity = convertToNegative(String(value));
+
+      if (type === 'new_in_stock') {
+        quantity = Math.abs(quantity);
       }
 
       const newWarehouses = cloneDeep(formData.warehouses).map((el) => {
         if (el.id === warehouse.id) {
           return {
             ...el,
-            [type]: Number(parsedValue),
+            [type]: quantity,
           };
         }
 
@@ -230,8 +231,8 @@ const InventoryForm = ({
 
           return (
             <CustomInput
-              type="number"
-              value={inStockValue}
+              pattern="^[0-9]+$"
+              value={inStockValue ?? 0}
               additionalInputClass="indigo-dark-variant"
               onChange={handleChangeWarehouse(record, 'new_in_stock')}
               style={customInputStyle(inStockValue)}
@@ -250,8 +251,8 @@ const InventoryForm = ({
 
           return (
             <CustomInput
-              type="number"
-              value={convertValue}
+              pattern="^[0-9]+$"
+              value={convertValue ?? 0}
               additionalInputClass="indigo-dark-variant"
               onChange={handleChangeWarehouse(record, 'convert')}
               style={customInputStyle(convertValue)}
@@ -296,10 +297,6 @@ const InventoryForm = ({
     setFormData((prev) => ({
       ...prev,
       ...formData,
-      on_order: 0,
-      back_order: 0,
-      total_stock: 0,
-      out_of_stock: 0,
       name: '',
       location_id: '',
       warehouses: [...prev.warehouses, newRow],
@@ -390,7 +387,7 @@ const InventoryForm = ({
             onChange={handleInventoryFormChange('out_of_stock')}
             readOnly
             inputClass={`${styles.category_form_input} ${
-              formData.out_of_stock ? 'red-magenta' : ''
+              formData.out_of_stock ? 'red-magenta' : 'pure-black'
             }`}
           />
           <div className={styles.category_form_on_order_input_wrapper}>

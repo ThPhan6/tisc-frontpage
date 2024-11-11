@@ -461,7 +461,7 @@ export const uniqueArrayBy = (arr: any[], uniqKeys: string[]) => {
 
 export const findDuplicateBy = (arr: any[], uniqKeys: string[]): any[] => {
   const dup: any = [];
-  const seen = {};
+  const seen: any = {};
 
   arr.forEach((item) => {
     const key = uniqKeys.map((k) => item[k]).join('|');
@@ -617,3 +617,18 @@ export const extractDataBase64 = (src: string): string | null => {
   }
   return null;
 };
+
+export function convertToNegative(input: string) {
+  const newInput = input.trim();
+
+  if (newInput === '0-' || newInput === '-0') {
+    return 0;
+  }
+
+  if (newInput.endsWith('-')) {
+    const number = parseInt(newInput.slice(0, -1), 10);
+    return -number;
+  }
+
+  return parseInt(newInput, 10);
+}
