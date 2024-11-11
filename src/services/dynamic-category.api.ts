@@ -10,18 +10,23 @@ import {
 } from '@/components/Table/types';
 import store from '@/reducers';
 import { setSummaryFinancialRecords, setUnitType } from '@/reducers/summary';
-import { CategoryEntity, type FinancialRecords, PriceAndInventoryAttribute } from '@/types';
+import {
+  CategoryEntity,
+  type FinancialRecords,
+  type IPriceAndInventoryForm,
+  type PriceAndInventoryColumn,
+  PriceAttribute,
+} from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
 import { UnitItem } from '@/components/Modal/UnitType';
-import { type InventoryColumn } from '@/pages/Brand/PricesAndInventories/CategoryTable';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface InventoryReponse {
   data: {
     pagination: PaginationResponse;
-    inventories: PriceAndInventoryAttribute[];
+    inventories: PriceAttribute[];
   };
 }
 
@@ -142,9 +147,9 @@ export const getListInventories = (
     });
 };
 
-export async function createInventory(data: PriceAndInventoryAttribute) {
+export async function createInventory(data: Partial<IPriceAndInventoryForm>) {
   showPageLoading();
-  return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/create`, {
+  return request<{ data: PriceAttribute }>(`/api/inventory/create`, {
     method: 'POST',
     data,
   })
@@ -176,7 +181,7 @@ export async function deleteInventory(id: string) {
 
 export async function getInventory(id: string) {
   showPageLoading();
-  return request<{ data: InventoryColumn }>(`/api/inventory/get-one/${id}`)
+  return request<{ data: PriceAndInventoryColumn }>(`/api/inventory/get-one/${id}`)
     .then((response) => {
       hidePageLoading();
       return response.data;
@@ -188,9 +193,9 @@ export async function getInventory(id: string) {
     });
 }
 
-export async function updateInventory(id: string, payload: PriceAndInventoryAttribute) {
+export async function updateInventory(id: string, payload: Partial<IPriceAndInventoryForm>) {
   showPageLoading();
-  return request<{ data: PriceAndInventoryAttribute }>(`/api/inventory/update/${id}`, {
+  return request<boolean>(`/api/inventory/update/${id}`, {
     method: 'PATCH',
     data: payload,
   })
@@ -248,6 +253,7 @@ export async function exchangeCurrency(brandId: string, currency: string) {
 }
 
 export async function updateInventories(payload: any) {
+  showPageLoading();
   return request<{ data: any }>(`/api/inventory/update/inventories`, {
     method: 'PATCH',
     data: payload,
@@ -257,7 +263,23 @@ export async function updateInventories(payload: any) {
       return true;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INVENTORY_ERROR);
+      return false;
+    });
+}
+
+export async function moveInventoryToCategory(inventoryId: string, categoryId: string) {
+  return request<boolean>(`/api/inventory/move/${inventoryId}`, {
+    method: 'PATCH',
+    data: { categoryId },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.MOVE_INVENTORY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.MOVE_INVENTORY_ERROR);
       return false;
     });
 }

@@ -5,8 +5,7 @@ import { message } from 'antd';
 import { CustomInputProps } from '@/components/Form/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
-import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import styles from '@/pages/Brand/PricesAndInventories/EditableCell/EditableCell.less';
+import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell.less';
 
 interface EditStatus {
   [key: string]: {
@@ -17,10 +16,17 @@ interface EditStatus {
 interface EditableCell<T extends string | number | readonly string[] | undefined>
   extends CustomInputProps {
   inputStyle?: CSSProperties;
-  item: VolumePrice;
+  item: {
+    id?: string;
+    in_stock?: number;
+    convert?: number;
+  };
   columnKey: string;
   defaultValue: T;
   valueClass?: string;
+  includePercentage?: boolean;
+  labelStyle?: CSSProperties;
+
   onSave: (id: string, columnKey: string, newValue: string) => void;
 }
 
@@ -30,6 +36,8 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
   inputStyle,
   defaultValue,
   valueClass = '',
+  labelStyle,
+  includePercentage,
   item,
   ...rest
 }: EditableCell<T>) => {
@@ -62,8 +70,40 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
       }));
     };
 
+  const validateInput = (
+    colKey: string,
+    newValue: number,
+    currentInStock: number,
+    currentConvert: number,
+  ) => {
+    if (colKey === 'in_stock' && newValue - currentConvert < 0) {
+      message.warn('In Stock cannot be less than Convert. Please adjust the Convert value.');
+      inputRef.current?.focus();
+      return false;
+    }
+
+    if (colKey === 'convert' && currentInStock - newValue < 0) {
+      message.warn('Convert value cannot exceed In Stock. Please adjust the In Stock value.');
+      inputRef.current?.focus();
+      return false;
+    }
+
+    if (colKey === 'in_stock' && newValue < 0) {
+      message.warn('In Stock cannot be negative. Please adjust the Convert value.');
+      inputRef.current?.focus();
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSave = (id: string, colKey: string) => {
-    const newValue = editStatus[id]?.[colKey]?.value ?? defaultValue;
+    const newValue = Number(editStatus[id]?.[colKey]?.value ?? defaultValue);
+    const currentInStock = Number(editStatus[id]?.['in_stock']?.value ?? item.in_stock);
+    const currentConvert = Number(editStatus[id]?.['convert']?.value ?? item.convert);
+
+    if (!validateInput(colKey, newValue, currentInStock, currentConvert)) return;
+
     if (newValue === defaultValue) {
       setEditStatus((prev) => ({
         ...prev,
@@ -72,12 +112,6 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
           [colKey]: { ...prev[id]?.[colKey], isEditing: false },
         },
       }));
-      return;
-    }
-
-    if (!newValue) {
-      message.warn('Please fill in the value');
-      inputRef.current?.focus();
       return;
     }
 
@@ -101,7 +135,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
 
   return (
     <div className={styles.editable_cell}>
-      {isEditing ? (
+      {!includePercentage || (isEditing && includePercentage) ? (
         <CustomInput
           autoFocus={isEditing}
           value={inputValue}
@@ -120,6 +154,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
         <span
           onClick={handleClick(columndId, columnKey, inputValue)}
           className={`indigo-dark-variant text-center ${valueClass}`}
+          style={labelStyle}
         >
           {inputValue}
           {columnKey === 'discount_rate' ? '%' : ''}

@@ -16,3 +16,4 @@ export * from './dynamic-category.type';
 export * from './common-unit-type-group';
 export * from './financial-records.type';
 export * from './price-and-inventory.type';
+export * from './warehouse.type';

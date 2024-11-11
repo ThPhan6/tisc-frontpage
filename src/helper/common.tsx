@@ -88,6 +88,7 @@ export const useScreen = () => {
 
   const isTablet = (screens.xs || screens.sm || screens.md) && screens.lg === false;
   const isMobile = screens.xs;
+  const isExtraLarge = screens.xl;
 
-  return { isTablet, isMobile };
+  return { isTablet, isMobile, isExtraLarge };
 };

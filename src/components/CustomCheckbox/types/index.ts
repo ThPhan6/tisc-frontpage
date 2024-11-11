@@ -5,7 +5,6 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 export type CheckboxValue = {
   label: string | ReactNode;
   value: string | number;
-  name: string;
   disabled?: boolean;
 };
 
