@@ -77,7 +77,7 @@ const TreeSelect = <T,>({
   };
 
   const sortedData = (): TreeItem[] => {
-    const cloneItems = cloneDeep(data as TreeItem[]);
+    const cloneItems = cloneDeep(data as TreeItem[]) || ([] as TreeItem[]);
     const stack = [...cloneItems];
 
     while (!isEmpty(stack)) {
