@@ -788,6 +788,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
         }),
       }}
       rightCheckboxList={{
+        isLabel: true,
         isSelectAll: false,
         heading: (
           <MainTitle customClass="title" level={3}>

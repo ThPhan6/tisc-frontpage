@@ -51,6 +51,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   additionalSelected,
   onChangeAdditionalSelected,
   isExpanded,
+  onCollClick,
+  isLabel,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -70,25 +72,27 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const editingLabelIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const allSubLabels = labels.reduce((pre: SubLabel[], cur) => {
-      return pre.concat(cur.subs!);
-    }, []);
-    const selectedParents = checkedItems.map((sub) => {
-      const foundSubLabel = allSubLabels.find((subLabel: SubLabel) => subLabel.id === sub.value);
-      return foundSubLabel?.parent_id;
-    });
-
-    setExpandedKeys((prevExpandedKeys) => {
-      const newExpandedKeys = new Set(prevExpandedKeys);
-
-      selectedParents.forEach((parentId) => {
-        if (parentId && !newExpandedKeys.has(parentId)) {
-          newExpandedKeys.add(parentId);
-        }
+    if (!isLabel) {
+      const allSubLabels = labels.reduce((pre: SubLabel[], cur) => {
+        return pre.concat(cur.subs!);
+      }, []);
+      const selectedParents = checkedItems.map((sub) => {
+        const foundSubLabel = allSubLabels.find((subLabel: SubLabel) => subLabel.id === sub.value);
+        return foundSubLabel?.parent_id;
       });
 
-      return Array.from(newExpandedKeys);
-    });
+      setExpandedKeys((prevExpandedKeys) => {
+        const newExpandedKeys = new Set(prevExpandedKeys);
+
+        selectedParents.forEach((parentId) => {
+          if (parentId && !newExpandedKeys.has(parentId)) {
+            newExpandedKeys.add(parentId);
+          }
+        });
+
+        return Array.from(newExpandedKeys);
+      });
+    }
   }, [JSON.stringify(checkedItems.map((item) => ({ value: item.value })))]);
 
   useEffect(() => {

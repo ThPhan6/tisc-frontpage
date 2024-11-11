@@ -33,7 +33,7 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
   });
 
   useEffect(() => {
-    if (props.data.length) {
+    if (props.data?.length) {
       setImages(props.data);
     }
   }, [JSON.stringify(props.data)]);

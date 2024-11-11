@@ -15,6 +15,7 @@ export interface CheckboxOption {
   hasAllOption?: boolean;
   isSelectAll?: boolean;
   customItemClass?: string;
+  isLabel?: boolean;
 }
 
 interface CheckboxListProps {
@@ -84,6 +85,8 @@ const CheckboxList: React.FC<CheckboxListProps> = ({ data, selected, onChange, i
             checkboxClass={data.customItemClass}
             isCheckboxList
             isExpanded={isExpanded}
+            onCollClick={onCollClick ? onCollClick : undefined}
+            isLabel={data.isLabel}
           />
         </div>
       </div>
