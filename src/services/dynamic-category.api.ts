@@ -10,11 +10,16 @@ import {
 } from '@/components/Table/types';
 import store from '@/reducers';
 import { setSummaryFinancialRecords, setUnitType } from '@/reducers/summary';
-import { CategoryEntity, type FinancialRecords, PriceAttribute } from '@/types';
+import {
+  CategoryEntity,
+  type FinancialRecords,
+  type IPriceAndInventoryForm,
+  type PriceAndInventoryColumn,
+  PriceAttribute,
+} from '@/types';
 
 import { AccordionItem } from '@/components/AccordionMenu';
 import { UnitItem } from '@/components/Modal/UnitType';
-import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -142,7 +147,7 @@ export const getListInventories = (
     });
 };
 
-export async function createInventory(data: PriceAttribute) {
+export async function createInventory(data: Partial<IPriceAndInventoryForm>) {
   showPageLoading();
   return request<{ data: PriceAttribute }>(`/api/inventory/create`, {
     method: 'POST',
@@ -188,7 +193,7 @@ export async function getInventory(id: string) {
     });
 }
 
-export async function updateInventory(id: string, payload: PriceAttribute) {
+export async function updateInventory(id: string, payload: Partial<IPriceAndInventoryForm>) {
   showPageLoading();
   return request<boolean>(`/api/inventory/update/${id}`, {
     method: 'PATCH',

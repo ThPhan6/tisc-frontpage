@@ -1,16 +1,20 @@
 export interface WarehouseItemMetric {
-  id?: string;
+  id: string;
   name: string;
+  location_id: string;
   city_name: string;
   country_name: string;
-  in_stock?: number;
-  convert?: number;
+  in_stock: number;
+  new_in_stock: number;
+  convert: number;
 }
 
-export interface Warehouse {
-  relation_id?: string;
+export interface WarehouseRequest {
   location_id: string;
-  inventory_id: string;
-  total_stock?: number;
-  warehouses?: WarehouseItemMetric[];
+  quantity: number;
+}
+
+export interface WarehouseResponse {
+  warehouses: WarehouseItemMetric[];
+  total_stock: number;
 }

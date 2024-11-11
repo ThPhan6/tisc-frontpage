@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
@@ -10,56 +10,16 @@ import {
   updateInventories,
   updateMultipleByBackorder,
 } from '@/services';
-import { debounce, forEach, isEmpty, pick, set } from 'lodash';
+import { forEach, isEmpty, pick } from 'lodash';
 
 import { ModalType } from '@/reducers/modal';
-import { WarehouseItemMetric } from '@/types';
+import { type PriceAndInventoryColumn } from '@/types';
 
 import InventoryHeader from '@/components/InventoryHeader';
 import Backorder from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/Backorder';
 import InventoryTable from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Organism/InventoryTable';
 import PriceAndInventoryTableHeader from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Organism/TableHeader';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
-
-export interface VolumePrice {
-  id?: string;
-  discount_price?: number;
-  discount_rate?: number;
-  min_quantity?: number;
-  max_quantity?: number;
-  unit_type?: string;
-}
-
-export interface PriceAndInventoryColumn {
-  id: string;
-  image: string;
-  back_order: number;
-  originBackOrder: number;
-  out_stock: number;
-  total_stock: number;
-  on_order: number;
-  sku: string;
-  description: string;
-  stockValue: number;
-  price: {
-    created_at: string;
-    currency?: string;
-    unit_price: number;
-    unit_type: string;
-    volume_prices: VolumePrice[];
-    exchange_histories: {
-      created_at: string;
-      from_currency: string;
-      rate: number;
-      relation_id: string;
-      to_currency: string;
-      updated_at: string;
-    }[];
-  };
-  warehouses: WarehouseItemMetric[];
-}
-
-export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
 
 const PriceAndInventoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);

@@ -9,16 +9,16 @@ import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import { getListInventories } from '@/services';
-import { get, isEmpty, omit, orderBy, reduce } from 'lodash';
+import { isEmpty, omit, orderBy, reduce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
+import type { PriceAndInventoryColumn } from '@/types';
 
 import CustomTable from '@/components/Table';
 import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 import InventoryTableActionMenu from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/InventoryTableActionMenu';
 import WareHouse from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse';
-import { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
 interface InventoryTableProps {
@@ -104,6 +104,7 @@ const InventoryTable = ({
         columnKey={columnKey}
         defaultValue={value}
         valueClass={`${isEditMode ? 'indigo-dark-variant' : ''}`}
+        labelStyle={{ display: 'inline-block', minWidth: 20 }}
         onSave={(id, colKey, newValue) => handleSaveOnCell(id, colKey, newValue, item)}
       />
     ) : (
@@ -221,11 +222,13 @@ const InventoryTable = ({
         title: 'On Order',
         dataIndex: 'on_order',
         align: 'center',
+        width: '5%',
         render: (_, item) => renderEditableCell(item, 'on_order', item?.on_order || 0),
       },
       {
         title: 'Backorder',
         dataIndex: 'back_order',
+        width: '8%',
         align: 'center',
         render: (_, item) => {
           const backOrder = selectedRows?.[item.id]?.back_order ?? item?.back_order ?? 0;
@@ -234,7 +237,9 @@ const InventoryTable = ({
             <div
               className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
             >
-              <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
+              <p className={`${isEditMode ? 'w-1-2' : 'w-full'} my-0`}>
+                {renderEditableCell(item, 'back_order', backOrder)}
+              </p>
               {isEditMode && <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />}
             </div>
           );
