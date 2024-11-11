@@ -92,7 +92,7 @@ const TreeSelect = <T,>({
   };
 
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
-    if (items.length === 0) {
+    if (isEmpty(data.length)) {
       return (
         <div className={styles.tree_select_no_data}>
           <BodyText level={5} fontFamily="Roboto">
@@ -150,8 +150,6 @@ const TreeSelect = <T,>({
 
     return result;
   };
-
-  console.log('sortedData', sortedData);
 
   return (
     <Menu

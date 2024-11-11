@@ -28,7 +28,6 @@ import {
   initialInventoryFormData,
 } from '@/types';
 
-import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InventoryHeader from '@/components/InventoryHeader';
@@ -188,11 +187,6 @@ const PriceAndInventoryForm = () => {
         {
           ...payload,
           ...(isShouldHaveUnitPrice && { unit_price: formData.unit_price }),
-          ...(volumePricesChanged && {
-            volume_prices: payload.price?.volume_prices?.map((el) =>
-              pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
-            ),
-          }),
           ...(warehousesChanged &&
             ({
               warehouses: formData.warehouses.map((warehouse) => {
@@ -222,6 +216,13 @@ const PriceAndInventoryForm = () => {
           'warehouses',
         ],
       ),
+      ...((volumePricesChanged || isShouldHaveUnitPrice) && {
+        volume_prices: !payload.price?.volume_prices?.length
+          ? []
+          : payload.price?.volume_prices?.map((el) =>
+              pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
+            ),
+      }),
     };
 
     return payload;
@@ -258,7 +259,10 @@ const PriceAndInventoryForm = () => {
       ? await updateInventory(inventoryId, omit(payload, 'inventory_category_id'))
       : await createInventory(payload);
 
-    if (!res) return;
+    if (!res) {
+      fetchData();
+      return;
+    }
 
     if (inventoryId) {
       fetchData();

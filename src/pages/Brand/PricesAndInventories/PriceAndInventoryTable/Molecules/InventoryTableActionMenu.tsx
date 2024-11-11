@@ -9,6 +9,7 @@ import { ReactComponent as SquareCDownLeft } from '@/assets/icons/square-c-down-
 import { confirmDelete } from '@/helper/common';
 import { useNavigationHandler } from '@/helper/hook';
 import { deleteInventory, moveInventoryToCategory } from '@/services';
+import { isEmpty } from 'lodash';
 
 import { PriceAndInventoryColumn } from '@/types';
 
@@ -36,7 +37,7 @@ const InventoryTableActionMenu = ({ record, tableRef }: InventoryTableActionMenu
   const navigate = useNavigationHandler();
 
   const treeSelectStyle = {
-    padding: '6px 16px',
+    padding: isEmpty(location.state.groupItems) ? '0 16px' : '6px 16px',
     width: '420px',
   };
 
