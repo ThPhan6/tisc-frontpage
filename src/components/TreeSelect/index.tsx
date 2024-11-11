@@ -92,6 +92,16 @@ const TreeSelect = <T,>({
   };
 
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
+    if (items.length === 0) {
+      return (
+        <div className={styles.tree_select_no_data}>
+          <BodyText level={5} fontFamily="Roboto">
+            No data available
+          </BodyText>
+        </div>
+      );
+    }
+
     const stack: { item: TreeItem; indent: number }[] = items?.map((item) => ({ item, indent: 0 }));
     const result: React.ReactNode[] = [];
 
