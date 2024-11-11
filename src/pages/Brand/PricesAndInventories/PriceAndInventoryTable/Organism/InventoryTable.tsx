@@ -304,6 +304,7 @@ const InventoryTable = ({
       onRow={createRowHandler}
       hoverOnRow={false}
       extraParams={{
+        sort: 'sku',
         category_id: location.state?.categoryId,
         ...(!isEmpty(filter) && { search: filter }),
       }}

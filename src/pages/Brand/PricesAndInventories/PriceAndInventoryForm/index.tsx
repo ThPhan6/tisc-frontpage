@@ -317,7 +317,7 @@ const PriceAndInventoryForm = () => {
                 unCheckedChildren="EDIT OFF"
                 className={`${PriceAndInventoryTableStyle.category_table_header_btn_switch} ${PriceAndInventoryTableStyle.category_table_header_btn_switch_off}`}
               />
-              <CustomButton
+              {/* <CustomButton
                 size="small"
                 variant="primary"
                 disabled={true}
@@ -330,7 +330,7 @@ const PriceAndInventoryForm = () => {
                 >
                   IMPORT/EXPORT
                 </BodyText>
-              </CustomButton>
+              </CustomButton> */}
               <CustomPlusButton size={24} disabled={true} />
             </div>
           }

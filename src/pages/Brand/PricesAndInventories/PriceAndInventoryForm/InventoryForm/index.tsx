@@ -7,7 +7,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { confirmDelete, useScreen } from '@/helper/common';
 import { convertToNegative } from '@/helper/utils';
-import { cloneDeep, isNil, uniqueId } from 'lodash';
+import { cloneDeep, isEmpty, isNil, uniqueId } from 'lodash';
 
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
@@ -172,19 +172,19 @@ const InventoryForm = ({
       type: keyof Pick<WarehouseItemMetric, 'new_in_stock' | 'convert'>,
     ) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value as unknown as number;
+      const value = event.target.value as any;
 
-      let quantity = convertToNegative(String(value));
+      let quantity = convertToNegative(value === -0 ? '-0' : String(value === '' ? 0 : value));
 
       if (type === 'new_in_stock') {
         quantity = Math.abs(quantity);
       }
 
-      const newWarehouses = cloneDeep(formData.warehouses).map((el) => {
+      const newWarehouses = formData.warehouses.map((el) => {
         if (el.id === warehouse.id) {
           return {
             ...el,
-            [type]: quantity,
+            [type]: isNaN(quantity) ? 0 : quantity,
           };
         }
 
@@ -194,85 +194,82 @@ const InventoryForm = ({
       setFormData((prev) => ({ ...prev, warehouses: newWarehouses }));
     };
 
-  const warehouseColumns: TableColumnsType<WarehouseItemMetric> = useMemo(
-    () => [
-      {
-        title: '#',
-        dataIndex: '',
-        align: 'center',
-        width: '5%',
-        render: (_, __, index) => index + 1,
-      },
-      {
-        title: 'WareHouse Name',
-        dataIndex: 'name',
-        width: '30%',
-        ellipsis: true,
-      },
-      {
-        title: 'City',
-        dataIndex: 'city_name',
-        width: '15%',
-        ellipsis: true,
-      },
-      {
-        title: 'Country',
-        dataIndex: 'country_name',
-        width: '30%',
-        ellipsis: true,
-      },
-      {
-        title: 'In stock',
-        dataIndex: 'in_stock',
-        align: 'center',
-        width: '10%',
-        render: (_, record: WarehouseItemMetric) => {
-          const inStockValue = formData.warehouses?.find((ws) => ws.id === record.id)?.new_in_stock;
+  const warehouseColumns: TableColumnsType<WarehouseItemMetric> = [
+    {
+      title: '#',
+      dataIndex: '',
+      align: 'center',
+      width: '5%',
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: 'WareHouse Name',
+      dataIndex: 'name',
+      width: '30%',
+      ellipsis: true,
+    },
+    {
+      title: 'City',
+      dataIndex: 'city_name',
+      width: '15%',
+      ellipsis: true,
+    },
+    {
+      title: 'Country',
+      dataIndex: 'country_name',
+      width: '30%',
+      ellipsis: true,
+    },
+    {
+      title: 'In stock',
+      dataIndex: 'in_stock',
+      align: 'center',
+      width: '10%',
+      render: (_, record: WarehouseItemMetric) => {
+        const inStockValue =
+          formData.warehouses?.find((ws) => ws.id === record.id)?.new_in_stock ?? 0;
 
-          return (
-            <CustomInput
-              pattern="^[0-9]+$"
-              value={inStockValue ?? 0}
-              additionalInputClass="indigo-dark-variant"
-              onChange={handleChangeWarehouse(record, 'new_in_stock')}
-              style={customInputStyle(inStockValue)}
-            />
-          );
-        },
-      },
-      {
-        title: 'Convert',
-        dataIndex: 'convert',
-        align: 'center',
-        width: '10%',
-        render: (_, record: WarehouseItemMetric) => {
-          const convertValue =
-            formData.warehouses?.find((ws) => ws.id === record.id)?.convert || undefined;
-
-          return (
-            <CustomInput
-              pattern="^[0-9]+$"
-              value={convertValue ?? 0}
-              additionalInputClass="indigo-dark-variant"
-              onChange={handleChangeWarehouse(record, 'convert')}
-              style={customInputStyle(convertValue)}
-            />
-          );
-        },
-      },
-      {
-        align: 'center',
-        width: '5%',
-        render: (_, record) => (
-          <TrashIcon
-            className="cursor-pointer primary-color-dark"
-            onClick={handleRemoveRow(record.id ?? '')}
+        return (
+          <CustomInput
+            pattern="^[0-9]+$"
+            value={inStockValue}
+            additionalInputClass="indigo-dark-variant"
+            onChange={handleChangeWarehouse(record, 'new_in_stock')}
+            style={customInputStyle(inStockValue)}
           />
-        ),
+        );
       },
-    ],
-    [JSON.stringify(formData.warehouses)],
-  );
+    },
+    {
+      title: 'Convert',
+      dataIndex: 'convert',
+      align: 'center',
+      width: '10%',
+      render: (_, record: WarehouseItemMetric) => {
+        const convertValue = formData.warehouses?.find((ws) => ws.id === record.id)?.convert;
+
+        return (
+          <CustomInput
+            pattern="/^-?\d+$/"
+            value={Object.is(convertValue, -0) ? '-0' : convertValue}
+            additionalInputClass="indigo-dark-variant"
+            onChange={handleChangeWarehouse(record, 'convert')}
+            style={customInputStyle(convertValue)}
+          />
+        );
+      },
+    },
+    {
+      align: 'center',
+      width: '5%',
+      render: (_, record) => (
+        <TrashIcon
+          className="cursor-pointer primary-color-dark"
+          onClick={handleRemoveRow(record.id ?? '')}
+        />
+      ),
+    },
+  ];
 
   const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
