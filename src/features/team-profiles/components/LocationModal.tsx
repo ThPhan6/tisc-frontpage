@@ -9,18 +9,21 @@ import { useAppSelector } from '@/reducers';
 import { modalPropsSelector } from '@/reducers/modal';
 
 import Popover from '@/components/Modal/Popover';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import styles from './LocationModal.less';
 import { getWorkLocations } from '@/features/locations/api';
 
-export interface WorkLocationData {
+export interface WorkLocationData extends Partial<LocationDetail> {
   label: string;
   value: string;
   phoneCode: string;
 }
 
 const LocationModal: FC = () => {
-  const { data, onChange } = useAppSelector(modalPropsSelector).workLocation;
+  const workLocation = useAppSelector(modalPropsSelector).workLocation;
+  const data = workLocation?.data || [];
+  const onChange = workLocation?.onChange || (() => {});
 
   const [workLocations, setWorkLocations] = useState<LocationGroupedByCountry[]>([]);
 
@@ -33,6 +36,7 @@ const LocationModal: FC = () => {
       workLocationText += upperCase(location.country_name);
     }
     onChange({
+      ...location,
       label: workLocationText,
       value: location.id,
       phoneCode: location.phone_code ?? '',
@@ -70,16 +74,40 @@ const LocationModal: FC = () => {
     type: string;
     address: string;
     country?: string;
+    email?: string;
+    phone?: string;
   }
 
-  const BusinessDetail: FC<BusinessDetailProps> = ({ business, type = '', address }) => {
+  const BusinessDetail: FC<BusinessDetailProps> = ({
+    business,
+    type = '',
+    address,
+    email,
+    phone,
+  }) => {
     return (
-      <div className={styles.detail}>
+      <div className={`${styles.detail} ${email || phone ? styles.detail_extra_class : ''}`}>
         <div className={styles.detail_business}>
-          <span className={styles.name}> {business} </span>
+          <span className={`${styles.name} ${email || phone ? 'mr-16' : ''}`}> {business} </span>
           <span className={styles.type}> {type && `(${type})`} </span>
         </div>
         <span className={styles.detail_address}>{address}</span>
+        {email || phone ? (
+          <article className="d-flex items-center">
+            <BodyText customClass="mr-16 d-flex items-center" level={4}>
+              Email:{' '}
+              <RobotoBodyText customClass="ml-16" level={6}>
+                {email}
+              </RobotoBodyText>
+            </BodyText>
+            <BodyText customClass="mr-16 d-flex items-center" level={4}>
+              Phone:{' '}
+              <RobotoBodyText customClass="ml-16" level={6}>
+                {phone}
+              </RobotoBodyText>
+            </BodyText>
+          </article>
+        ) : null}
       </div>
     );
   };
@@ -99,6 +127,8 @@ const LocationModal: FC = () => {
                   type={location.functional_types[0]?.name}
                   address={getBusinessAddress(location)}
                   country={location.country_name.toUpperCase()}
+                  email={location.general_email}
+                  phone={location.general_phone}
                 />
               ),
               value: location.id,
