@@ -75,7 +75,7 @@ const PriceAndInventoryTableHeader = ({
                 : styles.category_table_header_btn_switch_off
             }`}
           />
-          <CustomButton
+          {/* <CustomButton
             size="small"
             variant="primary"
             buttonClass={`${styles.category_table_header_action_btn_import} ${
@@ -92,7 +92,7 @@ const PriceAndInventoryTableHeader = ({
             >
               IMPORT/EXPORT
             </BodyText>
-          </CustomButton>
+          </CustomButton> */}
           <CustomPlusButton
             size={24}
             disabled={isEditMode}
