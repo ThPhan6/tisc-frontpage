@@ -117,7 +117,7 @@ const TreeSelect = <T,>({
       result.push(
         <div
           key={item.id}
-          className="d-flex items-center mr-16 cursor-pointer"
+          className="d-flex items-center cursor-pointer"
           onClick={handleItemClick(item)}
         >
           <Menu.Item
