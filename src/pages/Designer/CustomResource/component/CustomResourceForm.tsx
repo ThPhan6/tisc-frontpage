@@ -126,14 +126,21 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <MainTitle level={3} textAlign={'center'} customClass={styles.header__title}>
           {customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'} Information
         </MainTitle>
-        <CustomButton
-          size="small"
-          variant="primary"
-          properties="rounded"
-          onClick={() => pushTo(PATH.designerCustomResource)}
-        >
-          Close
-        </CustomButton>
+        {isEdit ? (
+          <CloseIcon
+            style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+            onClick={() => pushTo(PATH.designerCustomResource)}
+          />
+        ) : (
+          <CustomButton
+            size="small"
+            variant="primary"
+            properties="rounded"
+            onClick={() => pushTo(PATH.designerCustomResource)}
+          >
+            Close
+          </CustomButton>
+        )}
       </div>
       <div className={styles.form}>
         <InputGroup
