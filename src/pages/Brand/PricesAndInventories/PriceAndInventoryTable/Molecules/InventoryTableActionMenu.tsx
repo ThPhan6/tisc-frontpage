@@ -36,7 +36,6 @@ const InventoryTableActionMenu = ({
 }: InventoryTableActionMenuProps) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [currentInventory, setCurrentInventory] = useState<string>('');
-  console.log('groupItems', groupItems);
 
   const treeSelectRef = useRef<HTMLDivElement>(null);
   const location = useLocation<{
