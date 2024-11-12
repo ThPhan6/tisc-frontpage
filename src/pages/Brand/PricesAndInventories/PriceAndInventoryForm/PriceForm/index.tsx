@@ -435,10 +435,7 @@ const PriceForm = ({
         </article>
 
         <div className="d-flex items-center justify-between w-full">
-          <div
-            style={{ width: isExtraLarge ? '86.5%' : '79%' }}
-            className={styles.category_form_sku_description_wrapper}
-          >
+          <div className={styles.category_form_sku_description_wrapper}>
             <InputGroup
               label="Product ID (SKU Code)"
               required
@@ -470,6 +467,7 @@ const PriceForm = ({
               onChangeImages={handleImageChange}
               data={formData.image}
               forceUpload
+              containerStyles={{ marginLeft: 20, padding: '8px 0 0 16px' }}
             />
           </div>
         </div>
