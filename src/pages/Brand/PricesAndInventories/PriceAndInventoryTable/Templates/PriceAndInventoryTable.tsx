@@ -73,11 +73,7 @@ const PriceAndInventoryTable: React.FC = () => {
       inventoryPayload[id] = {
         ...pick(row, ['on_order']),
         back_order:
-          newWarehouses.length && row.originBackOrder
-            ? row.originBackOrder
-            : row.back_order > 0
-            ? row.back_order
-            : undefined,
+          newWarehouses.length && row.originBackOrder ? row.originBackOrder : row.back_order,
         unit_price: row.price.unit_price,
         volume_prices: row.price.volume_prices?.map((el) => ({
           discount_rate: el?.discount_rate ?? 0,
