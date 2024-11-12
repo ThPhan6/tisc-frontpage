@@ -422,7 +422,7 @@ const PriceForm = ({
 
         <div className="d-flex items-center justify-between w-full">
           <div
-            style={{ width: isExtraLarge ? '85%' : '79%' }}
+            style={{ width: isExtraLarge ? '93.5%' : '79%' }}
             className={styles.category_form_sku_description_wrapper}
           >
             <InputGroup
