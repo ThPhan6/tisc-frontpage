@@ -24,7 +24,6 @@ import {
   IPriceAndInventoryForm,
   type PriceAttribute,
   type VolumePrice,
-  type WarehouseItemMetric,
   initialInventoryFormData,
 } from '@/types';
 
@@ -54,7 +53,7 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
-  const { isExtraLarge } = useScreen();
+  const { isExtraLarge, isMobile, isTablet, isLarge } = useScreen();
   const entryFormWrapperStyle = {
     height: 'calc(var(--vh) * 100 - 312px)',
     padding: 0,
@@ -119,6 +118,8 @@ const PriceAndInventoryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
+  console.log('formData', formData);
+
   const preparePayload = () => {
     const fields: (keyof IPriceAndInventoryForm)[] = [
       'sku',
@@ -135,7 +136,10 @@ const PriceAndInventoryForm = () => {
 
     let payload: Partial<IPriceAndInventoryForm> = {};
 
-    const volumePricesChanged = !isEqual(priceTableData, originalData.price.volume_prices);
+    const volumePricesChanged = !isEqual(
+      formData.price.volume_prices,
+      originalData.price.volume_prices,
+    );
 
     const warehousesChanged = !isEqual(formData.warehouses, originalData.warehouses);
 
@@ -161,9 +165,9 @@ const PriceAndInventoryForm = () => {
           ...payload,
           ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
           ...((volumePricesChanged || isUnitPriceChanged) && {
-            volume_prices: !priceTableData.length
+            volume_prices: !formData.price.volume_prices?.length
               ? []
-              : priceTableData.map((el) =>
+              : formData.price.volume_prices?.map((el) =>
                   pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
                 ),
           }),
@@ -253,7 +257,9 @@ const PriceAndInventoryForm = () => {
     [location.state?.brandId],
   );
 
-  const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
+  const pageHeaderRender = () => (
+    <InventoryHeader onSaveCurrency={handleSaveCurrecy} hideSearch={true} />
+  );
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
@@ -309,7 +315,9 @@ const PriceAndInventoryForm = () => {
         />
 
         <EntryFormWrapper
-          customClass={`${styles.category_form_entry_wrapper} ${inventoryId ? 'w-full' : 'w-1-2'}`}
+          customClass={`${styles.category_form_entry_wrapper} ${
+            inventoryId || isMobile || isTablet || isLarge ? 'w-full' : 'w-1-2'
+          }`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -321,6 +329,7 @@ const PriceAndInventoryForm = () => {
             },
           })}
           contentStyles={entryFormWrapperStyle}
+          footerClass={styles.category_form_footer}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
           <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>

@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo } from 'react';
+import { type CSSProperties, useEffect } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -7,6 +7,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { confirmDelete, useScreen } from '@/helper/common';
 import { convertToNegative } from '@/helper/utils';
+
 import { cloneDeep, isEmpty, isNil, sum, uniqueId } from 'lodash';
 
 import store from '@/reducers';
@@ -123,7 +124,7 @@ const InventoryForm = ({
 }: InventoryFormProps) => {
   const randomId = uniqueId();
 
-  const { isExtraLarge } = useScreen();
+  const { isExtraLarge, isMobile } = useScreen();
   const disabledAddInventory = !formData.name;
 
   const saveBtnStyle = {
@@ -362,7 +363,10 @@ const InventoryForm = ({
             onRightIconClick={handleOpenLocationModal}
           />
         </div>
-        <form className="d-flex items-center gap-16 " style={{ height: 56 }}>
+        <form
+          className={`d-flex items-center gap-16 ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}
+          style={{ height: 56 }}
+        >
           <InputGroup
             label="Total Stock :"
             fontLevel={3}

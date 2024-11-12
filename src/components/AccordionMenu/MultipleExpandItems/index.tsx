@@ -7,6 +7,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { sortObjectArray } from '@/helper/utils';
 import { difference, filter, trimStart } from 'lodash';
 
@@ -59,6 +60,7 @@ const AccordionMenuItems = ({
   }>({});
 
   const treeSelectRef = useRef<HTMLDivElement>(null);
+  const { isMobile } = useScreen();
 
   const history = useHistory();
 
@@ -209,7 +211,6 @@ const AccordionMenuItems = ({
       state: {
         categoryId: clickedItem.id,
         brandId: clickedItem.relation_id,
-        groupItems: groupItems,
       },
     });
   };
@@ -309,7 +310,11 @@ const AccordionMenuItems = ({
 
             {currentMoveToParentList === item.id && (
               <div ref={treeSelectRef}>
-                <TreeSelect data={groupItems} onItemSelect={handleItemSelect} />
+                <TreeSelect
+                  data={groupItems}
+                  onItemSelect={handleItemSelect}
+                  additionalClassName="pr-16"
+                />
               </div>
             )}
           </>
@@ -325,7 +330,10 @@ const AccordionMenuItems = ({
         : expandedItems.filter((id) => accordionItems.some((item) => item.id === id));
 
     return (
-      <div key={level} className={styles.accordion_menu_items}>
+      <div
+        key={level}
+        className={`${styles.accordion_menu_items} ${!isMobile ? 'border-right-black-inset' : ''}`}
+      >
         <AccordionMenuInput
           data={accordionItems}
           isEditMode={isEditMode}
@@ -344,7 +352,7 @@ const AccordionMenuItems = ({
   };
 
   return (
-    <div className="d-flex w-full">
+    <div className={`d-flex w-full ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}>
       {Array.from({ length: levels }, (_, i) => renderColumn(i + 1))}
     </div>
   );
