@@ -26,9 +26,10 @@ export interface DataItem {
 interface InventoryHeaderProps {
   onSearch?: (value: string) => void;
   onSaveCurrency?: (currency: string) => void;
+  hideSearch?: boolean;
 }
 
-const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => {
+const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHeaderProps) => {
   const [isShowModal, setIsShowModal] = useState(false);
   const { summaryFinancialRecords, currencySelected } = useAppSelector((state) => state.summary);
 
@@ -49,14 +50,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
       id: '1',
       value: currencySelected,
       label: 'BASE CURRENTCY',
-      rightAction: (
-        <SingleRightFormIcon
-          className="cursor-pointer"
-          width={16}
-          height={16}
-          onClick={handleToggleModal(true)}
-        />
-      ),
+      rightAction: <SingleRightFormIcon className="cursor-pointer" width={16} height={16} />,
     },
     {
       id: '2',
@@ -90,7 +84,10 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
             <BodyText customClass={styles.inventory_header_value} fontFamily="Roboto" level={6}>
               {item.value}
             </BodyText>
-            <div className="d-flex items-center gap-8">
+            <div
+              className={`d-flex items-center gap-8 ${item.id === '1' ? 'cursor-pointer' : ''}`}
+              onClick={item.id === '1' ? handleToggleModal(true) : undefined}
+            >
               <BodyText customClass={styles.inventory_header_label} fontFamily="Roboto" level={6}>
                 {item.label}
               </BodyText>
@@ -99,16 +96,17 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
           </div>
         ))}
       </section>
-
-      <div className={styles.inventory_header_search_container}>
-        <Input placeholder="Search" disabled={!onSearch} onChange={handleSearchChange} />
-        <div className="d-flex items-center" style={{ opacity: !onSearch ? 0.5 : 1 }}>
-          <BodyText fontFamily="Roboto" level={6} customClass="mr-16 pl-12">
-            Product ID / SKU
-          </BodyText>
-          <MagnifyingGlassIcon />
+      {!hideSearch && (
+        <div className={styles.inventory_header_search_container}>
+          <Input placeholder="Search" disabled={!onSearch} onChange={handleSearchChange} />
+          <div className="d-flex items-center" style={{ opacity: !onSearch ? 0.5 : 1 }}>
+            <BodyText fontFamily="Roboto" level={6} customClass="mr-16 pl-12">
+              Product ID / SKU
+            </BodyText>
+            <MagnifyingGlassIcon />
+          </div>
         </div>
-      </div>
+      )}
 
       <CurrencyModal
         onCancel={handleToggleModal(false)}

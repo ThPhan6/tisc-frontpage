@@ -85,11 +85,7 @@
   }
 
   &_footer {
-    width: 100%;
-    padding: 16px;
-    text-align: end;
-    background: #fff;
-    box-shadow: 0 0.5px 0 0 @mono-color inset;
+    z-index: 1;
   }
 
   &_info_modal_wrapper {
@@ -293,5 +289,11 @@
   :global(.ant-col) {
     flex: 0 0 100%;
     max-width: 100%;
+  }
+
+  @media (max-width: 567px) {
+    &_sku_description_wrapper {
+      width: 68% !important;
+    }
   }
 }

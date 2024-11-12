@@ -7,7 +7,9 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
+import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
+import { filter, map } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -149,7 +151,7 @@ const PriceForm = ({
   setTableData,
 }: PriceFormProps) => {
   const inventoryId = useGetParamId();
-  const { isExtraLarge } = useScreen();
+  const { isExtraLarge, isMobile } = useScreen();
 
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
 
@@ -204,6 +206,15 @@ const PriceForm = ({
     setTableData((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [columnKey]: newValue } : item)),
     );
+    setFormData((prev) => ({
+      ...prev,
+      price: {
+        ...prev.price,
+        volume_prices: map(prev.price.volume_prices, (item: VolumePrice) =>
+          item.id === id ? { ...item, [columnKey]: Number(newValue) } : item,
+        ),
+      },
+    }));
   };
 
   const renderUpdatableCell = (item: VolumePrice, columnKey: string, defaultValue: any) => {
@@ -219,8 +230,16 @@ const PriceForm = ({
     );
   };
 
-  const handleRemoveRow = (id: string) => () =>
+  const handleRemoveRow = (id: string) => () => {
     setTableData((prev) => prev.filter((item) => item.id !== id));
+    setFormData((prev) => ({
+      ...prev,
+      price: {
+        ...prev.price,
+        volume_prices: filter(prev.price.volume_prices, (item: VolumePrice) => item.id !== id),
+      },
+    }));
+  };
 
   const priceColumn: TableColumnsType<VolumePrice> = useMemo(
     () => [
@@ -236,6 +255,11 @@ const PriceForm = ({
         dataIndex: 'discount_price',
         align: 'center',
         width: '20%',
+        render: (value: number) => (
+          <BodyText fontFamily="Roboto" level={5}>
+            {formatCurrencyNumber(value)}
+          </BodyText>
+        ),
       },
       {
         title: 'Discount Rate',
@@ -411,7 +435,10 @@ const PriceForm = ({
         </article>
 
         <div className="d-flex items-center justify-between w-full">
-          <div style={{ width: isExtraLarge ? '85%' : '79%' }}>
+          <div
+            style={{ width: isExtraLarge ? '93.5%' : '79%' }}
+            className={styles.category_form_sku_description_wrapper}
+          >
             <InputGroup
               label="Product ID (SKU Code)"
               required
@@ -497,8 +524,12 @@ const PriceForm = ({
           </Title>
         </article>
 
-        <form className="d-flex gap-16 mb-8-px w-full">
-          <div className="d-flex items-center items-end border-bottom-light w-1-2">
+        <form className={`${isMobile ? 'block' : 'd-flex'} gap-16 mb-8-px w-full`}>
+          <div
+            className={`d-flex items-center items-end border-bottom-light ${
+              isMobile ? 'w-full mb-16' : 'w-1-2'
+            }`}
+          >
             {volumnDiscountInput.map((input, index) => (
               <InputGroup
                 key={index}
@@ -527,7 +558,11 @@ const PriceForm = ({
             ))}
           </div>
 
-          <div className="d-flex items-center items-end border-bottom-light w-1-2">
+          <div
+            className={`d-flex items-center items-end border-bottom-light ${
+              isMobile ? 'w-full mb-16' : 'w-1-2'
+            }`}
+          >
             {minMaxInput.map((input, index) => (
               <InputGroup
                 forceDisplayDeleteIcon
@@ -557,7 +592,7 @@ const PriceForm = ({
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ y: 185 }}
+          scroll={{ x: 500, y: 185 }}
         />
       </div>
 

@@ -9,7 +9,7 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
 import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
-import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
+import { extractDataBase64, formatCurrencyNumber, validateRequiredFields } from '@/helper/utils';
 import {
   createInventory,
   exchangeCurrency,
@@ -24,7 +24,6 @@ import {
   IPriceAndInventoryForm,
   type PriceAttribute,
   type VolumePrice,
-  type WarehouseItemMetric,
   initialInventoryFormData,
 } from '@/types';
 
@@ -54,7 +53,7 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
-  const { isExtraLarge } = useScreen();
+  const { isExtraLarge, isMobile, isTablet, isLarge } = useScreen();
   const entryFormWrapperStyle = {
     height: 'calc(var(--vh) * 100 - 312px)',
     padding: 0,
@@ -70,77 +69,56 @@ const PriceAndInventoryForm = () => {
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
 
   useEffect(() => {
-    setFormData(initialInventoryFormData);
-    setPriceTableData([]);
+    return () => {
+      setFormData(initialInventoryFormData);
+      setOriginalData(initialInventoryFormData);
+      setPriceTableData([]);
+    };
   }, []);
 
-  const fetchListwarehouseTable = async () => {
-    const res = await getListWarehouseByInventoryId(inventoryId);
-
-    if (isEmpty(res)) return;
-
-    const warehouseRes: WarehouseItemMetric[] = res.warehouses?.map((el) => ({
-      ...el,
-      convert: 0,
-      new_in_stock: el.in_stock,
-    }));
-
-    setOriginalData((prev) => ({
-      ...prev,
-      total_stock: res.total_stock,
-      warehouses: warehouseRes,
-    }));
-
-    setFormData((prev) => ({
-      ...prev,
-      total_stock: res.total_stock,
-      warehouses: warehouseRes,
-    }));
-  };
-
   const fetchInventory = async () => {
+    if (!inventoryId) return;
+
     const res = await getInventory(inventoryId);
 
-    if (res) {
-      const rate = reduce(
-        res.price?.exchange_histories?.map((item: any) => item.rate),
-        (acc, el) => acc * el,
-        1,
-      );
+    if (!res) return;
 
-      const volume_prices = (res.price?.volume_prices || []).map((vp) =>
-        omit(vp, ['created_at', 'updated_at']),
-      );
+    const warehouse = await getListWarehouseByInventoryId(inventoryId);
 
-      const newData = {
-        ...initialInventoryFormData,
-        ...res,
-        image: !isEmpty(res.image) ? [`/${res.image}`] : [],
-        unit_price: inventoryId ? Number(res.price.unit_price) * rate : res.price?.unit_price,
-        unit_type: res.price?.unit_type,
-        price: {
-          ...res.price,
-          volume_prices: volume_prices,
-        },
-      };
+    const rate = reduce(
+      res.price?.exchange_histories?.map((item: any) => item.rate),
+      (acc, el) => acc * el,
+      1,
+    );
 
-      setFormData(newData as IPriceAndInventoryForm);
-      setOriginalData(newData as IPriceAndInventoryForm);
-      setPriceTableData(volume_prices as VolumePrice[]);
-    }
-  };
+    const outOfStock = (res?.on_order ?? 0) - (warehouse?.total_stock ?? 0);
 
-  const fetchData = async () => {
-    if (inventoryId) {
-      await Promise.all([fetchInventory(), fetchListwarehouseTable()]);
-    }
+    const newData: IPriceAndInventoryForm = {
+      ...initialInventoryFormData,
+      ...res,
+      image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
+      unit_price: inventoryId
+        ? Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)) * rate
+        : Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)),
+      unit_type: res?.price?.unit_type,
+      warehouses:
+        warehouse?.warehouses.map((el) => ({ ...el, new_in_stock: el.in_stock, convert: 0 })) ?? [],
+      total_stock: warehouse?.total_stock ?? 0,
+      out_of_stock: outOfStock <= 0 ? 0 : -outOfStock,
+    };
+
+    setFormData(newData);
+    setOriginalData(newData);
+    setPriceTableData(res.price?.volume_prices || []);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchInventory();
   }, [inventoryId]);
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
+
+  console.log('formData', formData);
 
   const preparePayload = () => {
     const fields: (keyof IPriceAndInventoryForm)[] = [
@@ -187,9 +165,9 @@ const PriceAndInventoryForm = () => {
           ...payload,
           ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
           ...((volumePricesChanged || isUnitPriceChanged) && {
-            volume_prices: !payload?.price?.volume_prices?.length
+            volume_prices: !formData.price.volume_prices?.length
               ? []
-              : payload.price.volume_prices.map((el) =>
+              : formData.price.volume_prices?.map((el) =>
                   pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
                 ),
           }),
@@ -222,13 +200,6 @@ const PriceAndInventoryForm = () => {
           'warehouses',
         ],
       ),
-      ...((volumePricesChanged || isShouldHaveUnitPrice) && {
-        volume_prices: !payload.price?.volume_prices?.length
-          ? []
-          : payload.price?.volume_prices?.map((el) =>
-              pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
-            ),
-      }),
     };
 
     return payload;
@@ -256,7 +227,7 @@ const PriceAndInventoryForm = () => {
     return true;
   };
 
-  const handleSave = useCallback(async () => {
+  const handleSave = async () => {
     if (!validateRequiredFields(formData, getRequiredFields()) || !validateVolumePrice()) return;
 
     const payload = preparePayload();
@@ -265,18 +236,13 @@ const PriceAndInventoryForm = () => {
       ? await updateInventory(inventoryId, omit(payload, 'inventory_category_id'))
       : await createInventory(payload);
 
-    if (!res) {
-      fetchData();
-      return;
-    }
-
-    if (inventoryId) {
-      fetchData();
+    if (res) {
+      fetchInventory();
       return;
     }
 
     redirectToInventoryTable();
-  }, [formData, inventoryId, location.state?.categoryId, category, navigate]);
+  };
 
   const handleSaveCurrecy = useCallback(
     async (currency: string) => {
@@ -291,7 +257,9 @@ const PriceAndInventoryForm = () => {
     [location.state?.brandId],
   );
 
-  const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
+  const pageHeaderRender = () => (
+    <InventoryHeader onSaveCurrency={handleSaveCurrecy} hideSearch={true} />
+  );
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
@@ -347,7 +315,9 @@ const PriceAndInventoryForm = () => {
         />
 
         <EntryFormWrapper
-          customClass={`${styles.category_form_entry_wrapper} ${inventoryId ? 'w-full' : 'w-1-2'}`}
+          customClass={`${styles.category_form_entry_wrapper} ${
+            inventoryId || isMobile || isTablet || isLarge ? 'w-full' : 'w-1-2'
+          }`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -359,6 +329,7 @@ const PriceAndInventoryForm = () => {
             },
           })}
           contentStyles={entryFormWrapperStyle}
+          footerClass={styles.category_form_footer}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
           <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>

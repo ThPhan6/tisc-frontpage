@@ -72,4 +72,10 @@
     border-top: none;
     box-shadow: @border-top-black-inset;
   }
+
+  @media screen and (max-width: 576px) {
+    :global(.ant-modal-content) {
+      width: 100%;
+    }
+  }
 }
