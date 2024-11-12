@@ -24,7 +24,6 @@ import {
   IPriceAndInventoryForm,
   type PriceAttribute,
   type VolumePrice,
-  type WarehouseItemMetric,
   initialInventoryFormData,
 } from '@/types';
 
@@ -119,6 +118,8 @@ const PriceAndInventoryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
+  console.log('formData', formData);
+
   const preparePayload = () => {
     const fields: (keyof IPriceAndInventoryForm)[] = [
       'sku',
@@ -135,7 +136,10 @@ const PriceAndInventoryForm = () => {
 
     let payload: Partial<IPriceAndInventoryForm> = {};
 
-    const volumePricesChanged = !isEqual(priceTableData, originalData.price.volume_prices);
+    const volumePricesChanged = !isEqual(
+      formData.price.volume_prices,
+      originalData.price.volume_prices,
+    );
 
     const warehousesChanged = !isEqual(formData.warehouses, originalData.warehouses);
 
@@ -161,9 +165,9 @@ const PriceAndInventoryForm = () => {
           ...payload,
           ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
           ...((volumePricesChanged || isUnitPriceChanged) && {
-            volume_prices: !priceTableData.length
+            volume_prices: !formData.price.volume_prices?.length
               ? []
-              : priceTableData.map((el) =>
+              : formData.price.volume_prices?.map((el) =>
                   pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
                 ),
           }),
