@@ -117,6 +117,17 @@
       right: 3rem;
       z-index: 1;
     }
+
+    :global(.empty-image) {
+      display: none;
+      width: 0 !important;
+      min-width: 0 !important;
+      height: 0 !important;
+    }
+
+    :global(.ant-row) {
+      width: 100px;
+    }
   }
 
   &_input {
@@ -236,11 +247,11 @@
   }
 
   :global(.ant-col-4) {
-    position: absolute;
     right: 8px;
-    width: 100px !important;
-    min-width: 100px !important;
-    height: 100px !important;
+
+    & > div {
+      padding-top: 0 !important;
+    }
   }
 
   :global(.sub-photo-action) {
@@ -255,7 +266,6 @@
   }
 
   :global(.file-preview) {
-    top: -2.6rem;
     width: 100px;
     height: 100px;
   }
@@ -289,11 +299,10 @@
   :global(.ant-col) {
     flex: 0 0 100%;
     max-width: 100%;
+    padding: 0 !important;
   }
 
-  @media (max-width: 567px) {
-    &_sku_description_wrapper {
-      width: 68% !important;
-    }
+  &_sku_description_wrapper {
+    flex-grow: 1;
   }
 }
