@@ -352,7 +352,7 @@ const AccordionMenuItems = ({
   };
 
   return (
-    <div className={`d-flex w-full ${isMobile ? 'flex-col' : ''}`}>
+    <div className={`d-flex w-full ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}>
       {Array.from({ length: levels }, (_, i) => renderColumn(i + 1))}
     </div>
   );
