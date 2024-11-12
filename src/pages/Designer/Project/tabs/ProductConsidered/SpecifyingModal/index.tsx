@@ -234,7 +234,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         image={product.images[0]}
         logo={product.brand?.logo}
         text_1={product.brand?.name}
-        text_2={product.collections.map((collection) => collection.name).join(', ')}
+        text_2={product.collections?.map((collection) => collection.name).join(', ')}
         text_3={product.name}
         text_4={productId === '' ? 'N/A' : productId}
         customClass={styles.customHeader}
