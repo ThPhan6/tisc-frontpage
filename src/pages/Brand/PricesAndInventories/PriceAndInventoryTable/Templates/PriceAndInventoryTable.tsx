@@ -61,12 +61,12 @@ const PriceAndInventoryTable: React.FC = () => {
     }
   };
 
-  // console.log('selectedRows', selectedRows);
-
   const debouncedUpdateInventories = async () => {
     const inventoryPayload: any = {};
     const warehousePayload: any = [];
-    console.log('selectedRows', selectedRows);
+
+    console.log(selectedRows);
+
     forEach(selectedRows, (row, id) => {
       const newWarehouses = (row.warehouses || []).filter((ws) => Number(ws.convert) > 0);
 
@@ -98,6 +98,7 @@ const PriceAndInventoryTable: React.FC = () => {
         });
       }
     });
+
     await updateInventories(inventoryPayload);
 
     if (warehousePayload.length) {
@@ -181,6 +182,7 @@ const PriceAndInventoryTable: React.FC = () => {
           onToggleModal={handleToggleModal}
           onToggleSwitch={handleToggleSwitch}
         />
+
         <InventoryTable
           isEditMode={isEditMode}
           onToggleModal={handleToggleModal}

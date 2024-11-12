@@ -73,6 +73,8 @@ const InventoryTable = ({
   );
 
   const handleSaveOnCell = (id: string, colKey: string, value: string, record: any) => {
+    console.log('record', record);
+
     setSelectedRows((prev) => {
       const payload = {
         ...prev,
@@ -82,8 +84,8 @@ const InventoryTable = ({
           price: {
             ...record[id]?.price,
             ...prev[id]?.price,
+            volume_prices: record.price.volume_prices,
           },
-          volume_prices: record.volume_prices,
           originBackOrder: record.back_order,
         },
       };
