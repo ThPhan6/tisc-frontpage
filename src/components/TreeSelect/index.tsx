@@ -92,6 +92,8 @@ const TreeSelect = <T,>({
   };
 
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
+    console.log('data', data);
+
     if (isEmpty(data)) {
       return (
         <div className={styles.tree_select_no_data}>

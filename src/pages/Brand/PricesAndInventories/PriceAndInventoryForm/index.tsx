@@ -54,7 +54,7 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
-  const { isExtraLarge } = useScreen();
+  const { isExtraLarge, isMobile, isTablet, isLarge } = useScreen();
   const entryFormWrapperStyle = {
     height: 'calc(var(--vh) * 100 - 312px)',
     padding: 0,
@@ -284,7 +284,9 @@ const PriceAndInventoryForm = () => {
     [location.state?.brandId],
   );
 
-  const pageHeaderRender = () => <InventoryHeader onSaveCurrency={handleSaveCurrecy} />;
+  const pageHeaderRender = () => (
+    <InventoryHeader onSaveCurrency={handleSaveCurrecy} hideSearch={true} />
+  );
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>
@@ -340,7 +342,9 @@ const PriceAndInventoryForm = () => {
         />
 
         <EntryFormWrapper
-          customClass={`${styles.category_form_entry_wrapper} ${inventoryId ? 'w-full' : 'w-1-2'}`}
+          customClass={`${styles.category_form_entry_wrapper} ${
+            inventoryId || isMobile || isTablet || isLarge ? 'w-full' : 'w-1-2'
+          }`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -352,6 +356,7 @@ const PriceAndInventoryForm = () => {
             },
           })}
           contentStyles={entryFormWrapperStyle}
+          footerClass={styles.category_form_footer}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
           <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>

@@ -20,31 +20,36 @@ import TreeSelect, { TreeItem } from '@/components/TreeSelect';
 interface InventoryTableActionMenuProps {
   record: PriceAndInventoryColumn;
   tableRef: React.MutableRefObject<any>;
+  groupItems: AccordionItem[];
 }
 
-const InventoryTableActionMenu = ({ record, tableRef }: InventoryTableActionMenuProps) => {
+const wrapperTreeSelectStyle: CSSProperties = {
+  position: 'absolute',
+  left: '7rem',
+  bottom: '4.5rem',
+};
+
+const InventoryTableActionMenu = ({
+  record,
+  tableRef,
+  groupItems,
+}: InventoryTableActionMenuProps) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [currentInventory, setCurrentInventory] = useState<string>('');
+  console.log('groupItems', groupItems);
 
   const treeSelectRef = useRef<HTMLDivElement>(null);
   const location = useLocation<{
     categoryId: string;
     brandId: string;
-    groupItems: AccordionItem[];
   }>();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
   const navigate = useNavigationHandler();
 
   const treeSelectStyle = {
-    padding: isEmpty(location.state.groupItems) ? '0 16px' : '6px 16px',
+    padding: isEmpty(groupItems) ? '0 16px' : '6px 16px',
     width: '420px',
-  };
-
-  const wrapperTreeSelectStyle: CSSProperties = {
-    position: 'absolute',
-    left: '7rem',
-    bottom: '4.5rem',
   };
 
   const handleToggleExpand = () => (newKeys: string[]) => setExpandedKeys(newKeys);
@@ -120,7 +125,7 @@ const InventoryTableActionMenu = ({ record, tableRef }: InventoryTableActionMenu
                     showAllLevels={true}
                     isSingleExpand={false}
                     onItemSelect={handleItemMoveToSelect}
-                    data={location.state?.groupItems}
+                    data={groupItems}
                     defaultExpandedKeys={expandedKeys}
                     onExpandedKeys={handleToggleExpand()}
                   />

@@ -25,7 +25,6 @@ const PriceAndInventoryTable: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
   const [filter, setFilter] = useState('');
-  // const [editedRows, setEditedRows] = useState<PriceAndInventoryColumn | null>(null);
 
   const [inventoryId, setInventoryId] = useState<string>('');
   const [selectedRows, setSelectedRows] = useState<Record<string, PriceAndInventoryColumn>>({});

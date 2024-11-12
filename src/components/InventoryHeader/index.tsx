@@ -26,9 +26,10 @@ export interface DataItem {
 interface InventoryHeaderProps {
   onSearch?: (value: string) => void;
   onSaveCurrency?: (currency: string) => void;
+  hideSearch?: boolean;
 }
 
-const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => {
+const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHeaderProps) => {
   const [isShowModal, setIsShowModal] = useState(false);
   const { summaryFinancialRecords, currencySelected } = useAppSelector((state) => state.summary);
 
@@ -99,16 +100,17 @@ const InventoryHeader = ({ onSearch, onSaveCurrency }: InventoryHeaderProps) => 
           </div>
         ))}
       </section>
-
-      <div className={styles.inventory_header_search_container}>
-        <Input placeholder="Search" disabled={!onSearch} onChange={handleSearchChange} />
-        <div className="d-flex items-center" style={{ opacity: !onSearch ? 0.5 : 1 }}>
-          <BodyText fontFamily="Roboto" level={6} customClass="mr-16 pl-12">
-            Product ID / SKU
-          </BodyText>
-          <MagnifyingGlassIcon />
+      {!hideSearch && (
+        <div className={styles.inventory_header_search_container}>
+          <Input placeholder="Search" disabled={!onSearch} onChange={handleSearchChange} />
+          <div className="d-flex items-center" style={{ opacity: !onSearch ? 0.5 : 1 }}>
+            <BodyText fontFamily="Roboto" level={6} customClass="mr-16 pl-12">
+              Product ID / SKU
+            </BodyText>
+            <MagnifyingGlassIcon />
+          </div>
         </div>
-      </div>
+      )}
 
       <CurrencyModal
         onCancel={handleToggleModal(false)}
