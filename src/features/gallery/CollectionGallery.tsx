@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { CSSProperties, useEffect, useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
@@ -23,6 +23,7 @@ type CollectionGalleryProps = {
   data: string[];
   onChangeImages: (images: any) => void;
   forceUpload?: boolean;
+  containerStyles?: CSSProperties;
 };
 const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
   const isTablet = useScreen().isTablet;
@@ -113,10 +114,10 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
   };
 
   return (
-    <div style={{ padding: isTiscUser || images[0] ? 16 : 0 }}>
+    <div style={{ padding: isTiscUser || images[0] ? 16 : 0, ...props.containerStyles }}>
       <Row className={styles.imagesContainer} gutter={16}>
         {images.map((image: string, index: number) => (
-          <Col span={4} key={index}>
+          <Col span={4} key={index} className={`image-card-${index}`}>
             <div
               style={{
                 width: '100%',
@@ -165,8 +166,9 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
             </div>
           </Col>
         ))}
+
         {emptyImages.slice(0, emptyImages.length - images.length).map(() => {
-          return <Col span={4}></Col>;
+          return <Col span={4} className="empty-image"></Col>;
         })}
         {isEditable && (
           <Col span={4}>
@@ -186,7 +188,7 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
                     <div
                       style={{
                         position: 'absolute',
-                        bottom: '2.5rem',
+                        bottom: '-0.3rem',
                         right: '-1px',
                         background: '#E6E6E6',
                         width: 100,

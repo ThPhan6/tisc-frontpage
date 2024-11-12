@@ -118,8 +118,6 @@ const PriceAndInventoryForm = () => {
 
   const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
-  console.log('formData', formData);
-
   const preparePayload = () => {
     const fields: (keyof IPriceAndInventoryForm)[] = [
       'sku',
@@ -230,10 +228,23 @@ const PriceAndInventoryForm = () => {
   const handleSave = async () => {
     if (!validateRequiredFields(formData, getRequiredFields()) || !validateVolumePrice()) return;
 
-    const payload = preparePayload();
+    let payload = preparePayload();
+
+    if (inventoryId) {
+      payload = omit(payload, 'inventory_category_id');
+    }
+
+    if (isEmpty(payload)) {
+      if (inventoryId) {
+        message.success('Updated successfully');
+        return;
+      }
+
+      return;
+    }
 
     const res = inventoryId
-      ? await updateInventory(inventoryId, omit(payload, 'inventory_category_id'))
+      ? await updateInventory(inventoryId, payload)
       : await createInventory(payload);
 
     if (res) {
@@ -316,7 +327,7 @@ const PriceAndInventoryForm = () => {
 
         <EntryFormWrapper
           customClass={`${styles.category_form_entry_wrapper} ${
-            inventoryId || isMobile || isTablet || isLarge ? 'w-full' : 'w-1-2'
+            inventoryId || isMobile || isTablet ? 'w-full' : 'w-1-2'
           }`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
