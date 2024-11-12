@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
@@ -8,13 +8,14 @@ import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-ico
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
 import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
-import { getListInventories } from '@/services';
+import { getGroupCategories, getListInventories } from '@/services';
 import { isEmpty, omit, orderBy, reduce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 import type { PriceAndInventoryColumn } from '@/types';
 
+import { AccordionItem } from '@/components/AccordionMenu';
 import CustomTable from '@/components/Table';
 import EditableCell from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/EditableCell';
 import InventoryTableActionMenu from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/InventoryTableActionMenu';
@@ -46,8 +47,17 @@ const InventoryTable = ({
   const location = useLocation<{
     categoryId: string;
   }>();
+  const [groupItems, setGroupItems] = useState<AccordionItem[]>([]);
 
   const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+
+  useEffect(() => {
+    const fetchGroupCategories = async () => {
+      const res = await getGroupCategories();
+      if (res) setGroupItems(res);
+    };
+    fetchGroupCategories();
+  }, []);
 
   const rowSelectedValue = (record: PriceAndInventoryColumn, value: string | number) => (
     <span className={` ${selectedRowKeys.includes(record.id) ? 'font-medium' : ''} w-1-2`}>
@@ -167,11 +177,11 @@ const InventoryTable = ({
             (acc, el) => acc * el,
             1,
           );
+
           const unitPrice = Number(
-            formatCurrencyNumber(Number(record.price.unit_price) * rate, undefined, {
-              maximumFractionDigits: 2,
-            }),
+            formatCurrencyNumber(Number(record?.price?.unit_price ?? 0) * rate),
           );
+
           return renderEditableCell(
             {
               ...record,
@@ -205,7 +215,7 @@ const InventoryTable = ({
                 showArrow={false}
                 overlayStyle={{ width: 'fit-content' }}
               >
-                <FileSearchIcon />
+                <FileSearchIcon className="d-flex" />
               </Popover>
             </div>
           </div>
@@ -216,8 +226,8 @@ const InventoryTable = ({
         dataIndex: 'out_stock',
         align: 'center',
         render: (_, item) => {
-          const totalStock = selectedRows?.[item.id]?.total_stock ?? 0;
-          const onOrder = selectedRows?.[item.id]?.on_order ?? 0;
+          const totalStock = selectedRows?.[item.id]?.total_stock ?? item?.total_stock ?? 0;
+          const onOrder = selectedRows?.[item.id]?.on_order ?? item?.on_order ?? 0;
           const quantity = onOrder - totalStock;
 
           return <div className="red-magenta">{quantity <= 0 ? 0 : -quantity}</div>;
@@ -285,11 +295,13 @@ const InventoryTable = ({
         align: 'center',
         width: '5%',
         render: (_, record) => {
-          return <InventoryTableActionMenu record={record} tableRef={tableRef} />;
+          return (
+            <InventoryTableActionMenu groupItems={groupItems} record={record} tableRef={tableRef} />
+          );
         },
       },
     ],
-    [renderEditableCell, rowSelectedValue],
+[isEditMode, JSON.stringify(selectedRows), selectedRowKeys, currencySelected, unitTypeData, groupItems],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {

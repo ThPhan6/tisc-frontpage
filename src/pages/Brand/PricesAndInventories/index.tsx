@@ -122,7 +122,7 @@ const PricesAndInventories = () => {
     return false;
   };
 
-  const pageHeaderRender = () => <InventoryHeader />;
+  const pageHeaderRender = () => <InventoryHeader hideSearch />;
 
   return (
     <PageContainer pageHeaderRender={pageHeaderRender}>

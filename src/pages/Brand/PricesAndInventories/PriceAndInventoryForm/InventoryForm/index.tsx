@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo } from 'react';
+import { type CSSProperties, useEffect } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -7,7 +7,8 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { confirmDelete, useScreen } from '@/helper/common';
 import { convertToNegative } from '@/helper/utils';
-import { cloneDeep, isEmpty, isNil, uniqueId } from 'lodash';
+
+import { cloneDeep, isEmpty, isNil, sum, uniqueId } from 'lodash';
 
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
@@ -19,6 +20,8 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import InfoModal from '@/components/Modal/InfoModal';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+
+import { calculateOutOfStock } from '../../util';
 
 export interface InventoryFormProps {
   isShowModal: ModalType;
@@ -121,7 +124,7 @@ const InventoryForm = ({
 }: InventoryFormProps) => {
   const randomId = uniqueId();
 
-  const { isExtraLarge } = useScreen();
+  const { isExtraLarge, isMobile } = useScreen();
   const disabledAddInventory = !formData.name;
 
   const saveBtnStyle = {
@@ -129,31 +132,19 @@ const InventoryForm = ({
     minWidth: 48,
   };
 
-  useEffect(() => {
-    const calculateStock = () => {
-      const totalStock =
-        formData.warehouses?.reduce((accumulator, item) => {
-          const updatedAccumulator = accumulator + (Number(item.in_stock) || 0);
-          return updatedAccumulator;
-        }, 0) || 0;
-
-      const onOrderValue = Number(formData.on_order) || 0;
-      const outStock = onOrderValue - totalStock;
-
-      setFormData((prev) => ({
-        ...prev,
-        total_stock: totalStock,
-        out_of_stock: outStock <= 0 ? 0 : -outStock,
-      }));
-    };
-
-    calculateStock();
-  }, [formData.warehouses, formData.on_order]);
-
   const handleInventoryFormChange =
     (field: keyof InventoryAttribute) => (event?: React.ChangeEvent<HTMLInputElement>) => {
       const value = event?.target.value;
-      setFormData((prev) => ({ ...prev, [field]: Number(value) }));
+      setFormData((prev) => {
+        return {
+          ...prev,
+          [field]: Number(value),
+          out_of_stock:
+            field === 'on_order'
+              ? calculateOutOfStock(prev.total_stock, Number(value))
+              : prev.out_of_stock,
+        };
+      });
     };
 
   const handleRemoveRow = (id: string) => () => {
@@ -161,7 +152,14 @@ const InventoryForm = ({
       setFormData((prev) => {
         const newWarehouses = prev.warehouses.filter((el: WarehouseItemMetric) => el.id !== id);
 
-        return { ...prev, warehouses: newWarehouses };
+        const totalStock = sum(newWarehouses.map((el) => el.new_in_stock));
+
+        return {
+          ...prev,
+          warehouses: newWarehouses,
+          total_stock: totalStock,
+          out_of_stock: calculateOutOfStock(totalStock, prev.on_order),
+        };
       });
     });
   };
@@ -191,7 +189,14 @@ const InventoryForm = ({
         return el;
       });
 
-      setFormData((prev) => ({ ...prev, warehouses: newWarehouses }));
+      const totalStock = sum(newWarehouses.map((el) => el.new_in_stock));
+
+      setFormData((prev) => ({
+        ...prev,
+        warehouses: newWarehouses,
+        total_stock: totalStock,
+        out_of_stock: calculateOutOfStock(totalStock, formData.on_order),
+      }));
     };
 
   const warehouseColumns: TableColumnsType<WarehouseItemMetric> = [
@@ -358,7 +363,10 @@ const InventoryForm = ({
             onRightIconClick={handleOpenLocationModal}
           />
         </div>
-        <form className="d-flex items-center gap-16 " style={{ height: 56 }}>
+        <form
+          className={`d-flex items-center gap-16 ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}
+          style={{ height: 56 }}
+        >
           <InputGroup
             label="Total Stock :"
             fontLevel={3}

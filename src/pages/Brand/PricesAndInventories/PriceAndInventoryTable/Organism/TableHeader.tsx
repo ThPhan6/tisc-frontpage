@@ -8,7 +8,6 @@ import { useNavigationHandler } from '@/helper/hook';
 
 import { ModalType } from '@/reducers/modal';
 
-import CustomButton from '@/components/Button';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
