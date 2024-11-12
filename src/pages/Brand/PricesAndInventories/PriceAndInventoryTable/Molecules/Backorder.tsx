@@ -50,14 +50,14 @@ const Backorder = ({
     const defaultBackOrder = inventoryItem?.back_order || 0;
     const newBackOrder = sum(Object.values(convert)) || 0;
 
-    if (isEmpty(convert)) {
+    if (isEmpty(convert) || !inventoryItem?.warehouses?.some((el) => convert[el.id]))
       return defaultBackOrder;
-    }
 
     return newBackOrder === 0 ? defaultBackOrder : defaultBackOrder - newBackOrder;
-  }, [JSON.stringify(convert), inventoryItem?.back_order]);
+  }, [JSON.stringify(convert), inventoryItem?.back_order, inventoryItem?.warehouses]);
 
   const isQuantityInValid =
+    totalBackOrder === inventoryItem?.back_order ||
     totalBackOrder > (inventoryItem?.back_order || 0) ||
     totalBackOrder < 0 ||
     Object.values(convert).some((el) => el < 0);
@@ -87,7 +87,21 @@ const Backorder = ({
     };
 
   const handleCancel = () => {
-    setConvert({});
+    setConvert((prev) => {
+      const newConvert = { ...prev };
+
+      const warehouses = inventoryItem?.warehouses.map((el) => el.id) || [];
+
+      /// delete inventory warehouse with negative value
+      forEach(newConvert, (value, key) => {
+        if (warehouses.includes(key) && (value < 0 || totalBackOrder < 0)) {
+          delete newConvert[key];
+        }
+      });
+
+      return newConvert;
+    });
+
     onCancel();
   };
 
@@ -140,6 +154,7 @@ const Backorder = ({
       align: 'center',
       render: (_, item) => (
         <CustomInput
+          style={{ padding: '0px 0px 0px 16px' }}
           value={convert?.[item.id] ?? 0}
           onChange={handleOnChange(item)}
           additionalInputClass="indigo-dark-variant"
@@ -159,7 +174,9 @@ const Backorder = ({
             <CDownLeftIcon className={styles.backorder_heading_icon} />
             <p
               className={`${styles.backorder_heading_count} ${
-                isQuantityInValid ? 'red-magenta' : ''
+                isQuantityInValid && totalBackOrder !== inventoryItem?.back_order
+                  ? 'red-magenta'
+                  : ''
               }`}
             >
               {totalBackOrder}
