@@ -327,7 +327,7 @@ const PriceAndInventoryForm = () => {
 
         <EntryFormWrapper
           customClass={`${styles.category_form_entry_wrapper} ${
-            inventoryId || isMobile || isTablet || isLarge ? 'w-full' : 'w-1-2'
+            inventoryId || isMobile || isTablet ? 'w-full' : 'w-1-2'
           }`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
