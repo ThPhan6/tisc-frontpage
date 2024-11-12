@@ -222,13 +222,6 @@ const PriceAndInventoryForm = () => {
           'warehouses',
         ],
       ),
-      ...((volumePricesChanged || isShouldHaveUnitPrice) && {
-        volume_prices: !payload.price?.volume_prices?.length
-          ? []
-          : payload.price?.volume_prices?.map((el) =>
-              pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
-            ),
-      }),
     };
 
     return payload;
