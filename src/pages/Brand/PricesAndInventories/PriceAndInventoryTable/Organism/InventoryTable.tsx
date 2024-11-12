@@ -178,9 +178,7 @@ const InventoryTable = ({
             1,
           );
 
-          const unitPrice = Number(
-            formatCurrencyNumber(Number(record?.price?.unit_price ?? 0) * rate),
-          );
+          const unitPrice = Number(record?.price?.unit_price ?? 0) * rate;
 
           return renderEditableCell(
             {
@@ -191,7 +189,7 @@ const InventoryTable = ({
               },
             },
             'unit_price',
-            unitPrice,
+            isEditMode ? Number(unitPrice.toFixed(2)) : formatCurrencyNumber(unitPrice),
           );
         },
       },
@@ -301,7 +299,14 @@ const InventoryTable = ({
         },
       },
     ],
-[isEditMode, JSON.stringify(selectedRows), selectedRowKeys, currencySelected, unitTypeData, groupItems],
+    [
+      isEditMode,
+      JSON.stringify(selectedRows),
+      selectedRowKeys,
+      currencySelected,
+      unitTypeData,
+      groupItems,
+    ],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {
