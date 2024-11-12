@@ -9,7 +9,7 @@ import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { map } from 'lodash';
+import { filter, map } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -230,8 +230,16 @@ const PriceForm = ({
     );
   };
 
-  const handleRemoveRow = (id: string) => () =>
+  const handleRemoveRow = (id: string) => () => {
     setTableData((prev) => prev.filter((item) => item.id !== id));
+    setFormData((prev) => ({
+      ...prev,
+      price: {
+        ...prev.price,
+        volume_prices: filter(prev.price.volume_prices, (item: VolumePrice) => item.id !== id),
+      },
+    }));
+  };
 
   const priceColumn: TableColumnsType<VolumePrice> = useMemo(
     () => [
