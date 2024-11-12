@@ -134,13 +134,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         setLiked(newLiked);
         setLikeCount(likeCount + (newLiked ? 1 : -1));
         if (location.pathname == PATH.designerFavourite && data) {
-          const newData = data.map((collection) => {
-            const newProducts = collection.products.filter((item) => item.id !== product.id);
-            return {
-              ...collection,
-              products: newProducts,
-            };
-          });
+          const newData = data
+            .map((collection) => {
+              const newProducts = collection.products.filter((item) => item.id !== product.id);
+              return {
+                ...collection,
+                products: newProducts,
+              };
+            })
+            .filter((collection) => collection.products.length > 0);
           store.dispatch(
             setProductList({
               data: newData,
