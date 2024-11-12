@@ -50,14 +50,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
       id: '1',
       value: currencySelected,
       label: 'BASE CURRENTCY',
-      rightAction: (
-        <SingleRightFormIcon
-          className="cursor-pointer"
-          width={16}
-          height={16}
-          onClick={handleToggleModal(true)}
-        />
-      ),
+      rightAction: <SingleRightFormIcon className="cursor-pointer" width={16} height={16} />,
     },
     {
       id: '2',
@@ -91,7 +84,10 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
             <BodyText customClass={styles.inventory_header_value} fontFamily="Roboto" level={6}>
               {item.value}
             </BodyText>
-            <div className="d-flex items-center gap-8">
+            <div
+              className={`d-flex items-center gap-8 ${item.id === '1' ? 'cursor-pointer' : ''}`}
+              onClick={item.id === '1' ? handleToggleModal(true) : undefined}
+            >
               <BodyText customClass={styles.inventory_header_label} fontFamily="Roboto" level={6}>
                 {item.label}
               </BodyText>

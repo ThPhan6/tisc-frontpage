@@ -7,6 +7,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
+import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
 import { map } from 'lodash';
 
@@ -246,6 +247,11 @@ const PriceForm = ({
         dataIndex: 'discount_price',
         align: 'center',
         width: '20%',
+        render: (value: number) => (
+          <BodyText fontFamily="Roboto" level={5}>
+            {formatCurrencyNumber(value)}
+          </BodyText>
+        ),
       },
       {
         title: 'Discount Rate',

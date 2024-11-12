@@ -177,11 +177,11 @@ const InventoryTable = ({
             (acc, el) => acc * el,
             1,
           );
+
           const unitPrice = Number(
-            formatCurrencyNumber(Number(record.price.unit_price) * rate, undefined, {
-              maximumFractionDigits: 2,
-            }),
+            formatCurrencyNumber(Number(record?.price?.unit_price ?? 0) * rate),
           );
+
           return renderEditableCell(
             {
               ...record,
@@ -226,8 +226,8 @@ const InventoryTable = ({
         dataIndex: 'out_stock',
         align: 'center',
         render: (_, item) => {
-          const totalStock = selectedRows?.[item.id]?.total_stock ?? 0;
-          const onOrder = selectedRows?.[item.id]?.on_order ?? 0;
+          const totalStock = selectedRows?.[item.id]?.total_stock ?? item?.total_stock ?? 0;
+          const onOrder = selectedRows?.[item.id]?.on_order ?? item?.on_order ?? 0;
           const quantity = onOrder - totalStock;
 
           return <div className="red-magenta">{quantity <= 0 ? 0 : -quantity}</div>;
@@ -301,7 +301,7 @@ const InventoryTable = ({
         },
       },
     ],
-    [isEditMode, JSON.stringify(selectedRows), groupItems],
+[isEditMode, JSON.stringify(selectedRows), selectedRowKeys, currencySelected, unitTypeData, groupItems],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {
