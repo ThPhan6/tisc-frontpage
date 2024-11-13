@@ -205,14 +205,16 @@ const AccordionMenuItems = ({
     }
 
     const fullPath = getCategoryPath(clickedItem, [...accordionItems]);
-    history.push({
-      pathname: PATH.brandPricesInventoriesTable,
-      search: `?categories=${encodeURIComponent(fullPath)}`,
-      state: {
-        categoryId: clickedItem.id,
-        brandId: clickedItem.relation_id,
-      },
-    });
+    if (!isEditMode) {
+      history.push({
+        pathname: PATH.brandPricesInventoriesTable,
+        search: `?categories=${encodeURIComponent(fullPath)}`,
+        state: {
+          categoryId: clickedItem.id,
+          brandId: clickedItem.relation_id,
+        },
+      });
+    }
   };
 
   const renderItems = (level: number, parentId: string | null = null) => {

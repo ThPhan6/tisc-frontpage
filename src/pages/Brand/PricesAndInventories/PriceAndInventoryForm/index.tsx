@@ -17,7 +17,7 @@ import {
   getListWarehouseByInventoryId,
   updateInventory,
 } from '@/services';
-import { isEmpty, isEqual, isNil, omit, pick, reduce } from 'lodash';
+import { isEmpty, isEqual, isNil, omit, pick, reduce, sortBy } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
 import {
@@ -143,6 +143,9 @@ const PriceAndInventoryForm = () => {
 
     const isUnitPriceChanged = !isEqual(formData.unit_price, originalData.unit_price);
 
+    console.log('volumePricesChanged', volumePricesChanged);
+    console.log('isUnitPriceChanged', isUnitPriceChanged);
+
     if (volumePricesChanged) {
       payload.price = {
         ...payload.price,
@@ -211,6 +214,16 @@ const PriceAndInventoryForm = () => {
     })();
   };
 
+  const isRangeValid = (ranges: VolumePrice[]) => {
+    for (let i = 1; i < ranges.length; i++) {
+      if (Number(ranges[i].min_quantity) <= Number(ranges[i - 1].max_quantity)) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const validateVolumePrice = () => {
     const isDiscountPriceChanged =
       !isNil(formData.min_quantity) ||
@@ -219,6 +232,32 @@ const PriceAndInventoryForm = () => {
 
     if (isDiscountPriceChanged) {
       message.warn('There is a draft volume that has not been added yet. Please check it.');
+      return false;
+    }
+
+    let isValidVolumePrice = true;
+    const volumePrices = sortBy(formData.price.volume_prices, 'min_quantity');
+
+    volumePrices.forEach((el, index) => {
+      if (
+        el.min_quantity === 0 ||
+        el.max_quantity === 0 ||
+        el.discount_rate === 0 ||
+        (el?.max_quantity || 0) - (el?.min_quantity || 0) <= 1
+      ) {
+        isValidVolumePrice = false;
+      }
+    });
+
+    if (!isValidVolumePrice) {
+      message.warn('Please check the volume price');
+      return false;
+    }
+
+    isValidVolumePrice = isRangeValid(volumePrices);
+
+    if (!isValidVolumePrice) {
+      message.warn('Please check the volume price');
       return false;
     }
 
@@ -252,7 +291,9 @@ const PriceAndInventoryForm = () => {
       return;
     }
 
-    redirectToInventoryTable();
+    if (!inventoryId && res) {
+      redirectToInventoryTable();
+    }
   };
 
   const handleSaveCurrecy = useCallback(
