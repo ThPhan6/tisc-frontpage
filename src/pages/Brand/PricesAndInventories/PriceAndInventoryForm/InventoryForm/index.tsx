@@ -431,7 +431,7 @@ const InventoryForm = ({
           </div>
         </form>
 
-        <div style={{ marginTop: 16 }} className="pb-4">
+        <div style={{ marginTop: 0 }}>
           <InputGroup
             label="Location :"
             fontLevel={3}
@@ -443,6 +443,7 @@ const InventoryForm = ({
             hasHeight
             colorPrimaryDark
             colorRequired="tertiary"
+            customClass="mb-8-px"
             onRightIconClick={handleOpenLocationModal}
           />
         </div>
