@@ -9,7 +9,7 @@ import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { filter, map } from 'lodash';
+import { filter, map, sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -373,7 +373,7 @@ const PriceForm = ({
   const volumnDiscountInput: InputGroupProps[] = useMemo(
     () => [
       {
-        prefix: 'Price',
+        prefix: currencySelected,
         value: formData.discount_price ? formData.discount_price : '0.00',
         customClass: 'discount-price-area',
         readOnly: true,
@@ -383,7 +383,7 @@ const PriceForm = ({
       },
       {
         placeholder: '%',
-        prefix: '% Rate',
+        prefix: 'Discount %',
         value: formData.discount_rate ? formData.discount_rate : undefined,
         onChange: handleFormChange('discount_rate'),
         fontLevel: 3,
@@ -392,7 +392,7 @@ const PriceForm = ({
         readOnly: !formData.unit_price,
       },
     ],
-    [formData.discount_price, formData.discount_rate, formData.unit_price],
+    [formData.discount_price, formData.discount_rate, formData.unit_price, currencySelected],
   );
 
   const minMaxInput: InputGroupProps[] = useMemo(
@@ -586,7 +586,7 @@ const PriceForm = ({
         </div>
 
         <Table
-          dataSource={tableData}
+          dataSource={sortBy(tableData, 'min_quantity')}
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}

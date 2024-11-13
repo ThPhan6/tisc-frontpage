@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect } from 'react';
+import { type CSSProperties } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -7,8 +7,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { confirmDelete, useScreen } from '@/helper/common';
 import { convertToNegative } from '@/helper/utils';
-
-import { cloneDeep, isEmpty, isNil, sum, uniqueId } from 'lodash';
+import { isNil, sum, uniqueId } from 'lodash';
 
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
@@ -348,21 +347,7 @@ const InventoryForm = ({
             <WarningIcon className="ml-16 cursor-pointer" onClick={onToggleModal('Inventory')} />
           </Title>
         </section>
-        <div style={{ marginTop: '-15px' }} className="pb-4">
-          <InputGroup
-            label="Location :"
-            fontLevel={3}
-            placeholder="select from the list"
-            value={formData.name}
-            hasBoxShadow
-            hasPadding
-            rightIcon
-            hasHeight
-            colorPrimaryDark
-            colorRequired="tertiary"
-            onRightIconClick={handleOpenLocationModal}
-          />
-        </div>
+
         <form
           className={`d-flex items-center gap-16 ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}
           style={{ height: 56 }}
@@ -445,6 +430,22 @@ const InventoryForm = ({
             />
           </div>
         </form>
+
+        <div style={{ marginTop: 16 }} className="pb-4">
+          <InputGroup
+            label="Location :"
+            fontLevel={3}
+            placeholder="select from the list"
+            value={formData.name}
+            hasBoxShadow
+            hasPadding
+            rightIcon
+            hasHeight
+            colorPrimaryDark
+            colorRequired="tertiary"
+            onRightIconClick={handleOpenLocationModal}
+          />
+        </div>
 
         <div className="pb-16 border-bottom-black-inset text-right">
           <CustomSaveButton
