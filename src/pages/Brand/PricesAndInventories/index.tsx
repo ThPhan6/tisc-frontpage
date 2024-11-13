@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
+import { message } from 'antd';
 
 import { confirmDelete } from '@/helper/common';
 import {
@@ -43,6 +44,23 @@ const PricesAndInventories = () => {
       parent_id: parentId || '',
     };
 
+    const checkDuplicateList = accordionItems.filter((item) => {
+      if (level === 1) {
+        return item.parent_id === null;
+      }
+
+      return item.parent_id === parentId;
+    });
+
+    const nameDuplicated = checkDuplicateList.some(
+      (cateEl) => cateEl.name.toLowerCase().trim() === value.toLowerCase().trim(),
+    );
+
+    if (nameDuplicated) {
+      message.warn('Category name already exists');
+      return false;
+    }
+
     const res: any = await createDynamicCategory(newItem);
 
     if (res) {
@@ -68,7 +86,22 @@ const PricesAndInventories = () => {
       });
     });
   };
+
   const handleUpdate = async (id: string, value: string) => {
+    const currentCate = accordionItems.find((item) => item.id === id);
+    const checkDuplicateList = accordionItems.filter(
+      (item) => item.parent_id === currentCate?.parent_id,
+    );
+
+    const nameDuplicated = checkDuplicateList.some(
+      (cateEl) => cateEl.name.toLowerCase().trim() === value.toLowerCase().trim(),
+    );
+
+    if (nameDuplicated) {
+      message.warn('Category name already exists');
+      return false;
+    }
+
     const res = await updateDynamicCategory(id, value);
     if (res) {
       setAccordionItems((prev) =>
