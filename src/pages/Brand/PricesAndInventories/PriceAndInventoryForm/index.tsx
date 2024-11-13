@@ -286,14 +286,17 @@ const PriceAndInventoryForm = () => {
       ? await updateInventory(inventoryId, payload)
       : await createInventory(payload);
 
-    if (res) {
-      fetchInventory();
+    if (!res) {
       return;
     }
 
-    if (!inventoryId && res) {
+    if (!inventoryId) {
       redirectToInventoryTable();
+      return;
     }
+
+    fetchInventory();
+    return;
   };
 
   const handleSaveCurrecy = useCallback(
