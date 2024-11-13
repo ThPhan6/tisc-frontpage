@@ -392,7 +392,7 @@ const PriceForm = ({
         readOnly: !formData.unit_price,
       },
     ],
-    [formData.discount_price, formData.discount_rate, formData.unit_price],
+    [formData.discount_price, formData.discount_rate, formData.unit_price, currencySelected],
   );
 
   const minMaxInput: InputGroupProps[] = useMemo(
