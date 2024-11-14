@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { DATABASE_HEADER_MATCHING } from '@/features/Import/constants';
 import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
 
@@ -41,6 +42,8 @@ const InventoryTable = ({
   onToggleModal,
   callbackFinishApi,
 }: InventoryTableProps) => {
+  console.log('DATABASE_HEADER_MATCHING', DATABASE_HEADER_MATCHING);
+
   const { currencySelected } = useAppSelector((state) => state.summary);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
