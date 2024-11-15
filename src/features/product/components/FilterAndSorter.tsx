@@ -478,7 +478,7 @@ export const useProductListFilterAndSorter = (fetchs: {
       <CustomDropDown
         items={items}
         viewAllTop={haveViewAll}
-        textCapitalize={false}
+        textCapitalize={true}
         placement={position ?? 'bottomLeft'}
         menuStyle={{ height: 'max-content', width: 240 }}
         {...customDropDownProps}
