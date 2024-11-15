@@ -42,8 +42,6 @@ const InventoryTable = ({
   onToggleModal,
   callbackFinishApi,
 }: InventoryTableProps) => {
-  console.log('DATABASE_HEADER_MATCHING', DATABASE_HEADER_MATCHING);
-
   const { currencySelected } = useAppSelector((state) => state.summary);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
