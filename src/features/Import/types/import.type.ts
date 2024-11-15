@@ -1,3 +1,7 @@
+export enum ImportFileType {
+  CSV = 'text/csv',
+}
+
 export enum ImportStep {
   STEP_1,
   STEP_2,
