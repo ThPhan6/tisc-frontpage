@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { Col, Row } from 'antd';
 
 import { showImageUrl } from '@/helper/utils';
-import { useCheckBasicOptionForm } from '@/pages/TISC/Product/Basis/hook';
+import { ProductBasisFormType, useCheckBasicOptionForm } from '@/pages/TISC/Product/Basis/hook';
 import { useCheckAttributeForm } from '@/pages/TISC/Product/BrandAttribute/hook';
 
 import { AttributeSubForm, SubBasisOption } from '@/types';
@@ -19,9 +19,10 @@ interface SubItemOptionProps {
   is_have_image?: boolean;
   subItemOption: SubBasisOption;
   onChange: (subItemOption: SubBasisOption) => void;
+  type?: ProductBasisFormType;
 }
 
-export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange }) => {
+export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange, type }) => {
   const isBasicOption = useCheckBasicOptionForm();
   const { isAttribute } = useCheckAttributeForm();
 
@@ -71,7 +72,7 @@ export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange 
                 name={`value_${order}`}
                 size="small"
                 autoWidth
-                defaultWidth={40}
+                defaultWidth={type === ProductBasisFormType.options ? 200 : 40}
                 containerClass={styles.form_input__formula}
                 onChange={handleChangeInput}
                 value={subItemOption[`value_${order}`]}
