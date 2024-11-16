@@ -55,7 +55,7 @@ import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
 import { MainOptionItem } from './Option/components/OptionItem';
 import { PresetHeader, PresetTabKey } from './Preset/components/PresetHeader';
 import { DragEndResultProps } from '@/components/Drag';
-import { EntryFormWrapper } from '@/components/EntryForm';
+import { EntryFormWrapper, contentId } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -1057,6 +1057,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
                 handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
                 handleCopyMainOption={handleOnClickCopy}
                 handleDeleteMainSubOption={() => handleOnClickDelete(index)}
+                containerId={contentId}
+                type={type}
               />
               {provided.placeholder}
             </div>
@@ -1125,9 +1127,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
             )}
 
             {/* render main content entry form */}
-            <DragDropContext onDragEnd={onDragEnd}>
-              {data.subs.map(renderEntryFormItem)}
-            </DragDropContext>
+            <div style={{ height: 9999 }}>
+              <DragDropContext onDragEnd={onDragEnd}>
+                {data.subs.map(renderEntryFormItem)}
+              </DragDropContext>
+            </div>
           </FormOptionGroupHeaderContext.Provider>
         </EntryFormWrapper>
       </div>
