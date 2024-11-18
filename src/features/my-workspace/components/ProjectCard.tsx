@@ -54,8 +54,6 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   ]);
 
   const { isMobile } = useScreen();
-  const [firstLoad, setFirstLoad] = useState<boolean>(true);
-  const [delayDuration, setDelayDuration] = useState<number>(20000);
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
@@ -231,17 +229,6 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 
   if (loading) {
     return null;
-  }
-
-  if (firstLoad && !data.length) {
-    setTimeout(() => {
-      setFirstLoad(false);
-    }, delayDuration);
-    return (
-      <div className={loadingStyles.container}>
-        <Spin size="large" />
-      </div>
-    );
   }
 
   return (

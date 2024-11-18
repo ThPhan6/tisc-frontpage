@@ -116,28 +116,32 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
     if (newCollapse[subOption.id]) {
       delete newCollapse[subOption.id];
-      const formContainer = containerId ? document.getElementById(containerId) : undefined;
-      const groupContent = document.getElementById(`${subOption.id}_content`);
-      if (formContainer) {
-        formContainer.style.overflowY = 'auto';
-        if (groupContent) {
-          groupContent.style.height = 'unset';
-          groupContent.style.overflowY = 'unset';
+      if (type === ProductBasisFormType.options) {
+        const formContainer = containerId ? document.getElementById(containerId) : undefined;
+        const groupContent = document.getElementById(`${subOption.id}_content`);
+        if (formContainer) {
+          formContainer.style.overflowY = 'auto';
+          if (groupContent) {
+            groupContent.style.height = 'unset';
+            groupContent.style.overflowY = 'unset';
+          }
         }
       }
     } else {
       newCollapse[subOption.id] = true;
-      const formContainer = containerId ? document.getElementById(containerId) : undefined;
-      const groupContainer = document.getElementById(subOption.id);
-      const groupContent = document.getElementById(`${subOption.id}_content`);
-      if (formContainer) {
-        const formTop = formContainer.getBoundingClientRect().top;
-        const groupTop = groupContainer.getBoundingClientRect().top;
-        formContainer.scrollTop += groupTop - formTop - 60;
-        formContainer.style.overflowY = 'hidden';
-        if (groupContent) {
-          groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
-          groupContent.style.overflowY = 'auto';
+      if (type === ProductBasisFormType.options) {
+        const formContainer = containerId ? document.getElementById(containerId) : undefined;
+        const groupContainer = document.getElementById(subOption.id);
+        const groupContent = document.getElementById(`${subOption.id}_content`);
+        if (formContainer) {
+          const formTop = formContainer.getBoundingClientRect().top;
+          const groupTop = groupContainer.getBoundingClientRect().top;
+          formContainer.scrollTop += groupTop - formTop - 60;
+          formContainer.style.overflowY = 'hidden';
+          if (groupContent) {
+            groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
+            groupContent.style.overflowY = 'auto';
+          }
         }
       }
     }
