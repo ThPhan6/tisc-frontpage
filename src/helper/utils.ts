@@ -641,3 +641,21 @@ export const keepLastObjectOccurrence = (inputObj: Object) => {
 
   return finalResult;
 };
+
+export const downloadFile = (data: BlobPart[], fileName: string, options?: BlobPropertyBag) => {
+  try {
+    const blob = new Blob(data, options);
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  } catch (error) {
+    console.error('Error converting file to blob:', error);
+  }
+};

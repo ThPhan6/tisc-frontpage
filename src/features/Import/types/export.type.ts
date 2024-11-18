@@ -18,5 +18,5 @@ export enum InventoryExportType {
 
 export interface ExportRequest {
   category_id: string;
-  types: number[];
+  types: InventoryExportType[];
 }

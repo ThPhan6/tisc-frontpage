@@ -1,5 +1,6 @@
 import { RcFile, UploadFile } from 'antd/es/upload';
 
+import { InventoryExportType } from '@/features/Import/types/export.type';
 import { ImportStep } from '@/features/Import/types/import.type';
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
@@ -13,7 +14,7 @@ interface ImportState {
   headers: string[];
   fileUploaded: UploadFile<RcFile> | null;
   dataImport: any[];
-  selectedFiels: number[];
+  exportType: InventoryExportType[];
 }
 
 const initialState: ImportState = {
@@ -24,7 +25,7 @@ const initialState: ImportState = {
   headerMatching: null,
   fileResult: null,
   fileUploaded: null,
-  selectedFiels: [],
+  exportType: [],
 };
 
 const importSlice = createSlice({
@@ -57,7 +58,7 @@ const importSlice = createSlice({
       return initialState;
     },
     setSelectedFields(state, action: PayloadAction<number[]>) {
-      state.selectedFiels = action.payload;
+      state.exportType = action.payload;
     },
   },
 });

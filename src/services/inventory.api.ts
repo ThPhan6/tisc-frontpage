@@ -1,29 +1,27 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
 import { ExportRequest } from '@/features/Import/types/export.type';
+import { IPriceAndInventoryForm } from '@/types';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-
-import { IPriceAndInventoryForm } from '@/types';
-
 export const exportInventoryCSV = async (data: ExportRequest) => {
   showPageLoading();
-  return request<{ data: any }>(`/api/inventory/export`, {
+  return request<string>(`/api/inventory/export`, {
     method: 'POST',
     data,
   })
     .then((res) => {
       message.success('Export CSV successfully');
       hidePageLoading();
-      return res.data;
+      return res;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? 'Export CSV failed');
       hidePageLoading();
-      return {};
+      return '';
     });
 };
 

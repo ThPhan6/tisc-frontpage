@@ -3,15 +3,15 @@ import { FC, useEffect, useState } from 'react';
 import Modal, { ModalProps } from 'antd/lib/modal/Modal';
 import { useLocation } from 'umi';
 
-import { useExport } from '@/features/Import/hooks/useExport';
 import { useScreen } from '@/helper/common';
-import { importInventoryCSV } from '@/services/inventory.api';
-import { isEmpty } from 'lodash';
-import { pick } from 'lodash';
+import { downloadFile } from '@/helper/utils';
+import { exportInventoryCSV, importInventoryCSV } from '@/services/inventory.api';
+import { isEmpty, pick } from 'lodash';
 
 import { ImportStep } from './types/import.type';
 import { ImportExportTab, LIST_TAB } from './types/tab.type';
 import { resetState, setStep } from '@/features/Import/reducers';
+import { ExportRequest } from '@/features/Import/types/export.type';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -34,14 +34,14 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
-  const { selectedFiels, handleExport } = useExport();
+  const exportType = useAppSelector((s) => s.import.exportType);
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
   const [importError, setImportError] = useState(false);
 
   const isImport = activeKey === 'import';
   const disabledImportBtn = !dataImport.length || step !== ImportStep.STEP_3;
-  const disabledExportBtn = isEmpty(selectedFiels);
+  const disabledExportBtn = isEmpty(exportType);
 
   const hasDataError = Object.keys(error).length > 0 && step === ImportStep.STEP_3;
   const hasError = hasDataError || importError;
@@ -82,6 +82,15 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
     onSave?.('import', imported);
   };
 
+  const handleExport = async () => {
+    const payload: ExportRequest = {
+      category_id: location.state.categoryId,
+      types: exportType,
+    };
+    const res = await exportInventoryCSV(payload);
+    downloadFile([res], 'export_inventory.csv', { type: 'text/csv' });
+  };
+
   const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
     clearState();
     props.onCancel?.(e);
@@ -93,7 +102,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       return;
     }
 
-    handleExport(location.state.categoryId)();
+    handleExport();
     onSave?.('export');
   };
 

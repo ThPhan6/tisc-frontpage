@@ -5,12 +5,14 @@ import { useExport } from '@/features/Import/hooks/useExport';
 import { includes, map } from 'lodash';
 
 import { InventoryExportType } from '@/features/Import/types/export.type';
+import { useAppSelector } from '@/reducers';
 
 import { RobotoBodyText } from '@/components/Typography';
 import styles from '@/features/Import/components/Export.less';
 
 export const ExportCSV = () => {
-  const { selectedFiels, handleCheckboxChange } = useExport();
+  const exportType = useAppSelector((state) => state.import.exportType);
+  const { handleCheckboxChange } = useExport();
 
   const handleStopProgation = () => (event: React.MouseEvent<HTMLElement, MouseEvent>) =>
     event.stopPropagation();
@@ -31,15 +33,14 @@ export const ExportCSV = () => {
 
       <form className={styles.export_form}>
         {map(INVENTORY_EXPORT_TYPE_LABELS, (el) => {
-          const exportType = Number(el.key) as InventoryExportType;
-
-          const checked = includes(selectedFiels, exportType);
+          const type = Number(el.key) as InventoryExportType;
+          const checked = includes(exportType, type);
 
           return (
             <article
               key={el.key}
               className="d-flex items-center justify-between"
-              onClick={handleCheckboxChange(exportType)}
+              onClick={handleCheckboxChange(type)}
             >
               <RobotoBodyText
                 level={6}
