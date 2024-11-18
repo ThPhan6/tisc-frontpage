@@ -8,6 +8,9 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
 import { useNavigationHandler } from '@/helper/hook';
 
+import { resetState } from '@/features/Import/reducers';
+import store from '@/reducers';
+
 import CustomButton from '@/components/Button';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -19,11 +22,13 @@ import { ImportExportModal } from '@/features/Import';
 interface PriceAndInventoryTableHeaderProps {
   isEditMode: boolean;
   onToggleSwitch: () => void;
+  onSave: (type: 'import' | 'export', isSaved?: boolean) => void;
 }
 
 const PriceAndInventoryTableHeader = ({
   isEditMode,
   onToggleSwitch,
+  onSave,
 }: PriceAndInventoryTableHeaderProps) => {
   const navigate = useNavigationHandler();
   const location = useLocation<{
@@ -36,6 +41,7 @@ const PriceAndInventoryTableHeader = ({
   const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = (isOpen: boolean) => () => {
+    store.dispatch(resetState());
     setOpenModal(isOpen);
   };
 
@@ -123,7 +129,7 @@ const PriceAndInventoryTableHeader = ({
         }
       />
 
-      <ImportExportModal open={openModal} onCancel={handleOpenModal(false)} />
+      <ImportExportModal open={openModal} onCancel={handleOpenModal(false)} onSave={onSave} />
     </>
   );
 };

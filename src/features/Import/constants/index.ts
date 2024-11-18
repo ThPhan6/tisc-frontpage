@@ -1,4 +1,10 @@
-import { DatabaseHeaderMatching, InventoryField } from '@/features/Import/types/import.type';
+import { startCase } from 'lodash';
+
+import {
+  DatabaseHeaderMatching,
+  ImportDatabaseHeader,
+  InventoryField,
+} from '@/features/Import/types/import.type';
 
 const generateLabel = (field: keyof InventoryField) => {
   switch (field) {
@@ -45,3 +51,51 @@ export const DATABASE_HEADER_MATCHING: DatabaseHeaderMatching[] = keys.map((key,
   label: generateLabel(key as keyof InventoryField),
   value: key as keyof InventoryField,
 }));
+
+export const getDatabaseHeader = (
+  field: string,
+  handleSelectDatabaseHeader: (field: string, header: ImportDatabaseHeader) => void,
+) => [
+  {
+    key: ImportDatabaseHeader.PRODUCT_ID,
+    label: 'Product ID',
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.PRODUCT_ID);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.DESCRIPTION,
+    label: startCase(ImportDatabaseHeader.DESCRIPTION),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.DESCRIPTION);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.UNIT_PRICE,
+    label: startCase(ImportDatabaseHeader.UNIT_PRICE),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_PRICE);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.UNIT_TYPE,
+    label: startCase(ImportDatabaseHeader.UNIT_TYPE),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_TYPE);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.ON_ORDER,
+    label: startCase(ImportDatabaseHeader.ON_ORDER),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.ON_ORDER);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.BACK_ORDER,
+    label: startCase(ImportDatabaseHeader.BACK_ORDER),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.BACK_ORDER);
+    },
+  },
+];
