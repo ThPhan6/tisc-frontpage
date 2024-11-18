@@ -48,7 +48,7 @@ export async function getBrandWorkspace(
   callback: (data: ProjecTrackingList[]) => void,
 ) {
   showPageLoading();
-  request(`/api/brand/workspace`, { method: 'GET', params })
+  await request(`/api/brand/workspace`, { method: 'GET', params })
     .then((response: { data: { projectTrackings: ProjecTrackingList[] } }) => {
       callback(response.data.projectTrackings);
       hidePageLoading();
