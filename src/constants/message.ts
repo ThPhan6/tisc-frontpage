@@ -22,6 +22,7 @@ export const MESSAGE_ERROR = {
   DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
   DISTRIBUTOR_UNAVAILABLE:
     'The product seems not available for the project location, please verify with the Brand company for more information.',
+  READING_FILE: 'Something went wrong while reading the file.',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -64,6 +65,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_INVENTORY_ERROR: 'Get inventory error',
   MOVE_INVENTORY_SUCCESS: 'Move inventory successfully',
   MOVE_INVENTORY_ERROR: 'Move inventory error',
+  IMPORT_INVENTORY_SUCCESS: 'Import inventory successfully',
+  IMPORT_INVENTORY_ERROR: 'Import inventory error',
 
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',

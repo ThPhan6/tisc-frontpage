@@ -170,6 +170,13 @@ const PriceAndInventoryTable: React.FC = () => {
     setSelectedRows({});
   };
 
+  const handleImportExport = (type: 'import' | 'export', isSaved?: boolean) => {
+    if (type === 'import' && isSaved) {
+      tableRef.current.reload();
+      return;
+    }
+  };
+
   const pageHeaderRender = () => (
     <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrecy} />
   );
@@ -179,8 +186,8 @@ const PriceAndInventoryTable: React.FC = () => {
       <section className={styles.category_table}>
         <PriceAndInventoryTableHeader
           isEditMode={isEditMode}
-          onToggleModal={handleToggleModal}
           onToggleSwitch={handleToggleSwitch}
+          onSave={handleImportExport}
         />
 
         <InventoryTable

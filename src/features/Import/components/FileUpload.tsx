@@ -14,15 +14,18 @@ const { Dragger } = Upload;
 interface FileUploadProps extends UploadProps {}
 
 export const FileUpload: FC<FileUploadProps> = ({ ...props }) => {
-  const { handleUploadFile } = useImport();
+  const { fileUploaded, handleBeforeUpload, handleChangeUpload, handleCustomRequest } = useImport();
 
   return (
     <Dragger
       accept=".csv"
       multiple={false}
       maxCount={1}
+      showUploadList={false}
       {...props}
-      beforeUpload={handleUploadFile}
+      beforeUpload={handleBeforeUpload}
+      onChange={handleChangeUpload}
+      customRequest={handleCustomRequest}
       style={{ width: 'fit-content', margin: '116px auto', border: 'none', background: '#fff' }}
     >
       <div className="d-flex flex-col items-center" style={{ gap: 32 }}>
@@ -36,6 +39,12 @@ export const FileUpload: FC<FileUploadProps> = ({ ...props }) => {
             Support only CSV files
           </BodyText>
         </div>
+
+        {fileUploaded?.name ? (
+          <BodyText fontFamily="Roboto" level={5}>
+            {fileUploaded.name}
+          </BodyText>
+        ) : null}
 
         <CustomButton
           style={{
