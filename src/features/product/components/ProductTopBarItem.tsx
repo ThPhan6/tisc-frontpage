@@ -195,7 +195,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
               disabled={item?.disabled}
               icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
             >
-              {item?.label}
+              {textCapitalize ? capitalize(item?.label) : item?.label}
             </Menu.Item>
           );
         })}
