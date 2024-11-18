@@ -11,6 +11,7 @@ interface ImportState {
   data: any[];
   errors: any[];
   fileUploaded: RcFile | null;
+  selectedFiels: number[];
 }
 
 const initialState: ImportState = {
@@ -20,6 +21,7 @@ const initialState: ImportState = {
   data: [],
   errors: [],
   fileUploaded: null,
+  selectedFiels: [],
 };
 
 const importSlice = createSlice({
@@ -32,9 +34,12 @@ const importSlice = createSlice({
     setFileUploaded(state, action: PayloadAction<RcFile>) {
       state.fileUploaded = action.payload;
     },
+    setSelectedFields(state, action: PayloadAction<number[]>) {
+      state.selectedFiels = action.payload;
+    },
   },
 });
 
-export const { setStep, setFileUploaded } = importSlice.actions;
+export const { setStep, setFileUploaded, setSelectedFields } = importSlice.actions;
 
 export const importReducer = importSlice.reducer;

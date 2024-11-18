@@ -1,0 +1,46 @@
+.export {
+  padding: 0 16px 8px 16px;
+
+  &_desc {
+    width: 100%;
+    max-width: 544px;
+    font-weight: 500;
+  }
+
+  &_heading_wrapper {
+    margin-top: 8px;
+    background: @mono-color-light;
+
+    &_text {
+      padding: 4px 16px;
+      font-weight: 500;
+    }
+  }
+
+  &_form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 570px;
+    padding: 8px 16px 12px 16px;
+    overflow-y: auto;
+    cursor: pointer;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &_wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &_label {
+      &:hover {
+        font-weight: 500;
+      }
+    }
+  }
+}
