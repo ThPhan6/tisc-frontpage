@@ -1,15 +1,12 @@
 import { FC, useEffect, useState } from 'react';
 
-import { useForm } from 'antd/lib/form/Form';
 import Modal, { ModalProps } from 'antd/lib/modal/Modal';
 import { useLocation } from 'umi';
 
-import { useImport } from './hooks/useImport';
 import { useExport } from '@/features/Import/hooks/useExport';
-import { isEmpty } from 'lodash';
-
 import { useScreen } from '@/helper/common';
 import { importInventoryCSV } from '@/services/inventory.api';
+import { isEmpty } from 'lodash';
 import { pick } from 'lodash';
 
 import { ImportStep } from './types/import.type';
@@ -29,19 +26,6 @@ interface ImportExportModalProps extends ModalProps {
   onSave?: (type: 'import' | 'export', isSaved?: boolean) => void;
 }
 
-export const ImportExportModal: FC<ImportExportModalProps> = ({ ...props }) => {
-  const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
-
-  const { handleImport } = useImport();
-  const { selectedFiels, handleExport } = useExport();
-  const location = useLocation<{
-    categoryId: string;
-  }>();
-
-  const isImport = activeKey === 'import';
-  const disabledImportBtn = !dataImport.length || step !== ImportStep.STEP_3;
-  const disabledExportBtn = isEmpty(selectedFiels);
-
 export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props }) => {
   const { isTablet } = useScreen();
   const location = useLocation<{ categoryId: string }>();
@@ -50,9 +34,14 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
+  const { selectedFiels, handleExport } = useExport();
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
   const [importError, setImportError] = useState(false);
+
+  const isImport = activeKey === 'import';
+  const disabledImportBtn = !dataImport.length || step !== ImportStep.STEP_3;
+  const disabledExportBtn = isEmpty(selectedFiels);
 
   const hasDataError = Object.keys(error).length > 0 && step === ImportStep.STEP_3;
   const hasError = hasDataError || importError;
@@ -104,6 +93,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       return;
     }
 
+    handleExport(location.state.categoryId)();
     onSave?.('export');
   };
 
@@ -167,24 +157,18 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
                 </BodyText>
               </CustomButton>
             ) : null}
-          <div className="footer">
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              disabled={isImport ? disabledImportBtn : disabledExportBtn}
-            >
-              <BodyText
-                fontFamily="Roboto"
-                level={6}
-                onClick={isImport ? handleImport : handleExport(location.state.categoryId)}
+            <div className="footer">
+              <CustomButton
+                size="small"
+                variant="primary"
+                properties="rounded"
+                disabled={isImport ? disabledImportBtn : disabledExportBtn}
               >
-                {isImport ? 'Import' : 'Export'}
-            >
-              <BodyText fontFamily="Roboto" level={6} onClick={handleSave}>
-                {activeKey === 'import' ? 'Import' : 'Export'}
-              </BodyText>
-            </CustomButton>
+                <BodyText fontFamily="Roboto" level={6} onClick={handleSave}>
+                  {activeKey === 'import' ? 'Import' : 'Export'}
+                </BodyText>
+              </CustomButton>
+            </div>
           </div>
         </div>
       </div>

@@ -7,18 +7,13 @@ import { ParseResult } from 'papaparse';
 
 interface ImportState {
   step: ImportStep;
-  importedCSVHeaders: string[];
-  headerMatching: Record<string, string> | null;
-  data: any[];
-  errors: any[];
-  fileUploaded: RcFile | null;
-  selectedFiels: number[];
   headerMatching: Record<string, string> | null; /// key: header, value: database header
   error: Record<string, any[]> | null; /// key: header, value: error
   fileResult: ParseResult<RcFile> | null;
   headers: string[];
   fileUploaded: UploadFile<RcFile> | null;
-  dataImport: any[]; /// final data mapping to be imported
+  dataImport: any[];
+  selectedFiels: number[];
 }
 
 const initialState: ImportState = {
@@ -58,16 +53,14 @@ const importSlice = createSlice({
     setErrors(state, action: PayloadAction<Record<string, any[]> | null>) {
       state.error = action.payload;
     },
-    setSelectedFields(state, action: PayloadAction<number[]>) {
-      state.selectedFiels = action.payload;
-    },
     resetState() {
       return initialState;
     },
+    setSelectedFields(state, action: PayloadAction<number[]>) {
+      state.selectedFiels = action.payload;
+    },
   },
 });
-
-export const { setStep, setFileUploaded, setSelectedFields } = importSlice.actions;
 
 export const {
   setStep,
@@ -78,7 +71,7 @@ export const {
   setDataImport,
   setFileUploaded,
   setHeaderMatching,
-  setSelectedFields
+  setSelectedFields,
 } = importSlice.actions;
 
 export const importReducer = importSlice.reducer;

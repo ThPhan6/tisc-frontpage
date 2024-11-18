@@ -23,12 +23,12 @@ const fieldsToExclude = [
 export const useExport = () => {
   const selectedFiels = useAppSelector((state) => state.import.selectedFiels);
 
-  const formatHeader = (key: string): string => {
-    if (key.startsWith('#')) return key;
-    return startCase(camelCase(key));
-  };
-
   const mappingData = (data: any) => {
+    const formatHeader = (key: string): string => {
+      if (key.startsWith('#')) return key;
+      return startCase(camelCase(key));
+    };
+
     const filteredData = data.map((item: Record<string, any>) => omit(item, fieldsToExclude));
 
     const headers = Object.keys(filteredData[0] || {}).reduce(

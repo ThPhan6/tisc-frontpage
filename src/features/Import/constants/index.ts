@@ -1,14 +1,8 @@
-import { InventoryExportType } from '@/features/Import/types/export.type';
-import { DatabaseHeaderMatching, InventoryField } from '@/features/Import/types/import.type';
-
 import { startCase } from 'lodash';
 
-import {
-  DatabaseHeaderMatching,
-  ImportDatabaseHeader,
-  InventoryField,
-} from '@/features/Import/types/import.type';
-
+import { InventoryExportType } from '@/features/Import/types/export.type';
+import { DatabaseHeaderMatching, InventoryField } from '@/features/Import/types/import.type';
+import { ImportDatabaseHeader } from '@/features/Import/types/import.type';
 
 const generateLabel = (field: keyof InventoryField) => {
   switch (field) {
@@ -56,7 +50,6 @@ export const DATABASE_HEADER_MATCHING: DatabaseHeaderMatching[] = keys.map((key,
   value: key as keyof InventoryField,
 }));
 
-
 export const INVENTORY_EXPORT_TYPE_LABELS = [
   { key: InventoryExportType.PRODUCT_ID, label: 'Product ID' },
   { key: InventoryExportType.DESCRIPTION, label: 'Description' },
@@ -72,6 +65,7 @@ export const INVENTORY_EXPORT_TYPE_LABELS = [
   { key: InventoryExportType.OUT_OF_STOCK, label: 'Warehouse Out of Stock' },
   { key: InventoryExportType.ON_ORDER, label: 'Warehouse On Order' },
   { key: InventoryExportType.BACK_ORDER, label: 'Warehouse Backorder' },
+];
 
 export const getDatabaseHeader = (
   field: string,
