@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { DATABASE_HEADER_MATCHING } from '@/features/Import/constants';
 import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
 
@@ -74,8 +73,6 @@ const InventoryTable = ({
   );
 
   const handleSaveOnCell = (id: string, colKey: string, value: string, record: any) => {
-    console.log('record', record);
-
     setSelectedRows((prev) => {
       const payload = {
         ...prev,

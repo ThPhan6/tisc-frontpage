@@ -32,3 +32,12 @@ export interface DatabaseHeaderMatching {
   label: string;
   value: keyof InventoryField;
 }
+
+export enum ImportDatabaseHeader {
+  PRODUCT_ID = 'sku',
+  DESCRIPTION = 'description',
+  UNIT_PRICE = 'unit_price',
+  UNIT_TYPE = 'unit_type',
+  ON_ORDER = 'on_order',
+  BACK_ORDER = 'back_order',
+}

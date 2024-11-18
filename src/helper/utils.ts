@@ -625,3 +625,19 @@ export function convertToNegative(input: string) {
 
   return number * sign;
 }
+
+export const keepLastObjectOccurrence = (inputObj: Object) => {
+  const result: any = {};
+
+  for (const [key, value] of Object.entries(inputObj)) {
+    // Update the result to keep the current key (the last occurrence)
+    result[value] = key;
+  }
+
+  const finalResult: any = {};
+  for (const [value, key] of Object.entries(result) as any) {
+    finalResult[key] = value;
+  }
+
+  return finalResult;
+};

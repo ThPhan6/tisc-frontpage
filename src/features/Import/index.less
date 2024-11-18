@@ -1,6 +1,7 @@
 .container {
   @space: 48px;
 
+  min-width: 576px;
   height: 80%;
 
   :global(.ant-modal-header) {
@@ -30,5 +31,92 @@
     height: @space;
     padding: 0 16px;
     border-top: 0.5px solid @mono-color;
+
+    :global(.back-button) {
+      color: @mono-color;
+      border: 0.5px solid @mono-color;
+    }
+  }
+
+  :global(.anticon-check) {
+    margin-top: 2px;
+    color: #fff !important;
+  }
+
+  :global(.ant-steps-item-title) {
+    &::after {
+      display: none !important;
+    }
+  }
+
+  :global(.ant-steps-item-container) {
+    display: flex;
+    align-items: center;
+    height: 24px;
+
+    :global(.ant-steps-item-icon) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      border-radius: 32px;
+    }
+
+    :global(.step-label) {
+      color: @primary-color;
+      font-weight: 300;
+      line-height: 24px;
+    }
+
+    :global(.right-icon) {
+      path {
+        fill: @primary-color;
+      }
+    }
+  }
+
+  :global(.ant-steps-item-wait) {
+    :global(.ant-steps-item-icon) {
+      border-color: @primary-color;
+
+      :global(.ant-steps-icon) {
+        color: @primary-color;
+      }
+    }
+  }
+
+  :global(.ant-steps-item-finish) {
+    :global(.ant-steps-item-icon) {
+      background-color: @primary-color;
+
+      :global(.ant-steps-icon) {
+        color: #fff;
+      }
+    }
+  }
+
+  :global(.ant-steps-item-active) {
+    :global(.right-icon) {
+      path {
+        fill: @primary-color-dark;
+      }
+    }
+
+    :global(.step-label) {
+      color: @primary-color-dark;
+      font-weight: 500;
+    }
+
+    :global(.ant-steps-item-icon) {
+      background: @primary-color-dark !important;
+      border: none !important;
+
+      :global(.ant-steps-icon) {
+        color: #fff !important;
+        font-weight: 400;
+      }
+    }
   }
 }
