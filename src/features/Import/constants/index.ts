@@ -1,10 +1,8 @@
 import { startCase } from 'lodash';
 
-import {
-  DatabaseHeaderMatching,
-  ImportDatabaseHeader,
-  InventoryField,
-} from '@/features/Import/types/import.type';
+import { InventoryExportType } from '@/features/Import/types/export.type';
+import { DatabaseHeaderMatching, InventoryField } from '@/features/Import/types/import.type';
+import { ImportDatabaseHeader } from '@/features/Import/types/import.type';
 
 const generateLabel = (field: keyof InventoryField) => {
   switch (field) {
@@ -51,6 +49,23 @@ export const DATABASE_HEADER_MATCHING: DatabaseHeaderMatching[] = keys.map((key,
   label: generateLabel(key as keyof InventoryField),
   value: key as keyof InventoryField,
 }));
+
+export const INVENTORY_EXPORT_TYPE_LABELS = [
+  { key: InventoryExportType.PRODUCT_ID, label: 'Product ID' },
+  { key: InventoryExportType.DESCRIPTION, label: 'Description' },
+  { key: InventoryExportType.UNIT_PRICE, label: 'Unit Price' },
+  { key: InventoryExportType.UNIT_TYPE, label: 'Unit Type' },
+  { key: InventoryExportType.DISCOUNT_RATE, label: 'Discount Rate' },
+  { key: InventoryExportType.MIN_QUANTITY, label: 'Min. Quantity' },
+  { key: InventoryExportType.MAX_QUANTITY, label: 'Max. Quantity' },
+  { key: InventoryExportType.WAREHOUSE_NAME, label: 'Warehouse Name' },
+  { key: InventoryExportType.WAREHOUSE_CITY, label: 'Warehouse City Name' },
+  { key: InventoryExportType.WAREHOUSE_COUNTRY, label: 'Warehouse Country Name' },
+  { key: InventoryExportType.WAREHOUSE_IN_STOCK, label: 'Warehouse In Stock' },
+  { key: InventoryExportType.OUT_OF_STOCK, label: 'Warehouse Out of Stock' },
+  { key: InventoryExportType.ON_ORDER, label: 'Warehouse On Order' },
+  { key: InventoryExportType.BACK_ORDER, label: 'Warehouse Backorder' },
+];
 
 export const getDatabaseHeader = (
   field: string,

@@ -2,9 +2,28 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { ExportRequest } from '@/features/Import/types/export.type';
 import { IPriceAndInventoryForm } from '@/types';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
+export const exportInventoryCSV = async (data: ExportRequest) => {
+  showPageLoading();
+  return request<string>(`/api/inventory/export`, {
+    method: 'POST',
+    data,
+  })
+    .then((res) => {
+      message.success('Export CSV successfully');
+      hidePageLoading();
+      return res;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'Export CSV failed');
+      hidePageLoading();
+      return '';
+    });
+};
 
 export const importInventoryCSV = (data: Partial<IPriceAndInventoryForm>[]) => {
   showPageLoading();
@@ -23,5 +42,3 @@ export const importInventoryCSV = (data: Partial<IPriceAndInventoryForm>[]) => {
       return false;
     });
 };
-
-export const exportInventoryCSV = () => {};
