@@ -29,6 +29,17 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
     index: 0,
     isOpen: false,
   });
+
+  useEffect(() => {
+    if (props.data?.length) {
+      setImages(props.data);
+    }
+  }, [JSON.stringify(props.data)]);
+
+  useEffect(() => {
+    props.onChangeImages(images);
+  }, [images]);
+
   const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isEditable = !isTablet && isTiscUser;
   const emptyImages = isEditable

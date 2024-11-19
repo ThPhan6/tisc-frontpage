@@ -95,8 +95,9 @@ export interface PopoverProps {
   width?: string | number;
   notScrollWholeContent?: boolean;
 
-  onCollClick?: (e?: any) => void;
   onCountrySearch?: (e?: any) => void;
+  onCollClick?: (e?: any) => void;
+  styleButtonCancel?: React.CSSProperties;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -136,8 +137,9 @@ const Popover: FC<PopoverProps> = ({
   cancelSaveFooter,
   collapseLevel,
   notScrollWholeContent,
-  onCollClick,
   onCountrySearch,
+  onCollClick,
+  styleButtonCancel,
 }) => {
   const { isMobile } = useScreen();
 
@@ -360,12 +362,11 @@ const Popover: FC<PopoverProps> = ({
   const renderButtonFooter = () => {
     if (cancelSaveFooter) {
       return (
-        <div className="flex-end" style={{ gap: 16 }}>
+        <div className={`${styles.footerButtons} flex-end`} style={{ gap: 16 }}>
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
-            buttonClass="done-btn"
             disabled={disabledSubmit}
             onClick={onCancel}
           >

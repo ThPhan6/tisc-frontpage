@@ -11,7 +11,7 @@ import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { ReactComponent as DragIcon } from '@/assets/icons/drag-icon.svg';
 
 import { useCheckAttributeForm } from '../../../BrandAttribute/hook';
-import { FormGroupContext, FormOptionGroupHeaderContext } from '../../hook';
+import { FormGroupContext, FormOptionGroupHeaderContext, ProductBasisFormType } from '../../hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import { cloneDeep, uniqueId } from 'lodash';
 
@@ -69,6 +69,8 @@ interface SubOptionItemProps {
   handleDeleteSubOption: () => void;
   handleCopySubOtionItem?: () => void;
   dragIcon?: JSX.Element;
+  containerId?: string;
+  type?: ProductBasisFormType;
 }
 
 export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
@@ -78,6 +80,8 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     handleDeleteSubOption,
     dragIcon,
     handleCopySubOtionItem,
+    containerId,
+    type,
   } = props;
 
   const { isAttribute } = useCheckAttributeForm();
@@ -112,8 +116,34 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
     if (newCollapse[subOption.id]) {
       delete newCollapse[subOption.id];
+      if (type === ProductBasisFormType.options) {
+        const formContainer = containerId ? document.getElementById(containerId) : undefined;
+        const groupContent = document.getElementById(`${subOption.id}_content`);
+        if (formContainer) {
+          formContainer.style.overflowY = 'auto';
+          if (groupContent) {
+            groupContent.style.height = 'unset';
+            groupContent.style.overflowY = 'unset';
+          }
+        }
+      }
     } else {
       newCollapse[subOption.id] = true;
+      if (type === ProductBasisFormType.options) {
+        const formContainer = containerId ? document.getElementById(containerId) : undefined;
+        const groupContainer = document.getElementById(subOption.id);
+        const groupContent = document.getElementById(`${subOption.id}_content`);
+        if (formContainer) {
+          const formTop = formContainer.getBoundingClientRect().top;
+          const groupTop = groupContainer.getBoundingClientRect().top;
+          formContainer.scrollTop += groupTop - formTop - 60;
+          formContainer.style.overflowY = 'hidden';
+          if (groupContent) {
+            groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
+            groupContent.style.overflowY = 'auto';
+          }
+        }
+      }
     }
 
     setCollapse(newCollapse);
@@ -145,10 +175,13 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           }
           key={subOption.id}
           showArrow={false}
+          id={subOption.id}
+          forceRender={true}
         >
           <div
             style={{ paddingLeft: 80 }}
             className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}
+            id={`${subOption.id}_content`}
           >
             {!subOption.subs?.length ? (
               <EmptyOne />
@@ -166,6 +199,7 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
                         onChange={(changedOptionItem) =>
                           handleChangeSubOptionItem(changedOptionItem, index)
                         }
+                        type={type}
                       />
                       <div className="flex-center">
                         {isAttribute ? (
@@ -219,18 +253,22 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 interface MainOptionItemProps {
   mainOption: MainBasisOptionSubForm;
   mainOptionIndex: number;
+  containerId?: string;
   handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
   handleDeleteMainSubOption: () => void;
   handleCopyMainOption?: (mainOption: MainBasisOptionSubForm) => void;
+  type?: ProductBasisFormType;
 }
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   const {
     mainOption,
     mainOptionIndex,
+    containerId,
     handleChangeMainSubItem,
     handleDeleteMainSubOption,
     handleCopyMainOption,
+    type,
   } = props;
 
   const { collapse, setCollapse, hideDrag } = useContext(FormGroupContext);
@@ -361,6 +399,8 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                                       </div>
                                     )
                                   }
+                                  containerId={containerId}
+                                  type={type}
                                 />
                               </div>
                             )}

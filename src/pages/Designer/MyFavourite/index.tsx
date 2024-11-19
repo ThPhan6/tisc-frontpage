@@ -33,7 +33,7 @@ const MyFavourite = () => {
         }),
       );
 
-      const noFiltering = !filter && !sort;
+      const noFiltering = (!filter || filter.length == 0) && !sort;
 
       if ((cate_id || brand_id || sort_order) && noFiltering && firstLoad.value) {
         firstLoad.setValue(false);

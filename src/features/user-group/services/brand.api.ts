@@ -35,11 +35,13 @@ export async function getBrandPagination(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse<BrandListItem[]>) => void,
 ) {
+  showPageLoading();
   request(`/api/brand/get-list`, {
     method: 'GET',
     params,
   })
     .then((response: { data: BrandListResponse }) => {
+      hidePageLoading();
       const { brands, pagination, summary } = response.data;
       callback({
         data: brands,
@@ -73,7 +75,7 @@ export async function getBrandAlphabet() {
 }
 export async function getTiscWorkspace() {
   showPageLoading();
-  return request<{ data: BrandCard[] }>(`/api/workspace`, {
+  return await request<{ data: BrandCard[] }>(`/api/workspace`, {
     method: 'GET',
   })
     .then((response) => {

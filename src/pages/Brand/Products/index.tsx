@@ -51,7 +51,10 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!userBrand?.id || (!filter && firstLoad.value && (cate_id || coll_id))) {
+    if (
+      !userBrand?.id ||
+      ((!filter || filter.length === 0) && firstLoad.value && (cate_id || coll_id))
+    ) {
       return;
     }
 
@@ -60,7 +63,7 @@ const BrandProductListPage: React.FC = () => {
     }
 
     /// show product list defailt by collection
-    if (!filter) {
+    if (!filter || filter.length === 0) {
       getProductListByBrandId({
         brand_id: userBrand.id,
         collection_id: 'all',

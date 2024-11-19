@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { message } from 'antd';
+import { DEFAULT_ECO_LABELS, DEFAULT_PRODUCTION_LABELS } from '../constants';
+import { Row, message } from 'antd';
 
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { ReactComponent as ColorDetectionIcon } from '@/assets/icons/color-palette.svg';
@@ -10,9 +11,9 @@ import { getAllProductCategory } from '@/features/categories/services';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 
-import { ProductAttributeFormInput } from '../types';
+import { FeatureLabelPros, ProductAttributeFormInput } from '../types';
 import { SupportCategories } from '@/features/colorDetection/types';
 import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
 import store, { useAppSelector } from '@/reducers';
@@ -23,9 +24,11 @@ import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText } from '@/components/Typography';
 
 import { CollectionAndLabelModal } from '../modals/CollectionAndLabel';
+import { ProductLabelSwitch } from './ProductLabelSwitch';
 import styles from './detail.less';
 
 export const getProductVariant = (specGroup: ProductAttributeFormInput[]): string => {
@@ -46,6 +49,18 @@ export const getProductVariant = (specGroup: ProductAttributeFormInput[]): strin
   return variants.join(' - ');
 };
 
+export const mapLabelProduct = (
+  defaultLabel: FeatureLabelPros,
+  currentLabel: FeatureLabelPros,
+): FeatureLabelPros => {
+  const newLabel = cloneDeep(defaultLabel);
+  const featureKeys = Object.keys(currentLabel);
+  featureKeys.forEach((key) => {
+    newLabel[key].value = currentLabel[key].value;
+  });
+  return newLabel;
+};
+
 export const ProductBasicInfo: React.FC = () => {
   const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
@@ -57,11 +72,13 @@ export const ProductBasicInfo: React.FC = () => {
   const productVariant = useAppSelector(productVariantsSelector);
 
   const {
+    id,
     name,
     description,
     collections,
     labels,
     categories,
+    ecoLabel,
     specification_attribute_groups: spec,
   } = useAppSelector((state) => state.product.details);
 
@@ -71,14 +88,32 @@ export const ProductBasicInfo: React.FC = () => {
 
   const categoryData = useAppSelector((state) => state.category.list);
   const [isCateSupported, setIsCateSupported] = useState<boolean>();
+  const [ecoLabels, setEcoLabels] = useState<FeatureLabelPros>(DEFAULT_ECO_LABELS);
+  const [prodLabels, setProdLabels] = useState<FeatureLabelPros>(DEFAULT_PRODUCTION_LABELS);
 
   const getCategoryData = async () => {
     await getAllProductCategory();
   };
 
+  const handleSwitch = (newData: FeatureLabelPros) => {
+    setEcoLabels(newData);
+    dispatch(
+      setPartialProductDetail({
+        ecoLabel: newData,
+      }),
+    );
+  };
+
   useEffect(() => {
     getCategoryData();
+    const newEcoLabels = ecoLabel ? mapLabelProduct(ecoLabels, ecoLabel) : ecoLabels;
+    setEcoLabels(newEcoLabels);
   }, []);
+
+  useEffect(() => {
+    if (!ecoLabel) return;
+    setEcoLabels(mapLabelProduct(ecoLabels, ecoLabel));
+  }, [ecoLabel]);
 
   useEffect(() => {
     let cateSupported = false;
@@ -152,6 +187,7 @@ export const ProductBasicInfo: React.FC = () => {
       <CustomCollapse
         showActiveBoxShadow
         defaultActiveKey={['1']}
+        nestedCollapse={true}
         header={
           <div className="header-group">
             <BodyText level={4} customClass="brand-label">
@@ -194,8 +230,8 @@ export const ProductBasicInfo: React.FC = () => {
             </div>
           }
           noWrap
-          inputTitle={collectionValue ? collectionValue : 'X Collection'}
-          value={collectionValue ? collectionValue : 'X Collection'}
+          inputTitle={collectionValue ? collectionValue : id ? 'X Collection' : ''}
+          value={collectionValue ? collectionValue : id ? 'X Collection' : ''}
           readOnly={editable === false}
           containerClass={!editable ? styles.viewInfo : ''}
         />
@@ -254,6 +290,33 @@ export const ProductBasicInfo: React.FC = () => {
             borderBottom: '1px solid #cdcdcd',
           }}
         />
+        {/* Label featuring */}
+        {isTiscAdmin && (
+          <div className={styles.labelContainer} style={{ paddingBottom: 6, paddingTop: 8 }}>
+            <Row className={styles.labelRow}>
+              <ResponsiveCol className={`${styles.labelCol} ${styles.firstCol}`}>
+                <CustomCollapse
+                  header={<BodyText level={4}>Production-Labels</BodyText>}
+                  customHeaderClass={`${styles.labelCollapse} ${styles.prodLabel}`}
+                  bordered={false}
+                  noBorder={true}
+                >
+                  <ProductLabelSwitch data={prodLabels} editable={editable} />
+                </CustomCollapse>
+              </ResponsiveCol>
+              <ResponsiveCol className={styles.labelCol}>
+                <CustomCollapse
+                  header={<BodyText level={4}>Eco-Labels</BodyText>}
+                  customHeaderClass={`${styles.labelCollapse} ${styles.ecoLabel}`}
+                  bordered={false}
+                  noBorder={true}
+                >
+                  <ProductLabelSwitch data={ecoLabels} onClick={handleSwitch} editable={editable} />
+                </CustomCollapse>
+              </ResponsiveCol>
+            </Row>
+          </div>
+        )}
         {/* Product ID */}
         <div style={{ paddingBottom: 6, paddingTop: 8 }}>
           <InputGroup

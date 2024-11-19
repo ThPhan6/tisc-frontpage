@@ -9,14 +9,20 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as CarbonIcon } from '@/assets/icons/carbon-footprint.svg';
+import { ReactComponent as ClearIcon } from '@/assets/icons/clear-energy.svg';
 import { ReactComponent as DoubleupIcon } from '@/assets/icons/double-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import { ReactComponent as EcoIcon } from '@/assets/icons/eco-green.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as ShareIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as PowerIcon } from '@/assets/icons/power-saving.svg';
+import { ReactComponent as RecycleIcon } from '@/assets/icons/recycle.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
+import { ReactComponent as WaterIcon } from '@/assets/icons/water-saving.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 
 import {
@@ -128,13 +134,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         setLiked(newLiked);
         setLikeCount(likeCount + (newLiked ? 1 : -1));
         if (location.pathname == PATH.designerFavourite && data) {
-          const newData = data.map((collection) => {
-            const newProducts = collection.products.filter((item) => item.id !== product.id);
-            return {
-              ...collection,
-              products: newProducts,
-            };
-          });
+          const newData = data
+            .map((collection) => {
+              const newProducts = collection.products.filter((item) => item.id !== product.id);
+              return {
+                ...collection,
+                products: newProducts,
+              };
+            })
+            .filter((collection) => collection.products.length > 0);
           store.dispatch(
             setProductList({
               data: newData,
@@ -218,6 +226,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
     align: { offset: [0, 0] },
     placement: 'bottom',
     zIndex: 1,
+  };
+
+  const ecoLabelsProps: Partial<TooltipProps> = {
+    placement: 'left',
+    zIndex: 1,
+    mouseEnterDelay: 0,
+    showArrow: false,
+    align: {
+      offset: [41, 0],
+    },
+    overlayClassName: `${styles.ecoTooltip}`,
   };
 
   const rightActions: {
@@ -380,6 +399,40 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
+        {product.ecoLabel && (
+          <div className={`${styles.ecoLabels}`}>
+            {product.ecoLabel['carbon_footprint'].value && (
+              <Tooltip title={product.ecoLabel['carbon_footprint'].name} {...ecoLabelsProps}>
+                <CarbonIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['clear_energy'].value && (
+              <Tooltip title={product.ecoLabel['clear_energy'].name} {...ecoLabelsProps}>
+                <ClearIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['eco_green'].value && (
+              <Tooltip title={product.ecoLabel['eco_green'].name} {...ecoLabelsProps}>
+                <EcoIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['power_saving'].value && (
+              <Tooltip title={product.ecoLabel['power_saving'].name} {...ecoLabelsProps}>
+                <PowerIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['recycle_reuse'].value && (
+              <Tooltip title={product.ecoLabel['recycle_reuse'].name} {...ecoLabelsProps}>
+                <RecycleIcon />
+              </Tooltip>
+            )}
+            {product.ecoLabel['water_saving'].value && (
+              <Tooltip title={product.ecoLabel['water_saving'].name} {...ecoLabelsProps}>
+                <WaterIcon />
+              </Tooltip>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -487,7 +540,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         // First time load to TISC-Conf but login as Designer or Brand previously
         store.dispatch(resetProductState());
         firstLoad.setValue(false);
-      } else if (location.pathname == PATH.designerFavourite) {
+      } else if (
+        location.pathname == PATH.designerFavourite ||
+        location.pathname == PATH.brandProduct
+      ) {
         // First time load to Designer Favourite
         if (allProducts?.length) store.dispatch(resetProductState());
         setTimeout(() => {

@@ -251,6 +251,7 @@ const ProductDetailContainer: React.FC = () => {
       tips: details.tips,
       downloads: details.downloads,
       catelogue_downloads: details.catelogue_downloads,
+      ecoLabel: details.ecoLabel,
     };
 
     if (productId) {
