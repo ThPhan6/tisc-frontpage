@@ -19,10 +19,9 @@ export const DataMatching = () => {
   const { step, headerMatching, headers, error, handleDeleteHeader, handleSelectDatabaseHeader } =
     useImport();
 
-  const getLabel = useCallback(
+  const getHeaderMatching = useCallback(
     (field: string, items: any) =>
-      items.find((item: any) => item.key === headerMatching?.[field])?.label ||
-      'Select from the list',
+      items.find((item: any) => item.key === headerMatching?.[field])?.label,
     [headerMatching],
   );
 
@@ -43,6 +42,7 @@ export const DataMatching = () => {
       <div className="data-matching-content">
         {headers.map((field, index) => {
           const items = getDatabaseHeader(field, handleSelectDatabaseHeader);
+          const headerSelected = getHeaderMatching(field, items);
 
           return (
             <div key={index} className="main-content">
@@ -64,8 +64,13 @@ export const DataMatching = () => {
                 labelProps={{ className: 'flex-between' }}
                 className="database-header-dropdown"
               >
-                <BodyText fontFamily="Roboto" level={5} customClass="header-selected">
-                  {getLabel(field, items)}
+                <BodyText
+                  fontFamily="Roboto"
+                  level={5}
+                  color={headerSelected ? 'mono-color' : 'mono-color-medium'}
+                  customClass="header-selected"
+                >
+                  {headerSelected || 'Select from the list'}
                 </BodyText>
               </CustomDropDown>
 
@@ -73,7 +78,13 @@ export const DataMatching = () => {
                 className="matching-status"
                 style={{ visibility: step !== ImportStep.STEP_3 ? 'hidden' : 'visible' }}
               >
-                {error?.[headerMatching?.[field] ?? '']?.length ? <MinusIcon /> : <TickIcon />}
+                {!headerMatching?.[field] ? (
+                  <MinusIcon style={{ visibility: 'hidden' }} />
+                ) : error?.[headerMatching[field]]?.length ? (
+                  <MinusIcon />
+                ) : (
+                  <TickIcon />
+                )}
               </div>
             </div>
           );
