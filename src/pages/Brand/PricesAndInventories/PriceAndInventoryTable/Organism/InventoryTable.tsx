@@ -73,8 +73,6 @@ const InventoryTable = ({
   );
 
   const handleSaveOnCell = (id: string, colKey: string, value: string, record: any) => {
-    console.log('record', record);
-
     setSelectedRows((prev) => {
       const payload = {
         ...prev,
@@ -278,7 +276,7 @@ const InventoryTable = ({
             currencySelected;
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stockValue), undefined, {
+            `${currency} ${formatCurrencyNumber(Number(item.stock_value), undefined, {
               maximumFractionDigits: 2,
             })}`,
           );

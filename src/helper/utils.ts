@@ -625,3 +625,39 @@ export function convertToNegative(input: string) {
 
   return number * sign;
 }
+
+export const keepLastObjectOccurrence = (inputObj: Object) => {
+  const result: any = {};
+
+  for (const [key, value] of Object.entries(inputObj)) {
+    // Update the result to keep the current key (the last occurrence)
+    result[value] = key;
+  }
+
+  const finalResult: any = {};
+  for (const [value, key] of Object.entries(result) as any) {
+    finalResult[key] = value;
+  }
+
+  return finalResult;
+};
+
+export const downloadFile = (data: BlobPart[], fileName: string, options?: BlobPropertyBag) => {
+  try {
+    const blob = new Blob(data, options);
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  } catch (error) {
+    console.error('Error converting file to blob:', error);
+  }
+};
+
+export const isNumeric = (value: string) => !isNaN(value) && !isNaN(parseFloat(value));
