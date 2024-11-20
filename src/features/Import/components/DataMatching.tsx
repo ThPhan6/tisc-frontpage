@@ -66,7 +66,7 @@ export const DataMatching = () => {
               >
                 <BodyText
                   fontFamily="Roboto"
-                  level={5}
+                  level={6}
                   color={headerSelected ? 'mono-color' : 'mono-color-medium'}
                   customClass="header-selected"
                 >

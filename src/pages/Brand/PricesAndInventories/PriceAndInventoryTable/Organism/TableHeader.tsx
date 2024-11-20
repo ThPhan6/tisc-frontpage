@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Switch } from 'antd';
@@ -8,7 +8,7 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
 import { useNavigationHandler } from '@/helper/hook';
 
-import { resetState } from '@/features/Import/reducers';
+import { resetState, setOpenModal } from '@/features/Import/reducers';
 import store from '@/reducers';
 
 import CustomButton from '@/components/Button';
@@ -38,16 +38,14 @@ const PriceAndInventoryTableHeader = ({
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
 
-  const [openModal, setOpenModal] = useState(false);
-
   const handleOpenModal = (isOpen: boolean) => () => {
     store.dispatch(resetState());
-    setOpenModal(isOpen);
+    store.dispatch(setOpenModal(isOpen));
   };
 
   useEffect(() => {
     return () => {
-      setOpenModal(false);
+      handleOpenModal(false);
     };
   }, []);
 
@@ -129,7 +127,7 @@ const PriceAndInventoryTableHeader = ({
         }
       />
 
-      <ImportExportModal open={openModal} onCancel={handleOpenModal(false)} onSave={onSave} />
+      <ImportExportModal onCancel={handleOpenModal(false)} onSave={onSave} />
     </>
   );
 };

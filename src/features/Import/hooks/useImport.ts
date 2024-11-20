@@ -3,16 +3,16 @@ import { message } from 'antd';
 import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 
 import { keepLastObjectOccurrence } from '@/helper/utils';
-import { forEach, isNil, isNumber } from 'lodash';
+import { intersection } from 'lodash';
 
 import {
-  setDataImport,
   setErrors,
   setFileResult,
   setFileUploaded,
   setHeaderMatching,
   setHeaders,
   setStep,
+  useDispatchDataImport,
 } from '../reducers';
 import { ImportDatabaseHeader, ImportFileType, ImportStep } from '../types/import.type';
 import store, { useAppSelector } from '@/reducers';
@@ -20,20 +20,21 @@ import store, { useAppSelector } from '@/reducers';
 import * as Papa from 'papaparse';
 import type { RcFile, UploadRequestOption } from 'rc-upload/lib/interface';
 
+const validateCSVFile = (file: RcFile) => {
+  if (file.type !== ImportFileType.CSV) {
+    message.error('Please upload CSV file.');
+    return false;
+  }
+
+  return true;
+};
+
 export const useImport = () => {
-  const unitTypeData = useAppSelector((s) => s.summary.unitType);
   const { step, fileResult, error, fileUploaded, headerMatching, headers } = useAppSelector(
     (s) => s.import,
   );
 
-  const validateCSVFile = (file: RcFile) => {
-    if (file.type !== ImportFileType.CSV) {
-      message.error('Please upload CSV file.');
-      return false;
-    }
-
-    return true;
-  };
+  const { dispatchImportData } = useDispatchDataImport();
 
   const handleBeforeUpload = (file: RcFile, _fileList: RcFile[]) => {
     validateCSVFile(file);
@@ -64,6 +65,7 @@ export const useImport = () => {
           header: true,
           skipEmptyLines: true,
           complete(result: Papa.ParseResult<RcFile>, RCFile: UploadFile<RcFile>) {
+            store.dispatch(setStep(ImportStep.STEP_2));
             store.dispatch(setFileResult(result as any));
             store.dispatch(setFileUploaded(RCFile as any));
             store.dispatch(setHeaderMatching(null));
@@ -92,6 +94,8 @@ export const useImport = () => {
     const groupByHeader = keepLastObjectOccurrence(newHeaderMatching);
 
     store.dispatch(setHeaderMatching(groupByHeader));
+
+    dispatchImportData(groupByHeader);
   };
 
   const handleDeleteHeader = (fileField: string) => () => {
@@ -102,99 +106,6 @@ export const useImport = () => {
 
     store.dispatch(setHeaders(newHeaders));
     store.dispatch(setHeaderMatching(newHeaderMatching));
-  };
-
-  const validateDataImport = (newData: any[]) => {
-    const newError: Record<string, any[]> = {};
-    const skus: string[] = [];
-    const unitPrices: string[] = [];
-    const unitTypes: string[] = [];
-    const backOrders: string[] = [];
-    const onOrders: string[] = [];
-    const descriptions: string[] = [];
-
-    newData.forEach((data) => {
-      forEach(data, (value, key) => {
-        if (key === ImportDatabaseHeader.PRODUCT_ID) {
-          skus.push(value);
-        }
-
-        if (key === ImportDatabaseHeader.UNIT_PRICE) {
-          const backOrder = Number(value);
-
-          if (isNumber(backOrder)) {
-            unitPrices.push(value);
-          }
-        }
-
-        if (key === ImportDatabaseHeader.UNIT_TYPE) {
-          const unitType = unitTypeData.find(
-            (el) =>
-              el.name.toLowerCase() === value.toLowerCase() ||
-              el.code.toLowerCase() === value.toLowerCase(),
-          );
-
-          if (unitType) {
-            unitTypes.push(value);
-          }
-        }
-
-        if (key === ImportDatabaseHeader.DESCRIPTION) {
-          descriptions.push(value);
-        }
-
-        if (key === ImportDatabaseHeader.BACK_ORDER) {
-          const backOrder = Number(value);
-
-          if (isNumber(backOrder)) {
-            backOrders.push(value);
-          }
-        }
-
-        if (key === ImportDatabaseHeader.ON_ORDER) {
-          const onOrder = Number(value);
-
-          if (isNumber(onOrder)) {
-            onOrders.push(value);
-          }
-        }
-      });
-    });
-
-    if (skus.length !== newData.length) {
-      newError[ImportDatabaseHeader.PRODUCT_ID] = ['SKU is required.'];
-    }
-
-    if (unitPrices.length !== newData.length) {
-      newError[ImportDatabaseHeader.UNIT_PRICE] = ['Unit price is required.'];
-    }
-
-    if (unitTypes.length !== newData.length) {
-      newError[ImportDatabaseHeader.UNIT_TYPE] = ['Unit type is required.'];
-    }
-
-    if (backOrders.length !== newData.length && backOrders.length !== 0) {
-      newError[ImportDatabaseHeader.BACK_ORDER] = ['Back order is invalid.'];
-    }
-
-    if (onOrders.length !== newData.length && backOrders.length !== 0) {
-      newError[ImportDatabaseHeader.ON_ORDER] = ['On order is invalid.'];
-    }
-
-    if (descriptions.length !== newData.length && backOrders.length !== 0) {
-      newError[ImportDatabaseHeader.DESCRIPTION] = ['Description is invalid.'];
-    }
-
-    store.dispatch(setErrors(newError));
-
-    return (
-      skus.length === newData.length &&
-      unitPrices.length === newData.length &&
-      unitTypes.length === newData.length &&
-      (backOrders.length === 0 || backOrders.length === newData.length) &&
-      (onOrders.length === 0 || onOrders.length === newData.length) &&
-      (descriptions.length === 0 || descriptions.length === newData.length)
-    );
   };
 
   const handleChangeStep = (current: ImportStep) => {
@@ -213,49 +124,25 @@ export const useImport = () => {
       return;
     }
 
+    store.dispatch(setStep(current));
+
     if (current === ImportStep.STEP_3 && fileResult?.data.length && headerMatching) {
-      const dataMapping = fileResult.data.map((item) => {
-        const newData: any = {};
+      const allFieldRequired = intersection(
+        [
+          ImportDatabaseHeader.PRODUCT_ID,
+          ImportDatabaseHeader.UNIT_PRICE,
+          ImportDatabaseHeader.UNIT_TYPE,
+        ],
+        Object.values(headerMatching),
+      );
 
-        forEach(item, (value, key) => {
-          if (!isNil(headerMatching[key])) {
-            newData[headerMatching[key]] = value;
-          }
-        });
-
-        return newData;
-      });
-
-      const isDataValue = validateDataImport(dataMapping);
-
-      if (!isDataValue) {
-        message.error('Data is invalid, please check again.');
+      if (allFieldRequired.length !== 3) {
+        message.error('Product ID, Unit Price, and Unit Type are required.');
         return;
       }
 
-      store.dispatch(
-        setDataImport(
-          dataMapping.map((item) => {
-            const newItem = { ...item };
-
-            newItem.unit_price = Number(newItem.unit_price);
-            newItem.back_order = Number(newItem.back_order);
-            newItem.on_order = Number(newItem.on_order);
-            newItem.in_stock = Number(newItem.in_stock);
-            newItem.unit_type =
-              unitTypeData.find(
-                (el) =>
-                  el.name.toLowerCase() === newItem.unit_type.toLowerCase() ||
-                  el.code.toLowerCase() === newItem.unit_type.toLowerCase(),
-              )?.id ?? '';
-
-            return newItem;
-          }),
-        ),
-      );
+      dispatchImportData();
     }
-
-    store.dispatch(setStep(current));
   };
 
   return {
