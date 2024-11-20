@@ -5,17 +5,12 @@ import { useExport } from '@/features/Import/hooks/useExport';
 import { includes, map } from 'lodash';
 
 import { InventoryExportType } from '@/features/Import/types/export.type';
-import { useAppSelector } from '@/reducers';
 
 import { RobotoBodyText } from '@/components/Typography';
 import styles from '@/features/Import/components/Export.less';
 
-export const ExportCSV = () => {
-  const exportType = useAppSelector((state) => state.import.exportType);
-  const { handleCheckboxChange } = useExport();
-
-  const handleStopProgation = () => (event: React.MouseEvent<HTMLElement, MouseEvent>) =>
-    event.stopPropagation();
+export const Export = () => {
+  const { exportType, handleCheckboxChange } = useExport();
 
   return (
     <section className={styles.export}>
@@ -50,7 +45,7 @@ export const ExportCSV = () => {
               >
                 {el.label}
               </RobotoBodyText>
-              <Checkbox checked={checked} onClick={handleStopProgation} />
+              <Checkbox checked={checked} />
             </article>
           );
         })}

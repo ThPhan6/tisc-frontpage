@@ -4,7 +4,7 @@ import Modal, { ModalProps } from 'antd/lib/modal/Modal';
 import { useLocation } from 'umi';
 
 import { useScreen } from '@/helper/common';
-import { downloadFile } from '@/helper/utils';
+import { downloadFile, throttleAction } from '@/helper/utils';
 import { exportInventoryCSV, importInventoryCSV } from '@/services/inventory.api';
 import { isEmpty, pick } from 'lodash';
 
@@ -17,8 +17,8 @@ import store, { useAppSelector } from '@/reducers';
 import CustomButton from '@/components/Button';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { BodyText } from '@/components/Typography';
-import { ExportCSV } from '@/features/Import/components/Export';
-import { Import } from '@/features/Import/components/Step';
+import { Export } from '@/features/Import/components/Export';
+import { Step as Import } from '@/features/Import/components/Step';
 
 import styles from './index.less';
 
@@ -43,8 +43,8 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const disabledImportBtn = !dataImport.length || step !== ImportStep.STEP_3;
   const disabledExportBtn = isEmpty(exportType);
 
-  const hasDataError = Object.keys(error).length > 0 && step === ImportStep.STEP_3;
-  const hasError = hasDataError || importError;
+  const hasError =
+    (importError || Object.keys(error).length > 0) && isImport && step === ImportStep.STEP_3;
 
   const clearState = () => {
     setActiveKey('import');
@@ -54,7 +54,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
 
   useEffect(() => {
     setImportError(false);
-  }, [JSON.stringify(fileUploaded)]);
+  }, [JSON.stringify(fileUploaded), step]);
 
   useEffect(() => {
     return () => {
@@ -88,7 +88,9 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       types: exportType,
     };
     const res = await exportInventoryCSV(payload);
-    downloadFile([res], 'export_inventory.csv', { type: 'text/csv' });
+    downloadFile([res], `inventory-export-${new Date().toISOString()}.csv`, { type: 'text/csv' });
+
+    onSave?.('export', !!res);
   };
 
   const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
@@ -103,7 +105,6 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
     }
 
     handleExport();
-    onSave?.('export');
   };
 
   const handleBack = () => {
@@ -125,7 +126,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       onCancel={handleCancel}
     >
       <div className="content">
-        <div className="d-flex flex-col flex-1">
+        <div className="d-flex flex-col flex-1 overflow-auto">
           <CustomTabs
             listTab={LIST_TAB}
             centered={true}
@@ -137,12 +138,12 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
             }}
           />
 
-          <CustomTabPane active={activeKey === 'import'}>
+          <CustomTabPane active={activeKey === 'import'} className="overflow-auto h-full">
             <Import />
           </CustomTabPane>
 
-          <CustomTabPane active={activeKey === 'export'}>
-            <ExportCSV />
+          <CustomTabPane active={activeKey === 'export'} className="overflow-auto h-full">
+            <Export />
           </CustomTabPane>
         </div>
 
@@ -153,7 +154,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
             </BodyText>
           ) : null}
 
-          <div className="d-flex align-center" style={{ gap: 16 }}>
+          <div className="d-flex items-center" style={{ gap: 16 }}>
             {activeKey === 'import' && step === ImportStep.STEP_3 ? (
               <CustomButton
                 size="small"
@@ -166,18 +167,17 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
                 </BodyText>
               </CustomButton>
             ) : null}
-            <div className="footer">
-              <CustomButton
-                size="small"
-                variant="primary"
-                properties="rounded"
-                disabled={isImport ? disabledImportBtn : disabledExportBtn}
-              >
-                <BodyText fontFamily="Roboto" level={6} onClick={handleSave}>
-                  {activeKey === 'import' ? 'Import' : 'Export'}
-                </BodyText>
-              </CustomButton>
-            </div>
+
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              disabled={isImport ? disabledImportBtn : disabledExportBtn}
+            >
+              <BodyText fontFamily="Roboto" level={6} onClick={throttleAction(handleSave)}>
+                {activeKey === 'import' ? 'Import' : 'Export'}
+              </BodyText>
+            </CustomButton>
           </div>
         </div>
       </div>

@@ -26,7 +26,6 @@ export const FileUpload: FC<FileUploadProps> = ({ ...props }) => {
       beforeUpload={handleBeforeUpload}
       onChange={handleChangeUpload}
       customRequest={handleCustomRequest}
-      style={{ width: 'fit-content', margin: '116px auto', border: 'none', background: '#fff' }}
     >
       <div className="d-flex flex-col items-center" style={{ gap: 32 }}>
         <UploadIcon />

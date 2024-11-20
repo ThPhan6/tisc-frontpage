@@ -54,11 +54,11 @@ const importSlice = createSlice({
     setErrors(state, action: PayloadAction<Record<string, any[]> | null>) {
       state.error = action.payload;
     },
+    setSelectExportType(state, action: PayloadAction<number[]>) {
+      state.exportType = action.payload;
+    },
     resetState() {
       return initialState;
-    },
-    setSelectedFields(state, action: PayloadAction<number[]>) {
-      state.exportType = action.payload;
     },
   },
 });
@@ -72,7 +72,7 @@ export const {
   setDataImport,
   setFileUploaded,
   setHeaderMatching,
-  setSelectedFields,
+  setSelectExportType,
 } = importSlice.actions;
 
 export const importReducer = importSlice.reducer;

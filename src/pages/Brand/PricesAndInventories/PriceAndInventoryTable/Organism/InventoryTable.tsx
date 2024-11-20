@@ -276,7 +276,7 @@ const InventoryTable = ({
             currencySelected;
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stockValue), undefined, {
+            `${currency} ${formatCurrencyNumber(Number(item.stock_value), undefined, {
               maximumFractionDigits: 2,
             })}`,
           );

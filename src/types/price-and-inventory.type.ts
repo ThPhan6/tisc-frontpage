@@ -86,7 +86,7 @@ export interface PriceAndInventoryColumn {
   on_order: number;
   sku: string;
   description: string;
-  stockValue: number;
+  stock_value: number;
   price: InventoryPrice;
   warehouses: WarehouseItemMetric[];
 }

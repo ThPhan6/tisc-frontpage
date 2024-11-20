@@ -58,7 +58,7 @@ interface StepContentProps extends StepProps {
   content: React.ReactNode;
 }
 
-export const Import = () => {
+export const Step = () => {
   const { step, handleChangeStep } = useImport();
 
   return (
