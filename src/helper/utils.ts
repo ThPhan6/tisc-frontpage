@@ -659,3 +659,5 @@ export const downloadFile = (data: BlobPart[], fileName: string, options?: BlobP
     console.error('Error converting file to blob:', error);
   }
 };
+
+export const isNumeric = (value: string) => !isNaN(value) && !isNaN(parseFloat(value));

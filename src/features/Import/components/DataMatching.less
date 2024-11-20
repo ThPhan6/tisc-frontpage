@@ -70,6 +70,10 @@
 
     :global(.header-selected) {
       margin-left: -6px;
+
+      :global(.required) {
+        display: none;
+      }
     }
   }
 
@@ -78,6 +82,10 @@
     align-items: center;
     justify-content: space-between;
     width: @space_1;
+
+    p {
+      font-size: 12px;
+    }
   }
 
   :global(.ant-dropdown-trigger) {
@@ -89,5 +97,11 @@
     height: 18px;
     margin-right: 10px;
     text-align: center;
+  }
+}
+
+:global(.ant-dropdown) {
+  :global(.ant-dropdown-menu-item) {
+    min-height: 40px;
   }
 }

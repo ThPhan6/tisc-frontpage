@@ -4,6 +4,8 @@ import { InventoryExportType } from '@/features/Import/types/export.type';
 import { DatabaseHeaderMatching, InventoryField } from '@/features/Import/types/import.type';
 import { ImportDatabaseHeader } from '@/features/Import/types/import.type';
 
+import { BodyText } from '@/components/Typography';
+
 const generateLabel = (field: keyof InventoryField) => {
   switch (field) {
     case 'sku':
@@ -73,9 +75,44 @@ export const getDatabaseHeader = (
 ) => [
   {
     key: ImportDatabaseHeader.PRODUCT_ID,
-    label: 'Product ID',
+    label: (
+      <div className="d-flex items-center">
+        <BodyText fontFamily="Roboto" level={6}>
+          Product ID
+        </BodyText>
+        <span className="red-magenta required">*</span>
+      </div>
+    ),
     onClick: () => {
       handleSelectDatabaseHeader(field, ImportDatabaseHeader.PRODUCT_ID);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.UNIT_PRICE,
+    label: (
+      <div className="d-flex items-center">
+        <BodyText fontFamily="Roboto" level={6}>
+          {startCase(ImportDatabaseHeader.UNIT_PRICE)}
+        </BodyText>
+        <span className="red-magenta required">*</span>
+      </div>
+    ),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_PRICE);
+    },
+  },
+  {
+    key: ImportDatabaseHeader.UNIT_TYPE,
+    label: (
+      <div className="d-flex items-center">
+        <BodyText fontFamily="Roboto" level={6}>
+          {startCase(ImportDatabaseHeader.UNIT_TYPE)}
+        </BodyText>
+        <span className="red-magenta required">*</span>
+      </div>
+    ),
+    onClick: () => {
+      handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_TYPE);
     },
   },
   {
@@ -83,20 +120,6 @@ export const getDatabaseHeader = (
     label: startCase(ImportDatabaseHeader.DESCRIPTION),
     onClick: () => {
       handleSelectDatabaseHeader(field, ImportDatabaseHeader.DESCRIPTION);
-    },
-  },
-  {
-    key: ImportDatabaseHeader.UNIT_PRICE,
-    label: startCase(ImportDatabaseHeader.UNIT_PRICE),
-    onClick: () => {
-      handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_PRICE);
-    },
-  },
-  {
-    key: ImportDatabaseHeader.UNIT_TYPE,
-    label: startCase(ImportDatabaseHeader.UNIT_TYPE),
-    onClick: () => {
-      handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_TYPE);
     },
   },
   {

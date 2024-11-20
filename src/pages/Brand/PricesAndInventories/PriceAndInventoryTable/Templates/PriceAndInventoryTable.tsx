@@ -12,6 +12,8 @@ import {
 } from '@/services';
 import { forEach, isEmpty, pick } from 'lodash';
 
+import { setOpenModal } from '@/features/Import/reducers';
+import store from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 import { type PriceAndInventoryColumn } from '@/types';
 
@@ -171,6 +173,8 @@ const PriceAndInventoryTable: React.FC = () => {
   };
 
   const handleImportExport = (type: 'import' | 'export', isSaved?: boolean) => {
+    store.dispatch(setOpenModal(false));
+
     if (type === 'import' && isSaved) {
       tableRef.current.reload();
       return;

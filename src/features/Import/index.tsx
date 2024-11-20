@@ -22,7 +22,7 @@ import { Step as Import } from '@/features/Import/components/Step';
 
 import styles from './index.less';
 
-interface ImportExportModalProps extends ModalProps {
+interface ImportExportModalProps extends Omit<ModalProps, 'open'> {
   onSave?: (type: 'import' | 'export', isSaved?: boolean) => void;
 }
 
@@ -30,31 +30,24 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const { isTablet } = useScreen();
   const location = useLocation<{ categoryId: string }>();
 
-  const fileUploaded = useAppSelector((s) => s.import.fileUploaded);
+  const open = useAppSelector((s) => s.import.open);
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
   const exportType = useAppSelector((s) => s.import.exportType);
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
-  const [importError, setImportError] = useState(false);
 
   const isImport = activeKey === 'import';
-  const disabledImportBtn = !dataImport.length || step !== ImportStep.STEP_3;
-  const disabledExportBtn = isEmpty(exportType);
+  const hasError = Object.keys(error).length > 0 && isImport && step === ImportStep.STEP_3;
 
-  const hasError =
-    (importError || Object.keys(error).length > 0) && isImport && step === ImportStep.STEP_3;
+  const disabledImportBtn = hasError || !dataImport.length || step !== ImportStep.STEP_3;
+  const disabledExportBtn = isEmpty(exportType);
 
   const clearState = () => {
     setActiveKey('import');
-    setImportError(false);
     store.dispatch(resetState());
   };
-
-  useEffect(() => {
-    setImportError(false);
-  }, [JSON.stringify(fileUploaded), step]);
 
   useEffect(() => {
     return () => {
@@ -78,7 +71,6 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       clearState();
     }
 
-    setImportError(!imported);
     onSave?.('import', imported);
   };
 
@@ -111,6 +103,20 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
     store.dispatch(setStep(ImportStep.STEP_2));
   };
 
+  const renderErrorMessage = () => {
+    if (step !== ImportStep.STEP_3 || !isImport) return null;
+
+    return hasError ? (
+      <BodyText fontFamily="Roboto" level={5} customClass="red-magenta">
+        Data error!
+      </BodyText>
+    ) : (
+      <BodyText fontFamily="Roboto" level={5}>
+        No data error
+      </BodyText>
+    );
+  };
+
   return (
     <Modal
       className={styles.container}
@@ -123,6 +129,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       }
       maskClosable={false}
       {...props}
+      open={open}
       onCancel={handleCancel}
     >
       <div className="content">
@@ -147,12 +154,13 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
           </CustomTabPane>
         </div>
 
-        <div className="footer" style={{ justifyContent: hasError ? 'space-between' : 'flex-end' }}>
-          {hasError ? (
-            <BodyText fontFamily="Roboto" level={5}>
-              No data error or <span className="red-magenta">Data error!</span>
-            </BodyText>
-          ) : null}
+        <div
+          className="footer"
+          style={{
+            justifyContent: step === ImportStep.STEP_3 && isImport ? 'space-between' : 'flex-end',
+          }}
+        >
+          {renderErrorMessage()}
 
           <div className="d-flex items-center" style={{ gap: 16 }}>
             {activeKey === 'import' && step === ImportStep.STEP_3 ? (
