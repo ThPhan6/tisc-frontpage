@@ -129,7 +129,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       }
       maskClosable={false}
       {...props}
-      open={open}
+      visible={open}
       onCancel={handleCancel}
     >
       <div className="content">
