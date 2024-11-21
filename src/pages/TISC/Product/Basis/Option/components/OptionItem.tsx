@@ -71,6 +71,7 @@ interface SubOptionItemProps {
   dragIcon?: JSX.Element;
   containerId?: string;
   type?: ProductBasisFormType;
+  dataContainerRef?: any;
 }
 
 export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
@@ -82,6 +83,7 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     handleCopySubOtionItem,
     containerId,
     type,
+    dataContainerRef,
   } = props;
 
   const { isAttribute } = useCheckAttributeForm();
@@ -117,6 +119,9 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     if (newCollapse[subOption.id]) {
       delete newCollapse[subOption.id];
       if (type === ProductBasisFormType.options) {
+        if (dataContainerRef) {
+          dataContainerRef.current.style.height = 'unset';
+        }
         const formContainer = containerId ? document.getElementById(containerId) : undefined;
         const groupContent = document.getElementById(`${subOption.id}_content`);
         if (formContainer) {
@@ -130,6 +135,9 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     } else {
       newCollapse[subOption.id] = true;
       if (type === ProductBasisFormType.options) {
+        if (dataContainerRef) {
+          dataContainerRef.current.style.height = '9999px';
+        }
         const formContainer = containerId ? document.getElementById(containerId) : undefined;
         const groupContainer = document.getElementById(subOption.id);
         const groupContent = document.getElementById(`${subOption.id}_content`);
@@ -258,6 +266,7 @@ interface MainOptionItemProps {
   handleDeleteMainSubOption: () => void;
   handleCopyMainOption?: (mainOption: MainBasisOptionSubForm) => void;
   type?: ProductBasisFormType;
+  dataContainerRef?: any;
 }
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
@@ -269,6 +278,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
     handleDeleteMainSubOption,
     handleCopyMainOption,
     type,
+    dataContainerRef,
   } = props;
 
   const { collapse, setCollapse, hideDrag } = useContext(FormGroupContext);
@@ -401,6 +411,7 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                                   }
                                   containerId={containerId}
                                   type={type}
+                                  dataContainerRef={dataContainerRef}
                                 />
                               </div>
                             )}
