@@ -147,7 +147,7 @@ const BrandProductListPage: React.FC = () => {
 
   return (
     <PageContainer pageHeaderRender={renderPageHeader}>
-      <CollapseProductList />
+      <CollapseProductList hideFavorite={true} />
     </PageContainer>
   );
 };
