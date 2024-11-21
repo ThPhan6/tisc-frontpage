@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { getDefaultIDOfBasic } from './Option/components/constant';
@@ -263,6 +263,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     name: '',
     subs: [],
   });
+
+  const dataContainerRef = useRef(null);
 
   const FORM_CONFIG = {
     conversions: {
@@ -1059,6 +1061,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
                 handleDeleteMainSubOption={() => handleOnClickDelete(index)}
                 containerId={contentId}
                 type={type}
+                dataContainerRef={dataContainerRef}
               />
               {provided.placeholder}
             </div>
@@ -1127,7 +1130,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
             )}
 
             {/* render main content entry form */}
-            <div style={{ height: 9999 }}>
+            <div ref={dataContainerRef}>
               <DragDropContext onDragEnd={onDragEnd}>
                 {data.subs.map(renderEntryFormItem)}
               </DragDropContext>
