@@ -117,17 +117,21 @@ const DetaiItem: FC<DetaiItemProps> = ({
 }) => {
   const isLinkARNotification = activeKey === 'notification' && detailItem?.projectProductId;
 
-  const isLinkARRequest =
-    activeKey === 'request' &&
-    detailItem.projectId &&
-    detailItem.requestFor === ProjectTrackingEnum['Assistance request'];
+  // const isLinkARRequest =
+  //   activeKey === 'request' &&
+  //   detailItem.projectId &&
+  //   detailItem.requestFor === ProjectTrackingEnum['Assistance request'];
 
-  const linkText = isLinkARRequest
-    ? `${window.location.origin}${PATH.designerUpdateProject.replace(
-        ':id',
-        detailItem.projectId!,
-      )}?${NEW_TAB_FROM_REQUEST_QUERY}`
-    : isLinkARNotification
+  // const linkText = isLinkARRequest
+  //   ? `${window.location.origin}${PATH.designerUpdateProject.replace(
+  //       ':id',
+  //       detailItem.projectId!,
+  //     )}?${NEW_TAB_FROM_REQUEST_QUERY}`
+  //   : isLinkARNotification
+  //   ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
+  //   : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
+
+  const linkText = isLinkARNotification
     ? `${window.location.origin}/brand/product/${detailItem.product.id}?${QUERY_KEY.project_product_id}=${detailItem.projectProductId}&${NEW_TAB_FROM_REQUEST_QUERY}`
     : `${window.location.origin}/brand/product/${detailItem.product.id}?${NEW_TAB_FROM_REQUEST_QUERY}`;
 
