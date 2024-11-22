@@ -10,8 +10,7 @@ export const Export = () => {
     <section className={styles.export}>
       <RobotoBodyText level={6} customClass={styles.export_desc}>
         The CSV Export allows user to create CSV template with correct table headers so the next
-        Import update will perfectly match to our database. Below are the current default table
-        column headers which will be exported.
+        Import update will perfectly match to our database. Below headers will be exported.
       </RobotoBodyText>
 
       <article className={styles.export_heading_wrapper}>

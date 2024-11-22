@@ -21,6 +21,7 @@ import { Export } from '@/features/Import/components/Export';
 import { Step as Import } from '@/features/Import/components/Step';
 
 import styles from './index.less';
+import moment from 'moment';
 
 interface ImportExportModalProps extends Omit<ModalProps, 'open'> {
   onSave?: (type: 'import' | 'export', isSaved?: boolean) => void;
@@ -34,6 +35,9 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
+  const brandName = store.getState().user.user?.brand?.name;
+  const queryParams = new URLSearchParams(location.search);
+  const categoryName = queryParams.get('categories')?.split(' / ').pop();
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
 
@@ -41,6 +45,12 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const hasError = Object.keys(error).length > 0 && isImport && step === ImportStep.STEP_3;
 
   const disabledImportBtn = hasError || !dataImport.length || step !== ImportStep.STEP_3;
+
+  const generateFileName = () => {
+    const date = moment().format('YYYYMMDD');
+    const randomCode = moment().unix();
+    return `${brandName}-${categoryName}-${date}-${randomCode}`;
+  };
 
   const clearState = () => {
     setActiveKey('import');
@@ -77,7 +87,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       category_id: location.state.categoryId,
     };
     const res = await exportInventoryCSV(payload);
-    downloadFile([res], `inventory-export-${new Date().toISOString()}.csv`, { type: 'text/csv' });
+    downloadFile([res], generateFileName(), { type: 'text/csv' });
 
     onSave?.('export', !!res);
   };
