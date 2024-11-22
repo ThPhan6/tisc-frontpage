@@ -6,7 +6,7 @@ import { useLocation } from 'umi';
 import { useScreen } from '@/helper/common';
 import { downloadFile, throttleAction } from '@/helper/utils';
 import { exportInventoryCSV, importInventoryCSV } from '@/services/inventory.api';
-import { isEmpty, pick } from 'lodash';
+import { pick } from 'lodash';
 
 import { ImportStep } from './types/import.type';
 import { ImportExportTab, LIST_TAB } from './types/tab.type';
@@ -21,6 +21,7 @@ import { Export } from '@/features/Import/components/Export';
 import { Step as Import } from '@/features/Import/components/Step';
 
 import styles from './index.less';
+import moment from 'moment';
 
 interface ImportExportModalProps extends Omit<ModalProps, 'open'> {
   onSave?: (type: 'import' | 'export', isSaved?: boolean) => void;
@@ -34,7 +35,9 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
-  const exportType = useAppSelector((s) => s.import.exportType);
+  const brandName = store.getState().user.user?.brand?.name;
+  const queryParams = new URLSearchParams(location.search);
+  const categoryName = queryParams.get('categories')?.split(' / ').pop();
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
 
@@ -42,7 +45,12 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const hasError = Object.keys(error).length > 0 && isImport && step === ImportStep.STEP_3;
 
   const disabledImportBtn = hasError || !dataImport.length || step !== ImportStep.STEP_3;
-  const disabledExportBtn = isEmpty(exportType);
+
+  const generateFileName = () => {
+    const date = moment().format('YYYYMMDD');
+    const randomCode = moment().unix();
+    return `${brandName}-${categoryName}-${date}-${randomCode}`;
+  };
 
   const clearState = () => {
     setActiveKey('import');
@@ -77,10 +85,9 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const handleExport = async () => {
     const payload: ExportRequest = {
       category_id: location.state.categoryId,
-      types: exportType,
     };
     const res = await exportInventoryCSV(payload);
-    downloadFile([res], `inventory-export-${new Date().toISOString()}.csv`, { type: 'text/csv' });
+    downloadFile([res], generateFileName(), { type: 'text/csv' });
 
     onSave?.('export', !!res);
   };
@@ -180,7 +187,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
               size="small"
               variant="primary"
               properties="rounded"
-              disabled={isImport ? disabledImportBtn : disabledExportBtn}
+              disabled={isImport && disabledImportBtn}
             >
               <BodyText fontFamily="Roboto" level={6} onClick={throttleAction(handleSave)}>
                 {activeKey === 'import' ? 'Import' : 'Export'}
