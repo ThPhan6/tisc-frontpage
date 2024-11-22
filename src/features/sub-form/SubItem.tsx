@@ -73,7 +73,7 @@ export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange,
                 size="small"
                 autoWidth
                 defaultWidth={
-                  subItemOption[`value_${order}`] ? subItemOption[`value_${order}`].length * 7 : 40
+                  subItemOption[`value_${order}`] ? subItemOption[`value_${order}`].length * 8 : 40
                 }
                 containerClass={styles.form_input__formula}
                 onChange={handleChangeInput}
@@ -85,7 +85,7 @@ export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange,
                 size="small"
                 autoWidth
                 defaultWidth={
-                  subItemOption[`unit_${order}`] ? subItemOption[`unit_${order}`].length * 7 : 30
+                  subItemOption[`unit_${order}`] ? subItemOption[`unit_${order}`].length * 8 : 30
                 }
                 containerClass={styles.form_input__unit}
                 onChange={handleChangeInput}
