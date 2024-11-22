@@ -3,7 +3,6 @@ import { RcFile, UploadFile } from 'antd/es/upload';
 import { isNumeric } from '@/helper/utils';
 import { forEach, isNil } from 'lodash';
 
-import { InventoryExportType } from '@/features/Import/types/export.type';
 import { ImportDatabaseHeader, ImportStep } from '@/features/Import/types/import.type';
 import store, { useAppSelector } from '@/reducers';
 
@@ -19,7 +18,6 @@ interface ImportState {
   headers: string[];
   fileUploaded: UploadFile<RcFile> | null;
   dataImport: any[];
-  exportType: InventoryExportType[];
 }
 
 const initialState: ImportState = {
@@ -31,7 +29,6 @@ const initialState: ImportState = {
   headerMatching: null,
   fileResult: null,
   fileUploaded: null,
-  exportType: [],
 };
 
 const importSlice = createSlice({
@@ -63,9 +60,6 @@ const importSlice = createSlice({
     setErrors(state, action: PayloadAction<Record<string, any[]> | null>) {
       state.error = action.payload;
     },
-    setSelectExportType(state, action: PayloadAction<number[]>) {
-      state.exportType = action.payload;
-    },
     resetState() {
       return initialState;
     },
@@ -82,7 +76,6 @@ export const {
   setDataImport,
   setFileUploaded,
   setHeaderMatching,
-  setSelectExportType,
 } = importSlice.actions;
 
 export const importReducer = importSlice.reducer;
