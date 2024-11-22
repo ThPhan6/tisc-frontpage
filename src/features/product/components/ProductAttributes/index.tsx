@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 
 import { QUERY_KEY } from '@/constants/util';
+import { Spin } from 'antd';
 
 import { useGetQueryFromOriginURL } from '@/helper/hook';
 import { getAllAttribute } from '@/services';
@@ -15,6 +16,7 @@ import {
   ProductAttributeWithSubAdditionByType,
 } from '@/types';
 
+import loadingStyles from '@/components/LoadingPage/styles/index.less';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import { ProductAttributeContainer } from './ProductAttributeContainer';
@@ -127,7 +129,11 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
   }, []);
 
   if (!isReady) {
-    return null;
+    return (
+      <div className={loadingStyles.container}>
+        <Spin size="large" />
+      </div>
+    );
   }
 
   return (
