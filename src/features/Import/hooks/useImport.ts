@@ -88,7 +88,15 @@ export const useImport = () => {
   };
 
   const handleSelectDatabaseHeader = (fileField: string, header: ImportDatabaseHeader) => {
-    const newHeaderMatching = { ...headerMatching, [fileField]: header };
+    const newHeaderMatching = { ...headerMatching };
+
+    const existedFileField = Object.keys(headerMatching ?? {}).find((key) => key === fileField);
+
+    if (existedFileField) {
+      delete newHeaderMatching[existedFileField];
+    }
+
+    newHeaderMatching[fileField] = header;
 
     /// check if header is already selected then remove previous selection
     const groupByHeader = keepLastObjectOccurrence(newHeaderMatching);

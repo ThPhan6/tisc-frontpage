@@ -6,6 +6,8 @@ import { ReactComponent as RightIcon } from '@/assets/icons/line-right-blue-24.s
 
 import { useImport } from '../hooks/useImport';
 
+import { ImportStep } from '../types/import.type';
+
 import { BodyText } from '@/components/Typography';
 
 import { DataMatching } from './DataMatching';
@@ -63,7 +65,12 @@ export const Step = () => {
 
   return (
     <div className={styles.container}>
-      <Steps current={step} items={steps} onChange={handleChangeStep} />
+      <Steps current={step} onChange={handleChangeStep}>
+        <Steps.Step title={steps[ImportStep.STEP_1].title} />
+        <Steps.Step title={steps[ImportStep.STEP_2].title} />
+        <Steps.Step title={steps[ImportStep.STEP_3].title} />
+      </Steps>
+
       <div className="step-content">{steps[step].content}</div>
     </div>
   );
