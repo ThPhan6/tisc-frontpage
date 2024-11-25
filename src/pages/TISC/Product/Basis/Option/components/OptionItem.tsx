@@ -91,6 +91,13 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
   const { collapse, setCollapse } = useContext(FormGroupContext);
 
+  const higestLength =
+    subOption.subs?.reduce((subA, subB) =>
+      subA.value_1.length > subB.value_1.length ? subA : subB,
+    ).value_1?.length * 8;
+
+  console.log('subOption.subs: ', subOption.subs);
+
   const handleDeleteSubItem =
     (index: number) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
       e.stopPropagation();
@@ -208,6 +215,9 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
                           handleChangeSubOptionItem(changedOptionItem, index)
                         }
                         type={type}
+                        higestLength={
+                          type === ProductBasisFormType.options ? higestLength : undefined
+                        }
                       />
                       <div className="flex-center">
                         {isAttribute ? (
