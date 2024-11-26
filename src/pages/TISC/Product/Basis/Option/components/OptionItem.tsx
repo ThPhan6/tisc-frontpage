@@ -178,7 +178,9 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
         // }
       >
         <Collapse.Panel
-          className={collapse[subOption.id] && styles.active_collapse_panel}
+          className={`${collapse[subOption.id] && styles.active_collapse_panel} ${
+            type === ProductBasisFormType.options && styles.noBorder
+          }`}
           header={
             <SubPanelHeader
               subOption={subOption}
@@ -360,11 +362,11 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                   onChange={handleCollapse}
                 >
                   <Collapse.Panel
-                    className={
+                    className={`${
                       collapse[mainOption.id]
                         ? styles.active_collapse_panel
                         : styles.unactive_collapse_panel
-                    }
+                    } ${type === ProductBasisFormType.options && styles.noBorder}`}
                     header={
                       <MainPanelHeader
                         mainOption={mainOption}
