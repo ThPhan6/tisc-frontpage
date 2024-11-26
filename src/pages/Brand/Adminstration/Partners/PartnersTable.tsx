@@ -470,7 +470,7 @@ const PartnersTable = () => {
         fetchDataFunc={isTabCompany ? getListPartnerCompanies : getListPartnerContacts}
         hasPagination
         ref={tableRef}
-        extraParams={{ filter: filters }}
+        extraParams={{ filter: filters, pageSize: 15 }}
         autoLoad={false}
       />
     </>
