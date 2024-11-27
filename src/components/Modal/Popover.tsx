@@ -360,12 +360,11 @@ const Popover: FC<PopoverProps> = ({
   const renderButtonFooter = () => {
     if (cancelSaveFooter) {
       return (
-        <div className="flex-end" style={{ gap: 16 }}>
+        <div className={`${styles.footerButtons} flex-end`} style={{ gap: 16 }}>
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
-            buttonClass="done-btn"
             disabled={disabledSubmit}
             onClick={onCancel}
           >

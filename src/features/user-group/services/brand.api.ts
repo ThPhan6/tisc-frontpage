@@ -35,11 +35,13 @@ export async function getBrandPagination(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse<BrandListItem[]>) => void,
 ) {
+  showPageLoading();
   request(`/api/brand/get-list`, {
     method: 'GET',
     params,
   })
     .then((response: { data: BrandListResponse }) => {
+      hidePageLoading();
       const { brands, pagination, summary } = response.data;
       callback({
         data: brands,
@@ -179,7 +181,11 @@ export async function createBrand(data: TISCUserGroupBrandForm) {
 export async function copyAttributeToBrand(id: string, brandId: string) {
   showPageLoading();
 
-  return request<{ data: BrandDetail }>(`/api/attribute/copy/${id}/brand/${brandId}`, {
+  return request<{
+    data: BrandDetail & {
+      brand_id: string;
+    };
+  }>(`/api/attribute/copy/${id}/brand/${brandId}`, {
     method: 'POST',
   })
     .then((res) => {

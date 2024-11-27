@@ -55,6 +55,7 @@ export default defineConfig({
     // box-shadow border
     'border-top': 'inset 0 .7px 0 #000',
     'border-bottom': 'inset 0 -.7px 0 #000',
+    'border-top-bottom': 'inset 0 -.7px 0 #000, inset 0 .7px 0 #000',
     'border-left': 'inset .7px 0 0 #000',
     'border-right': 'inset -.7px 0 0 #000',
     'border-all': 'inset 0 0 0 .7px #000',

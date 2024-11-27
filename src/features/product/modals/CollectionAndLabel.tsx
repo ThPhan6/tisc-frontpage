@@ -589,7 +589,7 @@ export const CollectionAndLabelModal: FC<MultiCollectionModalProps> = ({
       setRightChosenValue={(selectedItem) => {
         dispatch(
           setPartialProductDetail({
-            label_ids: selectedItem.map((item: any) => String(item.value)),
+            label_ids: selectedItem ? selectedItem.map((item: any) => String(item.value)) : [],
           }),
         );
         setChosenLabel(

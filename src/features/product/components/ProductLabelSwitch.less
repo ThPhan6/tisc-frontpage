@@ -1,0 +1,34 @@
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+
+  :global(.text) {
+    cursor: default;
+    user-select: none;
+  }
+
+  :global(.switchBtn) {
+    position: relative;
+    width: 50px;
+    background-color: @mono-color-dark;
+
+    :global(.ant-switch-inner) {
+      position: absolute;
+      top: 0.6px;
+      font-weight: 500;
+      font-size: 8px;
+    }
+    :global(.ant-switch) {
+      box-shadow: none;
+    }
+    :global(.ant-click-animating-node) {
+      animation: none;
+    }
+  }
+
+  :global(.ant-switch-checked) {
+    background: #1a227f !important;
+  }
+}

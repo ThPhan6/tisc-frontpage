@@ -145,6 +145,28 @@
           }
         }
       }
+      .ecoLabels {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        svg {
+          width: 25px;
+          height: 25px;
+          opacity: 0.5;
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+      &:has(.imageWrapper:hover) {
+        .ecoLabels {
+          opacity: 0;
+        }
+      }
       &.border {
         border: 1px solid @mono-color-medium;
       }
@@ -354,6 +376,23 @@
 .galleryContentOut {
   display: none;
   animation: slideUp 200ms forwards;
+}
+.ecoTooltip {
+  :global(.ant-tooltip-content) {
+    background-color: unset;
+    :global(.ant-tooltip-inner) {
+      min-height: 20px;
+      padding-top: 4px;
+      padding-right: 30px;
+      padding-bottom: 4px;
+      color: #000;
+      font-weight: 500;
+      font-size: 11px;
+      background-color: #f5f5f5;
+      border-radius: 50px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
 }
 @keyframes slideUp {
   0% {

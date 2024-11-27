@@ -82,7 +82,10 @@ export const TopBar: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!checkedBrand.value || (!filter && firstLoad.value && (coll_id || cate_id))) {
+    if (
+      !checkedBrand.value ||
+      ((!filter || filter.length == 0) && firstLoad.value && (coll_id || cate_id))
+    ) {
       return;
     }
 
@@ -131,7 +134,13 @@ export const TopBar: React.FC = () => {
       productSummary?.brandId !== (checkedBrand.value as string)
     ) {
       // prevent call api on first loading
-      if (coll_id && coll_name && firstLoad.value && !filter && location.state?.fromMyWorkspace) {
+      if (
+        coll_id &&
+        coll_name &&
+        firstLoad.value &&
+        (!filter || filter.length == 0) &&
+        location.state?.fromMyWorkspace
+      ) {
         return;
       }
 
@@ -195,7 +204,11 @@ export const TopBar: React.FC = () => {
         params.collection_id = collFilter.value === 'all' ? 'all' : collFilter.value;
       }
 
-      if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
+      if (
+        (!filter || filter.length == 0) &&
+        firstLoad.value &&
+        (coll_id || cate_id || location.state?.fromMyWorkspace)
+      ) {
         firstLoad.setValue(false);
         return;
       }
@@ -301,13 +314,18 @@ export const TopBar: React.FC = () => {
               bottomValue={renderFilterDropdown(
                 'Collections',
                 productSummary?.collections
-                  ? [
-                      ...productSummary?.collections.map((collection) => ({
+                  ? productSummary?.x_collection
+                    ? [
+                        ...productSummary?.collections.map((collection) => ({
+                          key: collection.id,
+                          label: collection.name,
+                        })),
+                        { key: '-1', label: 'X Collection' },
+                      ]
+                    : productSummary?.collections.map((collection) => ({
                         key: collection.id,
                         label: collection.name,
-                      })),
-                      { key: '-1', label: 'X Collection' },
-                    ]
+                      }))
                   : [],
                 true,
                 'View by Collections',
