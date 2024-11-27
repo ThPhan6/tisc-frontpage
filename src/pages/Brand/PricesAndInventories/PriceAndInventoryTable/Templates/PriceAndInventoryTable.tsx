@@ -67,8 +67,6 @@ const PriceAndInventoryTable: React.FC = () => {
     const inventoryPayload: any = {};
     const warehousePayload: any = [];
 
-    console.log(selectedRows);
-
     forEach(selectedRows, (row, id) => {
       const newWarehouses = (row.warehouses || []).filter((ws) => Number(ws.convert) > 0);
 
@@ -118,24 +116,6 @@ const PriceAndInventoryTable: React.FC = () => {
 
     setIsEditMode(!isEditMode);
   };
-
-  // const handleImport = (data: any) => {
-  //   console.log('Imported data:', data);
-  // };
-  // const handleExport = () => {
-  //   console.log('Exporting data...');
-  // };
-
-  // const dbHeaders = [
-  //   'Product ID',
-  //   'Description',
-  //   'Unit Price',
-  //   'Unit Type',
-  //   'In Stock',
-  //   'Out of Stock',
-  //   'On Order',
-  //   'Backorder',
-  // ];
 
   const handleSaveCurrecy = async (currency: string) => {
     if (!currency) {
@@ -204,14 +184,6 @@ const PriceAndInventoryTable: React.FC = () => {
           callbackFinishApi={callbackFinishApi}
         />
       </section>
-
-      {/* <ImportExportCSV
-        open={isShowModal === 'Import/Export'}
-        onCancel={handleToggleModal('none')}
-        onImport={handleImport}
-        onExport={handleExport}
-        dbHeaders={dbHeaders}
-      /> */}
 
       <Backorder
         inventoryItem={selectedRows?.[inventoryId]}

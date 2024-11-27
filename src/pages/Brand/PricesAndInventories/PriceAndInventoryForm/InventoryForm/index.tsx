@@ -1,19 +1,16 @@
 import { type CSSProperties } from 'react';
 
-import { Table, type TableColumnsType, message } from 'antd';
+import { Table, type TableColumnsType } from 'antd';
 
-import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { confirmDelete, useScreen } from '@/helper/common';
-import { convertToNegative } from '@/helper/utils';
-import { isNil, sum, uniqueId } from 'lodash';
+import { useScreen } from '@/helper/common';
+import { convertToNegative, sortObjectArray } from '@/helper/utils';
+import { isNil, sum } from 'lodash';
 
-import store from '@/reducers';
-import { ModalType, openModal } from '@/reducers/modal';
+import { ModalType } from '@/reducers/modal';
 import { IPriceAndInventoryForm, InventoryAttribute, WarehouseItemMetric } from '@/types';
 
-import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import InfoModal from '@/components/Modal/InfoModal';
@@ -113,6 +110,7 @@ const customInputStyle = (value: number | undefined): CSSProperties => ({
   width: value === 0 ? 50 : 80,
   padding: 0,
   margin: 0,
+  textAlign: 'center',
 });
 
 const InventoryForm = ({
@@ -121,15 +119,13 @@ const InventoryForm = ({
   onToggleModal,
   setFormData,
 }: InventoryFormProps) => {
-  const randomId = uniqueId();
-
   const { isExtraLarge, isMobile } = useScreen();
-  const disabledAddInventory = !formData.name;
+  // const disabledAddInventory = !formData.name;
 
-  const saveBtnStyle = {
-    background: disabledAddInventory ? '#bfbfbf' : '',
-    minWidth: 48,
-  };
+  // const saveBtnStyle = {
+  //   background: disabledAddInventory ? '#bfbfbf' : '',
+  //   minWidth: 48,
+  // };
 
   const handleInventoryFormChange =
     (field: keyof InventoryAttribute) => (event?: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,22 +142,22 @@ const InventoryForm = ({
       });
     };
 
-  const handleRemoveRow = (id: string) => () => {
-    confirmDelete(() => {
-      setFormData((prev) => {
-        const newWarehouses = prev.warehouses.filter((el: WarehouseItemMetric) => el.id !== id);
+  // const handleRemoveRow = (id: string) => () => {
+  //   confirmDelete(() => {
+  //     setFormData((prev) => {
+  //       const newWarehouses = prev.warehouses.filter((el: WarehouseItemMetric) => el.id !== id);
 
-        const totalStock = sum(newWarehouses.map((el) => el.new_in_stock));
+  //       const totalStock = sum(newWarehouses.map((el) => el.new_in_stock));
 
-        return {
-          ...prev,
-          warehouses: newWarehouses,
-          total_stock: totalStock,
-          out_of_stock: calculateOutOfStock(totalStock, prev.on_order),
-        };
-      });
-    });
-  };
+  //       return {
+  //         ...prev,
+  //         warehouses: newWarehouses,
+  //         total_stock: totalStock,
+  //         out_of_stock: calculateOutOfStock(totalStock, prev.on_order),
+  //       };
+  //     });
+  //   });
+  // };
 
   const handleChangeWarehouse =
     (
@@ -209,7 +205,7 @@ const InventoryForm = ({
     {
       title: 'WareHouse Name',
       dataIndex: 'name',
-      width: '30%',
+      width: '20%',
       ellipsis: true,
     },
     {
@@ -221,14 +217,14 @@ const InventoryForm = ({
     {
       title: 'Country',
       dataIndex: 'country_name',
-      width: '30%',
+      width: '40%',
       ellipsis: true,
     },
     {
       title: 'In stock',
       dataIndex: 'in_stock',
       align: 'center',
-      width: '10%',
+      width: '20%',
       render: (_, record: WarehouseItemMetric) => {
         const inStockValue =
           formData.warehouses?.find((ws) => ws.id === record.id)?.new_in_stock ?? 0;
@@ -244,92 +240,92 @@ const InventoryForm = ({
         );
       },
     },
-    {
-      title: 'Convert',
-      dataIndex: 'convert',
-      align: 'center',
-      width: '10%',
-      render: (_, record: WarehouseItemMetric) => {
-        const convertValue = formData.warehouses?.find((ws) => ws.id === record.id)?.convert;
+    // {
+    //   title: 'Convert',
+    //   dataIndex: 'convert',
+    //   align: 'center',
+    //   width: '10%',
+    //   render: (_, record: WarehouseItemMetric) => {
+    //     const convertValue = formData.warehouses?.find((ws) => ws.id === record.id)?.convert;
 
-        return (
-          <CustomInput
-            pattern="/^-?\d+$/"
-            value={Object.is(convertValue, -0) ? '-0' : convertValue}
-            additionalInputClass="indigo-dark-variant"
-            onChange={handleChangeWarehouse(record, 'convert')}
-            style={customInputStyle(convertValue)}
-          />
-        );
-      },
-    },
-    {
-      align: 'center',
-      width: '5%',
-      render: (_, record) => (
-        <TrashIcon
-          className="cursor-pointer primary-color-dark"
-          onClick={handleRemoveRow(record.id ?? '')}
-        />
-      ),
-    },
+    //     return (
+    //       <CustomInput
+    //         pattern="/^-?\d+$/"
+    //         value={Object.is(convertValue, -0) ? '-0' : convertValue}
+    //         additionalInputClass="indigo-dark-variant"
+    //         onChange={handleChangeWarehouse(record, 'convert')}
+    //         style={customInputStyle(convertValue)}
+    //       />
+    //     );
+    //   },
+    // },
+    // {
+    //   align: 'center',
+    //   width: '5%',
+    //   render: (_, record) => (
+    //     <TrashIcon
+    //       className="cursor-pointer primary-color-dark"
+    //       onClick={handleRemoveRow(record.id ?? '')}
+    //     />
+    //   ),
+    // },
   ];
 
   const handleClearInputValue = (field: keyof InventoryAttribute) => () =>
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
-  const handleAddWarehouse = async () => {
-    if (!formData?.location_id) {
-      message.error('Please select a location');
-      return;
-    }
+  // const handleAddWarehouse = async () => {
+  //   if (!formData?.location_id) {
+  //     message.error('Please select a location');
+  //     return;
+  //   }
 
-    const newRow: WarehouseItemMetric = {
-      id: randomId,
-      name: formData?.name ?? '',
-      city_name: formData?.city_name ?? '',
-      country_name: formData?.country_name ?? '',
-      location_id: formData.location_id,
-      new_in_stock: 0,
-      in_stock: 0,
-      convert: 0,
-    };
+  //   const newRow: WarehouseItemMetric = {
+  //     id: randomId,
+  //     name: formData?.name ?? '',
+  //     city_name: formData?.city_name ?? '',
+  //     country_name: formData?.country_name ?? '',
+  //     location_id: formData.location_id,
+  //     new_in_stock: 0,
+  //     in_stock: 0,
+  //     convert: 0,
+  //   };
 
-    setFormData((prev) => ({
-      ...prev,
-      ...formData,
-      name: '',
-      location_id: '',
-      warehouses: [...prev.warehouses, newRow],
-    }));
-  };
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     ...formData,
+  //     name: '',
+  //     location_id: '',
+  //     warehouses: [...prev.warehouses, newRow],
+  //   }));
+  // };
 
-  const handleOpenLocationModal = () => {
-    store.dispatch(
-      openModal({
-        type: 'Work Location',
-        title: 'Work Location',
-        props: {
-          workLocation: {
-            data: {
-              label: '',
-              value: '',
-              phoneCode: '00',
-            },
-            onChange: (data) => {
-              setFormData((prev) => ({
-                ...prev,
-                location_id: data.value,
-                name: data?.business_name,
-                city_name: data?.city_name ?? '',
-                country_name: data?.country_name ?? '',
-              }));
-            },
-          },
-        },
-      }),
-    );
-  };
+  // const handleOpenLocationModal = () => {
+  //   store.dispatch(
+  //     openModal({
+  //       type: 'Work Location',
+  //       title: 'Work Location',
+  //       props: {
+  //         workLocation: {
+  //           data: {
+  //             label: '',
+  //             value: '',
+  //             phoneCode: '00',
+  //           },
+  //           onChange: (data) => {
+  //             setFormData((prev) => ({
+  //               ...prev,
+  //               location_id: data.value,
+  //               name: data?.business_name,
+  //               city_name: data?.city_name ?? '',
+  //               country_name: data?.country_name ?? '',
+  //             }));
+  //           },
+  //         },
+  //       },
+  //     }),
+  //   );
+  // };
 
   return (
     <>
@@ -340,8 +336,7 @@ const InventoryForm = ({
       >
         <section className="d-flex items-center justify-between w-full">
           <Title
-            style={{ paddingBottom: '32px' }}
-            customClass={`${styles.category_form_content_title} shadow-none d-flex items-center`}
+            customClass={`${styles.category_form_content_title} border-bottom-black-inset w-full d-flex items-center`}
           >
             INVENTORY MANAGEMENT
             <WarningIcon className="ml-16 cursor-pointer" onClick={onToggleModal('Inventory')} />
@@ -349,8 +344,9 @@ const InventoryForm = ({
         </section>
 
         <form
-          className={`d-flex items-center gap-16 ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}
-          style={{ height: 56 }}
+          className={`d-flex items-center gap-16 h-56 mt-20 ${
+            isMobile ? 'flex-col overflow-y-scroll' : ''
+          }`}
         >
           <InputGroup
             label="Total Stock :"
@@ -405,7 +401,7 @@ const InventoryForm = ({
             />
           </div>
 
-          <div className={styles.category_form_back_order_input_wrapper}>
+          {/* <div className={styles.category_form_back_order_input_wrapper}>
             <InputGroup
               label="Back Order :"
               fontLevel={3}
@@ -428,10 +424,10 @@ const InventoryForm = ({
               }
               messageType={formData.back_order && formData.back_order <= 0 ? 'error' : undefined}
             />
-          </div>
+          </div> */}
         </form>
 
-        <div style={{ marginTop: 0 }}>
+        {/* <div style={{ marginTop: 0 }}>
           <InputGroup
             label="Location :"
             fontLevel={3}
@@ -446,19 +442,19 @@ const InventoryForm = ({
             customClass="mb-8-px"
             onRightIconClick={handleOpenLocationModal}
           />
-        </div>
+        </div> */}
 
-        <div className="pb-16 border-bottom-black-inset text-right">
+        {/* <div className="pb-16 border-bottom-black-inset text-right">
           <CustomSaveButton
             contentButton="Add"
             style={saveBtnStyle}
             onClick={disabledAddInventory ? undefined : handleAddWarehouse}
             disabled={disabledAddInventory}
           />
-        </div>
+        </div> */}
 
         <Table
-          dataSource={formData.warehouses}
+          dataSource={sortObjectArray(formData?.warehouses, 'name')}
           columns={warehouseColumns}
           pagination={false}
           className={`${styles.category_form_table}`}
