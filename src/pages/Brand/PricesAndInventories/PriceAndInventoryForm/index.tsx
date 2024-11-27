@@ -9,12 +9,7 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
 import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
-import {
-  extractDataBase64,
-  formatCurrencyNumber,
-  sortObjectArray,
-  validateRequiredFields,
-} from '@/helper/utils';
+import { extractDataBase64, formatCurrencyNumber, validateRequiredFields } from '@/helper/utils';
 import {
   createInventory,
   exchangeCurrency,
@@ -22,7 +17,7 @@ import {
   getListWarehouseByInventoryId,
   updateInventory,
 } from '@/services';
-import { filter, isEmpty, isEqual, isNil, map, omit, pick, reduce, sortBy } from 'lodash';
+import { isEmpty, isEqual, isNil, omit, pick, reduce, sortBy } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
 import {
@@ -91,6 +86,7 @@ const PriceAndInventoryForm = () => {
         const warehouses: any = res.flatMap((country) =>
           country.locations.map((el) => ({
             ...el,
+            location_id: el.id,
             el_id: el.id,
             city_name: el.city_name,
             country_name: el.country_name,
