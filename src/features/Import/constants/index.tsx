@@ -94,13 +94,7 @@ export const INVENTORY_EXPORT_COLUMN_HEADERS = [
     header: 'Price, Value & Stock Overview',
   },
   {
-    key: [
-      InventoryExportType.WAREHOUSE_NAME,
-      InventoryExportType.WAREHOUSE_CITY,
-      InventoryExportType.WAREHOUSE_COUNTRY,
-      InventoryExportType.WAREHOUSE_IN_STOCK,
-      InventoryExportType.BACK_ORDER,
-    ],
+    key: [InventoryExportType.WAREHOUSE_NAME, InventoryExportType.WAREHOUSE_IN_STOCK],
     label: 'All Warehouse Location/In Stock',
     header: 'Warehouse Location/In Stock & Volume Price Configuration',
   },
