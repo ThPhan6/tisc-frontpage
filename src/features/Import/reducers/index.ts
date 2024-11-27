@@ -1,8 +1,10 @@
+import { INVENTORY_EXPORT_COLUMN_HEADERS } from '@/features/Import/constants';
 import { RcFile, UploadFile } from 'antd/es/upload';
 
 import { isNumeric } from '@/helper/utils';
-import { forEach, isNil } from 'lodash';
+import { forEach, isArray, isNil } from 'lodash';
 
+import { InventoryExportType } from '@/features/Import/types/export.type';
 import { ImportDatabaseHeader, ImportStep } from '@/features/Import/types/import.type';
 import store, { useAppSelector } from '@/reducers';
 
@@ -18,6 +20,7 @@ interface ImportState {
   headers: string[];
   fileUploaded: UploadFile<RcFile> | null;
   dataImport: any[];
+  selectedExportTypes: InventoryExportType[];
 }
 
 const initialState: ImportState = {
@@ -29,6 +32,9 @@ const initialState: ImportState = {
   headerMatching: null,
   fileResult: null,
   fileUploaded: null,
+  selectedExportTypes: INVENTORY_EXPORT_COLUMN_HEADERS.flatMap((item) =>
+    isArray(item.key) ? item.key : [item.key],
+  ),
 };
 
 const importSlice = createSlice({
@@ -60,8 +66,11 @@ const importSlice = createSlice({
     setErrors(state, action: PayloadAction<Record<string, any[]> | null>) {
       state.error = action.payload;
     },
-    resetState() {
-      return initialState;
+    setSelectedExportTypes(state, action: PayloadAction<InventoryExportType[]>) {
+      state.selectedExportTypes = action.payload;
+    },
+    resetState(state) {
+      Object.assign(state, initialState);
     },
   },
 });
@@ -76,6 +85,7 @@ export const {
   setDataImport,
   setFileUploaded,
   setHeaderMatching,
+  setSelectedExportTypes,
 } = importSlice.actions;
 
 export const importReducer = importSlice.reducer;

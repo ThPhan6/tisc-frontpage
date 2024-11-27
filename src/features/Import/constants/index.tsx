@@ -1,5 +1,6 @@
-import { startCase } from 'lodash';
+import { groupBy, startCase } from 'lodash';
 
+import { InventoryExportType } from '@/features/Import/types/export.type';
 import { DatabaseHeaderMatching, InventoryField } from '@/features/Import/types/import.type';
 import { ImportDatabaseHeader } from '@/features/Import/types/import.type';
 
@@ -51,23 +52,71 @@ export const DATABASE_HEADER_MATCHING: DatabaseHeaderMatching[] = keys.map((key,
   value: key as keyof InventoryField,
 }));
 
-export const INVENTORY_EXPORT_LABELS = [
-  { label: 'Product ID' },
-  { label: 'Description' },
-  { label: 'Unit Price' },
-  { label: 'Unit Type' },
-  { label: 'Warehouse Name' },
-  { label: 'Warehouse Country' },
-  { label: 'Warehouse City' },
-  { label: 'Warehouse In Stock' },
-  { label: 'Out of Stock' },
-  { label: 'On Order' },
-  { label: 'Backorder' },
-  { label: 'Volume Price' },
-  { label: 'Volume % Rate' },
-  { label: 'Volume Min. Qty' },
-  { label: 'Volume Max. Qty' },
+export const INVENTORY_EXPORT_COLUMN_HEADERS = [
+  {
+    key: InventoryExportType.PRODUCT_ID,
+    label: 'Product ID',
+    header: 'Default Output',
+  },
+  {
+    key: InventoryExportType.DESCRIPTION,
+    label: 'Description',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: InventoryExportType.UNIT_PRICE,
+    label: 'Unit Price',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: InventoryExportType.UNIT_TYPE,
+    label: 'Unit Type',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: InventoryExportType.TOTAL_STOCK,
+    label: 'Total Stock',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: InventoryExportType.OUT_OF_STOCK,
+    label: 'Out of Stock',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: InventoryExportType.ON_ORDER,
+    label: 'On Order',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: InventoryExportType.STOCK_VALUE,
+    label: 'Stock Value',
+    header: 'Price, Value & Stock Overview',
+  },
+  {
+    key: [
+      InventoryExportType.WAREHOUSE_NAME,
+      InventoryExportType.WAREHOUSE_CITY,
+      InventoryExportType.WAREHOUSE_COUNTRY,
+      InventoryExportType.WAREHOUSE_IN_STOCK,
+      InventoryExportType.BACK_ORDER,
+    ],
+    label: 'All Warehouse Location/In Stock',
+    header: 'Warehouse Location/In Stock & Volume Price Configuration',
+  },
+  {
+    key: [
+      InventoryExportType.DISCOUNT_RATE,
+      InventoryExportType.DISCOUNT_PRICE,
+      InventoryExportType.MIN_QUANTITY,
+      InventoryExportType.MAX_QUANTITY,
+    ],
+    label: 'All Volume Price Configuration',
+    header: 'Warehouse Location/In Stock & Volume Price Configuration',
+  },
 ];
+
+export const GROUPED_EXPOTY_COLUMN_HEADERS = groupBy(INVENTORY_EXPORT_COLUMN_HEADERS, 'header');
 
 export const getDatabaseHeader = (
   field: string,
