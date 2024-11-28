@@ -28,16 +28,17 @@ interface ImportExportModalProps extends Omit<ModalProps, 'open'> {
 }
 
 export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props }) => {
-  const { isTablet } = useScreen();
+  const isTablet = useScreen().isTablet;
   const location = useLocation<{ categoryId: string }>();
+  const queryParams = new URLSearchParams(location.search);
+  const brandName = store.getState().user.user?.brand?.name;
+  const categoryName = queryParams.get('categories')?.split(' / ').pop();
 
   const open = useAppSelector((s) => s.import.open);
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
-  const brandName = store.getState().user.user?.brand?.name;
-  const queryParams = new URLSearchParams(location.search);
-  const categoryName = queryParams.get('categories')?.split(' / ').pop();
+  const selectedExportTypes = useAppSelector((s) => s.import.selectedExportTypes);
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
 
@@ -84,12 +85,15 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
 
   const handleExport = async () => {
     const payload: ExportRequest = {
+      types: selectedExportTypes,
       category_id: location.state.categoryId,
     };
-    const res = await exportInventoryCSV(payload);
-    downloadFile([res], generateFileName(), { type: 'text/csv' });
 
-    onSave?.('export', !!res);
+    const res = await exportInventoryCSV(payload);
+    if (res) {
+      downloadFile([res], generateFileName(), { type: 'text/csv' });
+      onSave?.('export', !!res);
+    }
   };
 
   const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
