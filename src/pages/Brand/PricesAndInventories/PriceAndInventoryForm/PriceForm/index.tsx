@@ -421,7 +421,7 @@ const PriceForm = ({
     <>
       <div
         className={`${styles.category_form_content} ${
-          isExtraLarge && inventoryId ? ' w-1-2 border-right-black-inset' : 'w-full'
+          isExtraLarge ? ' w-1-2 border-right-black-inset' : 'w-full'
         }`}
       >
         <article className="d-flex items-center justify-between border-bottom-black-inset mb-8-px">
@@ -434,7 +434,7 @@ const PriceForm = ({
           </Title>
         </article>
 
-        <div className="d-flex items-center justify-between w-full">
+        <div className="d-flex items-center justify-between w-full gap-16">
           <div className={styles.category_form_sku_description_wrapper}>
             <InputGroup
               label="Product ID (SKU Code)"
@@ -472,7 +472,7 @@ const PriceForm = ({
           </div>
         </div>
 
-        <form className="d-flex gap-16">
+        <form className="d-flex gap-16 h-56">
           <InputGroup
             label="Unit Price"
             placeholder="type price"
@@ -512,7 +512,7 @@ const PriceForm = ({
           className="d-flex items-center justify-between w-full mt-16 mb-8-px"
         >
           <Title
-            customClass={`${styles.category_form_content_title} shadow-none d-flex items-center`}
+            customClass={`${styles.category_form_content_title} border-bottom-black-inset w-full d-flex items-center`}
           >
             VOLUME PRICE
             <WarningIcon

@@ -85,7 +85,7 @@ const PriceAndInventoryTableHeader = ({
               onChange={onToggleSwitch}
               size="default"
               checkedChildren="SAVE & CLOSE"
-              unCheckedChildren="EDIT NOW"
+              unCheckedChildren="QUICK EDIT"
               className={`${styles.category_table_header_btn_switch} ${
                 isEditMode
                   ? styles.category_table_header_btn_switch_on

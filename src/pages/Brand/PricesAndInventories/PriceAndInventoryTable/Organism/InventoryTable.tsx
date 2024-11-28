@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
 
-import { ReactComponent as CDownLeftIcon } from '@/assets/icons/c-down-left.svg';
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
 
@@ -238,28 +237,28 @@ const InventoryTable = ({
         width: '5%',
         render: (_, item) => renderEditableCell(item, 'on_order', item?.on_order || 0),
       },
-      {
-        title: 'Backorder',
-        dataIndex: 'back_order',
-        width: '8%',
-        align: 'center',
-        render: (_, item) => {
-          const backOrder = selectedRows?.[item.id]?.back_order ?? item?.back_order ?? 0;
+      // {
+      //   title: 'Backorder',
+      //   dataIndex: 'back_order',
+      //   width: '8%',
+      //   align: 'center',
+      //   render: (_, item) => {
+      //     const backOrder = selectedRows?.[item.id]?.back_order ?? item?.back_order ?? 0;
 
-          return (
-            <div
-              className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
-            >
-              <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
-              {isEditMode && (
-                <div style={{ height: 18 }}>
-                  <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />
-                </div>
-              )}
-            </div>
-          );
-        },
-      },
+      //     return (
+      //       <div
+      //         className={`${styles.category_table_additional_action_wrapper}  ${styles.back_order_card} cursor-pointer`}
+      //       >
+      //         <p className={`w-full my-0`}>{renderEditableCell(item, 'back_order', backOrder)}</p>
+      //         {isEditMode && (
+      //           <div style={{ height: 18 }}>
+      //             <CDownLeftIcon onClick={onToggleModal('BackOrder', item)} />
+      //           </div>
+      //         )}
+      //       </div>
+      //     );
+      //   },
+      // },
       {
         title: 'Volume Price',
         dataIndex: 'volumn_price',
