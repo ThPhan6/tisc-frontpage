@@ -7,6 +7,8 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import store from '@/reducers';
+import { setCompaniesPage, setContactsPage } from '@/reducers/partner';
 import { LocationGroupedByCountry } from '@/features/locations/type';
 import { Company, CompanyForm, ContactForm } from '@/types';
 
@@ -31,6 +33,7 @@ export const getListPartnerCompanies = (
   })
     .then((response: PartnerCompanyResponse) => {
       const { partners, pagination } = response.data;
+      store.dispatch(setCompaniesPage(pagination.page));
       callback({
         data: partners,
         pagination: {
@@ -56,6 +59,7 @@ export const getListPartnerContacts = (
   })
     .then((response) => {
       const { partner_contacts, pagination } = response.data;
+      store.dispatch(setContactsPage(pagination.page));
       callback({
         data: partner_contacts,
         pagination: {
