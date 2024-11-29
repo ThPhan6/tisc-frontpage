@@ -193,7 +193,7 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           key={subOption.id}
           showArrow={false}
           id={subOption.id}
-          forceRender={true}
+          forceRender={type === ProductBasisFormType.options}
         >
           <div
             style={{ paddingLeft: 80 }}
