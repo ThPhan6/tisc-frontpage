@@ -39,6 +39,10 @@
     border-top: none;
   }
 
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+
   &_title {
     font-weight: 500;
   }
@@ -61,6 +65,17 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
+
+    &:hover {
+      .location_office_location_name,
+      .location_office_location_type,
+      .location_office_location_address,
+      .location_office_location_email,
+      .location_office_location_phone {
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
 
     &:last-child {
       margin-bottom: 0;

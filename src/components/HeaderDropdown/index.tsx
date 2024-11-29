@@ -27,7 +27,7 @@ export type MenuIconProps = {
   containerClass?: string;
   label?: string | React.ReactNode;
   icon?: JSX.Element | React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
 };
 

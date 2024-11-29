@@ -596,7 +596,8 @@ const routes = [
       },
       {
         path: PATH.brandPricesInventoriesTable,
-        component: './Brand/PricesAndInventories/CategoryTable',
+        component:
+          './Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable',
         hideInMenu: true,
       },
       {

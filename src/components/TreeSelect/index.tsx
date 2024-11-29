@@ -1,9 +1,12 @@
+import { type CSSProperties, type MouseEvent } from 'react';
+
 import { Menu, MenuProps } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { useToggleExpand } from '@/helper/hook';
+import { cloneDeep, isEmpty, sortBy } from 'lodash';
 
 import styles from '@/components/TreeSelect/TreeSelect.less';
 import { BodyText } from '@/components/Typography';
@@ -20,7 +23,10 @@ interface TreeSelectProps<T> extends MenuProps {
   isSingleExpand?: boolean;
   showAllLevels?: boolean;
   additionalClassName?: string;
+  additonalStyle?: CSSProperties;
   onItemSelect: (item: TreeItem) => void;
+  defaultExpandedKeys?: string[];
+  onExpandedKeys?: (value: string[]) => void;
 }
 
 const TreeSelect = <T,>({
@@ -29,15 +35,22 @@ const TreeSelect = <T,>({
   showAllLevels = false,
   additionalClassName = '',
   onItemSelect,
+  additonalStyle,
+  defaultExpandedKeys = [],
+  onExpandedKeys = () => {},
   ...props
 }: TreeSelectProps<T>) => {
-  const { expandedKeys, handleToggleExpand } = useToggleExpand(isSingleExpand);
+  const { expandedKeys, handleToggleExpand } = useToggleExpand(
+    isSingleExpand,
+    defaultExpandedKeys,
+    onExpandedKeys,
+  );
 
   const findMaxLevel = (items: TreeItem[]): number => {
     let maxLevel = 0;
-    const queue = items.map((item) => ({ item, level: item.level }));
+    const queue = items?.map((item) => ({ item, level: item.level }));
 
-    while (queue.length > 0) {
+    while (queue?.length > 0) {
       const { item, level } = queue.shift()!;
       if (level > maxLevel) maxLevel = level;
       item.subs?.forEach((sub) => queue.push({ item: sub, level: level + 1 }));
@@ -54,14 +67,45 @@ const TreeSelect = <T,>({
   const shouldDisplayItem = (item: TreeItem): boolean =>
     showAllLevels ? true : item.level < maxLevel;
 
-  const handleItemClick = (item: TreeItem) => () =>
-    isItemSelectable(item) ? onItemSelect(item) : handleToggleExpand(item.id);
+  const handleItemClick = (item: TreeItem) => (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    if (isItemSelectable(item)) {
+      onItemSelect(item);
+      return;
+    }
+    handleToggleExpand(item.id);
+  };
+
+  const sortedData = (): TreeItem[] => {
+    const cloneItems = cloneDeep(data as TreeItem[]) || ([] as TreeItem[]);
+    const stack = [...cloneItems];
+
+    while (!isEmpty(stack)) {
+      const item = stack.pop()!;
+      if (!isEmpty(item.subs)) {
+        item.subs = sortBy(item.subs, 'name');
+        stack.push(...item.subs);
+      }
+    }
+
+    return sortBy(cloneItems, 'name').reverse();
+  };
 
   const renderTreeItems = (items: TreeItem[]): React.ReactNode => {
-    const stack: { item: TreeItem; indent: number }[] = items.map((item) => ({ item, indent: 0 }));
+    if (items.length === 0) {
+      return (
+        <div className={styles.tree_select_no_data}>
+          <BodyText level={5} fontFamily="Roboto">
+            No data available
+          </BodyText>
+        </div>
+      );
+    }
+
+    const stack: { item: TreeItem; indent: number }[] = items?.map((item) => ({ item, indent: 0 }));
     const result: React.ReactNode[] = [];
 
-    while (stack.length > 0) {
+    while (stack?.length > 0) {
       const { item, indent } = stack.pop()!;
 
       if (!shouldDisplayItem(item)) continue;
@@ -73,7 +117,7 @@ const TreeSelect = <T,>({
       result.push(
         <div
           key={item.id}
-          className="d-flex items-center mr-16 cursor-pointer"
+          className="d-flex items-center cursor-pointer"
           onClick={handleItemClick(item)}
         >
           <Menu.Item
@@ -91,7 +135,9 @@ const TreeSelect = <T,>({
               {item.name}
             </BodyText>
           </Menu.Item>
-          {hasSubs && !selectable && (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
+          {(hasSubs || showAllLevels) &&
+            !selectable &&
+            (isExpanded ? <DropupIcon /> : <DropdownIcon />)}
         </div>,
       );
 
@@ -106,8 +152,12 @@ const TreeSelect = <T,>({
   };
 
   return (
-    <Menu {...props} className={`${styles.tree_select} ${additionalClassName}`}>
-      {renderTreeItems(data as TreeItem[])}
+    <Menu
+      {...props}
+      className={`${styles.tree_select} ${additionalClassName}`}
+      style={additonalStyle}
+    >
+      {renderTreeItems(sortedData())}
     </Menu>
   );
 };

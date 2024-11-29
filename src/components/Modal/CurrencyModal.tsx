@@ -22,7 +22,14 @@ interface CurrencyProps extends ModalProps {
 }
 
 const CurrencyModal = ({
-  headerContent = 'Beware that changing this currency will impact ALL of your price settings for the existing product cards and partner price rates. Proceed with caution.',
+  headerContent = (
+    <>
+      <span className="block">
+        Beware that changing this currency will impact ALL of your price settings
+      </span>{' '}
+      for the existing product cards and partner price rates. Proceed with caution.
+    </>
+  ),
   title,
   onCancel,
   open,

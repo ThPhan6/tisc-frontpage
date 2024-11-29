@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -7,180 +7,266 @@ import { useLocation } from 'umi';
 
 import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
+import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
 import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
-import { createInventory, exchangeCurrency, getInventory, updateInventory } from '@/services';
-import { isEmpty, omit, pick, reduce } from 'lodash';
+import {
+  createInventory,
+  exchangeCurrency,
+  getInventory,
+  getListWarehouseByInventoryId,
+  updateInventory,
+} from '@/services';
+import { isEmpty, isEqual, isNil, omit, pick, reduce } from 'lodash';
 
 import type { ModalType } from '@/reducers/modal';
-import type { PriceAndInventoryAttribute } from '@/types';
+import {
+  IPriceAndInventoryForm,
+  type PriceAttribute,
+  type VolumePrice,
+  type WarehouseItemMetric,
+  initialInventoryFormData,
+} from '@/types';
 
-import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
-import type { VolumePrice } from '@/pages/Brand/PricesAndInventories/CategoryTable';
-import categoryTableStyle from '@/pages/Brand/PricesAndInventories/CategoryTable/CategoryTable.less';
+import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
+import PriceAndInventoryTableStyle from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
-const initialFormData = {
-  sku: '',
-  description: '',
-  unit_type: '',
-  inventory_category_id: '',
-  image: [],
-};
+const getRequiredFields = (): {
+  field: keyof PriceAttribute;
+  messageField: string;
+}[] => [
+  { field: 'sku', messageField: 'Product ID is required' },
+  { field: 'unit_price', messageField: 'Unit price is required' },
+  { field: 'unit_type', messageField: 'Unit type is required' },
+];
 
 const PriceAndInventoryForm = () => {
-  const [formData, setFormData] = useState<PriceAndInventoryAttribute>(initialFormData);
-  const [tableData, setTableData] = useState<VolumePrice[]>([]);
-  const [isShowModal, setIsShowModal] = useState<ModalType>('none');
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
   const location = useLocation<{ categoryId: string; brandId: string }>();
   const navigate = useNavigationHandler();
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
+  const { isExtraLarge } = useScreen();
+  const entryFormWrapperStyle = {
+    height: 'calc(var(--vh) * 100 - 312px)',
+    padding: 0,
+    overflow: isExtraLarge ? 'unset' : 'auto',
+  };
+
+  const [originalData, setOriginalData] =
+    useState<IPriceAndInventoryForm>(initialInventoryFormData);
+  const [formData, setFormData] = useState<IPriceAndInventoryForm>(initialInventoryFormData);
+
+  const [priceTableData, setPriceTableData] = useState<VolumePrice[]>([]);
+
+  const [isShowModal, setIsShowModal] = useState<ModalType>('none');
 
   useEffect(() => {
-    setFormData(initialFormData);
-    setTableData([]);
+    setFormData(initialInventoryFormData);
+    setPriceTableData([]);
   }, []);
 
-  const getRequiredFields = (): {
-    field: keyof PriceAndInventoryAttribute;
-    messageField: string;
-  }[] => [
-    { field: 'sku', messageField: 'Product ID is required' },
-    { field: 'unit_price', messageField: 'Unit price is required' },
-    { field: 'unit_type', messageField: 'Unit type is required' },
-  ];
+  const fetchListwarehouseTable = async () => {
+    const res = await getListWarehouseByInventoryId(inventoryId);
+
+    if (isEmpty(res)) return;
+
+    const warehouseRes: WarehouseItemMetric[] = res.warehouses?.map((el) => ({
+      ...el,
+      convert: 0,
+      new_in_stock: el.in_stock,
+    }));
+
+    setOriginalData((prev) => ({
+      ...prev,
+      total_stock: res.total_stock,
+      warehouses: warehouseRes,
+    }));
+
+    setFormData((prev) => ({
+      ...prev,
+      total_stock: res.total_stock,
+      warehouses: warehouseRes,
+    }));
+  };
 
   const fetchInventory = async () => {
     const res = await getInventory(inventoryId);
 
     if (res) {
       const rate = reduce(
-        res.price?.exchange_histories?.map((item) => item.rate),
+        res.price?.exchange_histories?.map((item: any) => item.rate),
         (acc, el) => acc * el,
         1,
       );
 
-      setFormData({
+      const volume_prices = (res.price?.volume_prices || []).map((vp) =>
+        omit(vp, ['created_at', 'updated_at']),
+      );
+
+      const newData = {
+        ...initialInventoryFormData,
         ...res,
         image: !isEmpty(res.image) ? [`/${res.image}`] : [],
         unit_price: inventoryId ? Number(res.price.unit_price) * rate : res.price?.unit_price,
         unit_type: res.price?.unit_type,
-      });
+        price: {
+          ...res.price,
+          volume_prices: volume_prices,
+        },
+      };
 
-      const volumePrices = res.price.volume_prices?.map((price, index: number) => ({
-        key: `${index + 1}`,
-        id: price.id,
-        discount_price: price.discount_price,
-        discount_rate: price.discount_rate,
-        min_quantity: price.min_quantity,
-        max_quantity: price.max_quantity,
-        unit_type: res.price.unit_type,
-      }));
-      setTableData(volumePrices);
+      setFormData(newData as IPriceAndInventoryForm);
+      setOriginalData(newData as IPriceAndInventoryForm);
+      setPriceTableData(volume_prices as VolumePrice[]);
+    }
+  };
+
+  const fetchData = async () => {
+    if (inventoryId) {
+      await Promise.all([fetchInventory(), fetchListwarehouseTable()]);
     }
   };
 
   useEffect(() => {
-    if (inventoryId) fetchInventory();
+    fetchData();
   }, [inventoryId]);
 
-  const transformTableDataToVolumePrices = useMemo(() => {
-    if (!tableData) {
-      setTableData([]);
-      return;
-    }
+  const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
 
-    return () =>
-      tableData.map((item) => ({
-        unit_type: item.unit_type,
-        discount_rate: parseFloat(String(item.discount_rate)),
-        discount_price: parseFloat(String(item.discount_price)),
-        min_quantity: item.min_quantity ? parseInt(String(item.min_quantity)) : undefined,
-        max_quantity: item.max_quantity ? parseInt(String(item.max_quantity)) : undefined,
-      }));
-  }, [tableData]);
-
-  const handleSave = useCallback(async () => {
-    if (!validateRequiredFields(formData, getRequiredFields())) return;
-
-    if (hasUnsavedChanges) {
-      message.warn('There is a draft volume that has not added yet. Please check it.');
-      return;
-    }
-
-    const image = !isEmpty(formData.image) ? extractDataBase64(formData.image[0]) : null;
-
-    const newVolumePrices = transformTableDataToVolumePrices?.() || [];
-    const existingVolumePrices = (formData as any).volume_prices || [];
-
-    const mergedVolumePrices = [
-      ...existingVolumePrices,
-      ...newVolumePrices.filter(
-        (newItem: any) =>
-          !existingVolumePrices.some(
-            (existingItem: { id: string }) => existingItem.id === newItem.id,
-          ),
-      ),
+  const preparePayload = () => {
+    const fields: (keyof IPriceAndInventoryForm)[] = [
+      'sku',
+      'description',
+      'unit_type',
+      'image',
+      'unit_price',
+      'unit_type',
+      'price',
+      'on_order',
+      'back_order',
+      'warehouses',
     ];
 
-    const payload = {
-      ...formData,
-      image,
-      unit_price: parseFloat(formData.unit_price?.toString() || '0'),
-      inventory_category_id: location.state?.categoryId,
-      volume_prices: mergedVolumePrices,
-    };
+    let payload: Partial<IPriceAndInventoryForm> = {};
 
-    const pickPayload = pick(
-      {
-        ...payload,
-        volume_prices: isEmpty(payload.volume_prices)
-          ? null
-          : payload.volume_prices.map((el) =>
-              pick(el, ['discount_rate', 'max_quantity', 'min_quantity']),
-            ),
-      },
-      [
-        'sku',
-        'description',
-        'unit_price',
-        'unit_type',
-        'image',
-        'volume_prices',
-        'inventory_category_id',
-      ],
+    const volumePricesChanged = !isEqual(
+      formData.price.volume_prices,
+      originalData.price.volume_prices,
     );
 
-    const res: any = inventoryId
-      ? await updateInventory(inventoryId, omit(pickPayload, 'inventory_category_id'))
-      : await createInventory(pickPayload);
+    const warehousesChanged = !isEqual(formData.warehouses, originalData.warehouses);
 
-    if (!res) return;
+    const isUnitPriceChanged = !isEqual(formData.unit_price, originalData.unit_price);
 
-    if (inventoryId) {
-      fetchInventory();
-      return;
+    if (volumePricesChanged) {
+      payload.price = {
+        ...payload.price,
+        volume_prices: formData.price.volume_prices,
+      };
     }
 
+    fields.forEach((field) => {
+      if (!isEqual(formData[field], originalData[field])) {
+        payload[field] =
+          field === 'image' ? extractDataBase64(formData.image?.[0] ?? '') : formData[field];
+      }
+    });
+
+    payload = {
+      ...pick(
+        {
+          ...payload,
+          ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
+          ...((volumePricesChanged || isUnitPriceChanged) && {
+            volume_prices: !payload?.price?.volume_prices?.length
+              ? []
+              : payload.price.volume_prices.map((el) =>
+                  pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
+                ),
+          }),
+          ...(warehousesChanged &&
+            ({
+              warehouses: formData.warehouses.map((warehouse) => {
+                const quantity =
+                  warehouse.in_stock === 0
+                    ? warehouse.new_in_stock + warehouse.convert
+                    : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
+
+                return {
+                  location_id: warehouse?.location_id,
+                  quantity: quantity,
+                };
+              }),
+            } as any)),
+          inventory_category_id: location.state?.categoryId,
+        },
+        [
+          'sku',
+          'description',
+          'image',
+          'unit_price',
+          'unit_type',
+          'inventory_category_id',
+          'on_order',
+          'back_order',
+          'volume_prices',
+          'warehouses',
+        ],
+      ),
+    };
+
+    return payload;
+  };
+
+  const redirectToInventoryTable = () => {
     navigate({
       path: PATH.brandPricesInventoriesTable,
       query: { categories: category },
       state: { categoryId: location.state?.categoryId, brandId: location.state?.brandId },
     })();
-  }, [hasUnsavedChanges, formData, inventoryId, location.state?.categoryId, category, navigate]);
+  };
 
-  const handleToggleModal = (type: ModalType) => () => setIsShowModal(type);
+  const validateVolumePrice = () => {
+    const isDiscountPriceChanged =
+      !isNil(formData.min_quantity) ||
+      !isEmpty(formData.max_quantity) ||
+      !isNil(formData.discount_rate);
+
+    if (isDiscountPriceChanged) {
+      message.warn('There is a draft volume that has not been added yet. Please check it.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSave = useCallback(async () => {
+    if (!validateRequiredFields(formData, getRequiredFields()) || !validateVolumePrice()) return;
+
+    const payload = preparePayload();
+
+    const res = inventoryId
+      ? await updateInventory(inventoryId, omit(payload, 'inventory_category_id'))
+      : await createInventory(payload);
+
+    if (!res) return;
+
+    if (inventoryId) {
+      fetchData();
+      return;
+    }
+
+    redirectToInventoryTable();
+  }, [formData, inventoryId, location.state?.categoryId, category, navigate]);
 
   const handleSaveCurrecy = useCallback(
     async (currency: string) => {
@@ -202,12 +288,12 @@ const PriceAndInventoryForm = () => {
       <div className={styles.category_form}>
         <TableHeader
           title={
-            <article className={`${categoryTableStyle.category_table_header} opacity-50`}>
+            <article className={`${PriceAndInventoryTableStyle.category_table_header} opacity-50`}>
               <div className="d-flex items-center">
                 <BodyText
                   fontFamily="Roboto"
                   level={5}
-                  customClass={categoryTableStyle.category_table_header_title}
+                  customClass={PriceAndInventoryTableStyle.category_table_header_title}
                 >
                   HOME
                 </BodyText>
@@ -216,42 +302,42 @@ const PriceAndInventoryForm = () => {
               <BodyText
                 fontFamily="Roboto"
                 level={5}
-                customClass={categoryTableStyle.category_table_header_category}
+                customClass={PriceAndInventoryTableStyle.category_table_header_category}
               >
                 {category}
               </BodyText>
             </article>
           }
           rightAction={
-            <div className={categoryTableStyle.category_table_header_action}>
-              <CustomPlusButton size={24} disabled={true} />
-              <CustomButton
-                size="small"
-                variant="primary"
-                disabled={true}
-                buttonClass={`${categoryTableStyle.category_table_header_action_btn_import} cursor-disabled `}
-              >
-                <BodyText
-                  fontFamily="Roboto"
-                  level={6}
-                  style={{ color: '#808080' }}
-                  customClass={`${categoryTableStyle.category_table_header_action_btn_import_text}`}
-                >
-                  IMPORT
-                </BodyText>
-              </CustomButton>
+            <div className={PriceAndInventoryTableStyle.category_table_header_action}>
               <Switch
                 disabled={true}
                 size="default"
                 checkedChildren="SAVE & CLOSE"
                 unCheckedChildren="EDIT OFF"
-                className={`${categoryTableStyle.category_table_header_btn_switch} ${categoryTableStyle.category_table_header_btn_switch_off}`}
+                className={`${PriceAndInventoryTableStyle.category_table_header_btn_switch} ${PriceAndInventoryTableStyle.category_table_header_btn_switch_off}`}
               />
+              {/* <CustomButton
+                size="small"
+                variant="primary"
+                disabled={true}
+                buttonClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import} cursor-disabled`}
+              >
+                <BodyText
+                  fontFamily="Roboto"
+                  level={6}
+                  customClass={`${PriceAndInventoryTableStyle.category_table_header_action_btn_import_text} mono-color-dark`}
+                >
+                  IMPORT/EXPORT
+                </BodyText>
+              </CustomButton> */}
+              <CustomPlusButton size={24} disabled={true} />
             </div>
           }
         />
 
         <EntryFormWrapper
+          customClass={`${styles.category_form_entry_wrapper} ${inventoryId ? 'w-full' : 'w-1-2'}`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -262,23 +348,27 @@ const PriceAndInventoryForm = () => {
               brandId: location.state?.brandId,
             },
           })}
-          contentStyles={{
-            height: 'calc(var(--vh) * 100 - 312px)',
-          }}
+          contentStyles={entryFormWrapperStyle}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
-          <div className={styles.category_form_wrapper}>
+          <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>
             <PriceForm
               isShowModal={isShowModal}
               onToggleModal={handleToggleModal}
               formData={formData}
               setFormData={setFormData}
-              tableData={tableData}
-              setTableData={setTableData}
-              setHasUnsavedChanges={setHasUnsavedChanges}
+              tableData={priceTableData}
+              setTableData={setPriceTableData}
             />
 
-            {/* <InventoryForm isShowModal={isShowModal} onToggleModal={handleToggleModal} /> */}
+            {inventoryId && (
+              <InventoryForm
+                formData={formData}
+                isShowModal={isShowModal}
+                onToggleModal={handleToggleModal}
+                setFormData={setFormData}
+              />
+            )}
           </div>
         </EntryFormWrapper>
       </div>

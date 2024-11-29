@@ -127,6 +127,7 @@ export interface CustomTableProps {
   dynamicPageSize?: boolean;
   hasSummary?: boolean;
   hoverOnRow?: boolean;
+  callbackFinishApi?: () => void;
 }
 
 /// update order compared to BE
@@ -155,6 +156,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     dynamicPageSize,
     hasSummary,
     hoverOnRow = true,
+    callbackFinishApi,
   } = props;
 
   const DEFAULT_TABLE_ROW = 44;
@@ -255,6 +257,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       if (response.pagination) {
         setPagination(response.pagination);
       }
+      callbackFinishApi?.();
     });
   };
 
