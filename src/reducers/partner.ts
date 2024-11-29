@@ -4,10 +4,14 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface PartnerState {
   association: CommonPartnerType | null;
+  companiesPage: number;
+  contactsPage: number;
 }
 
 const initialState: PartnerState = {
   association: null,
+  companiesPage: 1,
+  contactsPage: 1,
 };
 
 const partnerReducer = createSlice({
@@ -17,8 +21,14 @@ const partnerReducer = createSlice({
     setAssociation(state, action: PayloadAction<CommonPartnerType | null>) {
       state.association = action.payload;
     },
+    setCompaniesPage(state, action: PayloadAction<number>) {
+      state.companiesPage = action.payload;
+    },
+    setContactsPage(state, action: PayloadAction<number>) {
+      state.contactsPage = action.payload;
+    },
   },
 });
 
-export const { setAssociation } = partnerReducer.actions;
+export const { setAssociation, setCompaniesPage, setContactsPage } = partnerReducer.actions;
 export default partnerReducer.reducer;
