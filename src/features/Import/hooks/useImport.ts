@@ -12,11 +12,11 @@ import {
   setHeaderMatching,
   setHeaders,
   setStep,
-  useDispatchDataImport,
 } from '../reducers';
 import { ImportDatabaseHeader, ImportFileType, ImportStep } from '../types/import.type';
 import store, { useAppSelector } from '@/reducers';
 
+import { useDispatchDataImport } from './useDispatchImport';
 import * as Papa from 'papaparse';
 import type { RcFile, UploadRequestOption } from 'rc-upload/lib/interface';
 
@@ -30,9 +30,8 @@ const validateCSVFile = (file: RcFile) => {
 };
 
 export const useImport = () => {
-  const { step, fileResult, error, fileUploaded, headerMatching, headers } = useAppSelector(
-    (s) => s.import,
-  );
+  const { step, fileResult, error, fileUploaded, headerMatching, headers, warehouses } =
+    useAppSelector((s) => s.import);
 
   const { dispatchImportData } = useDispatchDataImport();
 
@@ -67,6 +66,7 @@ export const useImport = () => {
           complete(result: Papa.ParseResult<RcFile>, RCFile: UploadFile<RcFile>) {
             store.dispatch(setStep(ImportStep.STEP_2));
             store.dispatch(setFileResult(result as any));
+            store.dispatch(setHeaders(result?.meta?.fields || []));
             store.dispatch(setFileUploaded(RCFile as any));
             store.dispatch(setHeaderMatching(null));
             store.dispatch(setErrors(null));
@@ -136,16 +136,12 @@ export const useImport = () => {
 
     if (current === ImportStep.STEP_3 && fileResult?.data.length && headerMatching) {
       const allFieldRequired = intersection(
-        [
-          ImportDatabaseHeader.PRODUCT_ID,
-          ImportDatabaseHeader.UNIT_PRICE,
-          ImportDatabaseHeader.UNIT_TYPE,
-        ],
+        [ImportDatabaseHeader.PRODUCT_ID],
         Object.values(headerMatching),
       );
 
-      if (allFieldRequired.length !== 3) {
-        message.error('Product ID, Unit Price, and Unit Type are required.');
+      if (allFieldRequired.length !== 1) {
+        message.error('Product ID is required.');
         return;
       }
 
@@ -157,6 +153,7 @@ export const useImport = () => {
     step,
     error,
     headers,
+    warehouses,
     fileResult,
     fileUploaded,
     headerMatching,
