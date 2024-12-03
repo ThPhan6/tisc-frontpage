@@ -202,14 +202,14 @@ const PriceAndInventoryForm = () => {
           ...(warehousesChanged &&
             ({
               warehouses: formData.warehouses.map((warehouse) => {
-                const quantity =
-                  warehouse.in_stock === 0
-                    ? warehouse.new_in_stock + warehouse.convert
-                    : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
+                // const quantity =
+                //   warehouse.in_stock === 0
+                //     ? warehouse.new_in_stock + warehouse.convert
+                //     : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
 
                 return {
                   location_id: warehouse?.location_id,
-                  quantity: isNaN(quantity) ? 0 : quantity,
+                  quantity: warehouse.new_in_stock,
                 };
               }),
             } as any)),
