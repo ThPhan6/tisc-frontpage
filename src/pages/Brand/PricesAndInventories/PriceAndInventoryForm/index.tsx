@@ -127,9 +127,7 @@ const PriceAndInventoryForm = () => {
       ...initialInventoryFormData,
       ...res,
       image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
-      unit_price: inventoryId
-        ? Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)) * rate
-        : Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)),
+      unit_price: Number(res?.price?.unit_price ?? 0) * rate,
       unit_type: res?.price?.unit_type,
       warehouses:
         warehouse?.warehouses.map((el) => ({ ...el, new_in_stock: el.in_stock, convert: 0 })) ?? [],
@@ -202,14 +200,14 @@ const PriceAndInventoryForm = () => {
           ...(warehousesChanged &&
             ({
               warehouses: formData.warehouses.map((warehouse) => {
-                const quantity =
-                  warehouse.in_stock === 0
-                    ? warehouse.new_in_stock + warehouse.convert
-                    : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
+                // const quantity =
+                //   warehouse.in_stock === 0
+                //     ? warehouse.new_in_stock + warehouse.convert
+                //     : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
 
                 return {
                   location_id: warehouse?.location_id,
-                  quantity: isNaN(quantity) ? 0 : quantity,
+                  quantity: warehouse.new_in_stock,
                 };
               }),
             } as any)),

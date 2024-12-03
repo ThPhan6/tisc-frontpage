@@ -9,7 +9,7 @@ import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { filter, map, sortBy } from 'lodash';
+import { filter, isNil, map, sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -150,7 +150,6 @@ const PriceForm = ({
   tableData,
   setTableData,
 }: PriceFormProps) => {
-  const inventoryId = useGetParamId();
   const { isExtraLarge, isMobile } = useScreen();
 
   const { currencySelected, unitType } = useAppSelector((state) => state.summary);
