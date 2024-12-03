@@ -8,16 +8,51 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 
 import { useImport } from '../hooks/useImport';
 
-import { ImportStep } from '../types/import.type';
+import { ImportDatabaseHeader, ImportStep } from '../types/import.type';
 
 import { BodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 
+import { generateWarehouseInStock, generateWarehouseName } from '../utils';
 import styles from './DataMatching.less';
 
 export const DataMatching = () => {
-  const { step, headerMatching, headers, error, handleDeleteHeader, handleSelectDatabaseHeader } =
-    useImport();
+  const {
+    step,
+    headerMatching,
+    headers,
+    error,
+    warehouses = [],
+    handleDeleteHeader,
+    handleSelectDatabaseHeader,
+  } = useImport();
+
+  const getWarehouseHeaders = (fileField: string) =>
+    warehouses
+      .map((_warehouse, wsIdx) => {
+        const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
+        const { key: warehouseInStockKey, label: warehouseInStockLabel } = generateWarehouseInStock(
+          wsIdx + 1,
+        );
+
+        return [
+          {
+            key: warehouseKey,
+            label: warehouseLabel,
+            onClick: () => {
+              handleSelectDatabaseHeader(fileField, warehouseKey as ImportDatabaseHeader);
+            },
+          },
+          {
+            key: warehouseInStockKey,
+            label: warehouseInStockLabel,
+            onClick: () => {
+              handleSelectDatabaseHeader(fileField, warehouseInStockKey as ImportDatabaseHeader);
+            },
+          },
+        ];
+      })
+      .flat();
 
   const getHeaderMatching = useCallback(
     (field: string, items: any) =>
@@ -41,7 +76,11 @@ export const DataMatching = () => {
 
       <div className="data-matching-content">
         {headers.map((field, index) => {
-          const items = getDatabaseHeader(field, handleSelectDatabaseHeader);
+          const items = [
+            ...getDatabaseHeader(field, handleSelectDatabaseHeader),
+            ...getWarehouseHeaders(field),
+          ];
+
           const headerSelected = getHeaderMatching(field, items);
 
           return (
@@ -60,7 +99,7 @@ export const DataMatching = () => {
                 textCapitalize={false}
                 items={items}
                 placement="bottomRight"
-                menuStyle={{ width: 160, height: 'auto' }}
+                menuStyle={{ width: 160, height: 'auto', maxHeight: 500, overflowY: 'auto' }}
                 labelProps={{ className: 'flex-between' }}
                 className="database-header-dropdown"
               >

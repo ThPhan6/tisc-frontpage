@@ -1,10 +1,10 @@
 import { CSSProperties } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 
-import { GROUPED_EXPOTY_COLUMN_HEADERS } from '@/features/Import/constants';
+import { INVENTORY_EXPORT_COLUMN_HEADERS } from '@/features/Import/constants';
 import { Checkbox } from 'antd';
 
-import { concat, filter, isArray, some } from 'lodash';
+import { concat, filter, groupBy, isArray, some } from 'lodash';
 
 import { setSelectedExportTypes } from '@/features/Import/reducers';
 import { InventoryExportType } from '@/features/Import/types/export.type';
@@ -34,7 +34,7 @@ export const Export = () => {
         Import update will perfectly match to our database. Below headers will be exported.
       </RobotoBodyText>
 
-      {Object.entries(GROUPED_EXPOTY_COLUMN_HEADERS).map(([header, items]) => (
+      {Object.entries(groupBy(INVENTORY_EXPORT_COLUMN_HEADERS, 'header')).map(([header, items]) => (
         <Fragment key={header}>
           <article className={styles.export_heading_wrapper}>
             <RobotoBodyText level={6} customClass={styles.export_heading_wrapper_text}>

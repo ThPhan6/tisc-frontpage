@@ -129,7 +129,7 @@ const PriceAndInventoryTable: React.FC = () => {
 
   const handleSearch = (value: string) => {
     setFilter(value);
-    tableRef.current.reload({ search: value });
+    tableRef.current.reloadWithFilter();
   };
 
   const handleUpdateBackOrder = (
@@ -153,9 +153,13 @@ const PriceAndInventoryTable: React.FC = () => {
   };
 
   const handleImportExport = (type: 'import' | 'export', isSaved?: boolean) => {
-    store.dispatch(setOpenModal(false));
+    if (type === 'export') {
+      store.dispatch(setOpenModal(false));
+      return;
+    }
 
     if (type === 'import' && isSaved) {
+      store.dispatch(setOpenModal(false));
       tableRef.current.reload();
       return;
     }

@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import { ExportRequest } from '@/features/Import/types/export.type';
-import { IPriceAndInventoryForm } from '@/types';
+import { InventoryImportRequest } from '@/types';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -25,7 +25,7 @@ export const exportInventoryCSV = async (data: ExportRequest) => {
     });
 };
 
-export const importInventoryCSV = (data: Partial<IPriceAndInventoryForm>[]) => {
+export const importInventoryCSV = (data: InventoryImportRequest[]) => {
   showPageLoading();
   return request<boolean>(`/api/inventory/import`, {
     method: 'POST',
