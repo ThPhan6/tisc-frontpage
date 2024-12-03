@@ -127,9 +127,7 @@ const PriceAndInventoryForm = () => {
       ...initialInventoryFormData,
       ...res,
       image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
-      unit_price: inventoryId
-        ? Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)) * rate
-        : Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)),
+      unit_price: Number(res?.price?.unit_price ?? 0) * rate,
       unit_type: res?.price?.unit_type,
       warehouses:
         warehouse?.warehouses.map((el) => ({ ...el, new_in_stock: el.in_stock, convert: 0 })) ?? [],
