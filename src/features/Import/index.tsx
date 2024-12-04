@@ -10,7 +10,7 @@ import { pick } from 'lodash';
 
 import { ImportStep } from './types/import.type';
 import { ImportExportTab, LIST_TAB } from './types/tab.type';
-import { resetState, setStep } from '@/features/Import/reducers';
+import { resetState, setStep, setWarehouses } from '@/features/Import/reducers';
 import { ExportRequest } from '@/features/Import/types/export.type';
 import store, { useAppSelector } from '@/reducers';
 
@@ -20,6 +20,7 @@ import { BodyText } from '@/components/Typography';
 import { Export } from '@/features/Import/components/Export';
 import { Step as Import } from '@/features/Import/components/Step';
 
+import { getLocationPagination } from '../locations/api';
 import styles from './index.less';
 import moment from 'moment';
 
@@ -28,16 +29,18 @@ interface ImportExportModalProps extends Omit<ModalProps, 'open'> {
 }
 
 export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props }) => {
-  const { isTablet } = useScreen();
+  const isTablet = useScreen().isTablet;
   const location = useLocation<{ categoryId: string }>();
+  const queryParams = new URLSearchParams(location.search);
+  const brandName = store.getState().user.user?.brand?.name;
+  const categoryName = queryParams.get('categories')?.split(' / ').pop();
 
   const open = useAppSelector((s) => s.import.open);
+  const warehouses = useAppSelector((s) => s.import.warehouses);
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
-  const brandName = store.getState().user.user?.brand?.name;
-  const queryParams = new URLSearchParams(location.search);
-  const categoryName = queryParams.get('categories')?.split(' / ').pop();
+  const selectedExportTypes = useAppSelector((s) => s.import.selectedExportTypes);
 
   const [activeKey, setActiveKey] = useState<ImportExportTab>('import');
 
@@ -46,16 +49,24 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
 
   const disabledImportBtn = hasError || !dataImport.length || step !== ImportStep.STEP_3;
 
-  const generateFileName = () => {
-    const date = moment().format('YYYYMMDD');
-    const randomCode = moment().unix();
-    return `${brandName}-${categoryName}-${date}-${randomCode}`;
-  };
-
   const clearState = () => {
     setActiveKey('import');
     store.dispatch(resetState());
   };
+
+  useEffect(() => {
+    if (step !== ImportStep.STEP_2 || warehouses?.length) return;
+
+    getLocationPagination(
+      {
+        sort: 'business_name',
+        order: 'ASC',
+      },
+      (ws) => {
+        store.dispatch(setWarehouses(ws?.data ?? []));
+      },
+    );
+  }, [step, warehouses]);
 
   useEffect(() => {
     return () => {
@@ -66,11 +77,15 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const handleImport = async () => {
     const imported = await importInventoryCSV(
       dataImport.map((item) => ({
-        ...pick(item, ['sku', 'description', 'unit_price', 'unit_type']),
-        description: item?.description ?? '',
-        on_order: item?.on_order || 0,
-        back_order: item?.back_order || 0,
-        volume_prices: item?.volume_prices ?? [],
+        ...pick(item, [
+          'sku',
+          'description',
+          'unit_price',
+          'unit_type',
+          'on_order',
+          'back_order',
+          'warehouses',
+        ]),
         inventory_category_id: location.state?.categoryId,
       })),
     );
@@ -82,14 +97,23 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
     onSave?.('import', imported);
   };
 
+  const generateFileName = () => {
+    const date = moment().format('YYYYMMDD');
+    const randomCode = moment().unix();
+    return `${brandName}-${categoryName}-${date}-${randomCode}`;
+  };
+
   const handleExport = async () => {
     const payload: ExportRequest = {
+      types: selectedExportTypes,
       category_id: location.state.categoryId,
     };
-    const res = await exportInventoryCSV(payload);
-    downloadFile([res], generateFileName(), { type: 'text/csv' });
 
-    onSave?.('export', !!res);
+    const res = await exportInventoryCSV(payload);
+    if (res) {
+      downloadFile([res], generateFileName(), { type: 'text/csv' });
+      onSave?.('export', !!res);
+    }
   };
 
   const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
@@ -127,7 +151,7 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   return (
     <Modal
       className={styles.container}
-      width={!isTablet ? '30%' : '80%'}
+      width={!isTablet ? '60%' : '80%'}
       footer={null}
       title={
         <BodyText fontFamily="Cormorant-Garamond" level={3} customClass="font-semibold">

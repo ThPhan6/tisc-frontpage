@@ -1,5 +1,5 @@
 import type { ExchangeCurrencyHistory } from '@/types/currency.type';
-import { WarehouseItemMetric } from '@/types/warehouse.type';
+import { WarehouseItemMetric, WarehouseRequest } from '@/types/warehouse.type';
 
 export interface VolumePrice
   extends Pick<
@@ -91,4 +91,13 @@ export interface PriceAndInventoryColumn {
   warehouses: WarehouseItemMetric[];
 }
 
-export type TInventoryColumn = 'unit_price' | 'on_order' | 'backorder';
+export interface InventoryImportRequest {
+  sku: string;
+  inventory_category_id: string;
+  description: string;
+  unit_price: number;
+  unit_type: string;
+  on_order: number;
+  back_order: number;
+  warehouses: WarehouseRequest[];
+}

@@ -123,7 +123,7 @@ export async function getCountryById(id: string) {
 }
 
 export async function getLocationPagination(
-  { is_sort_main_office_first = false, ...params }: PaginationRequestParams,
+  { is_sort_main_office_first = false, ...params }: Partial<PaginationRequestParams>,
   callback: (data: DataTableResponse) => void,
 ) {
   return request<{
