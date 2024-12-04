@@ -51,7 +51,10 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!userBrand?.id || (!filter && firstLoad.value && (cate_id || coll_id))) {
+    if (
+      !userBrand?.id ||
+      ((!filter || filter.length === 0) && firstLoad.value && (cate_id || coll_id))
+    ) {
       return;
     }
 
@@ -144,7 +147,7 @@ const BrandProductListPage: React.FC = () => {
 
   return (
     <PageContainer pageHeaderRender={renderPageHeader}>
-      <CollapseProductList />
+      <CollapseProductList hideFavorite={true} />
     </PageContainer>
   );
 };

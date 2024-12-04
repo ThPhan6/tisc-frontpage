@@ -157,7 +157,8 @@ const BrandProductListPage: React.FC = () => {
 
     dispatch(setProductList({ data: [] }));
 
-    const noFiltering = !filter && !sort && !searchInputRef.current?.input?.value;
+    const noFiltering =
+      (!filter || filter.length === 0) && !sort && !searchInputRef.current?.input?.value;
 
     // Prevent first load call both no-filter api and have-filter api
     if ((cate_id || brand_id || sort_order || searchParam) && noFiltering && firstLoad.value) {

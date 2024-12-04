@@ -11,7 +11,7 @@ import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { ReactComponent as DragIcon } from '@/assets/icons/drag-icon.svg';
 
 import { useCheckAttributeForm } from '../../../BrandAttribute/hook';
-import { FormGroupContext, FormOptionGroupHeaderContext } from '../../hook';
+import { FormGroupContext, FormOptionGroupHeaderContext, ProductBasisFormType } from '../../hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import { cloneDeep, uniqueId } from 'lodash';
 
@@ -69,6 +69,9 @@ interface SubOptionItemProps {
   handleDeleteSubOption: () => void;
   handleCopySubOtionItem?: () => void;
   dragIcon?: JSX.Element;
+  containerId?: string;
+  type?: ProductBasisFormType;
+  dataContainerRef?: any;
 }
 
 export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
@@ -78,12 +81,22 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
     handleDeleteSubOption,
     dragIcon,
     handleCopySubOtionItem,
+    containerId,
+    type,
+    dataContainerRef,
   } = props;
 
   const { isAttribute } = useCheckAttributeForm();
   const { mode = 'list' } = useContext(FormOptionGroupHeaderContext);
 
   const { collapse, setCollapse } = useContext(FormGroupContext);
+
+  const higestLength =
+    subOption.subs?.reduce((subA, subB) =>
+      subA.value_1.length > subB.value_1.length ? subA : subB,
+    ).value_1?.length * 8;
+
+  console.log('subOption.subs: ', subOption.subs);
 
   const handleDeleteSubItem =
     (index: number) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
@@ -112,8 +125,40 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 
     if (newCollapse[subOption.id]) {
       delete newCollapse[subOption.id];
+      if (type === ProductBasisFormType.options) {
+        if (dataContainerRef) {
+          dataContainerRef.current.style.height = 'unset';
+        }
+        const formContainer = containerId ? document.getElementById(containerId) : undefined;
+        const groupContent = document.getElementById(`${subOption.id}_content`);
+        if (formContainer) {
+          formContainer.style.overflowY = 'auto';
+          if (groupContent) {
+            groupContent.style.height = 'unset';
+            groupContent.style.overflowY = 'unset';
+          }
+        }
+      }
     } else {
       newCollapse[subOption.id] = true;
+      if (type === ProductBasisFormType.options) {
+        if (dataContainerRef) {
+          dataContainerRef.current.style.height = '9999px';
+        }
+        const formContainer = containerId ? document.getElementById(containerId) : undefined;
+        const groupContainer = document.getElementById(subOption.id);
+        const groupContent = document.getElementById(`${subOption.id}_content`);
+        if (formContainer) {
+          const formTop = formContainer.getBoundingClientRect().top;
+          const groupTop = groupContainer.getBoundingClientRect().top;
+          formContainer.scrollTop += groupTop - formTop - 60;
+          formContainer.style.overflowY = 'hidden';
+          if (groupContent) {
+            groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
+            groupContent.style.overflowY = 'auto';
+          }
+        }
+      }
     }
 
     setCollapse(newCollapse);
@@ -133,7 +178,9 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
         // }
       >
         <Collapse.Panel
-          className={collapse[subOption.id] && styles.active_collapse_panel}
+          className={`${collapse[subOption.id] && styles.active_collapse_panel} ${
+            type === ProductBasisFormType.options && styles.noBorder
+          }`}
           header={
             <SubPanelHeader
               subOption={subOption}
@@ -145,10 +192,13 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
           }
           key={subOption.id}
           showArrow={false}
+          id={subOption.id}
+          forceRender={type === ProductBasisFormType.options}
         >
           <div
             style={{ paddingLeft: 80 }}
             className={`${styles.sub_wrapper} ${mode === 'card' ? styles.cardMode : ''}`}
+            id={`${subOption.id}_content`}
           >
             {!subOption.subs?.length ? (
               <EmptyOne />
@@ -165,6 +215,10 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
                         subItemOption={subItemOption}
                         onChange={(changedOptionItem) =>
                           handleChangeSubOptionItem(changedOptionItem, index)
+                        }
+                        type={type}
+                        higestLength={
+                          type === ProductBasisFormType.options ? higestLength : undefined
                         }
                       />
                       <div className="flex-center">
@@ -219,18 +273,24 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
 interface MainOptionItemProps {
   mainOption: MainBasisOptionSubForm;
   mainOptionIndex: number;
+  containerId?: string;
   handleChangeMainSubItem: (changedSubs: MainBasisOptionSubForm) => void;
   handleDeleteMainSubOption: () => void;
   handleCopyMainOption?: (mainOption: MainBasisOptionSubForm) => void;
+  type?: ProductBasisFormType;
+  dataContainerRef?: any;
 }
 
 export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
   const {
     mainOption,
     mainOptionIndex,
+    containerId,
     handleChangeMainSubItem,
     handleDeleteMainSubOption,
     handleCopyMainOption,
+    type,
+    dataContainerRef,
   } = props;
 
   const { collapse, setCollapse, hideDrag } = useContext(FormGroupContext);
@@ -302,11 +362,11 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                   onChange={handleCollapse}
                 >
                   <Collapse.Panel
-                    className={
+                    className={`${
                       collapse[mainOption.id]
                         ? styles.active_collapse_panel
                         : styles.unactive_collapse_panel
-                    }
+                    } ${type === ProductBasisFormType.options && styles.noBorder}`}
                     header={
                       <MainPanelHeader
                         mainOption={mainOption}
@@ -361,6 +421,9 @@ export const MainOptionItem: FC<MainOptionItemProps> = (props) => {
                                       </div>
                                     )
                                   }
+                                  containerId={containerId}
+                                  type={type}
+                                  dataContainerRef={dataContainerRef}
                                 />
                               </div>
                             )}

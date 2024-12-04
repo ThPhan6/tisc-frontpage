@@ -60,8 +60,12 @@ const PartnersTable = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const { association } = useAppSelector((state: RootState) => state.partner);
+  const { association, companiesPage, contactsPage } = useAppSelector(
+    (state: RootState) => state.partner,
+  );
 
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [pagination, setPagination] = useState<{ [key: string]: any }>({});
   const [filters, setFilters] = useState<Partial<Record<FilterKeys, string | number>>>({});
   const [columns, setColumns] = useState<TableColumnProps<Company | Contact>[]>([]);
   const [selectedTab, setSelectedTab] = useState<PartnerTabKey>(
@@ -74,6 +78,22 @@ const PartnersTable = () => {
   const tableRef = useRef<any>();
 
   useEffect(() => {
+    setPagination(isTabCompany ? { page: companiesPage } : { page: contactsPage });
+  }, []);
+
+  useEffect(() => {
+    if (firstLoad) {
+      const timer = setTimeout(() => {
+        setFirstLoad(false);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else {
+      setPagination({});
+    }
+  }, [firstLoad]);
+
+  useEffect(() => {
     const sortedCommonPartnerTypeList = async () => {
       const res = await getCommonPartnerTypes();
       const sorted = handleGetCommonPartnerTypeList(res);
@@ -84,7 +104,8 @@ const PartnersTable = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    tableRef.current.reloadWithFilter();
+    if (firstLoad) tableRef.current.reloadWithPage(isTabCompany ? companiesPage : contactsPage);
+    else tableRef.current.reloadWithFilter();
   }, [filters, selectedTab]);
 
   const handleDeletePartner = (id: string) => () => {
@@ -470,7 +491,7 @@ const PartnersTable = () => {
         fetchDataFunc={isTabCompany ? getListPartnerCompanies : getListPartnerContacts}
         hasPagination
         ref={tableRef}
-        extraParams={{ filter: filters }}
+        extraParams={{ filter: filters, pageSize: 15, ...pagination }}
         autoLoad={false}
       />
     </>

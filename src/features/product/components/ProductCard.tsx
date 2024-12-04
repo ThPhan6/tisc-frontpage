@@ -134,13 +134,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         setLiked(newLiked);
         setLikeCount(likeCount + (newLiked ? 1 : -1));
         if (location.pathname == PATH.designerFavourite && data) {
-          const newData = data.map((collection) => {
-            const newProducts = collection.products.filter((item) => item.id !== product.id);
-            return {
-              ...collection,
-              products: newProducts,
-            };
-          });
+          const newData = data
+            .map((collection) => {
+              const newProducts = collection.products.filter((item) => item.id !== product.id);
+              return {
+                ...collection,
+                products: newProducts,
+              };
+            })
+            .filter((collection) => collection.products.length > 0);
           store.dispatch(
             setProductList({
               data: newData,
@@ -538,7 +540,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         // First time load to TISC-Conf but login as Designer or Brand previously
         store.dispatch(resetProductState());
         firstLoad.setValue(false);
-      } else if (location.pathname == PATH.designerFavourite) {
+      } else if (
+        location.pathname == PATH.designerFavourite ||
+        location.pathname == PATH.brandProduct
+      ) {
         // First time load to Designer Favourite
         if (allProducts?.length) store.dispatch(resetProductState());
         setTimeout(() => {

@@ -59,7 +59,7 @@ export async function getDesignerWorkspace(
   callback: (data: ProjectListProps[]) => void,
 ) {
   showPageLoading();
-  request(`/api/designer/workspace`, { method: 'GET', params })
+  await request(`/api/designer/workspace`, { method: 'GET', params })
     .then((response: { data: { projects: ProjectListProps[] } }) => {
       callback(response.data.projects);
       hidePageLoading();

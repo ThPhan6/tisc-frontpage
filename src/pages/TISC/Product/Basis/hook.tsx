@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { getDefaultIDOfBasic } from './Option/components/constant';
@@ -55,7 +55,7 @@ import { FormOptionNameInput } from './Option/components/FormOptionNameInput';
 import { MainOptionItem } from './Option/components/OptionItem';
 import { PresetHeader, PresetTabKey } from './Preset/components/PresetHeader';
 import { DragEndResultProps } from '@/components/Drag';
-import { EntryFormWrapper } from '@/components/EntryForm';
+import { EntryFormWrapper, contentId } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -263,6 +263,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
     name: '',
     subs: [],
   });
+
+  const dataContainerRef = useRef(null);
 
   const FORM_CONFIG = {
     conversions: {
@@ -1057,6 +1059,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
                 handleChangeMainSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
                 handleCopyMainOption={handleOnClickCopy}
                 handleDeleteMainSubOption={() => handleOnClickDelete(index)}
+                containerId={contentId}
+                type={type}
+                dataContainerRef={dataContainerRef}
               />
               {provided.placeholder}
             </div>
@@ -1125,9 +1130,11 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType, param?: any
             )}
 
             {/* render main content entry form */}
-            <DragDropContext onDragEnd={onDragEnd}>
-              {data.subs.map(renderEntryFormItem)}
-            </DragDropContext>
+            <div ref={dataContainerRef}>
+              <DragDropContext onDragEnd={onDragEnd}>
+                {data.subs.map(renderEntryFormItem)}
+              </DragDropContext>
+            </div>
           </FormOptionGroupHeaderContext.Provider>
         </EntryFormWrapper>
       </div>

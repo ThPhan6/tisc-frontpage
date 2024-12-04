@@ -11,8 +11,11 @@ import {
 } from '@/features/product/types';
 import store from '@/reducers';
 
+import { hidePageLoading, showPageLoading } from '../loading/loading';
+
 export async function getFavouriteProductList(params: GetListProductForDesignerRequestParams) {
-  return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
+  showPageLoading();
+  return await request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
     `/api/favourite/product-list`,
     {
       method: 'GET',
@@ -25,11 +28,13 @@ export async function getFavouriteProductList(params: GetListProductForDesignerR
   )
     .then(({ data, brand_summary }) => {
       store.dispatch(setProductList({ data, brandSummary: brand_summary }));
+      hidePageLoading();
     })
     .catch((error) => {
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_FAVOURITE_PRODUCT_SUMMARY_ERROR,
       );
+      hidePageLoading();
       return [] as GroupProductList[];
     });
 }
