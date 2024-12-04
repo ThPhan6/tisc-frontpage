@@ -174,8 +174,8 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
           <Col span={4}>
             <div
               style={{
-                width: !props.forceUpload ? '100%' : '100px',
-                height: !props.forceUpload ? '0' : '100px',
+                width: !props.forceUpload ? '100%' : '120px',
+                height: !props.forceUpload ? '0' : '120px',
                 position: 'relative',
                 paddingTop: '100%',
               }}
@@ -188,23 +188,23 @@ const CollectionGallery: React.FC<CollectionGalleryProps> = (props) => {
                     <div
                       style={{
                         position: 'absolute',
-                        bottom: '-0.3rem',
-                        right: '-1px',
+                        bottom: '7px',
+                        right: '20px',
                         background: '#E6E6E6',
-                        width: 100,
-                        height: 100,
+                        width: 120,
+                        height: 120,
                       }}
                     >
                       <>
                         <BodyText
                           level={3}
-                          style={{ textAlign: 'center', margin: '16px 0 24px 0' }}
+                          style={{ textAlign: 'center', margin: '16px 0 44px 0' }}
                         >
                           Image
                         </BodyText>
                         <div
                           style={{
-                            margin: '0 24px',
+                            margin: '0 34px',
                             display: 'flex',
                             alignItems: 'center',
                             gap: 12,

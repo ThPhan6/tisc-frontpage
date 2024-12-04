@@ -27,6 +27,7 @@ import {
   initialInventoryFormData,
 } from '@/types';
 
+import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InventoryHeader from '@/components/InventoryHeader';
@@ -37,6 +38,8 @@ import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryF
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 import PriceAndInventoryTableStyle from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
+
+import { getWorkLocations } from '@/features/locations/api';
 
 const getRequiredFields = (): {
   field: keyof PriceAttribute;
@@ -53,7 +56,7 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
-  const { isExtraLarge, isMobile, isTablet, isLarge } = useScreen();
+  const isExtraLarge = useScreen().isExtraLarge;
   const entryFormWrapperStyle = {
     height: 'calc(var(--vh) * 100 - 312px)',
     padding: 0,
@@ -74,6 +77,33 @@ const PriceAndInventoryForm = () => {
       setOriginalData(initialInventoryFormData);
       setPriceTableData([]);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const res = await getWorkLocations();
+      if (res) {
+        const warehouses: any = res.flatMap((country) =>
+          country.locations.map((el) => ({
+            ...el,
+            location_id: el.id,
+            el_id: el.id,
+            city_name: el.city_name,
+            country_name: el.country_name,
+            name: el.business_name,
+            in_stock: 0,
+            convert: 0,
+          })),
+        );
+
+        setFormData((prev) => ({
+          ...prev,
+          warehouses,
+        }));
+      }
+    };
+
+    fetchLocation();
   }, []);
 
   const fetchInventory = async () => {
@@ -97,9 +127,7 @@ const PriceAndInventoryForm = () => {
       ...initialInventoryFormData,
       ...res,
       image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
-      unit_price: inventoryId
-        ? Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)) * rate
-        : Number(formatCurrencyNumber(res?.price?.unit_price ?? 0)),
+      unit_price: Number(res?.price?.unit_price ?? 0) * rate,
       unit_type: res?.price?.unit_type,
       warehouses:
         warehouse?.warehouses.map((el) => ({ ...el, new_in_stock: el.in_stock, convert: 0 })) ?? [],
@@ -143,9 +171,6 @@ const PriceAndInventoryForm = () => {
 
     const isUnitPriceChanged = !isEqual(formData.unit_price, originalData.unit_price);
 
-    console.log('volumePricesChanged', volumePricesChanged);
-    console.log('isUnitPriceChanged', isUnitPriceChanged);
-
     if (volumePricesChanged) {
       payload.price = {
         ...payload.price,
@@ -175,14 +200,14 @@ const PriceAndInventoryForm = () => {
           ...(warehousesChanged &&
             ({
               warehouses: formData.warehouses.map((warehouse) => {
-                const quantity =
-                  warehouse.in_stock === 0
-                    ? warehouse.new_in_stock + warehouse.convert
-                    : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
+                // const quantity =
+                //   warehouse.in_stock === 0
+                //     ? warehouse.new_in_stock + warehouse.convert
+                //     : warehouse.new_in_stock - warehouse.in_stock + warehouse.convert;
 
                 return {
                   location_id: warehouse?.location_id,
-                  quantity: quantity,
+                  quantity: warehouse.new_in_stock,
                 };
               }),
             } as any)),
@@ -347,10 +372,10 @@ const PriceAndInventoryForm = () => {
                 disabled={true}
                 size="default"
                 checkedChildren="SAVE & CLOSE"
-                unCheckedChildren="EDIT OFF"
+                unCheckedChildren="QUICK EDIT"
                 className={`${PriceAndInventoryTableStyle.category_table_header_btn_switch} ${PriceAndInventoryTableStyle.category_table_header_btn_switch_off}`}
               />
-              {/* <CustomButton
+              <CustomButton
                 size="small"
                 variant="primary"
                 disabled={true}
@@ -363,16 +388,14 @@ const PriceAndInventoryForm = () => {
                 >
                   IMPORT/EXPORT
                 </BodyText>
-              </CustomButton> */}
+              </CustomButton>
               <CustomPlusButton size={24} disabled={true} />
             </div>
           }
         />
 
         <EntryFormWrapper
-          customClass={`${styles.category_form_entry_wrapper} ${
-            inventoryId || isMobile || isTablet ? 'w-full' : 'w-1-2'
-          }`}
+          customClass={`${styles.category_form_entry_wrapper}`}
           title={category ?? ''}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
@@ -397,14 +420,12 @@ const PriceAndInventoryForm = () => {
               setTableData={setPriceTableData}
             />
 
-            {inventoryId && (
-              <InventoryForm
-                formData={formData}
-                isShowModal={isShowModal}
-                onToggleModal={handleToggleModal}
-                setFormData={setFormData}
-              />
-            )}
+            <InventoryForm
+              formData={formData}
+              isShowModal={isShowModal}
+              onToggleModal={handleToggleModal}
+              setFormData={setFormData}
+            />
           </div>
         </EntryFormWrapper>
       </div>

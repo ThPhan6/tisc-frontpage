@@ -22,6 +22,7 @@ export const REGEX_PHONE_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-
 export const REGEX_EMPTY_SPACE = /^\S*$/;
 export const REGEX_NUMBER_ONLY = /^[0-9]*$/;
 export const REGEX_NUMBER_FLOAT_ONLY = /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
+export const REGEX_HASH_WITH_DIGITS = /#(\d+)/;
 
 export const validateNumber = (text: string, allowEmpty = true) => {
   if (text === '' && allowEmpty) {
