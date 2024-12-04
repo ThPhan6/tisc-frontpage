@@ -208,7 +208,7 @@ export const getProductById = async (
   props?: { isSpecified?: boolean; isAssignModal?: boolean; isDetail?: boolean },
 ) => {
   if (!props?.isAssignModal) showPageLoading();
-  return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
+  return await request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
@@ -320,11 +320,7 @@ export const getProductById = async (
           }) as ['', '', '', ''],
         }),
       );
-      if (!props?.isAssignModal && !props?.isDetail) hidePageLoading();
-      else if (props?.isDetail)
-        setTimeout(() => {
-          hidePageLoading();
-        }, 3000);
+      if (!props?.isAssignModal) hidePageLoading();
     })
     .catch((error) => {
       if (!props?.isAssignModal) hidePageLoading();

@@ -319,6 +319,17 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
             ...extraParams,
           });
         },
+
+        reloadWithPage(page: number) {
+          fetchData({
+            pagination: {
+              ...newPagination,
+              current: page,
+            },
+            sorter: currentSorter,
+            ...extraParams,
+          });
+        },
       };
     },
 

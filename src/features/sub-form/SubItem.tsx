@@ -20,9 +20,15 @@ interface SubItemOptionProps {
   subItemOption: SubBasisOption;
   onChange: (subItemOption: SubBasisOption) => void;
   type?: ProductBasisFormType;
+  higestLength?: number;
 }
 
-export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange, type }) => {
+export const SubItemOption: FC<SubItemOptionProps> = ({
+  subItemOption,
+  onChange,
+  type,
+  higestLength,
+}) => {
   const isBasicOption = useCheckBasicOptionForm();
   const { isAttribute } = useCheckAttributeForm();
 
@@ -72,7 +78,9 @@ export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange,
                 name={`value_${order}`}
                 size="small"
                 autoWidth
-                defaultWidth={type === ProductBasisFormType.options ? 200 : 40}
+                defaultWidth={
+                  higestLength && type === ProductBasisFormType.options ? higestLength : 40
+                }
                 containerClass={styles.form_input__formula}
                 onChange={handleChangeInput}
                 value={subItemOption[`value_${order}`]}
@@ -82,7 +90,11 @@ export const SubItemOption: FC<SubItemOptionProps> = ({ subItemOption, onChange,
                 name={`unit_${order}`}
                 size="small"
                 autoWidth
-                defaultWidth={30}
+                defaultWidth={
+                  subItemOption[`unit_${order}`]
+                    ? (subItemOption[`unit_${order}`].length + 4) * 8
+                    : 30
+                }
                 containerClass={styles.form_input__unit}
                 onChange={handleChangeInput}
                 value={subItemOption[`unit_${order}`]}
