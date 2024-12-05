@@ -182,7 +182,7 @@ export const useDispatchDataImport = () => {
   const getWarehouses = (inventory: any) => {
     const warehouseMatch: Pick<WarehouseRequest, 'index' | 'quantity'>[] = [];
 
-    warehouseBusinessNames.forEach((_warehouseName, wsIdx) => {
+    warehouseBusinessNames?.forEach((_warehouseName, wsIdx) => {
       const { key: warehouseKey } = generateWarehouseName(wsIdx + 1);
       const { key: warehouseInStockKey } = generateWarehouseInStock(wsIdx + 1);
 

@@ -13,7 +13,7 @@ import { ImportDatabaseHeader, ImportStep } from '../types/import.type';
 import { BodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 
-import { generateWarehouseInStock, generateWarehouseName } from '../utils';
+import { generateWarehouseInStock } from '../utils';
 import styles from './DataMatching.less';
 
 export const DataMatching = () => {
@@ -29,23 +29,29 @@ export const DataMatching = () => {
 
   const getWarehouseHeaders = (fileField: string) =>
     warehouses
-      .map((_warehouse, wsIdx) => {
-        const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
-        const { key: warehouseInStockKey, label: warehouseInStockLabel } = generateWarehouseInStock(
-          wsIdx + 1,
-        );
+      .filter(
+        (warehouse) => warehouse.functional_type.toLowerCase() === 'logistic facility & warehouse',
+      )
+      .map((warehouse, wsIdx) => {
+        // const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
+        const { key: warehouseInStockKey } = generateWarehouseInStock(wsIdx + 1);
 
         return [
-          {
-            key: warehouseKey,
-            label: warehouseLabel,
-            onClick: () => {
-              handleSelectDatabaseHeader(fileField, warehouseKey as ImportDatabaseHeader);
-            },
-          },
+          // {
+          //   key: warehouseKey,
+          //   label: `${warehouse.business_name} ${warehouse.city_name}, ${warehouse.country_name} + in stock`,
+          //   onClick: () => {
+          //     handleSelectDatabaseHeader(fileField, warehouseKey as ImportDatabaseHeader);
+          //   },
+          // },
           {
             key: warehouseInStockKey,
-            label: warehouseInStockLabel,
+            label: (
+              <>
+                <span className="block">{warehouse.business_name}</span>
+                {`${warehouse.city_name}, ${warehouse.country_name} in stock`}
+              </>
+            ),
             onClick: () => {
               handleSelectDatabaseHeader(fileField, warehouseInStockKey as ImportDatabaseHeader);
             },
@@ -99,7 +105,12 @@ export const DataMatching = () => {
                 textCapitalize={false}
                 items={items}
                 placement="bottomRight"
-                menuStyle={{ width: 160, height: 'auto', maxHeight: 500, overflowY: 'auto' }}
+                menuStyle={{
+                  width: 'fit-content',
+                  height: 'auto',
+                  maxHeight: 500,
+                  overflowY: 'auto',
+                }}
                 labelProps={{ className: 'flex-between' }}
                 className="database-header-dropdown"
               >
