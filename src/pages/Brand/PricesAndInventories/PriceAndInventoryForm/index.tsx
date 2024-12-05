@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { CompanyFunctionGroup } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Switch, message } from 'antd';
 import { useLocation } from 'umi';
@@ -9,7 +10,7 @@ import { ReactComponent as HomeIcon } from '@/assets/icons/home.svg';
 
 import { useScreen } from '@/helper/common';
 import { useGetParamId, useNavigationHandler } from '@/helper/hook';
-import { extractDataBase64, formatCurrencyNumber, validateRequiredFields } from '@/helper/utils';
+import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
 import {
   createInventory,
   exchangeCurrency,
@@ -83,18 +84,24 @@ const PriceAndInventoryForm = () => {
     const fetchLocation = async () => {
       const res = await getWorkLocations();
       if (res) {
-        const warehouses: any = res.flatMap((country) =>
-          country.locations.map((el) => ({
-            ...el,
-            location_id: el.id,
-            el_id: el.id,
-            city_name: el.city_name,
-            country_name: el.country_name,
-            name: el.business_name,
-            in_stock: 0,
-            convert: 0,
-          })),
-        );
+        const warehouses: any = res
+          .flatMap((country) =>
+            country.locations.map((el) => ({
+              ...el,
+              location_id: el.id,
+              el_id: el.id,
+              city_name: el.city_name,
+              country_name: el.country_name,
+              name: el.business_name,
+              in_stock: 0,
+              convert: 0,
+            })),
+          )
+          .filter(
+            (item) =>
+              item.functional_type.toLowerCase() ===
+              CompanyFunctionGroup['logistic facility & warehouse'],
+          );
 
         setFormData((prev) => ({
           ...prev,
