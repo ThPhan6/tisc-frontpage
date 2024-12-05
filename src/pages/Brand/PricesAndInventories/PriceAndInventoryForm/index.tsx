@@ -94,6 +94,7 @@ const PriceAndInventoryForm = () => {
               country_name: el.country_name,
               name: el.business_name,
               in_stock: 0,
+              new_in_stock: 0,
               convert: 0,
             })),
           )
@@ -210,7 +211,7 @@ const PriceAndInventoryForm = () => {
 
                 return {
                   location_id: warehouse?.location_id,
-                  quantity: warehouse.new_in_stock,
+                  quantity: warehouse?.new_in_stock ?? 0,
                 };
               }),
             } as any)),
