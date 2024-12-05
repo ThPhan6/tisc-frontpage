@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { getDatabaseHeader } from '../constants';
+import { CompanyFunctionGroup } from '@/constants/util';
 
 import { ReactComponent as MinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/accessable-tick-icon.svg';
@@ -30,7 +31,9 @@ export const DataMatching = () => {
   const getWarehouseHeaders = (fileField: string) =>
     warehouses
       .filter(
-        (warehouse) => warehouse.functional_type.toLowerCase() === 'logistic facility & warehouse',
+        (warehouse) =>
+          warehouse.functional_type.toLowerCase() ===
+          CompanyFunctionGroup['logistic facility & warehouse'],
       )
       .map((warehouse, wsIdx) => {
         // const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
