@@ -107,7 +107,7 @@ export const COMMON_TYPES = {
 };
 
 export enum CompanyFunctionGroup {
-  'logistic facility & warehouse' = 'logistic facility & warehouse',
+  warehouse = 'logistic facility & warehouse',
 }
 
 export const ACTION_TASK_MODEL = {
