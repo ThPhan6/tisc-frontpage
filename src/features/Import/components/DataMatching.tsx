@@ -31,9 +31,7 @@ export const DataMatching = () => {
   const getWarehouseHeaders = (fileField: string) =>
     warehouses
       .filter(
-        (warehouse) =>
-          warehouse.functional_type.toLowerCase() ===
-          CompanyFunctionGroup['logistic facility & warehouse'],
+        (warehouse) => warehouse.functional_type.toLowerCase() === CompanyFunctionGroup.warehouse,
       )
       .map((warehouse, wsIdx) => {
         // const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);

@@ -97,11 +97,7 @@ const PriceAndInventoryForm = () => {
               convert: 0,
             })),
           )
-          .filter(
-            (item) =>
-              item.functional_type.toLowerCase() ===
-              CompanyFunctionGroup['logistic facility & warehouse'],
-          );
+          .filter((item) => item.functional_type.toLowerCase() === CompanyFunctionGroup.warehouse);
 
         setFormData((prev) => ({
           ...prev,
