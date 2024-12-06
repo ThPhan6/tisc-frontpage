@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
+import { CompanyFunctionGroup } from '@/constants/util';
 import Modal, { ModalProps } from 'antd/lib/modal/Modal';
 import { useLocation } from 'umi';
 
@@ -55,24 +56,30 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   };
 
   useEffect(() => {
-    if (step !== ImportStep.STEP_2 || warehouses?.length) return;
-
-    getLocationPagination(
-      {
-        sort: 'business_name',
-        order: 'ASC',
-      },
-      (ws) => {
-        store.dispatch(setWarehouses(ws?.data ?? []));
-      },
-    );
-  }, [step, warehouses]);
-
-  useEffect(() => {
-    return () => {
+    if (!open) {
       clearState();
-    };
-  }, []);
+    } else if (step === ImportStep.STEP_2) {
+      getLocationPagination(
+        {
+          sort: 'business_name',
+          order: 'ASC',
+        },
+        (ws) => {
+          store.dispatch(
+            setWarehouses(
+              ws?.data.filter((warehouse: any) =>
+                warehouse.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
+              ) ?? [],
+            ),
+          );
+        },
+      );
+    }
+  }, [open, step]);
+
+  // useEffect(() => {
+  //   if (!open) clearState();
+  // }, [open]);
 
   const handleImport = async () => {
     const imported = await importInventoryCSV(
