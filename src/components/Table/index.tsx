@@ -247,7 +247,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     return paginationParams;
   };
 
-  const fetchData = (params: PaginationParams) => {
+  const fetchData = (params: PaginationParams, newData?: any[]) => {
+    if (newData?.length) {
+      setData(newData);
+      return;
+    }
+
     showPageLoading();
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
@@ -309,12 +314,17 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         pageSize: getTablePaginationSize(),
       };
       return {
-        reload() {
-          fetchData({
-            pagination: newPagination,
-            sorter: currentSorter,
-            ...extraParams,
-          });
+        data,
+
+        reload(newData: any[] = []) {
+          fetchData(
+            {
+              pagination: newPagination,
+              sorter: currentSorter,
+              ...extraParams,
+            },
+            newData,
+          );
         },
 
         reloadWithFilter() {

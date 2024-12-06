@@ -8,7 +8,7 @@ import { ReactComponent as SquareCDownLeft } from '@/assets/icons/square-c-down-
 
 import { confirmDelete } from '@/helper/common';
 import { useNavigationHandler } from '@/helper/hook';
-import { deleteInventory, moveInventoryToCategory } from '@/services';
+import { deleteInventory, getSummary, moveInventoryToCategory } from '@/services';
 import { isEmpty } from 'lodash';
 
 import { PriceAndInventoryColumn } from '@/types';
@@ -77,8 +77,11 @@ const InventoryTableActionMenu = ({
 
   const handleDelete = (id: string) => () => {
     confirmDelete(async () => {
-      const res = await deleteInventory(id);
-      if (res) tableRef.current.reload();
+      const isDeleted = await deleteInventory(id);
+      if (isDeleted) {
+        tableRef.current.reload(tableRef.current.data.filter((el: any) => el.id !== id));
+        getSummary(location.state.brandId);
+      }
     });
   };
 
