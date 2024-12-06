@@ -56,30 +56,28 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   };
 
   useEffect(() => {
-    if (!open) {
-      clearState();
-    } else if (step === ImportStep.STEP_2) {
-      getLocationPagination(
-        {
-          sort: 'business_name',
-          order: 'ASC',
-        },
-        (ws) => {
-          store.dispatch(
-            setWarehouses(
-              ws?.data.filter((warehouse: any) =>
-                warehouse.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
-              ) ?? [],
-            ),
-          );
-        },
-      );
-    }
-  }, [open, step]);
+    getLocationPagination(
+      {
+        sort: 'business_name',
+        order: 'ASC',
+      },
+      (ws) => {
+        store.dispatch(
+          setWarehouses(
+            ws?.data.filter((warehouse: any) =>
+              warehouse.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
+            ) ?? [],
+          ),
+        );
+      },
+    );
+  }, []);
 
-  // useEffect(() => {
-  //   if (!open) clearState();
-  // }, [open]);
+  useEffect(() => {
+    return () => {
+      clearState();
+    };
+  }, []);
 
   const handleImport = async () => {
     const imported = await importInventoryCSV(

@@ -47,7 +47,9 @@ export const DataMatching = () => {
             key: warehouseInStockKey,
             label: (
               <>
-                <span className="block">{warehouse.business_name}</span>
+                <span className={`${headerMatching?.[fileField] ? '' : 'block'}`}>
+                  {warehouse.business_name}
+                </span>
                 {`${warehouse.city_name}, ${warehouse.country_name} in stock`}
               </>
             ),
