@@ -117,7 +117,7 @@ export const DataMatching = () => {
                   fontFamily="Roboto"
                   level={6}
                   color={headerSelected ? 'mono-color' : 'mono-color-medium'}
-                  customClass="header-selected"
+                  customClass="header-selected ellipsis"
                 >
                   {headerSelected || 'Select from the list'}
                 </BodyText>
