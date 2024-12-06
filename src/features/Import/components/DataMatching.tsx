@@ -30,8 +30,8 @@ export const DataMatching = () => {
 
   const getWarehouseHeaders = (fileField: string) =>
     warehouses
-      .filter(
-        (warehouse) => warehouse.functional_type.toLowerCase() === CompanyFunctionGroup.warehouse,
+      .filter((warehouse) =>
+        warehouse.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
       )
       .map((warehouse, wsIdx) => {
         // const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
@@ -49,7 +49,9 @@ export const DataMatching = () => {
             key: warehouseInStockKey,
             label: (
               <>
-                <span className="block">{warehouse.business_name}</span>
+                <span className={`${headerMatching?.[fileField] ? '' : 'block'}`}>
+                  {warehouse.business_name}
+                </span>
                 {`${warehouse.city_name}, ${warehouse.country_name} in stock`}
               </>
             ),
@@ -119,7 +121,7 @@ export const DataMatching = () => {
                   fontFamily="Roboto"
                   level={6}
                   color={headerSelected ? 'mono-color' : 'mono-color-medium'}
-                  customClass="header-selected"
+                  customClass="header-selected ellipsis"
                 >
                   {headerSelected || 'Select from the list'}
                 </BodyText>
