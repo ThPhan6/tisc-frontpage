@@ -84,9 +84,12 @@ const PriceAndInventoryForm = () => {
     const fetchLocation = async () => {
       const res = await getWorkLocations();
       if (res) {
-        const warehouses: any = res
-          .flatMap((country) =>
-            country.locations.map((el) => ({
+        const warehouses: any = res.flatMap((country) =>
+          country.locations
+            .filter((item) =>
+              item.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
+            )
+            .map((el) => ({
               ...el,
               location_id: el.id,
               el_id: el.id,
@@ -97,10 +100,7 @@ const PriceAndInventoryForm = () => {
               new_in_stock: 0,
               convert: 0,
             })),
-          )
-          .filter((item) =>
-            item.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
-          );
+        );
 
         setFormData((prev) => ({
           ...prev,
