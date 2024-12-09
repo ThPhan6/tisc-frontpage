@@ -44,7 +44,7 @@ import {
 import { deleteCollection, updateCollection } from '@/services';
 import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
-import { resetProductState, setProductList } from '../reducers';
+import { closeActiveSpecAttributeGroup, resetProductState, setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
@@ -81,6 +81,7 @@ interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo
   showSpecify?: boolean;
   isCustomProduct?: boolean;
   onSpecifyClick?: () => void;
+  setCollapseKey?: (key: number) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -93,6 +94,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showActionMenu,
   isCustomProduct,
   onSpecifyClick,
+  setCollapseKey,
 }) => {
   const { isTablet } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
@@ -154,6 +156,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const reloadProductInformation = () => {
+    setCollapseKey?.(-1);
+
     if (isCustomProduct) {
       const filterBy =
         !filter || filter?.value === 'all'
@@ -461,7 +465,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const [delayDuration, setDelayDuration] = useState<number>(20000);
   const location = useLocation();
   const [showBackTop, setShowBackTop] = useState(false);
-  console.log(groups);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowBackTop(window.scrollY > 50);
@@ -853,6 +857,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 showInquiryRequest={showInquiryRequest}
                 showActionMenu={showActionMenu}
                 hideFavorite={hideFavorite}
+                setCollapseKey={setCollapseKey}
               />
             ))}
           </div>
@@ -867,6 +872,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             showInquiryRequest={showInquiryRequest}
             showActionMenu={showActionMenu}
             hideFavorite={hideFavorite}
+            setCollapseKey={setCollapseKey}
           />
         ))}
       </div>
