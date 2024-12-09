@@ -49,7 +49,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
     {
       id: '1',
       value: currencySelected,
-      label: 'BASE CURRENTCY',
+      label: 'BASE CURRENCY',
       rightAction: <SingleRightFormIcon className="cursor-pointer" width={16} height={16} />,
     },
     {

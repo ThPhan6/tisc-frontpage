@@ -18,6 +18,7 @@ interface CurrencyProps extends ModalProps {
   headerContent?: ReactNode;
   title: ReactNode;
   open: boolean;
+  onCancel: () => void;
   onSave?: (value: string) => void;
 }
 
@@ -36,13 +37,8 @@ const CurrencyModal = ({
   onSave,
   ...rest
 }: CurrencyProps) => {
-  const [isShowModal, setIsShowModal] = useState(open);
   const { summaryFinancialRecords: data } = useAppSelector((state) => state.summary);
   const [selectedValue, setSelectedValue] = useState<string>('');
-
-  useEffect(() => {
-    setIsShowModal(open);
-  }, [open]);
 
   useEffect(() => {
     if (data && data.currencies.length > 0) {
@@ -56,13 +52,13 @@ const CurrencyModal = ({
   const handleSave = () => {
     store.dispatch(setCurrencySelected(selectedValue));
     onSave?.(selectedValue);
-    setIsShowModal(false);
+    onCancel();
   };
 
   return (
     <Modal
       className={styles.currency}
-      visible={isShowModal}
+      visible={open}
       onCancel={onCancel}
       title={
         <BodyText level={3} customClass={styles.currency_title}>
