@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { CompanyFunctionGroup } from '@/constants/util';
+import { CompanyFunctionalGroup } from '@/constants/util';
 import Modal, { ModalProps } from 'antd/lib/modal/Modal';
 import { useLocation } from 'umi';
 
@@ -37,7 +37,6 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
   const categoryName = queryParams.get('categories')?.split(' / ').pop();
 
   const open = useAppSelector((s) => s.import.open);
-  const warehouses = useAppSelector((s) => s.import.warehouses);
   const step = useAppSelector((s) => s.import.step);
   const error = useAppSelector((s) => s.import.error ?? {});
   const dataImport = useAppSelector((s) => s.import.dataImport);
@@ -60,15 +59,10 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
       {
         sort: 'business_name',
         order: 'ASC',
+        functional_type: CompanyFunctionalGroup.LOGISTIC,
       },
       (ws) => {
-        store.dispatch(
-          setWarehouses(
-            ws?.data.filter((warehouse: any) =>
-              warehouse.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
-            ) ?? [],
-          ),
-        );
+        store.dispatch(setWarehouses(ws.data));
       },
     );
   }, []);

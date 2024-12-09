@@ -106,8 +106,8 @@ export const COMMON_TYPES = {
   INVENTORY_UNIT: 20,
 };
 
-export enum CompanyFunctionGroup {
-  warehouse = 'logistic facility & warehouse',
+export enum CompanyFunctionalGroup {
+  LOGISTIC = 'Logistic Facility & Warehouse',
 }
 
 export const ACTION_TASK_MODEL = {
