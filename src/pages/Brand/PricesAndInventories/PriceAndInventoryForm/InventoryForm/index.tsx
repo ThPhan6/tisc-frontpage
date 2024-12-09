@@ -205,26 +205,25 @@ const InventoryForm = ({
     {
       title: 'WareHouse Name',
       dataIndex: 'name',
-      width: '20%',
-      ellipsis: true,
+      width: '40%',
     },
     {
       title: 'City',
       dataIndex: 'city_name',
-      width: '15%',
+      width: '20%',
       ellipsis: true,
     },
     {
       title: 'Country',
       dataIndex: 'country_name',
-      width: '40%',
+      width: '20%',
       ellipsis: true,
     },
     {
       title: 'In stock',
       dataIndex: 'in_stock',
       align: 'center',
-      width: '20%',
+      width: '15%',
       render: (_, record: WarehouseItemMetric) => {
         const inStockValue =
           formData.warehouses?.find((ws) => ws.id === record.id)?.new_in_stock ?? 0;
@@ -457,8 +456,11 @@ const InventoryForm = ({
           dataSource={sortObjectArray(formData?.warehouses, 'name')}
           columns={warehouseColumns}
           pagination={false}
-          className={`${styles.category_form_table}`}
-          scroll={{ x: 600, y: 380 }}
+          className={`${styles.category_form_table} ${styles.category_form_inventory_table}`}
+          scroll={{
+            x: 600,
+            // y: 380
+          }}
         />
       </div>
 
