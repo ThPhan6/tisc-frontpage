@@ -40,8 +40,6 @@ const InventoryTable = ({
   onToggleModal,
   callbackFinishApi,
 }: InventoryTableProps) => {
-  const { currencySelected } = useAppSelector((state) => state.summary);
-
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const location = useLocation<{
     categoryId: string;
@@ -270,9 +268,9 @@ const InventoryTable = ({
         title: 'Stock Value',
         dataIndex: 'stock_value',
         render: (_, item) => {
-          const currency =
-            // orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ||
-            currencySelected;
+          const currency = orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]
+            ?.to_currency;
+
           return rowSelectedValue(
             item,
             `${currency} ${formatCurrencyNumber(Number(item.stock_value), undefined, {
@@ -298,14 +296,7 @@ const InventoryTable = ({
         },
       },
     ],
-    [
-      isEditMode,
-      JSON.stringify(selectedRows),
-      selectedRowKeys,
-      currencySelected,
-      unitTypeData,
-      groupItems,
-    ],
+    [isEditMode, JSON.stringify(selectedRows), selectedRowKeys, unitTypeData, groupItems],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {
