@@ -188,7 +188,12 @@ const InventoryTable = ({
               },
             },
             'unit_price',
-            isEditMode ? Number(unitPrice.toFixed(2)) : formatCurrencyNumber(unitPrice),
+            isEditMode
+              ? Number(unitPrice.toFixed(2))
+              : formatCurrencyNumber(unitPrice, 'en-us', {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                }),
           );
         },
       },
@@ -275,8 +280,9 @@ const InventoryTable = ({
             currencySelected;
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stock_value), undefined, {
+            `${currency} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
               maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
             })}`,
           );
         },
