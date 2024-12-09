@@ -456,10 +456,10 @@ const InventoryForm = ({
           dataSource={sortObjectArray(formData?.warehouses, 'name')}
           columns={warehouseColumns}
           pagination={false}
-          className={`${styles.category_form_table} ${styles.category_form_inventory_table}`}
+          className={`${styles.category_form_table}`}
           scroll={{
             x: 600,
-            // y: 380
+            y: 500,
           }}
         />
       </div>

@@ -160,20 +160,8 @@
     background: @primary-color-dark;
   }
 
-  &_price_table {
-    :global(.ant-table-content) {
-      max-height: 250px;
-      overflow: auto !important;
-      scrollbar-width: thin;
-    }
-  }
-
-  &_inventory_table {
-    :global(.ant-table-content) {
-      max-height: 500px;
-      overflow: auto !important;
-      scrollbar-width: thin;
-    }
+  :global(.ant-table-body) {
+    scrollbar-width: thin;
   }
 
   :global(.ant-table-thead) {

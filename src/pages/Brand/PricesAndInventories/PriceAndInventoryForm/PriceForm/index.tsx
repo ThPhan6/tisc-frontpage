@@ -587,10 +587,10 @@ const PriceForm = ({
           dataSource={sortBy(tableData, 'min_quantity')}
           columns={priceColumn}
           pagination={false}
-          className={`${styles.category_form_table} ${styles.category_form_price_table}`}
+          className={`${styles.category_form_table}`}
           scroll={{
             x: 500,
-            // y: 185
+            y: 185,
           }}
         />
       </div>
