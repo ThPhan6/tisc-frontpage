@@ -6,10 +6,9 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useScreen } from '@/helper/common';
-import { useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { filter, isNil, map, sortBy } from 'lodash';
+import { filter, map, sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -589,7 +588,10 @@ const PriceForm = ({
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ x: 500, y: 185 }}
+          scroll={{
+            x: 500,
+            y: 185,
+          }}
         />
       </div>
 
