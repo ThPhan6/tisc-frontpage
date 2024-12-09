@@ -273,8 +273,10 @@ const InventoryTable = ({
         title: 'Stock Value',
         dataIndex: 'stock_value',
         render: (_, item) => {
-          const currency = orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]
-            ?.to_currency;
+          const currency =
+            orderBy(item?.price?.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ??
+            item?.price?.currency ??
+            '';
 
           return rowSelectedValue(
             item,
