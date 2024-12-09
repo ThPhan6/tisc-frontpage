@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
 import { getDatabaseHeader } from '../constants';
-import { CompanyFunctionGroup } from '@/constants/util';
 
 import { ReactComponent as MinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/accessable-tick-icon.svg';
