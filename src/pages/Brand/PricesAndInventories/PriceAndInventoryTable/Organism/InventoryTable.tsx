@@ -40,8 +40,6 @@ const InventoryTable = ({
   onToggleModal,
   callbackFinishApi,
 }: InventoryTableProps) => {
-  const { currencySelected } = useAppSelector((state) => state.summary);
-
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const location = useLocation<{
     categoryId: string;
@@ -167,7 +165,7 @@ const InventoryTable = ({
         render: (_, item) => rowSelectedValue(item, item.description),
       },
       {
-        title: 'Unit Price',
+        title: 'Base Price',
         dataIndex: 'unit_price',
         align: 'center',
         render: (_, record) => {
@@ -188,7 +186,12 @@ const InventoryTable = ({
               },
             },
             'unit_price',
-            isEditMode ? Number(unitPrice.toFixed(2)) : formatCurrencyNumber(unitPrice),
+            isEditMode
+              ? Number(unitPrice.toFixed(2))
+              : formatCurrencyNumber(unitPrice, 'en-us', {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                }),
           );
         },
       },
@@ -270,13 +273,14 @@ const InventoryTable = ({
         title: 'Stock Value',
         dataIndex: 'stock_value',
         render: (_, item) => {
-          const currency =
-            orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ||
-            currencySelected;
+          const currency = orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]
+            ?.to_currency;
+
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stock_value), undefined, {
+            `${currency} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
               maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
             })}`,
           );
         },
@@ -298,14 +302,7 @@ const InventoryTable = ({
         },
       },
     ],
-    [
-      isEditMode,
-      JSON.stringify(selectedRows),
-      selectedRowKeys,
-      currencySelected,
-      unitTypeData,
-      groupItems,
-    ],
+    [isEditMode, JSON.stringify(selectedRows), selectedRowKeys, unitTypeData, groupItems],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {

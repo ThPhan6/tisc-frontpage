@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { CompanyFunctionGroup } from '@/constants/util';
+import { CompanyFunctionalGroup } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Switch, message } from 'antd';
 import { useLocation } from 'umi';
@@ -20,6 +20,7 @@ import {
 } from '@/services';
 import { isEmpty, isEqual, isNil, omit, pick, reduce, sortBy } from 'lodash';
 
+import { LocationDetail } from '@/features/locations/type';
 import type { ModalType } from '@/reducers/modal';
 import {
   IPriceAndInventoryForm,
@@ -40,7 +41,7 @@ import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 import PriceAndInventoryTableStyle from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
-import { getWorkLocations } from '@/features/locations/api';
+import { getLocationPagination } from '@/features/locations/api';
 
 const getRequiredFields = (): {
   field: keyof PriceAttribute;
@@ -82,31 +83,31 @@ const PriceAndInventoryForm = () => {
 
   useEffect(() => {
     const fetchLocation = async () => {
-      const res = await getWorkLocations();
-      if (res) {
-        const warehouses: any = res.flatMap((country) =>
-          country.locations
-            .filter((item) =>
-              item.functional_type.toLowerCase().includes(CompanyFunctionGroup.warehouse),
-            )
-            .map((el) => ({
-              ...el,
-              location_id: el.id,
-              el_id: el.id,
-              city_name: el.city_name,
-              country_name: el.country_name,
-              name: el.business_name,
-              in_stock: 0,
-              new_in_stock: 0,
-              convert: 0,
-            })),
-        );
-
-        setFormData((prev) => ({
-          ...prev,
-          warehouses,
-        }));
-      }
+      getLocationPagination(
+        {
+          sort: 'business_name',
+          order: 'ASC',
+          functional_type: CompanyFunctionalGroup.LOGISTIC,
+        },
+        (ws) => {
+          if (ws.data?.length) {
+            setFormData((prev) => ({
+              ...prev,
+              warehouses: ws.data.map((el: LocationDetail) => ({
+                ...el,
+                location_id: el.id,
+                el_id: el.id,
+                city_name: el.city_name,
+                country_name: el.country_name,
+                name: el.business_name,
+                in_stock: 0,
+                new_in_stock: 0,
+                convert: 0,
+              })),
+            }));
+          }
+        },
+      );
     };
 
     fetchLocation();

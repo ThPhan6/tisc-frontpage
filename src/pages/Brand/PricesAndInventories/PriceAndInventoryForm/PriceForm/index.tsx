@@ -6,10 +6,10 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useScreen } from '@/helper/common';
-import { useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { filter, isNil, map, sortBy } from 'lodash';
+
+import { filter, isEqual, isNil, map, sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -183,6 +183,10 @@ const PriceForm = ({
     const minQuantity = Number(min_quantity);
     const maxQuantity = Number(max_quantity);
 
+    const isDuplicateDiscountRate = tableData.some((item) =>
+      isEqual(item.discount_rate, formData.discount_rate),
+    );
+
     if (!unit_price || !unit_type || isNaN(parsedUnitPrice)) {
       message.warn('Unit price and type are required and must be valid.');
       return false;
@@ -195,6 +199,11 @@ const PriceForm = ({
 
     if (isNaN(minQuantity) || isNaN(maxQuantity) || minQuantity > maxQuantity) {
       message.warn('Quantities must be valid integers and min cannot exceed max.');
+      return false;
+    }
+
+    if (isDuplicateDiscountRate) {
+      message.warn('Discount rate already exists. Please choose a different rate.');
       return false;
     }
 
@@ -589,7 +598,10 @@ const PriceForm = ({
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ x: 500, y: 185 }}
+          scroll={{
+            x: 500,
+            y: 185,
+          }}
         />
       </div>
 
