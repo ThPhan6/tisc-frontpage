@@ -459,7 +459,7 @@ const InventoryForm = ({
           className={`${styles.category_form_table}`}
           scroll={{
             x: 600,
-            y: 500,
+            y: 480,
           }}
         />
       </div>
