@@ -125,6 +125,7 @@ const PriceAndInventoryTable: React.FC = () => {
     }
 
     const res = await exchangeCurrency(location.state.brandId, currency);
+    getBrandCurrencySummary(location.state.brandId);
     if (res) tableRef.current.reload();
   };
 
