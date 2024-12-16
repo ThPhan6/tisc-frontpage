@@ -341,18 +341,16 @@ const PriceAndInventoryForm = () => {
     }
   };
 
-  const handleSaveCurrency = useCallback(
-    async (currency: string) => {
-      if (!currency) {
-        message.error('Please select a currency');
-        return;
-      }
+  const handleSaveCurrency = async (currency: string) => {
+    if (!currency) {
+      message.error('Please select a currency');
+      return;
+    }
 
-      const res = await exchangeCurrency(location.state.brandId, currency);
-      if (res) fetchInventory();
-    },
-    [location.state?.brandId],
-  );
+    const res = await exchangeCurrency(location.state.brandId, currency);
+    getBrandCurrencySummary(location.state.brandId);
+    if (res) fetchInventory();
+  };
 
   const pageHeaderRender = () => (
     <InventoryHeader onSaveCurrency={handleSaveCurrency} hideSearch={true} />
