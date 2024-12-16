@@ -454,6 +454,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const loading = useAppSelector(loadingSelector);
   const { data, allProducts, filter } = useAppSelector((state) => state.product.list);
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
   const [collapseKey, setCollapseKey] = useState<number>(-1);
   const [activeLabels, setActiveLabels] = useState<{ id: string; name: string }[]>([]);
   const [groups, setGroups] = useState<any>([]);
@@ -678,7 +680,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     } inset`,
                   }}
                 >
-                  {group.description && !filterByCategory ? (
+                  {((group.description || isTiscAdmin) && !filterByCategory) ||
+                  (isBrandUser && group.images.length > 0) ||
+                  (isDesignerUser && group.images.length > 0) ? (
                     <div
                       className={`header-text ${styles.gallery} ${
                         isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
