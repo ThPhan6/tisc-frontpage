@@ -14,6 +14,7 @@ import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
 import {
   createInventory,
   exchangeCurrency,
+  getBrandCurrencySummary,
   getInventory,
   getListWarehouseByInventoryId,
   updateInventory,
@@ -26,6 +27,7 @@ import {
   IPriceAndInventoryForm,
   type PriceAttribute,
   type VolumePrice,
+  WarehouseItemMetric,
   initialInventoryFormData,
 } from '@/types';
 
@@ -81,40 +83,45 @@ const PriceAndInventoryForm = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchLocation = async () => {
-      getLocationPagination(
-        {
-          sort: 'business_name',
-          order: 'ASC',
-          functional_type: CompanyFunctionalGroup.LOGISTIC,
-        },
-        (ws) => {
-          if (ws.data?.length) {
-            setFormData((prev) => ({
-              ...prev,
-              warehouses: ws.data.map((el: LocationDetail) => ({
-                ...el,
-                location_id: el.id,
-                el_id: el.id,
-                city_name: el.city_name,
-                country_name: el.country_name,
-                name: el.business_name,
-                in_stock: 0,
-                new_in_stock: 0,
-                convert: 0,
-              })),
-            }));
-          }
-        },
-      );
-    };
+  const getLocationLogistic = async () => {
+    let newWarehouse: WarehouseItemMetric[] = [];
 
-    fetchLocation();
-  }, []);
+    await getLocationPagination(
+      {
+        sort: 'business_name',
+        order: 'ASC',
+        functional_type: CompanyFunctionalGroup.LOGISTIC,
+      },
+      (res) => {
+        if (!res?.data?.length) return;
+
+        newWarehouse = res.data.map((el: LocationDetail) => ({
+          id: el.id,
+          location_id: el.id,
+          el_id: el.id,
+          city_name: el.city_name,
+          country_name: el.country_name,
+          name: el.business_name,
+          in_stock: 0,
+          new_in_stock: 0,
+          convert: 0,
+        }));
+
+        setFormData((prev) => ({
+          ...prev,
+          warehouses: newWarehouse,
+        }));
+      },
+    );
+
+    return newWarehouse;
+  };
 
   const fetchInventory = async () => {
-    if (!inventoryId) return;
+    if (!inventoryId) {
+      getLocationLogistic();
+      return;
+    }
 
     const res = await getInventory(inventoryId);
 
@@ -328,10 +335,13 @@ const PriceAndInventoryForm = () => {
     }
 
     fetchInventory();
-    return;
+
+    if ('unit_price' in payload || 'warehouses' in payload) {
+      getBrandCurrencySummary(location.state.brandId);
+    }
   };
 
-  const handleSaveCurrecy = useCallback(
+  const handleSaveCurrency = useCallback(
     async (currency: string) => {
       if (!currency) {
         message.error('Please select a currency');
@@ -345,7 +355,7 @@ const PriceAndInventoryForm = () => {
   );
 
   const pageHeaderRender = () => (
-    <InventoryHeader onSaveCurrency={handleSaveCurrecy} hideSearch={true} />
+    <InventoryHeader onSaveCurrency={handleSaveCurrency} hideSearch={true} />
   );
 
   return (
