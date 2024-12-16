@@ -7,9 +7,9 @@ import { confirmDelete } from '@/helper/common';
 import {
   createDynamicCategory,
   deleteDynamicCategory,
+  getBrandCurrencySummary,
   getDynamicCategories,
   getGroupCategories,
-  getSummary,
   moveCategoryToSubCategory,
   updateDynamicCategory,
 } from '@/services';
@@ -124,7 +124,7 @@ const PricesAndInventories = () => {
     const brandId = [...new Set(accordionItems.map((item) => item.relation_id))][0];
 
     if (brandId) {
-      const fetchSummary = async () => await getSummary(brandId);
+      const fetchSummary = async () => await getBrandCurrencySummary(brandId);
       fetchSummary();
     }
   }, [accordionItems]);

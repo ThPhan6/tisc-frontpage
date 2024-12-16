@@ -222,13 +222,14 @@ export async function fetchUnitType() {
     });
 }
 
-export async function getSummary(brandId: string) {
+export async function getBrandCurrencySummary(brandId: string) {
   return request<{ data: FinancialRecords }>(`/api/inventory/summary/brand/${brandId}`, {
     method: 'GET',
   })
-    .then((response) => store.dispatch(setSummaryFinancialRecords(response.data)))
+    .then((response) => {
+      store.dispatch(setSummaryFinancialRecords(response.data));
+    })
     .catch((error) => {
-      console.log('getSummary error', error);
       return null;
     });
 }

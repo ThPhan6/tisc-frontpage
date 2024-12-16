@@ -7,6 +7,7 @@ import { useLocation } from 'umi';
 import {
   exchangeCurrency,
   fetchUnitType,
+  getBrandCurrencySummary,
   updateInventories,
   updateMultipleByBackorder,
 } from '@/services';
@@ -117,13 +118,14 @@ const PriceAndInventoryTable: React.FC = () => {
     setIsEditMode(!isEditMode);
   };
 
-  const handleSaveCurrecy = async (currency: string) => {
+  const handleSaveCurrency = async (currency: string) => {
     if (!currency) {
       message.error('Please select a currency');
       return;
     }
 
     const res = await exchangeCurrency(location.state.brandId, currency);
+    getBrandCurrencySummary(location.state.brandId);
     if (res) tableRef.current.reload();
   };
 
@@ -161,12 +163,13 @@ const PriceAndInventoryTable: React.FC = () => {
     if (type === 'import' && isSaved) {
       store.dispatch(setOpenModal(false));
       tableRef.current.reload();
+      getBrandCurrencySummary(location.state.brandId);
       return;
     }
   };
 
   const pageHeaderRender = () => (
-    <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrecy} />
+    <InventoryHeader onSearch={handleSearch} onSaveCurrency={handleSaveCurrency} />
   );
 
   return (

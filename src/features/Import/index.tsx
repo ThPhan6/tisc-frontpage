@@ -62,7 +62,9 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
         functional_type: CompanyFunctionalGroup.LOGISTIC,
       },
       (ws) => {
-        store.dispatch(setWarehouses(ws.data));
+        if (ws?.data?.length) {
+          store.dispatch(setWarehouses(ws.data));
+        }
       },
     );
   }, []);
