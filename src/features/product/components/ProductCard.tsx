@@ -678,7 +678,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     } inset`,
                   }}
                 >
-                  {(group.description || isTiscAdmin) && !filterByCategory ? (
+                  {group.description && !filterByCategory ? (
                     <div
                       className={`header-text ${styles.gallery} ${
                         isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
