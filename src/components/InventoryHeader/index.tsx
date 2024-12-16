@@ -7,7 +7,7 @@ import { ReactComponent as MagnifyingGlassIcon } from '@/assets/icons/ic-search.
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { formatCurrencyNumber } from '@/helper/utils';
-import { getSummary } from '@/services';
+import { getBrandCurrencySummary } from '@/services';
 import { debounce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
@@ -38,7 +38,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
   useEffect(() => {
     const brandId = location.state?.brandId;
     if (brandId) {
-      const fetchSummary = async () => await getSummary(brandId);
+      const fetchSummary = async () => await getBrandCurrencySummary(brandId);
       fetchSummary();
     }
   }, [location.state?.brandId]);

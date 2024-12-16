@@ -351,7 +351,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       };
     },
 
-    [pagination.pageSize, extraParams],
+    [pagination.pageSize, extraParams, JSON.stringify(currentSorter), JSON.stringify(data)],
   );
 
   const renderHeaderTable = () => {
