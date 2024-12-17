@@ -92,11 +92,11 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
   const { collapse, setCollapse } = useContext(FormGroupContext);
 
   const higestLength =
-    subOption.subs?.reduce((subA, subB) =>
-      subA.value_1.length > subB.value_1.length ? subA : subB,
-    ).value_1?.length * 8;
-
-  console.log('subOption.subs: ', subOption.subs);
+    subOption?.subs?.reduce(
+      (subA: SubBasisOption, subB: SubBasisOption) =>
+        subA?.value_1?.length > subB?.value_1?.length ? subA : subB,
+      {} as SubBasisOption,
+    )?.value_1?.length * 8;
 
   const handleDeleteSubItem =
     (index: number) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
@@ -148,14 +148,19 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
         const formContainer = containerId ? document.getElementById(containerId) : undefined;
         const groupContainer = document.getElementById(subOption.id);
         const groupContent = document.getElementById(`${subOption.id}_content`);
+
         if (formContainer) {
           const formTop = formContainer.getBoundingClientRect().top;
-          const groupTop = groupContainer.getBoundingClientRect().top;
-          formContainer.scrollTop += groupTop - formTop - 60;
-          formContainer.style.overflowY = 'hidden';
-          if (groupContent) {
-            groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
-            groupContent.style.overflowY = 'auto';
+
+          if (groupContainer) {
+            const groupTop = groupContainer.getBoundingClientRect().top;
+            formContainer.scrollTop += groupTop - formTop - 60;
+            formContainer.style.overflowY = 'hidden';
+
+            if (groupContent) {
+              groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
+              groupContent.style.overflowY = 'auto';
+            }
           }
         }
       }
