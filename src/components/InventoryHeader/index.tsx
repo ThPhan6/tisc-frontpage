@@ -33,6 +33,10 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
   const [isShowModal, setIsShowModal] = useState(false);
   const { summaryFinancialRecords, currencySelected } = useAppSelector((state) => state.summary);
 
+  const currencySymbol = summaryFinancialRecords.currencies.find(
+    (cur) => cur.code.toLowerCase() === currencySelected.toLowerCase(),
+  )?.symbol;
+
   const location = useLocation<{ categoryId: string; brandId: string }>();
 
   useEffect(() => {
@@ -59,7 +63,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
     },
     {
       id: '3',
-      value: `${currencySelected === 'USD' ? 'US$' : currencySelected} ${formatCurrencyNumber(
+      value: `${currencySymbol} ${formatCurrencyNumber(
         Number(summaryFinancialRecords.total_stock || 0),
         undefined,
         {

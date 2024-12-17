@@ -46,7 +46,9 @@ const InventoryTable = ({
   }>();
   const [groupItems, setGroupItems] = useState<AccordionItem[]>([]);
 
-  const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+  const { unitType: unitTypeData, summaryFinancialRecords } = useAppSelector(
+    (state) => state.summary,
+  );
 
   useEffect(() => {
     const fetchGroupCategories = async () => {
@@ -176,16 +178,15 @@ const InventoryTable = ({
 
           const unitPrice = Number(record?.price?.unit_price ?? 0) * rate;
 
-          let currency =
+          const currency =
             orderBy(record?.price?.exchange_histories || [], 'created_at', 'desc')[0]
               ?.to_currency ??
             record?.price?.currency ??
             '';
 
-          if (currency === 'USD') {
-            currency = 'US$';
-          }
-
+          const currencySymbol = summaryFinancialRecords.currencies.find(
+            (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+          )?.symbol;
           return renderEditableCell(
             {
               ...record,
@@ -197,7 +198,7 @@ const InventoryTable = ({
             'unit_price',
             isEditMode
               ? Number(unitPrice.toFixed(2))
-              : `${currency} ${formatCurrencyNumber(unitPrice, 'en-us', {
+              : `${currencySymbol} ${formatCurrencyNumber(unitPrice, 'en-us', {
                   maximumFractionDigits: 2,
                   minimumFractionDigits: 2,
                 })}`,
@@ -282,17 +283,18 @@ const InventoryTable = ({
         title: 'Stock Value',
         dataIndex: 'stock_value',
         render: (_, item) => {
-          let currency =
+          const currency =
             orderBy(item?.price?.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ??
             item?.price?.currency ??
             '';
-          if (currency === 'USD') {
-            currency = 'US$';
-          }
+
+          const currencySymbol = summaryFinancialRecords.currencies.find(
+            (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+          )?.symbol;
 
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
+            `${currencySymbol} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             })}`,
@@ -316,7 +318,14 @@ const InventoryTable = ({
         },
       },
     ],
-    [isEditMode, JSON.stringify(selectedRows), selectedRowKeys, unitTypeData, groupItems],
+    [
+      isEditMode,
+      JSON.stringify(selectedRows),
+      selectedRowKeys,
+      unitTypeData,
+      groupItems,
+      JSON.stringify(summaryFinancialRecords),
+    ],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {

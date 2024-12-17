@@ -149,7 +149,13 @@ const PriceForm = ({
 }: PriceFormProps) => {
   const { isExtraLarge, isMobile } = useScreen();
 
-  const { currencySelected, unitType } = useAppSelector((state) => state.summary);
+  const { currencySelected, unitType, summaryFinancialRecords } = useAppSelector(
+    (state) => state.summary,
+  );
+
+  const currencySymbol = summaryFinancialRecords.currencies.find(
+    (cur) => cur.code.toLowerCase() === currencySelected.toLowerCase(),
+  )?.symbol;
 
   const disableAddPrice =
     !formData.unit_price ||
@@ -267,8 +273,7 @@ const PriceForm = ({
         width: '20%',
         render: (value: number) => (
           <BodyText fontFamily="Roboto" level={5}>
-            {currencySelected === 'USD' ? 'US$' : currencySelected}{' '}
-            {formatCurrencyNumber(value, undefined, { maximumFractionDigits: 2 })}
+            {currencySymbol} {formatCurrencyNumber(value, undefined, { maximumFractionDigits: 2 })}
           </BodyText>
         ),
       },
@@ -315,7 +320,7 @@ const PriceForm = ({
         ),
       },
     ],
-    [handleRemoveRow, renderUpdatableCell],
+    [handleRemoveRow, renderUpdatableCell, currencySymbol],
   );
 
   const handleFormChange =
@@ -385,7 +390,7 @@ const PriceForm = ({
   const volumnDiscountInput: InputGroupProps[] = useMemo(
     () => [
       {
-        prefix: currencySelected,
+        prefix: currencySymbol,
         value: formData.discount_price ? formData.discount_price.toFixed(2) : '0.00',
         customClass: 'discount-price-area',
         readOnly: true,
@@ -404,7 +409,7 @@ const PriceForm = ({
         readOnly: !formData.unit_price,
       },
     ],
-    [formData.discount_price, formData.discount_rate, formData.unit_price, currencySelected],
+    [formData.discount_price, formData.discount_rate, formData.unit_price, currencySymbol],
   );
 
   const minMaxInput: InputGroupProps[] = useMemo(
@@ -497,7 +502,7 @@ const PriceForm = ({
             placeholder="type price"
             required
             fontLevel={3}
-            addonBefore={currencySelected}
+            addonBefore={currencySymbol}
             value={
               isNil(formData?.unit_price) || isNaN(formData?.unit_price)
                 ? undefined
