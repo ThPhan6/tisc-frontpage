@@ -310,6 +310,7 @@ const PriceForm = ({
           <TrashIcon
             className="cursor-pointer indigo-dark-variant"
             onClick={handleRemoveRow(item.id ?? '')}
+            style={{ marginTop: 4 }}
           />
         ),
       },
