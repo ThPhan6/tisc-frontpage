@@ -21,7 +21,7 @@ export const AboutModal = () => {
               Our Vision
             </BodyText>
             <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
-              To enrich our living space with ease.
+              Creating sustainable living space with ease.
             </MainTitle>
           </div>
           <div className={styles.mission}>
@@ -29,22 +29,19 @@ export const AboutModal = () => {
               Our Mission
             </BodyText>
             <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
-              To accelerate the digital transformation of the design & construction eco-system
-              globally.
+              To accelerate the digital transformation of our built environment eco-system globally.
             </MainTitle>
           </div>
-        </div>
-        <div className={styles.text}>
-          <BodyText level={5} customClass={styles[`body${themeStyle}`]} fontFamily="Roboto">
-            Our service is the only unified solution that provides intelligence on project
-            visibility, product selection, and precision marketing for brand manufacturers who need
-            better sales leads, higher revenue stream and greater resource-saving.
-          </BodyText>
-          <BodyText level={5} customClass={styles[`body${themeStyle}`]} fontFamily="Roboto">
-            Our platform is also a cloud-based material library that offers product search and
-            specification automation tools for design offices that want faster project turnaround,
-            lower operation costs and superior team productivity.
-          </BodyText>
+          <div className={styles.mission}>
+            <BodyText level={5} customClass={styles[`body${themeStyle}`]} fontFamily="Roboto">
+              Our Environmental, Social and Governance (ESG) Commitments
+            </BodyText>
+            <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
+              We aim to advance green transformation through educating industry stakeholders,
+              partnership with environmentally conscious companies, promote eco-friendly products
+              while allowing easy selections by design professions.
+            </MainTitle>
+          </div>
         </div>
       </div>
     </CustomModal>
