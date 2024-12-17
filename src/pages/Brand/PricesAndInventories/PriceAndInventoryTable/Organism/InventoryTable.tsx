@@ -343,6 +343,7 @@ const InventoryTable = ({
       }}
       onFilterLoad
       callbackFinishApi={callbackFinishApi}
+      dynamicPageSize
     />
   );
 };
