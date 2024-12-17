@@ -60,11 +60,11 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
-  const isExtraLarge = useScreen().isExtraLarge;
+  const { isTablet } = useScreen();
   const entryFormWrapperStyle = {
-    height: 'calc(var(--vh) * 100 - 312px)',
+    height: !isTablet ? 'calc(var(--vh) * 100 - 302px)' : 'calc(var(--vh) * 100 - 278px)',
     padding: 0,
-    overflow: isExtraLarge ? 'unset' : 'auto',
+    overflow: !isTablet ? 'unset' : 'auto',
   };
 
   const [originalData, setOriginalData] =
@@ -411,7 +411,7 @@ const PriceAndInventoryForm = () => {
 
         <EntryFormWrapper
           customClass={`${styles.category_form_entry_wrapper}`}
-          title={category ?? ''}
+          title={`CATEGORY ${category?.split(' / ').pop()}`}
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
             path: PATH.brandPricesInventoriesTable,
@@ -425,7 +425,7 @@ const PriceAndInventoryForm = () => {
           footerClass={styles.category_form_footer}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
-          <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>
+          <div className={`${styles.category_form_wrapper} ${!isTablet ? 'd-flex' : ''}`}>
             <PriceForm
               isShowModal={isShowModal}
               onToggleModal={handleToggleModal}

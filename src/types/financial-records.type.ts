@@ -2,6 +2,7 @@ export interface FinancialRecords {
   currencies: {
     name: string;
     code: string;
+    symbol: string;
   }[];
   exchange_history: {
     created_at: string;

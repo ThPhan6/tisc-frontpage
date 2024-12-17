@@ -70,6 +70,12 @@ export const useDispatchDataImport = () => {
 
           if (isNumeric(value)) {
             unitPrices.push(value);
+          } else {
+            const unitPrice: string = value?.split(' ')?.[1];
+
+            if (isNumeric(unitPrice)) {
+              unitPrices.push(unitPrice);
+            }
           }
         }
 
@@ -243,8 +249,14 @@ export const useDispatchDataImport = () => {
             newItem.description = item.description.toString().trim();
           }
 
-          if (isNumeric(item?.unit_price as any)) {
+          if (isNumeric(item?.unit_price)) {
             newItem.unit_price = Number(item.unit_price);
+          } else {
+            const unitPrice: string = item?.unit_price?.split(' ')?.[1];
+
+            if (isNumeric(unitPrice)) {
+              newItem.unit_price = Number(unitPrice);
+            }
           }
 
           if (isNumeric(item?.back_order as any)) {
