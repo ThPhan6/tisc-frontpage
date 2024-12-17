@@ -4,7 +4,7 @@ import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
-import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
+import { ReactComponent as PhotoIcon } from '@/assets/icons/photo-18.svg';
 
 import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import { getGroupCategories, getListInventories } from '@/services';
@@ -143,13 +143,12 @@ const InventoryTable = ({
       {
         title: 'Image',
         dataIndex: 'image',
+        align: 'center',
         render: (image) => {
           return image ? (
-            <figure className={styles.category_table_figure}>
-              <img src={showImageUrl(`/${image}`)} alt="Image" />
-            </figure>
+            <img src={showImageUrl(`/${image}`)} width={24} height={24} alt="Image" />
           ) : (
-            <PhotoIcon width={35} height={32} />
+            <PhotoIcon style={{ marginTop: 6 }} />
           );
         },
       },
@@ -177,6 +176,16 @@ const InventoryTable = ({
 
           const unitPrice = Number(record?.price?.unit_price ?? 0) * rate;
 
+          let currency =
+            orderBy(record?.price?.exchange_histories || [], 'created_at', 'desc')[0]
+              ?.to_currency ??
+            record?.price?.currency ??
+            '';
+
+          if (currency === 'USD') {
+            currency = 'US$';
+          }
+
           return renderEditableCell(
             {
               ...record,
@@ -188,10 +197,10 @@ const InventoryTable = ({
             'unit_price',
             isEditMode
               ? Number(unitPrice.toFixed(2))
-              : formatCurrencyNumber(unitPrice, 'en-us', {
+              : `${currency} ${formatCurrencyNumber(unitPrice, 'en-us', {
                   maximumFractionDigits: 2,
                   minimumFractionDigits: 2,
-                }),
+                })}`,
           );
         },
       },
@@ -273,10 +282,13 @@ const InventoryTable = ({
         title: 'Stock Value',
         dataIndex: 'stock_value',
         render: (_, item) => {
-          const currency =
+          let currency =
             orderBy(item?.price?.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ??
             item?.price?.currency ??
             '';
+          if (currency === 'USD') {
+            currency = 'US$';
+          }
 
           return rowSelectedValue(
             item,

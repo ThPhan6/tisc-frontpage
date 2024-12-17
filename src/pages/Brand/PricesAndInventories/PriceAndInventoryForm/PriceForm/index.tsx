@@ -8,7 +8,6 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 import { useScreen } from '@/helper/common';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-
 import { filter, isEqual, isNil, map, sortBy } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
@@ -17,8 +16,6 @@ import { IPriceAndInventoryForm, PriceAttribute, type VolumePrice } from '@/type
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
-import { FormGroup } from '@/components/Form';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
@@ -157,9 +154,14 @@ const PriceForm = ({
   const disableAddPrice =
     !formData.unit_price ||
     !formData.unit_type ||
+    !formData.min_quantity ||
+    !formData.max_quantity ||
     !formData.discount_rate ||
     Number(formData.discount_rate) > 100 ||
-    Number(formData.discount_rate) < 0;
+    Number(formData.discount_rate) < 0 ||
+    Number(formData.min_quantity) > Number(formData.max_quantity) ||
+    Number(formData.min_quantity) < 0 ||
+    Number(formData.max_quantity) < 0;
 
   const unitTypeCode = useMemo(
     () => unitType.find((item) => item.id === formData.unit_type)?.code,
@@ -265,7 +267,8 @@ const PriceForm = ({
         width: '20%',
         render: (value: number) => (
           <BodyText fontFamily="Roboto" level={5}>
-            {formatCurrencyNumber(value)}
+            {currencySelected === 'USD' ? 'US$' : currencySelected}{' '}
+            {formatCurrencyNumber(value, undefined, { maximumFractionDigits: 2 })}
           </BodyText>
         ),
       },
@@ -382,7 +385,7 @@ const PriceForm = ({
     () => [
       {
         prefix: currencySelected,
-        value: formData.discount_price ? formData.discount_price : '0.00',
+        value: formData.discount_price ? formData.discount_price.toFixed(2) : '0.00',
         customClass: 'discount-price-area',
         readOnly: true,
         label: 'Volume Discount Price/Percentage :',
@@ -459,15 +462,22 @@ const PriceForm = ({
               onChange={handleFormChange('sku')}
               onDelete={handleClearInputValue('sku')}
             />
-            <FormGroup label="Description" layout="vertical">
-              <CustomTextArea
-                maxLength={120}
-                boxShadow
-                value={formData.description}
-                placeholder="type text"
-                onChange={handleFormChange('description')}
-              />
-            </FormGroup>
+
+            <InputGroup
+              label="Description"
+              fontLevel={3}
+              maxLength={120}
+              hasPadding
+              hasHeight
+              hasBoxShadow
+              colorPrimaryDark
+              colorRequired="tertiary"
+              value={formData.description}
+              placeholder="type text"
+              deleteIcon
+              onChange={handleFormChange('description')}
+              onDelete={handleClearInputValue('description')}
+            />
           </div>
 
           <div className={styles.category_form_upload_image_wrapper}>
@@ -487,7 +497,11 @@ const PriceForm = ({
             required
             fontLevel={3}
             addonBefore={currencySelected}
-            value={formData?.unit_price ?? undefined}
+            value={
+              isNil(formData?.unit_price) || isNaN(formData?.unit_price)
+                ? undefined
+                : Number(Number(formData.unit_price).toFixed(2)) || undefined
+            }
             hasBoxShadow
             hasPadding
             type="number"
@@ -497,6 +511,7 @@ const PriceForm = ({
             onChange={handleFormChange('unit_price')}
             onDelete={handleClearInputValue('unit_price')}
             deleteIcon
+            forceDisplayDeleteIcon
           />
           <InputGroup
             label="Unit Type"
@@ -598,10 +613,6 @@ const PriceForm = ({
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{
-            x: 500,
-            y: 185,
-          }}
         />
       </div>
 
