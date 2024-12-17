@@ -11,7 +11,7 @@ import {
   updateInventories,
   updateMultipleByBackorder,
 } from '@/services';
-import { forEach, isEmpty, pick } from 'lodash';
+import { forEach, isEmpty, isNil, pick } from 'lodash';
 
 import { setOpenModal } from '@/features/Import/reducers';
 import store from '@/reducers';
@@ -67,9 +67,14 @@ const PriceAndInventoryTable: React.FC = () => {
   const debouncedUpdateInventories = async () => {
     const inventoryPayload: any = {};
     const warehousePayload: any = [];
+    let isUpdatedUnitPrice = false;
 
     forEach(selectedRows, (row, id) => {
       const newWarehouses = (row.warehouses || []).filter((ws) => Number(ws.convert) > 0);
+
+      if (!isNil(row?.price?.unit_price)) {
+        isUpdatedUnitPrice = true;
+      }
 
       inventoryPayload[id] = {
         ...pick(row, ['on_order']),
@@ -100,7 +105,10 @@ const PriceAndInventoryTable: React.FC = () => {
       }
     });
 
-    await updateInventories(inventoryPayload);
+    const updated = await updateInventories(inventoryPayload);
+    if (updated && isUpdatedUnitPrice) {
+      getBrandCurrencySummary(location.state.brandId);
+    }
 
     if (warehousePayload.length) {
       await updateMultipleByBackorder(warehousePayload);
