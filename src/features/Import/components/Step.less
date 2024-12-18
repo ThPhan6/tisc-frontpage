@@ -10,8 +10,8 @@
   overflow: auto;
 
   :global(.ant-steps) {
-    margin-bottom: 16px;
-    padding: 0 16px;
+    margin-bottom: 8px;
+    padding: 8px 16px;
   }
 
   :global(.step-content) {
@@ -27,8 +27,12 @@
   :global(.ant-upload.ant-upload-drag) {
     width: fit-content;
     height: fit-content;
-    margin: auto;
+    margin: 0 auto;
     background: rgb(255, 255, 255);
     border: none;
+
+    :global(.ant-upload) {
+      padding: 0;
+    }
   }
 }

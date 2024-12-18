@@ -2,6 +2,8 @@ import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { Modal, ModalProps, Radio } from 'antd';
 
+import { sortBy } from 'lodash';
+
 import { useAppSelector } from '@/reducers';
 import { CommonUnitTypeGroup } from '@/types';
 
@@ -77,7 +79,7 @@ const UnitType = ({ title, visible, onCancel, onSave, defaultValue }: UnitTypePr
       }
       footer={<CustomSaveButton contentButton="Done" onClick={handleSave} />}
     >
-      {Object.keys(groupedData).map((category) => (
+      {sortBy(Object.keys(groupedData)).map((category) => (
         <Fragment key={category}>
           <h4 className={styles.unit_type_heading}>{category}</h4>
           {groupedData[category].map((item) => (

@@ -29,28 +29,19 @@ export const DataMatching = () => {
 
   const getWarehouseHeaders = (fileField: string) =>
     warehouses
-
       .map((warehouse, wsIdx) => {
-        // const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
         const { key: warehouseInStockKey } = generateWarehouseInStock(wsIdx + 1);
 
         return [
-          // {
-          //   key: warehouseKey,
-          //   label: `${warehouse.business_name} ${warehouse.city_name}, ${warehouse.country_name} + in stock`,
-          //   onClick: () => {
-          //     handleSelectDatabaseHeader(fileField, warehouseKey as ImportDatabaseHeader);
-          //   },
-          // },
           {
             key: warehouseInStockKey,
             label: (
-              <>
+              <span>
                 <span className={`${headerMatching?.[fileField] ? '' : 'block'}`}>
                   {warehouse.business_name}
                 </span>
-                {`${warehouse.city_name}, ${warehouse.country_name} in stock`}
-              </>
+                {warehouse.city_name}, {warehouse.country_name}
+              </span>
             ),
             onClick: () => {
               handleSelectDatabaseHeader(fileField, warehouseInStockKey as ImportDatabaseHeader);

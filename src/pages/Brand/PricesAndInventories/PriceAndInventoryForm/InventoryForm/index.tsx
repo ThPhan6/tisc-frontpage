@@ -358,6 +358,7 @@ const InventoryForm = ({
             onChange={handleInventoryFormChange('total_stock')}
             readOnly
             inputClass="pure-black"
+            customClass="my-0"
           />
           <InputGroup
             label="Out of Stock :"
@@ -374,6 +375,7 @@ const InventoryForm = ({
             inputClass={`${styles.category_form_input} ${
               formData.out_of_stock ? 'red-magenta' : 'pure-black'
             }`}
+            customClass="my-0"
           />
           <div className={styles.category_form_on_order_input_wrapper}>
             <InputGroup
@@ -397,6 +399,7 @@ const InventoryForm = ({
                   : undefined
               }
               messageType={formData.on_order && formData.on_order <= 0 ? 'error' : undefined}
+              customClass="my-0"
             />
           </div>
 
@@ -457,10 +460,6 @@ const InventoryForm = ({
           columns={warehouseColumns}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{
-            x: 600,
-            y: 480,
-          }}
         />
       </div>
 

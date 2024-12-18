@@ -1,15 +1,20 @@
 .warehouse {
   table {
     width: 420px;
-    padding: 4px 8px;
+    padding: 0;
   }
 
   :global(.ant-table-cell) {
+    padding: 1px 8px;
     border-top: none !important;
   }
 
   :global(.ant-table-thead) {
+    height: 32px;
+
     tr {
+      min-height: 24px;
+
       th {
         background: #fff;
       }
@@ -25,6 +30,8 @@
   }
 
   :global(.ant-table-tbody) {
+    padding: 4px 0 0 0;
+
     tr {
       :global(.ant-table-cell) {
         border-bottom: none !important;

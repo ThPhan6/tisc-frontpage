@@ -4,7 +4,7 @@ import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
-import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
+import { ReactComponent as PhotoIcon } from '@/assets/icons/photo-18.svg';
 
 import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import { getGroupCategories, getListInventories } from '@/services';
@@ -46,7 +46,9 @@ const InventoryTable = ({
   }>();
   const [groupItems, setGroupItems] = useState<AccordionItem[]>([]);
 
-  const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+  const { unitType: unitTypeData, summaryFinancialRecords } = useAppSelector(
+    (state) => state.summary,
+  );
 
   useEffect(() => {
     const fetchGroupCategories = async () => {
@@ -143,13 +145,12 @@ const InventoryTable = ({
       {
         title: 'Image',
         dataIndex: 'image',
+        align: 'center',
         render: (image) => {
           return image ? (
-            <figure className={styles.category_table_figure}>
-              <img src={showImageUrl(`/${image}`)} alt="Image" />
-            </figure>
+            <img src={showImageUrl(`/${image}`)} width={24} height={24} alt="Image" />
           ) : (
-            <PhotoIcon width={35} height={32} />
+            <PhotoIcon style={{ marginTop: 6 }} />
           );
         },
       },
@@ -177,6 +178,15 @@ const InventoryTable = ({
 
           const unitPrice = Number(record?.price?.unit_price ?? 0) * rate;
 
+          const currency =
+            orderBy(record?.price?.exchange_histories || [], 'created_at', 'desc')[0]
+              ?.to_currency ??
+            record?.price?.currency ??
+            '';
+
+          const currencySymbol = summaryFinancialRecords.currencies.find(
+            (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+          )?.symbol;
           return renderEditableCell(
             {
               ...record,
@@ -188,10 +198,10 @@ const InventoryTable = ({
             'unit_price',
             isEditMode
               ? Number(unitPrice.toFixed(2))
-              : formatCurrencyNumber(unitPrice, 'en-us', {
+              : `${currencySymbol} ${formatCurrencyNumber(unitPrice, 'en-us', {
                   maximumFractionDigits: 2,
                   minimumFractionDigits: 2,
-                }),
+                })}`,
           );
         },
       },
@@ -278,9 +288,13 @@ const InventoryTable = ({
             item?.price?.currency ??
             '';
 
+          const currencySymbol = summaryFinancialRecords.currencies.find(
+            (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+          )?.symbol;
+
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
+            `${currencySymbol} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             })}`,
@@ -304,7 +318,14 @@ const InventoryTable = ({
         },
       },
     ],
-    [isEditMode, JSON.stringify(selectedRows), selectedRowKeys, unitTypeData, groupItems],
+    [
+      isEditMode,
+      JSON.stringify(selectedRows),
+      selectedRowKeys,
+      unitTypeData,
+      groupItems,
+      JSON.stringify(summaryFinancialRecords),
+    ],
   );
 
   const rowSelection: TableProps<any>['rowSelection'] = {
@@ -331,6 +352,7 @@ const InventoryTable = ({
       }}
       onFilterLoad
       callbackFinishApi={callbackFinishApi}
+      dynamicPageSize
     />
   );
 };

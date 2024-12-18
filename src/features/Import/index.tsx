@@ -62,18 +62,16 @@ export const ImportExportModal: FC<ImportExportModalProps> = ({ onSave, ...props
         functional_type: CompanyFunctionalGroup.LOGISTIC,
       },
       (ws) => {
-        if (ws?.data?.length) {
-          store.dispatch(setWarehouses(ws.data));
-        }
+        store.dispatch(setWarehouses(ws?.data?.length ? ws.data : []));
       },
     );
   }, []);
 
   useEffect(() => {
-    return () => {
+    if (!open) {
       clearState();
-    };
-  }, []);
+    }
+  }, [open]);
 
   const handleImport = async () => {
     const imported = await importInventoryCSV(
