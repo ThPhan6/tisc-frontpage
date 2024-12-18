@@ -184,9 +184,10 @@ const InventoryTable = ({
             record?.price?.currency ??
             '';
 
-          const currencySymbol = summaryFinancialRecords.currencies.find(
-            (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
-          )?.symbol;
+          const currencySymbol =
+            summaryFinancialRecords.currencies.find(
+              (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+            )?.symbol ?? '';
           return renderEditableCell(
             {
               ...record,
@@ -221,6 +222,7 @@ const InventoryTable = ({
               <Popover
                 content={<WareHouse inventoryItem={item} />}
                 trigger="hover"
+                // trigger="click"
                 placement="bottom"
                 showArrow={false}
                 overlayStyle={{ width: 'fit-content' }}
@@ -288,9 +290,10 @@ const InventoryTable = ({
             item?.price?.currency ??
             '';
 
-          const currencySymbol = summaryFinancialRecords.currencies.find(
-            (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
-          )?.symbol;
+          const currencySymbol =
+            summaryFinancialRecords.currencies.find(
+              (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+            )?.symbol ?? '';
 
           return rowSelectedValue(
             item,

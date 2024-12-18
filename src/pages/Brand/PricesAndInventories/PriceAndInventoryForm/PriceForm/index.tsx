@@ -153,9 +153,10 @@ const PriceForm = ({
     (state) => state.summary,
   );
 
-  const currencySymbol = summaryFinancialRecords.currencies.find(
-    (cur) => cur.code.toLowerCase() === currencySelected.toLowerCase(),
-  )?.symbol;
+  const currencySymbol =
+    summaryFinancialRecords.currencies.find(
+      (cur) => cur.code.toLowerCase() === currencySelected.toLowerCase(),
+    )?.symbol ?? '';
 
   const disableAddPrice =
     !formData.unit_price ||
