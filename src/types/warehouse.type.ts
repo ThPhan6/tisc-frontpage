@@ -10,9 +10,8 @@ export interface WarehouseItemMetric {
 }
 
 export interface WarehouseRequest {
-  location_id?: string;
+  location_id: string;
   quantity: number;
-  index?: number;
   convert?: number;
 }
 
