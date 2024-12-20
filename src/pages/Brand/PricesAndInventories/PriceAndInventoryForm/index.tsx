@@ -141,7 +141,7 @@ const PriceAndInventoryForm = () => {
       ...initialInventoryFormData,
       ...res,
       image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
-      unit_price: Number(res?.price?.unit_price ?? 0) * rate,
+      unit_price: Number((Number(res?.price?.unit_price ?? 0) * rate).toFixed(2)),
       unit_type: res?.price?.unit_type,
       warehouses:
         warehouse?.warehouses.map((el) => ({ ...el, new_in_stock: el.in_stock, convert: 0 })) ?? [],
@@ -203,7 +203,9 @@ const PriceAndInventoryForm = () => {
       ...pick(
         {
           ...payload,
-          ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
+          ...((volumePricesChanged || isUnitPriceChanged) && {
+            unit_price: Number(formData.unit_price),
+          }),
           ...((volumePricesChanged || isUnitPriceChanged) && {
             volume_prices: !formData.price.volume_prices?.length
               ? []
@@ -411,7 +413,17 @@ const PriceAndInventoryForm = () => {
 
         <EntryFormWrapper
           customClass={`${styles.category_form_entry_wrapper}`}
-          title={`CATEGORY ${category?.split(' / ').pop()}`}
+          title={
+            <div className="d-flex items-center" style={{ gap: 4, flex: 1 }}>
+              <BodyText fontFamily="Cormorant-Garamond" level={3}>
+                CATEGORY:
+              </BodyText>
+
+              <BodyText fontFamily="Roboto" level={5} customClass="text-capitalize">
+                {category?.split(' / ').pop()}
+              </BodyText>
+            </div>
+          }
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
             path: PATH.brandPricesInventoriesTable,

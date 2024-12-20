@@ -242,7 +242,11 @@ const InventoryTable = ({
           const onOrder = selectedRows?.[item.id]?.on_order ?? item?.on_order ?? 0;
           const quantity = onOrder - totalStock;
 
-          return <div className="red-magenta">{quantity <= 0 ? 0 : -quantity}</div>;
+          return (
+            <div className={quantity > 0 ? 'red-magenta' : ''}>
+              {quantity <= 0 ? '-' : -quantity}
+            </div>
+          );
         },
       },
       {

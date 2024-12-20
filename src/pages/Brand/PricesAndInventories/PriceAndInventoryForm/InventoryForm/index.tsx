@@ -365,7 +365,7 @@ const InventoryForm = ({
             fontLevel={3}
             placeholder="-"
             forceDisplayDeleteIcon
-            value={!isNil(formData.out_of_stock) ? formData.out_of_stock : '-'}
+            value={formData.out_of_stock ? formData.out_of_stock : '-'}
             hasBoxShadow
             hasPadding
             hasHeight
@@ -373,7 +373,7 @@ const InventoryForm = ({
             onChange={handleInventoryFormChange('out_of_stock')}
             readOnly
             inputClass={`${styles.category_form_input} ${
-              formData.out_of_stock ? 'red-magenta' : 'pure-black'
+              formData.out_of_stock < 0 ? 'red-magenta' : 'pure-black'
             }`}
             customClass="my-0"
           />
