@@ -414,13 +414,13 @@ const PriceAndInventoryForm = () => {
         <EntryFormWrapper
           customClass={`${styles.category_form_entry_wrapper}`}
           title={
-            <div className="d-flex items-center" style={{ gap: 4, flex: 1 }}>
-              <MainTitle level={3}>CATEGORY:</MainTitle>
-
-              <BodyText fontFamily="Roboto" level={4} customClass="text-capitalize font-medium">
-                {category?.split(' / ').pop()}
-              </BodyText>
-            </div>
+            <BodyText
+              fontFamily="Roboto"
+              level={4}
+              customClass="text-capitalize font-medium flex-1"
+            >
+              CATEGORY: {category?.split(' / ').pop()}
+            </BodyText>
           }
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
