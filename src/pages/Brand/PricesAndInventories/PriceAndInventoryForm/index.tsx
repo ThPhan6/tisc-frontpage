@@ -37,7 +37,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText } from '@/components/Typography';
+import { BodyText, MainTitle } from '@/components/Typography';
 import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
@@ -415,11 +415,9 @@ const PriceAndInventoryForm = () => {
           customClass={`${styles.category_form_entry_wrapper}`}
           title={
             <div className="d-flex items-center" style={{ gap: 4, flex: 1 }}>
-              <BodyText fontFamily="Cormorant-Garamond" level={3}>
-                CATEGORY:
-              </BodyText>
+              <MainTitle level={3}>CATEGORY:</MainTitle>
 
-              <BodyText fontFamily="Roboto" level={5} customClass="text-capitalize">
+              <BodyText fontFamily="Roboto" level={4} customClass="text-capitalize font-medium">
                 {category?.split(' / ').pop()}
               </BodyText>
             </div>
