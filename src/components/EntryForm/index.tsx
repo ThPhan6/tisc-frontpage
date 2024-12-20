@@ -142,14 +142,18 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         {hideHeader ? null : (
           <div className={styles.header_main}>
             <div className={styles.header}>
-              <MainTitle
-                level={3}
-                textAlign={textAlignTitle}
-                customClass={`${styles.header__title} ${titleClassName}`}
-                style={{ ...titleStyles }}
-              >
-                {title}
-              </MainTitle>
+              {typeof title === 'string' ? (
+                <MainTitle
+                  level={3}
+                  textAlign={textAlignTitle}
+                  customClass={`${styles.header__title} ${titleClassName}`}
+                  style={{ ...titleStyles }}
+                >
+                  {title}
+                </MainTitle>
+              ) : (
+                title
+              )}
               <CloseIcon className={styles.header__icon} onClick={handleCancel} />
             </div>
             {headerContent ? <div className={styles.header_content}>{headerContent}</div> : null}

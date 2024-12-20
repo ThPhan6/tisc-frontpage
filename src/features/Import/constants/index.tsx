@@ -90,7 +90,11 @@ export const getDatabaseHeader = (
   },
   {
     key: ImportDatabaseHeader.UNIT_PRICE,
-    label: startCase(ImportDatabaseHeader.UNIT_PRICE),
+    label: (
+      <BodyText fontFamily="Roboto" level={6}>
+        Base Price
+      </BodyText>
+    ),
     onClick: () => {
       handleSelectDatabaseHeader(field, ImportDatabaseHeader.UNIT_PRICE);
     },

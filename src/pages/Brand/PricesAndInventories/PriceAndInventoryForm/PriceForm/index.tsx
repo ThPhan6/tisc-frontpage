@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -152,6 +152,8 @@ const PriceForm = ({
   const { currencySelected, unitType, summaryFinancialRecords } = useAppSelector(
     (state) => state.summary,
   );
+
+  const [focusOnField, setFocusOnField] = useState<keyof PriceAttribute | null>(null);
 
   const currencySymbol =
     summaryFinancialRecords.currencies.find(
@@ -331,15 +333,15 @@ const PriceForm = ({
 
       setFormData((prev) => ({
         ...prev,
-        [field]: ['sku', 'description'].includes(field)
-          ? value
-          : value === ''
-          ? null
-          : Number(value),
+        [field]: value,
         discount_price:
           field === 'discount_rate' ? (value * Number(prev.unit_price)) / 100 : prev.discount_price,
       }));
     };
+
+  const handleFocusInput = (field: keyof PriceAttribute) => () => {
+    setFocusOnField(field);
+  };
 
   const handleImageChange = (updatedImages: []) =>
     setFormData((prev) => ({ ...prev, image: updatedImages }));
@@ -505,9 +507,13 @@ const PriceForm = ({
             fontLevel={3}
             addonBefore={currencySymbol}
             value={
-              isNil(formData?.unit_price) || isNaN(formData?.unit_price)
+              isNil(formData?.unit_price) ||
+              isNaN(formData?.unit_price) ||
+              String(formData?.unit_price) === ''
                 ? undefined
-                : Number(Number(formData.unit_price).toFixed(2)) || undefined
+                : focusOnField === 'unit_price'
+                ? formData.unit_price
+                : Number(formData.unit_price).toFixed(2)
             }
             hasBoxShadow
             hasPadding
@@ -517,6 +523,10 @@ const PriceForm = ({
             colorRequired="tertiary"
             onChange={handleFormChange('unit_price')}
             onDelete={handleClearInputValue('unit_price')}
+            onFocus={handleFocusInput('unit_price')}
+            onBlur={() => {
+              setFocusOnField(null);
+            }}
             deleteIcon
             forceDisplayDeleteIcon
           />
