@@ -220,9 +220,9 @@ const InventoryTable = ({
             {rowSelectedValue(item, item.total_stock)}
             <div className="relative">
               <Popover
+                overlayClassName={styles.customPopover}
                 content={<WareHouse inventoryItem={item} />}
                 trigger="hover"
-                // trigger="click"
                 placement="bottom"
                 showArrow={false}
                 overlayStyle={{ width: 'fit-content' }}
