@@ -144,7 +144,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 products: newProducts,
               };
             })
-            .filter((collection) => collection.products.length > 0);
+            .filter((collection) => collection?.products?.length > 0);
           store.dispatch(
             setProductList({
               data: newData,
@@ -681,8 +681,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                   }}
                 >
                   {((group.description || isTiscAdmin) && !filterByCategory) ||
-                  (isBrandUser && group.images.length > 0) ||
-                  (isDesignerUser && group.images.length > 0) ? (
+                  (isBrandUser && group?.images?.length > 0) ||
+                  (isDesignerUser && group?.images?.length > 0) ? (
                     <div
                       className={`header-text ${styles.gallery} ${
                         isOpenGallery.value ? `${styles.active} ${styles.galleryActive}` : ''
