@@ -10,7 +10,7 @@ export interface EntryFormWrapperProps extends ColProps {
   contentClass?: string;
   contentStyles?: CSSProperties;
   textAlignTitle?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
-  title?: string;
+  title?: any;
   titleStyles?: CSSProperties;
   titleClassName?: string;
   disableCancelButton?: boolean;

@@ -90,7 +90,12 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
       <section className={styles.inventory_header_content}>
         {data.map((item) => (
           <div key={item.id} className={styles.inventory_header_content_wrapper}>
-            <BodyText customClass={styles.inventory_header_value} fontFamily="Roboto" level={6}>
+            <BodyText
+              customClass={styles.inventory_header_value}
+              fontFamily="Roboto"
+              level={5}
+              style={{ height: 22 }}
+            >
               {item.value}
             </BodyText>
             <div

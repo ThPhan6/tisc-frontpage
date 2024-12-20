@@ -20,6 +20,7 @@
       }
 
       :global(.ant-table-cell) {
+        padding: 0 8px;
         box-shadow: 0 -0.5px 0 0 @mono-color inset;
 
         &::before {
@@ -30,11 +31,14 @@
   }
 
   :global(.ant-table-tbody) {
-    padding: 4px 0 0 0;
-
     tr {
       :global(.ant-table-cell) {
         border-bottom: none !important;
+      }
+
+      td {
+        padding: 4px 8px;
+        font-weight: 300;
       }
     }
   }
