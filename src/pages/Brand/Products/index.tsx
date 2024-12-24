@@ -11,7 +11,7 @@ import { sortBy } from 'lodash';
 import { useAppSelector } from '@/reducers';
 
 import { CollapseProductList, TopBarContainer, TopBarItem } from '@/features/product/components';
-import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
+import { useProductListFilterAndSorter } from '@/features/product/components/BrandProductFilterAndSorter';
 
 const BrandProductListPage: React.FC = () => {
   const query = useQuery();
@@ -53,7 +53,8 @@ const BrandProductListPage: React.FC = () => {
   useEffect(() => {
     if (
       !userBrand?.id ||
-      ((!filter || filter.length === 0) && firstLoad.value && (cate_id || coll_id))
+      !filter ||
+      (filter.length === 0 && firstLoad.value && (cate_id || coll_id))
     ) {
       return;
     }
@@ -62,8 +63,8 @@ const BrandProductListPage: React.FC = () => {
       firstLoad.setValue(false);
     }
 
-    /// show product list defailt by collection
-    if (!filter || filter.length === 0) {
+    /// show product list detail by collection
+    if (filter?.length === 0) {
       getProductListByBrandId({
         brand_id: userBrand.id,
         collection_id: 'all',
@@ -71,14 +72,14 @@ const BrandProductListPage: React.FC = () => {
       return;
     }
 
-    const cateFilter = filter.find((item) => item.name === 'category_id');
-    const collFilter = filter.find((item) => item.name === 'collection_id');
+    const cateFilter = filter?.find((item) => item.name === 'category_id');
+    const collFilter = filter?.find((item) => item.name === 'collection_id');
     getProductListByBrandId({
       brand_id: userBrand.id,
       category_id: cateFilter ? cateFilter.value : undefined,
       collection_id: collFilter ? collFilter.value : undefined,
     });
-  }, [filter]);
+  }, [JSON.stringify(filter)]);
 
   const renderPageHeader = () => (
     <TopBarContainer
