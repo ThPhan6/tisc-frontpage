@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { CompanyFunctionalGroup } from '@/constants/util';
@@ -37,7 +37,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InventoryHeader from '@/components/InventoryHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { BodyText } from '@/components/Typography';
 import InventoryForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/InventoryForm';
 import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PriceForm';
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
@@ -71,15 +71,12 @@ const PriceAndInventoryForm = () => {
     useState<IPriceAndInventoryForm>(initialInventoryFormData);
   const [formData, setFormData] = useState<IPriceAndInventoryForm>(initialInventoryFormData);
 
-  const [priceTableData, setPriceTableData] = useState<VolumePrice[]>([]);
-
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
 
   useEffect(() => {
     return () => {
       setFormData(initialInventoryFormData);
       setOriginalData(initialInventoryFormData);
-      setPriceTableData([]);
     };
   }, []);
 
@@ -140,6 +137,10 @@ const PriceAndInventoryForm = () => {
     const newData: IPriceAndInventoryForm = {
       ...initialInventoryFormData,
       ...res,
+      price: {
+        ...res.price,
+        volume_prices: sortBy(res.price?.volume_prices, 'min_quantity'),
+      },
       image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
       unit_price: Number((Number(res?.price?.unit_price ?? 0) * rate).toFixed(2)),
       unit_type: res?.price?.unit_type,
@@ -151,7 +152,6 @@ const PriceAndInventoryForm = () => {
 
     setFormData(newData);
     setOriginalData(newData);
-    setPriceTableData(res.price?.volume_prices || []);
   };
 
   useEffect(() => {
@@ -209,9 +209,11 @@ const PriceAndInventoryForm = () => {
           ...((volumePricesChanged || isUnitPriceChanged) && {
             volume_prices: !formData.price.volume_prices?.length
               ? []
-              : formData.price.volume_prices?.map((el) =>
-                  pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
-                ),
+              : formData.price.volume_prices?.map((el) => ({
+                  discount_rate: Number(el.discount_rate),
+                  min_quantity: Number(el.min_quantity),
+                  max_quantity: Number(el.max_quantity),
+                })),
           }),
           ...(warehousesChanged &&
             ({
@@ -441,8 +443,6 @@ const PriceAndInventoryForm = () => {
               onToggleModal={handleToggleModal}
               formData={formData}
               setFormData={setFormData}
-              tableData={priceTableData}
-              setTableData={setPriceTableData}
             />
 
             <InventoryForm
