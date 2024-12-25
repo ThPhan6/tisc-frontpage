@@ -8,7 +8,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 import { useScreen } from '@/helper/common';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { filter, isEqual, isNil, map, sortBy } from 'lodash';
+import { filter, isNil, map } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -133,20 +133,11 @@ const baseAndVolumePriceInfo = {
 interface PriceFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
-  formData: PriceAttribute;
+  formData: IPriceAndInventoryForm;
   setFormData: React.Dispatch<React.SetStateAction<IPriceAndInventoryForm>>;
-  tableData: VolumePrice[];
-  setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
 }
 
-const PriceForm = ({
-  isShowModal,
-  onToggleModal,
-  formData,
-  setFormData,
-  tableData,
-  setTableData,
-}: PriceFormProps) => {
+const PriceForm = ({ isShowModal, onToggleModal, formData, setFormData }: PriceFormProps) => {
   const { isExtraLarge, isMobile } = useScreen();
 
   const { currencySelected, unitType, summaryFinancialRecords } = useAppSelector(
@@ -182,7 +173,7 @@ const PriceForm = ({
     getUnitType();
   }, []);
 
-  const ensureValidPricesAndQuantities = () => {
+  const ensureValidPricesAndQuantities = (volumePrice: VolumePrice) => {
     const {
       unit_price,
       unit_type,
@@ -193,10 +184,6 @@ const PriceForm = ({
     const parsedUnitPrice = parseFloat(unit_price?.toString() ?? '0');
     const minQuantity = Number(min_quantity);
     const maxQuantity = Number(max_quantity);
-
-    const isDuplicateDiscountRate = tableData.some((item) =>
-      isEqual(item.discount_rate, formData.discount_rate),
-    );
 
     if (!unit_price || !unit_type || isNaN(parsedUnitPrice)) {
       message.warn('Unit price and type are required and must be valid.');
@@ -213,7 +200,13 @@ const PriceForm = ({
       return false;
     }
 
-    if (isDuplicateDiscountRate) {
+    const newVolumePrices = [...(formData.price.volume_prices ?? []), volumePrice];
+    const discountRates = newVolumePrices.map((el) => Number(el.discount_rate));
+    const duplicatedDiscountRates = discountRates.filter(
+      (rate, index) => discountRates.indexOf(rate) !== index,
+    );
+
+    if (duplicatedDiscountRates?.length) {
       message.warn('Discount rate already exists. Please choose a different rate.');
       return false;
     }
@@ -222,9 +215,6 @@ const PriceForm = ({
   };
 
   const handleSaveCell = (id: string, columnKey: string, newValue: string) => {
-    setTableData((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [columnKey]: newValue } : item)),
-    );
     setFormData((prev) => ({
       ...prev,
       price: {
@@ -250,7 +240,6 @@ const PriceForm = ({
   };
 
   const handleRemoveRow = (id: string) => () => {
-    setTableData((prev) => prev.filter((item) => item.id !== id));
     setFormData((prev) => ({
       ...prev,
       price: {
@@ -350,18 +339,16 @@ const PriceForm = ({
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
   const handleAddRow = () => {
-    if (!ensureValidPricesAndQuantities()) return;
-
-    const newRow = {
-      id: `${tableData?.length + 1}`,
-      discount_price: formData?.discount_price ?? null,
-      discount_rate: formData?.discount_rate ?? null,
-      min_quantity: formData?.min_quantity ?? null,
-      max_quantity: formData?.max_quantity ?? null,
+    const newRow: VolumePrice = {
+      id: `${(formData.price.volume_prices?.length ?? 0) + 1}`,
+      discount_price: formData?.discount_price ? Number(formData.discount_price) : null,
+      discount_rate: formData?.discount_rate ? Number(formData.discount_rate) : null,
+      min_quantity: formData?.min_quantity ? Number(formData.min_quantity) : null,
+      max_quantity: formData?.max_quantity ? Number(formData.max_quantity) : null,
       unit_type: formData.unit_type,
     };
 
-    setTableData((prev = []) => [...prev, newRow]);
+    if (!ensureValidPricesAndQuantities(newRow)) return;
 
     setFormData((prev) => ({
       ...prev,
@@ -626,7 +613,7 @@ const PriceForm = ({
         </div>
 
         <Table
-          dataSource={sortBy(tableData, 'min_quantity')}
+          dataSource={formData?.price?.volume_prices ?? []}
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
