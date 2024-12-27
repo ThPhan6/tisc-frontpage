@@ -20,6 +20,7 @@ import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDro
 import styles from './index.less';
 
 export type ActionType =
+  | ''
   | 'specify'
   | 'updated'
   | 'copy'
@@ -123,8 +124,8 @@ export const ActionMenu: FC<ActionFormProps> = ({
   const isTablet = useScreen().isTablet;
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
-    icon: item.icon || DEFAULT_ACTION_INFO[item.type].icon,
-    label: item.label || DEFAULT_ACTION_INFO[item.type].label,
+    icon: item?.icon || DEFAULT_ACTION_INFO[item.type]?.icon,
+    label: item?.label || DEFAULT_ACTION_INFO[item.type]?.label,
   }));
 
   if (isTablet && editActionOnMobile) {
@@ -133,11 +134,11 @@ export const ActionMenu: FC<ActionFormProps> = ({
         className={styles.iconShowed}
         onClick={(e) => {
           if (disabledOnMobile) return;
-
-          e.stopPropagation();
-          e.preventDefault();
-
-          filledActionItems?.[0]?.onClick();
+          if (filledActionItems?.[0]?.onClick) {
+            e.preventDefault();
+            e.stopPropagation();
+            filledActionItems[0].onClick();
+          }
         }}
         style={{
           position: 'absolute',
