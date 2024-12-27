@@ -536,11 +536,11 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 
   if (typeof filter == 'undefined' || filter.length == 0) {
     if (location.pathname == PATH.designerBrandProduct && !allProducts?.length) {
-      return (
-        <div className={loadingStyles.container}>
-          <Spin size="large" />
-        </div>
-      );
+      // return (
+      //   <div className={loadingStyles.container}>
+      //     <Spin size="large" />
+      //   </div>
+      // );
     } else if (firstLoad.value) {
       if (location.pathname == PATH.productConfiguration) {
         // First time load to TISC-Conf but login as Designer or Brand previously
@@ -555,13 +555,13 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         setTimeout(() => {
           firstLoad.setValue(false);
         }, delayDuration);
-        if (!data?.length) {
-          return (
-            <div className={loadingStyles.container}>
-              <Spin size="large" />
-            </div>
-          );
-        }
+        // if (!data?.length) {
+        //   return (
+        //     <div className={loadingStyles.container}>
+        //       <Spin size="large" />
+        //     </div>
+        //   );
+        // }
       }
     }
   } else {
@@ -569,13 +569,13 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
       setTimeout(() => {
         firstLoad.setValue(true);
       }, delayDuration);
-      if (!data?.length) {
-        return (
-          <div className={loadingStyles.container}>
-            <Spin size="large" />
-          </div>
-        );
-      }
+      // if (!data?.length) {
+      //   return (
+      //     <div className={loadingStyles.container}>
+      //       <Spin size="large" />
+      //     </div>
+      //   );
+      // }
     }
   }
 
