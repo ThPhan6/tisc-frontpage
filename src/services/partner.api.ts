@@ -7,9 +7,9 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import { LocationGroupedByCountry } from '@/features/locations/type';
 import store from '@/reducers';
 import { setCompaniesPage, setContactsPage } from '@/reducers/partner';
-import { LocationGroupedByCountry } from '@/features/locations/type';
 import { Company, CompanyForm, ContactForm } from '@/types';
 
 import { CommonPartnerType } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
