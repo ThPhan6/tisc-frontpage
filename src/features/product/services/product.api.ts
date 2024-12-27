@@ -6,7 +6,7 @@ import { message } from 'antd';
 // import { TablePaginationConfig } from 'antd/es/table/interface';
 import { request } from 'umi';
 
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty, isNil } from 'lodash';
 
 import {
   setPartialProductDetail,
@@ -38,8 +38,12 @@ import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 // import { getAutoStepData } from './autoStep.api';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-export async function getProductSummary(brandId: string) {
-  return request<{ data: ProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {
+export async function getProductSummary(brandId: string, isGetTotalProduct?: boolean) {
+  const url = !isNil(isGetTotalProduct)
+    ? `/api/product/brand-product-summary/${brandId}?is_get_total_product=${isGetTotalProduct}`
+    : `/api/product/brand-product-summary/${brandId}`;
+
+  return request<{ data: ProductSummary }>(url, {
     method: 'GET',
   })
     .then((response) => {
@@ -102,6 +106,39 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
         }),
       );
       hidePageLoading();
+    })
+    .catch((error) => {
+      hidePageLoading();
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
+    });
+};
+
+export const getBrandProductListByBrandId = async (params: ProductGetListParameter) => {
+  showPageLoading();
+  return await request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
+    `/api/product/brand/get-list`,
+    {
+      method: 'GET',
+      params,
+    },
+  )
+    .then(({ data }) => {
+      hidePageLoading();
+      store.dispatch(
+        setProductList({
+          data: data.data.map((group) => {
+            return {
+              ...group,
+              products: group.products?.map((product) => {
+                return {
+                  ...product,
+                  brand: data?.brand,
+                };
+              }),
+            };
+          }),
+        }),
+      );
     })
     .catch((error) => {
       hidePageLoading();

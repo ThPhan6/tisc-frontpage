@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+import { getBrandProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { formatNumber } from '@/helper/utils';
 import { sortBy } from 'lodash';
@@ -46,9 +46,9 @@ const BrandProductListPage: React.FC = () => {
   useEffect(() => {
     if (userBrand?.id) {
       // get product summary
-      getProductSummary(userBrand.id);
+      getProductSummary(userBrand.id, false);
     }
-  }, []);
+  }, [userBrand?.id]);
 
   useEffect(() => {
     if (
@@ -65,7 +65,7 @@ const BrandProductListPage: React.FC = () => {
 
     /// show product list detail by collection
     if (filter?.length === 0) {
-      getProductListByBrandId({
+      getBrandProductListByBrandId({
         brand_id: userBrand.id,
         collection_id: 'all',
       });
@@ -74,12 +74,12 @@ const BrandProductListPage: React.FC = () => {
 
     const cateFilter = filter?.find((item) => item.name === 'category_id');
     const collFilter = filter?.find((item) => item.name === 'collection_id');
-    getProductListByBrandId({
+    getBrandProductListByBrandId({
       brand_id: userBrand.id,
       category_id: cateFilter ? cateFilter.value : undefined,
       collection_id: collFilter ? collFilter.value : undefined,
     });
-  }, [JSON.stringify(filter)]);
+  }, [JSON.stringify(filter), userBrand?.id]);
 
   const renderPageHeader = () => (
     <TopBarContainer
