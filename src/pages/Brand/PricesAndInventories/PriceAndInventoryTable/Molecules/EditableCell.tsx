@@ -13,7 +13,7 @@ interface EditStatus {
   };
 }
 
-interface EditableCell<T extends string | number | readonly string[] | undefined>
+interface EditableCellProps<T extends string | number | readonly string[] | undefined>
   extends CustomInputProps {
   inputStyle?: CSSProperties;
   item: {
@@ -40,7 +40,7 @@ const EditableCell = <T extends string | number | readonly string[] | undefined>
   includePercentage,
   item,
   ...rest
-}: EditableCell<T>) => {
+}: EditableCellProps<T>) => {
   const [editStatus, setEditStatus] = useState<EditStatus>({});
   const inputRef = useRef<HTMLInputElement>(null);
   const columndId = item.id ?? '';
