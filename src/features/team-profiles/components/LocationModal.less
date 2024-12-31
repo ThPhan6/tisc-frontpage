@@ -1,4 +1,10 @@
 .detail {
+  &_extra_class {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   &_business .name,
   &_business .type,
   &_address {
@@ -17,6 +23,10 @@
   .type {
     font-weight: 300;
     font-size: 12px;
+  }
+
+  &_address {
+    display: block;
   }
 }
 .customLocationModal {

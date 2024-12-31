@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { message } from 'antd';
 
+import { useScreen } from '@/helper/common';
+
 import { AccordionItem } from '@/components/AccordionMenu';
 import styles from '@/components/AccordionMenu/AccodionMenu.less';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -28,6 +30,7 @@ const AccordionMenuInput = ({
   expandedItems,
 }: AccordionMenuInputProps) => {
   const [newCategory, setNewCategory] = useState('');
+  const { isMobile } = useScreen();
 
   const handleAdd = async (): Promise<void> => {
     if (newCategory.trim()) {
@@ -61,8 +64,8 @@ const AccordionMenuInput = ({
 
   return (
     <header className={`${styles.accordion_menu_input} ${isEditMode ? 'p-0' : 'pb-8'}`}>
-      <hgroup className="d-flex items-center">
-        <MainTitle level={3} customClass="mr-16 ">
+      <hgroup className={`d-flex items-center ${isMobile ? 'flex-wrap' : ''}`}>
+        <MainTitle level={3} customClass="mr-16">
           {getDynamicTitle()}
         </MainTitle>
         <BodyText fontFamily="Roboto" level={5}>

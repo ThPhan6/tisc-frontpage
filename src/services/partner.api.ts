@@ -7,6 +7,7 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import { LocationGroupedByCountry } from '@/features/locations/type';
 import store from '@/reducers';
 import { setCompaniesPage, setContactsPage } from '@/reducers/partner';
 import { Company, CompanyForm, ContactForm } from '@/types';
@@ -195,5 +196,18 @@ export async function deletePartnerContact(id: string) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_PARTNER_CONTACT_ERROR);
       return false;
+    });
+}
+
+export async function getPartnerGroupByCountry(brandId: string) {
+  return request<{ data: LocationGroupedByCountry[] }>(`/api/partner/brand/${brandId}`, {
+    method: 'GET',
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'Get partner group by country failed');
+      return [];
     });
 }

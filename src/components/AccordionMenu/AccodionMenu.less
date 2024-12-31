@@ -1,28 +1,24 @@
 .accordion_menu {
-  height: 100%;
+  height: calc(100vh - 160px);
 
   &_section {
     display: flex;
     height: calc(100% - 56px);
   }
-
   &_header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 16px;
-    box-shadow: 0 -0.5px 0 0 @mono-color inset;
-
+    box-shadow: @border-bottom-black-inset;
     &_btn_save {
       min-width: 56px;
       margin-right: 16px;
       border-radius: 12px;
-
       &.on {
         max-height: 22px;
       }
     }
-
     &_btn_switch {
       &_on,
       &_off {
@@ -32,35 +28,28 @@
           height: 12px;
         }
       }
-
       &_on {
         width: 114px;
         height: 24px;
-
         :global(.ant-switch-inner) {
           max-width: 82px;
           color: #fff;
         }
       }
-
       &_off {
-        width: 90px;
+        width: 124px;
         height: 24px;
-
         :global(.ant-switch-inner) {
-          max-width: 58px;
+          max-width: 92px;
           color: @mono-color;
         }
-
         :global(.ant-switch-handle) {
           left: 10px;
-
           &::before {
             background: @mono-color;
           }
         }
       }
-
       :global(.ant-switch-inner) {
         width: 100%;
         font-weight: 500;
@@ -70,20 +59,16 @@
       }
     }
   }
-
   &_item {
     margin-bottom: 0;
     padding-left: 0;
     cursor: pointer;
-
     &_name {
       padding: 0;
-
       &:first-child {
         padding-bottom: 0;
       }
     }
-
     &_action {
       display: flex;
       gap: 8px;
@@ -91,63 +76,51 @@
       margin-top: 16px;
     }
   }
-
   &_wrapper_item {
     height: calc(100% - 70.5px);
   }
-
   &_items {
     width: 100%;
     padding: 16px;
-    box-shadow: -0.5px 0 0 0 @mono-color inset;
 
     &:last-child {
       box-shadow: none;
     }
   }
-
   &_input {
-    box-shadow: 0 -0.5px 0 0 @mono-color inset;
-
+    box-shadow: @border-bottom-black-inset;
     &_wrapper {
       display: flex;
       align-items: baseline;
       max-height: 0;
-
       &.on {
         max-height: 300px;
       }
-
       &_plus_button {
         width: max-content;
       }
     }
   }
-
   &_input_wrapper,
   &_header_btn_save {
     overflow: hidden;
     opacity: 0;
     transition: all 0.5s ease-in-out;
-
     &.on {
       opacity: 1;
     }
   }
-
   &_input_btn_wrapper {
     display: flex;
     align-items: center;
     width: 100%;
   }
-
   :global(
       .ant-switch.accordion_menu_header_btn_switch___KlvOV.accordion_menu_header_btn_switch_off___16W7q
     ) {
     background: #fff;
     border: 0.5px solid @mono-color;
   }
-
   :global(
       .ant-switch.accordion_menu_header_btn_switch___KlvOV.accordion_menu_header_btn_switch_on___9LehT.ant-switch-checked
     ) {

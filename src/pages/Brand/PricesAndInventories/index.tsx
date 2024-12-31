@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 
+import { PageContainer } from '@ant-design/pro-layout';
+import { message } from 'antd';
+
 import { confirmDelete } from '@/helper/common';
 import {
   createDynamicCategory,
   deleteDynamicCategory,
+  getBrandCurrencySummary,
   getDynamicCategories,
   getGroupCategories,
   moveCategoryToSubCategory,
@@ -11,6 +15,7 @@ import {
 } from '@/services';
 
 import AccordionMenu, { AccordionItem } from '@/components/AccordionMenu';
+import InventoryHeader from '@/components/InventoryHeader';
 
 const PricesAndInventories = () => {
   const [accordionItems, setAccordionItems] = useState<AccordionItem[]>([]);
@@ -39,6 +44,23 @@ const PricesAndInventories = () => {
       parent_id: parentId || '',
     };
 
+    const checkDuplicateList = accordionItems.filter((item) => {
+      if (level === 1) {
+        return item.parent_id === null;
+      }
+
+      return item.parent_id === parentId;
+    });
+
+    const nameDuplicated = checkDuplicateList.some(
+      (cateEl) => cateEl.name.toLowerCase().trim() === value.toLowerCase().trim(),
+    );
+
+    if (nameDuplicated) {
+      message.warn('Category name already exists');
+      return false;
+    }
+
     const res: any = await createDynamicCategory(newItem);
 
     if (res) {
@@ -64,7 +86,22 @@ const PricesAndInventories = () => {
       });
     });
   };
+
   const handleUpdate = async (id: string, value: string) => {
+    const currentCate = accordionItems.find((item) => item.id === id);
+    const checkDuplicateList = accordionItems.filter(
+      (item) => item.parent_id === currentCate?.parent_id,
+    );
+
+    const nameDuplicated = checkDuplicateList.some(
+      (cateEl) => cateEl.name.toLowerCase().trim() === value.toLowerCase().trim(),
+    );
+
+    if (nameDuplicated) {
+      message.warn('Category name already exists');
+      return false;
+    }
+
     const res = await updateDynamicCategory(id, value);
     if (res) {
       setAccordionItems((prev) =>
@@ -82,6 +119,15 @@ const PricesAndInventories = () => {
   useEffect(() => {
     Promise.all([fetchCategories(), fetchGroupCategories()]);
   }, []);
+
+  useEffect(() => {
+    const brandId = [...new Set(accordionItems.map((item) => item.relation_id))][0];
+
+    if (brandId) {
+      const fetchSummary = async () => await getBrandCurrencySummary(brandId);
+      fetchSummary();
+    }
+  }, [accordionItems]);
 
   const handleSelect = async (sub_id: string, parent_id: string) => {
     const res = await moveCategoryToSubCategory(sub_id, parent_id);
@@ -109,18 +155,22 @@ const PricesAndInventories = () => {
     return false;
   };
 
+  const pageHeaderRender = () => <InventoryHeader hideSearch />;
+
   return (
-    <AccordionMenu
-      title="PRODUCT INVENTORY CATEGORY"
-      levels={3}
-      accordionItems={accordionItems}
-      groupItems={groupItems}
-      accordionConfig={categoryConfig}
-      onAdd={handleAdd}
-      onDelete={handleDelete}
-      onSelect={handleSelect}
-      onUpdate={handleUpdate}
-    />
+    <PageContainer pageHeaderRender={pageHeaderRender}>
+      <AccordionMenu
+        title="PRODUCT INVENTORY CATEGORY"
+        levels={3}
+        accordionItems={accordionItems}
+        groupItems={groupItems}
+        accordionConfig={categoryConfig}
+        onAdd={handleAdd}
+        onDelete={handleDelete}
+        onSelect={handleSelect}
+        onUpdate={handleUpdate}
+      />
+    </PageContainer>
   );
 };
 
