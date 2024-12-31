@@ -10,6 +10,13 @@ export enum STATUS_RESPONSE_CODE {
   SUCCESS = 200,
 }
 
+export enum UserStatus {
+  Active = 1,
+  Blocked = 2,
+  Pending = 3,
+  Uninitiate = 4,
+}
+
 export const ORDER_METHOD = {
   directPurchase: 1,
   customOrder: 2,
@@ -20,6 +27,7 @@ export const USER_STATUSES = {
   BLOCKED: 2,
   INACTIVE: 2,
   PENDING: 3,
+  UNINITIATE: 4,
 };
 
 export const DESIGN_STATUSES = {

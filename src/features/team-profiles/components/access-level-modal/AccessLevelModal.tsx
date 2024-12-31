@@ -20,7 +20,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './AccessLevelModal.less';
 
 const TABLE_COL = {
-  brand: [{ title: 'Brand Admin' }, { title: 'Brand Team' }],
+  brand: [{ title: 'Brand Admin' }, { title: 'Brand Team' }, { title: 'Partner' }],
   designer: [{ title: 'Design Admin' }, { title: 'Design Team' }],
   tisc: [
     { title: 'TISC Admin' },

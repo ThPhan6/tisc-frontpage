@@ -1,3 +1,5 @@
+import { UserDetail } from './user.type';
+
 export interface Company {
   id: string;
   name: string;
@@ -35,31 +37,28 @@ export interface CompanyForm extends Omit<Company, 'contact'> {
   authorized_country_ids: string[];
 }
 
-export interface Contact {
-  id: string;
+export interface Contact extends UserDetail {
   fullname: string;
   company_name: string;
   country_name: string;
-  status: PartnerContactStatus;
-  position: string;
-  email: string;
-  phone: string;
-  mobile: string;
-  avatar: string;
 }
 
-export interface ContactForm extends Omit<Contact, 'fullname' | 'avatar'> {
-  firstname: string;
-  lastname: string;
-  gender: boolean;
-  linkedin: string;
-  remark: string;
-  partner_company_id: string;
-  phone_code: string;
-}
-
-export enum PartnerContactStatus {
-  Uninitiate,
-  Pending,
-  Activated,
+export interface ContactRequest
+  extends Pick<
+    UserDetail,
+    | 'firstname'
+    | 'lastname'
+    | 'gender'
+    | 'linkedin'
+    | 'mobile'
+    | 'phone'
+    | 'relation_id'
+    | 'position'
+    | 'email'
+    | 'remark'
+    | 'status'
+    | 'phone_code'
+  > {
+  company_name?: string;
+  country_name?: string;
 }
