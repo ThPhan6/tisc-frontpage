@@ -292,7 +292,7 @@ export const useProductListFilterAndSorter = (fetchs: {
   const [brands, setBrands] = useState<ItemType[]>([]);
 
   /// product
-  const filter = useAppSelector((state) => state.product.list.filter);
+  const filter = useAppSelector((state) => state.product.list.filter || []);
   const sort = useAppSelector((state) => state.product.list.sort);
   const search = useAppSelector((state) => state.product.list.search);
   const brandSummary = useAppSelector((state) => state.product.list.brandSummary);

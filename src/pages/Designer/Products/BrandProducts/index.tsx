@@ -3,20 +3,19 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 import { InputRef } from 'antd';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
+import { getProductCategoryPagination } from '@/features/categories/services';
 import { getProductListForDesigner } from '@/features/product/services';
+import { getBrandPagination } from '@/features/user-group/services';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { formatNumber, removeUrlParams, setUrlParams } from '@/helper/utils';
 import { debounce } from 'lodash';
 
-import {
-  resetProductState,
-  setProductList,
-  setProductListSearchValue,
-} from '@/features/product/reducers';
+import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -28,7 +27,10 @@ import {
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
-import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
+import {
+  formatCategoriesToDropDownData,
+  useProductListFilterAndSorter,
+} from '@/features/product/components/BrandProductFilterAndSorter';
 
 import styles from './index.less';
 
@@ -47,18 +49,19 @@ const BrandProductListPage: React.FC = () => {
   /// check if have more data when its limit
   const [isLoadMoreData, setIsLoadMoreData] = useState(false);
 
+  const [categories, setCategories] = useState<ItemType[]>([]);
+  const [brands, setBrands] = useState<ItemType[]>([]);
+
   const {
     filter,
     sort,
-    brands,
     search,
-    categories,
     brandSummary,
     pagination,
     dispatch,
     renderFilterDropdown,
     renderItemTopBar,
-  } = useProductListFilterAndSorter({ brand: true, category: true });
+  } = useProductListFilterAndSorter({ noFetchData: true });
 
   const debouceSearch = useCallback(
     debounce((value: string) => {
@@ -111,24 +114,24 @@ const BrandProductListPage: React.FC = () => {
         sort: sort?.sort,
         order: sort?.order,
         page: props.page,
-        pageSize: filter ? 99999 : 20,
+        pageSize: filter?.length ? 99999 : 20,
       },
       { isConcat: props.isConcat },
     )
       .then((result) => {
-        setIsLoading(false);
         const { current, total, pageSize } = result.pagination;
         const isLoadMore = (current - 1) * pageSize + (result.allProducts?.length || 0) < total;
         setIsLoadMoreData(isLoadMore);
+
         if (isLoadMore) {
           setTimeout(() => {
             if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 50) {
               getProductList({ page: current + 1, isConcat: true });
             }
-          }, 200);
+          }, 500);
         }
       })
-      .catch(() => {
+      .finally(() => {
         setIsLoading(false);
       });
   };
@@ -171,7 +174,43 @@ const BrandProductListPage: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-  }, [filter, searchCount, sort?.order, sort?.sort]);
+  }, [JSON.stringify(filter), searchCount, sort?.order, sort?.sort]);
+
+  useEffect(() => {
+    if (!firstLoad.value) return;
+
+    Promise.all([
+      /// get all category
+      getProductCategoryPagination(
+        {
+          page: 1,
+          pageSize: 99999,
+          haveProduct: true,
+        },
+        (data) => {
+          setCategories(formatCategoriesToDropDownData(data.data, 1, filter));
+        },
+      ),
+      /// get all brand
+      getBrandPagination(
+        {
+          page: 1,
+          pageSize: 99999,
+          haveProduct: true,
+        },
+        (data) => {
+          setBrands(
+            data.data.map((item) => ({
+              key: item.id,
+              label: item.name,
+              icon: item.logo,
+            })),
+          );
+        },
+        false,
+      ),
+    ]);
+  }, [firstLoad.value]);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
