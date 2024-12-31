@@ -128,7 +128,7 @@ const BrandProductListPage: React.FC = () => {
             if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 50) {
               getProductList({ page: current + 1, isConcat: true });
             }
-          }, 900);
+          }, 500);
         }
       })
       .finally(() => {
