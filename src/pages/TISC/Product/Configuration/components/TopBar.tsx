@@ -8,7 +8,7 @@ import { useLocation } from 'umi';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
 
-import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+import { getBrandProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { getBrandAlphabet } from '@/features/user-group/services';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -35,7 +35,7 @@ import { TopBarContainer, TopBarItem } from '@/features/product/components';
 import {
   useProductListFilterAndSorter,
   useSyncQueryToState,
-} from '@/features/product/components/FilterAndSorter';
+} from '@/features/product/components/BrandProductFilterAndSorter';
 
 import styles from './TopBar.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
@@ -145,7 +145,7 @@ export const TopBar: React.FC = () => {
       }
 
       // get product summary
-      getProductSummary(checkedBrand.value as string).then((res) => {
+      getProductSummary(checkedBrand.value as string, false).then((res) => {
         /// in case collection filter has chosen,
         /// updated its filter name and param after reloading
         const collFilter = filter?.find((item) => item.name === 'collection_id');
@@ -213,7 +213,7 @@ export const TopBar: React.FC = () => {
         return;
       }
 
-      getProductListByBrandId(params);
+      getBrandProductListByBrandId(params);
     }
   }, [filter, checkedBrand?.value, firstLoad.value]);
 

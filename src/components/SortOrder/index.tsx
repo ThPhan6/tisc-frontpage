@@ -1,16 +1,16 @@
 import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { QUERY_KEY } from '@/constants/util';
 import { DropdownProps } from 'antd';
 
-import { setSortOrder } from '@/helper/utils';
+import { removeUrlParams, setSortOrder } from '@/helper/utils';
 
+import { setProductList } from '@/features/product/reducers';
 import { SortOrder, SortParams } from '@/features/product/types';
 
 import { CustomDropDown, FilterItem, TopBarItem } from '@/features/product/components';
-import {
-  SORTER_DROPDOWN_DATA,
-  useProductListFilterAndSorter,
-} from '@/features/product/components/FilterAndSorter';
+import { SORTER_DROPDOWN_DATA } from '@/features/product/components/BrandProductFilterAndSorter';
 
 interface SortOrderProps {
   order: SortOrder | undefined;
@@ -37,12 +37,14 @@ const SortOrderPanel: FC<SortOrderProps> = ({
   topValueTitle = 'select',
   customClass = '',
 }) => {
-  const { resetProductListSorter } = useProductListFilterAndSorter({ noFetchData: true });
+  const dispatch = useDispatch();
+
   const resetSorter = () => {
     if (onDelete) {
       onDelete();
     } else {
-      resetProductListSorter();
+      removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
+      dispatch(setProductList({ sort: undefined }));
     }
   };
 
@@ -60,7 +62,8 @@ const SortOrderPanel: FC<SortOrderProps> = ({
           items={SORTER_DROPDOWN_DATA}
           placement={placement}
           menuStyle={{ width: 160, height: 'auto' }}
-          disabled={dropDownDisabled}>
+          disabled={dropDownDisabled}
+        >
           {bottomValue}
         </CustomDropDown>
       }
