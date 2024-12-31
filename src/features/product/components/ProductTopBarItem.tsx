@@ -164,6 +164,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
       <Menu
         style={{
           width: DEFAULT_WIDTH,
+          maxWidth: 'none',
           position: subLevel ? 'absolute' : 'relative',
           top: subLevel ? 0 : undefined,
           left: getPositionLeftMenu(),
