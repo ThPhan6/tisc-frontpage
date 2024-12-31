@@ -48,7 +48,7 @@ const BrandProductListPage: React.FC = () => {
       // get product summary
       getProductSummary(userBrand.id, false);
     }
-  }, []);
+  }, [userBrand?.id]);
 
   useEffect(() => {
     if (
@@ -79,7 +79,7 @@ const BrandProductListPage: React.FC = () => {
       category_id: cateFilter ? cateFilter.value : undefined,
       collection_id: collFilter ? collFilter.value : undefined,
     });
-  }, [JSON.stringify(filter)]);
+  }, [JSON.stringify(filter), userBrand?.id]);
 
   const renderPageHeader = () => (
     <TopBarContainer

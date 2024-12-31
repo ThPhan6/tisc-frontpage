@@ -12,7 +12,7 @@ import { useAppSelector } from '@/reducers';
 import FavouriteForm from '@/features/favourite/components/FavouriteForm';
 import ProductSummaryTopBar from '@/features/favourite/components/TopBar';
 import { CollapseProductList } from '@/features/product/components';
-import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
+import { useProductListFilterAndSorter } from '@/features/product/components/BrandProductFilterAndSorter';
 
 const MyFavourite = () => {
   const query = useQuery();
@@ -47,7 +47,7 @@ const MyFavourite = () => {
         order: sort?.order,
       });
     }
-  }, [filter, sort?.order, retrievedFavourite]);
+  }, [JSON.stringify(filter), sort?.order, retrievedFavourite]);
 
   return (
     <div>
