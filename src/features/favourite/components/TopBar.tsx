@@ -3,18 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { getFavouriteProductSummary } from '../services';
-import { showImageUrl } from '@/helper/utils';
 
 import type { FavouriteProductSummary } from '../types';
-import { ProductItemValue } from '@/features/product/types';
 
 import SortOrderPanel from '@/components/SortOrder';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
-import {
-  onBrandFilterClick,
-  onCategoryFilterClick,
-  useProductListFilterAndSorter,
-} from '@/features/product/components/FilterAndSorter';
+import { useProductListFilterAndSorter } from '@/features/product/components/BrandProductFilterAndSorter';
 
 import './topBar.less';
 
