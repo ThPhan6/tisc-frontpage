@@ -6,4 +6,5 @@ export const UserHomePagePaths = {
   [UserType.TISC]: PATH.tiscHomePage,
   [UserType.Brand]: PATH.brandHomePage,
   [UserType.Designer]: PATH.designerHomePage,
+  [UserType.Partner]: PATH.partnerProduct,
 };

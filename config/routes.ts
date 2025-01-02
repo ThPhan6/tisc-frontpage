@@ -547,6 +547,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: PATH.brandGeneralInquiry,
     name: 'general_inquiry',
@@ -565,6 +566,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
@@ -965,6 +967,60 @@ const routes = [
             component: '../features/material-product-code/components/MaterialProductEntryForm',
           },
         ],
+      },
+    ],
+  },
+  {
+    path: PATH.partnerProduct,
+    name: 'product',
+    icon: 'product-icon.svg',
+    access: 'partner_product',
+    routes: [
+      {
+        path: PATH.partnerProduct,
+        component: './Brand/Products',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.updateProductPartner,
+        component: './Brand/Products/ProductBrandViewPage',
+        hideInMenu: true,
+      },
+    ],
+  },
+  {
+    path: PATH.partnerGeneralInquiry,
+    name: 'general_inquiry',
+    icon: 'general-inquiry-icon.svg',
+    access: 'partner_genenral_inquiry',
+    routes: [
+      {
+        path: PATH.partnerGeneralInquiry,
+        component: './Brand/GeneralInquiries',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.partnerGeneralInquiryDetail,
+        component: './Brand/GeneralInquiries/detail.tsx',
+        hideInMenu: true,
+      },
+    ],
+  },
+  {
+    path: PATH.partnerProjectTracking,
+    name: 'project_tracking',
+    icon: 'project-tracking-icon.svg',
+    access: 'partner_project_tracking',
+    routes: [
+      {
+        path: PATH.partnerProjectTracking,
+        component: './Brand/ProjectTracking',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.partnerProjectTrackingDetail,
+        component: './Brand/ProjectTracking/ProjectTrackingDetail',
+        hideInMenu: true,
       },
     ],
   },

@@ -71,6 +71,7 @@ const ACCESS_BY_TYPE: { [key in UserType]: string } = {
   1: 'tisc',
   2: 'brand',
   3: 'design',
+  4: 'partner',
 };
 
 /// default throttle action has only called first time when function excuted

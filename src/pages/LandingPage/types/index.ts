@@ -9,6 +9,7 @@ export enum UserType {
   TISC = 1,
   Brand = 2,
   Designer = 3,
+  Partner = 4,
 }
 
 export type LoginResponseProps = {
@@ -40,6 +41,7 @@ export type UserInfoDataProp = {
   type: UserType;
   interested: number[];
   retrieve_favourite: boolean;
+  remark: string;
 };
 
 export type PasswordInput = {

@@ -20,12 +20,19 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './AccessLevelModal.less';
 
 const TABLE_COL = {
-  brand: [{ title: 'Brand Admin' }, { title: 'Brand Team' }, { title: 'Partner' }],
-  designer: [{ title: 'Design Admin' }, { title: 'Design Team' }],
+  brand: [
+    { title: 'Brand Admin', unuse: false, disabled: false },
+    { title: 'Brand Team', unuse: false, disabled: false },
+    { title: 'Partner', unuse: false, disabled: true },
+  ],
+  designer: [
+    { title: 'Design Admin', unuse: false, disabled: false },
+    { title: 'Design Team', unuse: false, disabled: false },
+  ],
   tisc: [
-    { title: 'TISC Admin' },
-    { title: ' TISC Team', unuse: true },
-    { title: 'Consultant Team' },
+    { title: 'TISC Admin', unuse: false, disabled: false },
+    { title: ' TISC Team', unuse: true, disabled: false },
+    { title: 'Consultant Team', unuse: false, disabled: false },
   ],
 };
 
@@ -118,19 +125,21 @@ const AccessLevelModal: FC = () => {
           {!menu.subs?.length
             ? menu.items.map((item, key) => {
                 // check for update UI
-                const adminPermission = item.name.toLocaleLowerCase().indexOf('admin') !== -1;
+                const adminPermission =
+                  item.name.toLocaleLowerCase().indexOf('admin') !== -1 ||
+                  (TABLE_COL[type].some((col: any) => col?.disabled) && type === 'brand');
 
                 return (
                   <Fragment key={key}>
                     <td className={styles.menu_accessable} key={item.id}>
                       {item.accessable === true ? (
                         <AccessableTickIcon
-                          className={` ${adminPermission ? 'cursor-disabled' : 'cursor-pointer'}`}
+                          className={`${adminPermission ? 'cursor-disabled' : 'cursor-pointer'}`}
                           onClick={handleClickAccessable(item, adminPermission)}
                         />
                       ) : (
                         <AccessableMinusIcon
-                          className={`cursor-pointer`}
+                          className={`${adminPermission ? 'cursor-disabled' : 'cursor-pointer'}`}
                           onClick={handleClickAccessable(item, adminPermission)}
                         />
                       )}
