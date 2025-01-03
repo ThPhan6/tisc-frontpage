@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { UserStatus } from '@/constants/util';
+import { message } from 'antd';
 import { useLocation } from 'umi';
 
 import { pushTo } from '@/helper/history';
@@ -21,6 +22,7 @@ import {
 import { pick } from 'lodash';
 
 import { TabItem } from '@/components/Tabs/types';
+import { useAppSelector } from '@/reducers';
 import { ContactRequest } from '@/types';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
@@ -78,6 +80,7 @@ const getStatusText = (status: UserStatus) => {
 };
 
 const ContactEntryForm = () => {
+  const user = useAppSelector((state) => state.user.user);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { state } = useLocation<{ selectedTab?: string }>();
@@ -141,10 +144,16 @@ const ContactEntryForm = () => {
   const handleSubmit = async () => {
     if (!validateRequiredFields(data, getRequiredFields())) return;
 
+    const newData = { ...data };
+
+    if (user?.relation_id === data.relation_id) {
+      newData.relation_id = null as any;
+    }
+
     if (isUpdate) {
       const res = await updatePartnerContact(
         partnerContactId,
-        pick(data, [
+        pick(newData, [
           'id',
           'firstname',
           'lastname',
@@ -156,7 +165,6 @@ const ContactEntryForm = () => {
           'position',
           'email',
           'remark',
-          'status',
         ]) as ContactRequest,
       );
       if (res) setData(res);
@@ -164,7 +172,7 @@ const ContactEntryForm = () => {
     }
 
     const res = await createPartnerContact(
-      pick(data, [
+      pick(newData, [
         'firstname',
         'lastname',
         'gender',
@@ -204,6 +212,14 @@ const ContactEntryForm = () => {
 
   const handleInvite = async () => {
     if (!partnerContactId) return;
+
+    if (user?.relation_id === data.relation_id) {
+      message.info('Please select other company to invite');
+      return;
+    }
+
+    await handleSubmit();
+
     const invited = await inviteUser(partnerContactId);
     if (invited) setData((prevData) => ({ ...prevData, status: UserStatus.Pending }));
   };
