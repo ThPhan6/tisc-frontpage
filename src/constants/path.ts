@@ -120,14 +120,20 @@ export const PATH = {
   //brand
   brandProduct: '/brand/product',
   updateProductBrand: '/brand/product/:id',
+  partnerProduct: '/partner/product',
+  updateProductPartner: '/partner/product/:id',
 
   /// general inquiries
   brandGeneralInquiry: '/brand/general-inquiry',
   brandGeneralInquiryDetail: '/brand/general-inquiry/:id',
+  partnerGeneralInquiry: '/partner/general-inquiry',
+  partnerGeneralInquiryDetail: '/partner/general-inquiry/:id',
 
   /// project tracking
   brandProjectTracking: '/brand/project-tracking',
   brandProjectTrackingDetail: '/brand/project-tracking/:id',
+  partnerProjectTracking: '/partner/project-tracking',
+  partnerProjectTrackingDetail: '/partner/project-tracking/:id',
 
   // prices & inventories
   brandPricesInventories: '/brand/prices-and-inventories',

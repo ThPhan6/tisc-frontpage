@@ -8,7 +8,7 @@ export interface PermissionData {
   id: string;
   logo: string;
   name: string;
-  parent_id: number;
+  parent_id: string | null;
   items: PermissionItem[];
   subs?: PermissionData[];
 }

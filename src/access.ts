@@ -6,6 +6,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
   const isBrand = currentUser?.type === 2;
   const isTisc = currentUser?.type === 1;
   const isDesigner = currentUser?.type === 3;
+  const isPartner = currentUser?.type === 4;
   const permissions = currentUser?.permissions.data;
 
   const getAccessable = (name: string, subname?: string) => {
@@ -30,6 +31,9 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
   const isAccessableForBrand = (name: string, subname?: string) =>
     isBrand && getAccessable(name, subname);
+
+  const isAccessableForPartner = (name: string, subname?: string) =>
+    isPartner && getAccessable(name, subname);
 
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
@@ -59,6 +63,10 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     tisc_administration_team_profile: isAccessableForTisc('administration', 'team profile'),
     tisc_administration_message: isAccessableForTisc('administration', 'message'),
     tisc_administration_revenue: isAccessableForTisc('administration', 'revenue'),
+
+    partner_product: isAccessableForPartner('product'),
+    partner_genenral_inquiry: isAccessableForPartner('general'),
+    partner_project_tracking: isAccessableForPartner('project tracking'),
 
     brand_workspace: isAccessableForBrand('workspace'),
     brand_product: isAccessableForBrand('product'),

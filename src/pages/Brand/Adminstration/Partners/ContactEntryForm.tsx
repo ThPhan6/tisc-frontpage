@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { UserStatus } from '@/constants/util';
+import { message } from 'antd';
 import { useLocation } from 'umi';
 
 import { pushTo } from '@/helper/history';
@@ -11,10 +13,17 @@ import {
   getEmailMessageErrorType,
   validateRequiredFields,
 } from '@/helper/utils';
-import { createPartnerContact, getPartnerContact, updatePartnerContact } from '@/services';
+import {
+  createPartnerContact,
+  getPartnerContact,
+  inviteUser,
+  updatePartnerContact,
+} from '@/services';
+import { pick } from 'lodash';
 
 import { TabItem } from '@/components/Tabs/types';
-import { ContactForm, PartnerContactStatus } from '@/types';
+import { useAppSelector } from '@/reducers';
+import { ContactRequest } from '@/types';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -42,25 +51,36 @@ const genderOptions = [
   { label: Gender.Female, value: false },
 ];
 
-const initialContactForm: ContactForm = {
-  id: '',
+const initialContactForm: ContactRequest = {
   firstname: '',
   lastname: '',
   gender: true,
   linkedin: '',
   company_name: '',
-  partner_company_id: '',
+  relation_id: '',
   email: '',
   phone: '',
   mobile: '',
   country_name: '',
   position: '',
   remark: '',
-  status: 0,
+  status: UserStatus.Uninitiate,
   phone_code: '00',
 };
 
+const getStatusText = (status: UserStatus) => {
+  switch (status) {
+    case UserStatus.Pending:
+      return 'Pending';
+    case UserStatus.Active:
+      return 'Activated';
+    default:
+      return 'Uninitiate';
+  }
+};
+
 const ContactEntryForm = () => {
+  const user = useAppSelector((state) => state.user.user);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const isActiveTab = location.pathname === PATH.brandPartners;
   const { state } = useLocation<{ selectedTab?: string }>();
@@ -75,7 +95,9 @@ const ContactEntryForm = () => {
     handlePhoneChange,
     handleRadioChange,
     setData,
-  } = useEntryFormHandlers<ContactForm>(initialContactForm);
+  } = useEntryFormHandlers<ContactRequest>(initialContactForm);
+
+  const status = getStatusText(data.status);
 
   useEffect(() => {
     if (partnerContactId) {
@@ -104,11 +126,11 @@ const ContactEntryForm = () => {
     },
   ];
 
-  const getRequiredFields = (): { field: keyof ContactForm; messageField: string }[] => [
+  const getRequiredFields = (): { field: keyof ContactRequest; messageField: string }[] => [
     { field: 'firstname', messageField: 'First name is required' },
     { field: 'lastname', messageField: 'Last name is required' },
     { field: 'gender', messageField: 'Gender is required' },
-    { field: 'partner_company_id', messageField: 'Company is required' },
+    { field: 'relation_id', messageField: 'Company is required' },
     { field: 'position', messageField: 'Title / Position is required' },
     { field: 'email', messageField: 'Work Email is required' },
     { field: 'phone', messageField: 'Work Phone is required' },
@@ -122,13 +144,47 @@ const ContactEntryForm = () => {
   const handleSubmit = async () => {
     if (!validateRequiredFields(data, getRequiredFields())) return;
 
+    const newData = { ...data };
+
+    if (user?.relation_id === data.relation_id) {
+      newData.relation_id = null as any;
+    }
+
     if (isUpdate) {
-      const res = await updatePartnerContact(partnerContactId, data);
+      const res = await updatePartnerContact(
+        partnerContactId,
+        pick(newData, [
+          'id',
+          'firstname',
+          'lastname',
+          'gender',
+          'linkedin',
+          'mobile',
+          'phone',
+          'relation_id',
+          'position',
+          'email',
+          'remark',
+        ]) as ContactRequest,
+      );
       if (res) setData(res);
       return;
     }
 
-    const res = await createPartnerContact(data);
+    const res = await createPartnerContact(
+      pick(newData, [
+        'firstname',
+        'lastname',
+        'gender',
+        'linkedin',
+        'mobile',
+        'phone',
+        'relation_id',
+        'position',
+        'email',
+        'remark',
+      ]) as ContactRequest,
+    );
     if (res) handleCloseEntryForm();
   };
 
@@ -147,24 +203,25 @@ const ContactEntryForm = () => {
   const handleOnChangeCompanyData = (companyData: SelectedCompany) => {
     setData((prevData) => ({
       ...prevData,
-      partner_company_id: companyData.value,
+      relation_id: companyData.value,
       company_name: companyData.label,
       country_name: companyData.country || '',
       phone_code: companyData.phoneCode || '',
     }));
   };
 
-  const getStatusText = () => {
-    switch (data.status) {
-      case PartnerContactStatus.Uninitiate:
-        return 'Uninitiate';
-      case PartnerContactStatus.Pending:
-        return 'Pending';
-      case PartnerContactStatus.Activated:
-        return 'Activated';
-      default:
-        return '';
+  const handleInvite = async () => {
+    if (!partnerContactId) return;
+
+    if (user?.relation_id === data.relation_id) {
+      message.info('Please select other company to invite');
+      return;
     }
+
+    await handleSubmit();
+
+    const invited = await inviteUser(partnerContactId);
+    if (invited) setData((prevData) => ({ ...prevData, status: UserStatus.Pending }));
   };
 
   return (
@@ -334,12 +391,12 @@ const ContactEntryForm = () => {
         </FormGroup>
         <Status
           value={data.status}
-          onClick={() => {}}
+          onClick={handleInvite}
           label="Status"
           buttonName="Send Invite"
-          text_1={getStatusText()}
-          text_2="Uninitiate"
-          disabled={true}
+          text_1={status}
+          text_2={status}
+          disabled={status == 'Activated' || !isUpdate}
         />
         <FormGroup label="Remark" layout="vertical">
           <CustomTextArea
@@ -355,8 +412,8 @@ const ContactEntryForm = () => {
 
       <CompanyModal
         chosenValue={{
-          value: data.partner_company_id,
-          label: data.company_name,
+          value: data.relation_id,
+          label: data.company_name as string,
         }}
         setChosenValue={handleOnChangeCompanyData}
         visible={isOpenModal}

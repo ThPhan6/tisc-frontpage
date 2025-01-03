@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
+import { UserStatus } from '@/constants/util';
 import { TableColumnProps } from 'antd';
 import { useHistory, useLocation } from 'umi';
 
@@ -21,7 +22,7 @@ import { isEmpty } from 'lodash';
 import { TabItem } from '@/components/Tabs/types';
 import { RootState, useAppSelector } from '@/reducers';
 import { setAssociation } from '@/reducers/partner';
-import { Company, Contact, PartnerContactStatus } from '@/types';
+import { Company, Contact } from '@/types';
 
 import CollapsiblePanel, { CollapsiblePanelItem } from '@/components/CollapsiblePanel';
 import CustomTable from '@/components/Table';
@@ -255,7 +256,6 @@ const PartnersTable = () => {
         title: 'Title/Position',
         dataIndex: 'position',
         width: '5%',
-        render: (_, record) => <span className="text-capitalize ">{record.position}</span>,
       },
       {
         title: 'Work Email',
@@ -266,11 +266,21 @@ const PartnersTable = () => {
         title: 'Work Phone',
         dataIndex: 'phone',
         width: '5%',
+        render: (_, record) => (
+          <span className="text-capitalize ">
+            +{record.phone_code} {record.phone}
+          </span>
+        ),
       },
       {
         title: 'Work Mobile',
         dataIndex: 'mobile',
         width: '58%',
+        render: (_, record) => (
+          <span className="text-capitalize ">
+            +{record.phone_code} {record.mobile}
+          </span>
+        ),
       },
       {
         title: 'Activation',
@@ -278,11 +288,11 @@ const PartnersTable = () => {
         width: '5%',
         render: (_, record) => {
           switch (record.status) {
-            case PartnerContactStatus.Uninitiate:
+            case UserStatus.Uninitiate:
               return <span className="text-capitalize">Uninitiate</span>;
-            case PartnerContactStatus.Pending:
+            case UserStatus.Pending:
               return <span className="text-capitalize">Pending</span>;
-            case PartnerContactStatus.Activated:
+            case UserStatus.Active:
               return <span className="text-capitalize">Activated</span>;
             default:
               return '';
@@ -344,7 +354,7 @@ const PartnersTable = () => {
     });
   };
 
-  const handleFilter = (key: FilterKeys, value?: string | PartnerContactStatus) => () => {
+  const handleFilter = (key: FilterKeys, value?: string | UserStatus) => () => {
     if (filters[key] === value) return;
 
     if (value === null && value === undefined) {
@@ -431,19 +441,19 @@ const PartnersTable = () => {
       },
       labels: [
         {
-          id: PartnerContactStatus.Uninitiate.toString(),
+          id: UserStatus.Uninitiate.toString(),
           label: 'Uninitiate',
-          labelAction: handleFilter('status', PartnerContactStatus.Uninitiate),
+          labelAction: handleFilter('status', UserStatus.Uninitiate),
         },
         {
-          id: PartnerContactStatus.Pending.toString(),
+          id: UserStatus.Pending.toString(),
           label: 'Pending',
-          labelAction: handleFilter('status', PartnerContactStatus.Pending),
+          labelAction: handleFilter('status', UserStatus.Pending),
         },
         {
-          id: PartnerContactStatus.Activated.toString(),
+          id: UserStatus.Active.toString(),
           label: 'Activated',
-          labelAction: handleFilter('status', PartnerContactStatus.Activated),
+          labelAction: handleFilter('status', UserStatus.Active),
         },
       ],
     },
@@ -452,6 +462,14 @@ const PartnersTable = () => {
   const handleChangeTab = (activeKey: string) => {
     setSelectedTab(activeKey as PartnerTabKey);
     pushTo(`${PATH.brandPartners}?tab=${activeKey}`);
+  };
+
+  const goToDetail = (id: string) => () => {
+    if (isTabCompany) {
+      pushTo(PATH.brandUpdatePartner.replace(':id', id));
+    } else {
+      pushTo(PATH.brandUpdatePartnerContact.replace(':id', id));
+    }
   };
 
   return (
@@ -493,6 +511,9 @@ const PartnersTable = () => {
         ref={tableRef}
         extraParams={{ filter: filters, pageSize: 15, ...pagination }}
         autoLoad={false}
+        onRow={(rowRecord: any) => ({
+          onClick: goToDetail(rowRecord.id),
+        })}
       />
     </>
   );

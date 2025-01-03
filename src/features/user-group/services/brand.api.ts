@@ -34,14 +34,15 @@ interface BrandListResponse {
 export async function getBrandPagination(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse<BrandListItem[]>) => void,
+  showLoading: boolean = true,
 ) {
-  showPageLoading();
+  if (showLoading) showPageLoading();
   request(`/api/brand/get-list`, {
     method: 'GET',
     params,
   })
     .then((response: { data: BrandListResponse }) => {
-      hidePageLoading();
+      if (showLoading) hidePageLoading();
       const { brands, pagination, summary } = response.data;
       callback({
         data: brands,
@@ -55,7 +56,7 @@ export async function getBrandPagination(
     })
     .catch((error) => {
       console.log('error', error);
-      hidePageLoading();
+      if (showLoading) hidePageLoading();
       message.error(error.message);
     });
 }

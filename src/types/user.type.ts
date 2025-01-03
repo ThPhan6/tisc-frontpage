@@ -44,7 +44,7 @@ export interface UserDetail {
   permissions: any;
   firstname: string;
   lastname: string;
-  gender: string;
+  gender: boolean;
   location: string;
   position: string;
   email: string;
@@ -56,4 +56,6 @@ export interface UserDetail {
   type: number;
   retrieve_favourite: boolean;
   phone_code: string;
+  remark: string;
+  status: number;
 }
