@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
-import { history } from 'umi';
+import { history, useLocation } from 'umi';
 
 import graphic from '@/assets/graphic.png';
 import { ReactComponent as BinocularsIcon } from '@/assets/icons/binoculars-icon.svg';
@@ -30,7 +30,10 @@ import { LandingPageFooter } from './footer';
 import styles from './index.less';
 
 const LandingPage = () => {
-  const userEmail = useQuery().get('email');
+  const location = useLocation();
+  const url = location.search;
+  const emailMatch = url.match(/email=([^&]+)/);
+  const userEmail = emailMatch ? decodeURIComponent(emailMatch[1]) : null;
   const tokenResetPwd = useQuery().get('token');
   const tokenVerification = useQuery().get('verification_token');
 
