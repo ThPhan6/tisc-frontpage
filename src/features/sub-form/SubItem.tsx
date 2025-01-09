@@ -78,6 +78,7 @@ export const SubItemOption: FC<SubItemOptionProps> = ({
                 name={`value_${order}`}
                 size="small"
                 autoWidth
+                style={{ minWidth: 100 }}
                 defaultWidth={
                   higestLength && type === ProductBasisFormType.options ? higestLength : 40
                 }
@@ -90,6 +91,7 @@ export const SubItemOption: FC<SubItemOptionProps> = ({
                 name={`unit_${order}`}
                 size="small"
                 autoWidth
+                style={{ minWidth: 100 }}
                 defaultWidth={
                   subItemOption[`unit_${order}`]
                     ? (subItemOption[`unit_${order}`].length + 4) * 8
