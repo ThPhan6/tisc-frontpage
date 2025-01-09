@@ -24,9 +24,9 @@ import {
 } from '@/pages/LandingPage/components/hook';
 import { sample } from 'lodash';
 
-import type { LoginInput } from '@/pages/LandingPage/types';
-import { useAppSelector } from '@/reducers';
-import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { type LoginInput, type LoginResponseProps, UserType } from '@/pages/LandingPage/types';
+import store, { useAppSelector } from '@/reducers';
+import { closeModal, modalThemeSelector, openModal } from '@/reducers/modal';
 import { Quotation } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -137,16 +137,46 @@ export const LoginModal: FC<{
 
   const handleLogin = (data: { captcha: string; email: string; password: string }) => {
     showPageLoading();
+    const successCallback = async (
+      type: STATUS_RESPONSE,
+      msg?: string,
+      res?: LoginResponseProps[],
+    ) => {
+      if (type !== STATUS_RESPONSE.SUCCESS) {
+        hidePageLoading();
+        return message.error(msg);
+      }
 
-    const successCallback = async (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
+      if (res?.[0]?.type === UserType.TISC) {
+        closeModal();
         message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
         await fetchUserInfo(true);
-        closeModal();
-      } else {
-        message.error(msg);
+        hidePageLoading();
+        return;
       }
+
+      if (res?.length === 1) {
+        closeModal();
+        message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+        await fetchUserInfo(true);
+        hidePageLoading();
+        return;
+      }
+
       hidePageLoading();
+      store.dispatch(
+        openModal({
+          type: 'Workspaces',
+          noBorderDrawerHeader: true,
+          props: {
+            workspaces: res?.map((item) => ({
+              id: item.token || '',
+              name: item.workspace_name || '',
+              logo: item?.logo || '',
+            })),
+          },
+        }),
+      );
     };
 
     const onLogin = tiscLogin ? loginMiddleware : loginByBrandOrDesigner;

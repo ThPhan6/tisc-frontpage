@@ -3,25 +3,28 @@ import { Spin } from 'antd';
 import { useModel } from 'umi';
 
 import DefaultAvatarIcon from '@/assets/icons/ic-user-white.svg';
+import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { getFullName } from '@/helper/utils';
+import { getFullName, showImageUrl } from '@/helper/utils';
+import { switchToWorkspace } from '@/pages/LandingPage/services/api';
 
-import store from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import { setCustomProductList } from '@/pages/Designer/Products/CustomLibrary/slice';
 
-import { HeaderDropdown } from '../HeaderDropdown';
+import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
 import TeamIcon from '../TeamIcon/TeamIcon';
 import { BodyText } from '../Typography';
 import styles from './styles/AvatarDropdown.less';
 
 export const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
+  const workspaces = useAppSelector((state) => state.user.user?.workspaces || []);
   const showHeaderDropdown = useBoolean();
 
   const { isMobile } = useScreen();
@@ -49,11 +52,13 @@ export const AvatarDropdown = () => {
     return loading;
   }
 
+  console.log('workspaces', workspaces);
+
   const { currentUser } = initialState;
 
   const iconWidth = isMobile ? 24 : 16;
 
-  const menuItems = [
+  const menuItems: MenuIconProps[] = [
     {
       onClick: () => {
         showHeaderDropdown.setValue(false);
@@ -63,12 +68,49 @@ export const AvatarDropdown = () => {
       label: 'User profiles',
     },
     {
+      onClick: () => {},
+      icon: <InternetIcon width={iconWidth} height={iconWidth} />,
+      label: 'User workspaces',
+      containerClass: 'workspace',
+      additionalStyle: {
+        cursor: 'default',
+      },
+    },
+    ...workspaces.map((workspace) => ({
+      onClick: async () => {
+        showHeaderDropdown.setValue(false);
+        if (!workspace?.id || workspace.id === currentUser?.relation_id) return;
+
+        const response = await switchToWorkspace(workspace.id);
+
+        if (response?.token) {
+          localStorage.setItem('access_token', response.token);
+          window.location.replace('/');
+        }
+      },
+      icon: (
+        <img
+          src={showImageUrl(workspace.logo)}
+          style={{
+            width: 16,
+            height: 16,
+          }}
+        />
+      ),
+      label: workspace.name,
+      containerClass: 'workspace-item',
+      additionalStyle: {
+        backgroundColor: workspace.id === currentUser?.relation_id ? '#FFCDB3' : 'transparent',
+      },
+    })),
+    {
       onClick: () => {
         showHeaderDropdown.setValue(false);
         loginOut();
       },
       icon: <LogOutIcon width={iconWidth} height={iconWidth} />,
       label: 'Logout',
+      containerClass: 'logout',
     },
   ];
 

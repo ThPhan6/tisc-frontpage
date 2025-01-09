@@ -2,12 +2,11 @@ import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { ProductItem } from '@/features/product/types';
 import { BrandAlphabet } from '@/features/user-group/types';
-import { InformationBooking } from '@/pages/LandingPage/types';
+import { IWorkspace, InformationBooking } from '@/pages/LandingPage/types';
 import store, { RootState } from '@/reducers';
 import { AttributeContentType, AttributeSubForm } from '@/types';
 
 import { WorkLocationData } from '@/features/team-profiles/components/LocationModal';
-import { SelectedItem } from '@/pages/TISC/Product/Attribute/components/AttributeEntryForm';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
@@ -27,6 +26,7 @@ export type ModalType =
   | 'Cancel Booking'
   | 'Reset Password'
   | 'Verify Account'
+  | 'Workspaces'
 
   // General
   | 'Assign Team'
@@ -81,7 +81,7 @@ export interface ModalState {
 
     productAttributeType: {
       contentType: AttributeContentType;
-      selectedItem: SelectedItem;
+      selectedItem: any;
       onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
       type: number;
     };
@@ -107,6 +107,8 @@ export interface ModalState {
     };
     informationBooking: InformationBooking;
     reScheduleBooking: boolean;
+
+    workspaces: IWorkspace[];
   };
 }
 
