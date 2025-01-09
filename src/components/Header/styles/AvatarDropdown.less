@@ -18,5 +18,29 @@
 }
 
 .dropdown {
-  width: 160px;
+  width: fit-content;
+  min-width: 160px;
+  max-width: 300px;
+
+  :global(.workspace) {
+    box-shadow: none !important;
+  }
+
+  :global(.workspace-item) {
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding-left: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-shadow: none;
+
+    &:hover {
+      background-color: #ef8b4d !important;
+    }
+  }
+
+  :global(.logout) {
+    box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+  }
 }

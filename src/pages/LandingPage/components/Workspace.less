@@ -1,0 +1,46 @@
+.modal {
+  :global(.ant-modal-close-x) {
+    svg {
+      margin-top: 16px;
+      margin-right: 9px;
+    }
+  }
+}
+
+.content {
+  height: 100%;
+  padding-top: 32px;
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .text {
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  :global(.radio-list-container) {
+    height: 100%;
+    overflow: auto;
+    scrollbar-color: transparent transparent;
+  }
+
+  .login {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 12px;
+
+    .submit {
+      padding: 0 20px;
+      border-radius: 16px;
+    }
+  }
+
+  :global(.radio-list-options) {
+    padding-left: 0 !important;
+  }
+}

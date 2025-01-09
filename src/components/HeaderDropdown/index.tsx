@@ -68,7 +68,9 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
     <div className={`${styles['menu-header']} tisc-dropdown-item`}>
       {items.map((item, index) => (
         <MenuItem
-          containerClass={index !== items.length - 1 && styles.border}
+          containerClass={`${index !== items.length - 1 && styles.border} ${
+            item.containerClass ?? ''
+          }`}
           key={`${index}${item.label}`}
           onClick={item.onClick}
           label={item.label}
