@@ -141,29 +141,29 @@ export const SubOptionItem: FC<SubOptionItemProps> = (props) => {
       }
     } else {
       newCollapse[subOption.id] = true;
-      if (type === ProductBasisFormType.options) {
-        if (dataContainerRef) {
-          dataContainerRef.current.style.height = '9999px';
-        }
-        const formContainer = containerId ? document.getElementById(containerId) : undefined;
-        const groupContainer = document.getElementById(subOption.id);
-        const groupContent = document.getElementById(`${subOption.id}_content`);
+      // if (type === ProductBasisFormType.options) {
+      //   if (dataContainerRef) {
+      //     dataContainerRef.current.style.height = '9999px';
+      //   }
+      //   const formContainer = containerId ? document.getElementById(containerId) : undefined;
+      //   const groupContainer = document.getElementById(subOption.id);
+      //   const groupContent = document.getElementById(`${subOption.id}_content`);
 
-        if (formContainer) {
-          const formTop = formContainer.getBoundingClientRect().top;
+      //   if (formContainer) {
+      //     const formTop = formContainer.getBoundingClientRect().top;
 
-          if (groupContainer) {
-            const groupTop = groupContainer.getBoundingClientRect().top;
-            formContainer.scrollTop += groupTop - formTop - 60;
-            formContainer.style.overflowY = 'hidden';
+      //     if (groupContainer) {
+      //       const groupTop = groupContainer.getBoundingClientRect().top;
+      //       formContainer.scrollTop += groupTop - formTop - 60;
+      //       formContainer.style.overflowY = 'hidden';
 
-            if (groupContent) {
-              groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
-              groupContent.style.overflowY = 'auto';
-            }
-          }
-        }
-      }
+      //       if (groupContent) {
+      //         groupContent.style.height = 'calc(var(--vh) * 100 - 400px)';
+      //         groupContent.style.overflowY = 'auto';
+      //       }
+      //     }
+      //   }
+      // }
     }
 
     setCollapse(newCollapse);
