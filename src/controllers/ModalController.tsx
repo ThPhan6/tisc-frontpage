@@ -24,6 +24,7 @@ import { PasswordModal } from '@/pages/LandingPage/components/PasswordModal';
 import { PoliciesModal } from '@/pages/LandingPage/components/PoliciesModal';
 import { SignupModal } from '@/pages/LandingPage/components/SignupModal';
 import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
+import { Workspace } from '@/pages/LandingPage/components/Workspace';
 import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
 import styles from './index.less';
@@ -82,6 +83,8 @@ export const ModalController = () => {
         return <PasswordModal />;
       case 'Verify Account':
         return <VerifyAccount />;
+      case 'Workspaces':
+        return <Workspace />;
 
       // General
       case 'Assign Team':

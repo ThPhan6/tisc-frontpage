@@ -18,5 +18,53 @@
 }
 
 .dropdown {
-  width: 160px;
+  width: fit-content;
+  min-width: 160px;
+  max-width: 300px;
+
+  :global(.workspace) {
+    box-shadow: none !important;
+  }
+
+  :global(.active) {
+    > p {
+      font-weight: 300 !important;
+    }
+  }
+
+  :global(.workspace-item) {
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding-left: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-shadow: none;
+
+    &:hover {
+      > p {
+        font-weight: 500;
+      }
+    }
+  }
+
+  :global(.user-profile) {
+    &:hover {
+      > p {
+        font-weight: 500;
+      }
+    }
+  }
+
+  :global(.border) {
+    box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.logout) {
+    &:hover {
+      > p {
+        font-weight: 500;
+      }
+    }
+  }
 }

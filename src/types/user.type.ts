@@ -1,4 +1,5 @@
 import { WebsiteUrlItem } from '@/features/office-profile/types';
+import { IWorkspace } from '@/pages/LandingPage/types';
 
 export interface BrandProfile {
   created_at: string;
@@ -56,4 +57,5 @@ export interface UserDetail {
   type: number;
   retrieve_favourite: boolean;
   phone_code: string;
+  workspaces: IWorkspace[];
 }

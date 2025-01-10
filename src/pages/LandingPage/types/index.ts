@@ -16,6 +16,15 @@ export type LoginResponseProps = {
   statusCode: number;
   token: string;
   type: UserType;
+  workspace_id?: string;
+  workspace_name?: string;
+  logo?: string;
+};
+
+export type IWorkspace = {
+  id: string;
+  name: string;
+  logo: string;
 };
 
 export type UserInfoDataProp = {
@@ -40,6 +49,8 @@ export type UserInfoDataProp = {
   type: UserType;
   interested: number[];
   retrieve_favourite: boolean;
+  relation_id: string;
+  workspaces: IWorkspace[];
 };
 
 export type PasswordInput = {

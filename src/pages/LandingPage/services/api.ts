@@ -11,6 +11,7 @@ import type {
   LoginResponseProps,
   PasswordRequestBody,
   SignUpDesignerRequestBody,
+  UserType,
 } from '../types';
 import store from '@/reducers';
 import { setUserProfile } from '@/reducers/user';
@@ -22,15 +23,15 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export async function loginMiddleware(
   data: LoginInput,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
+  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProps[]) => void,
 ) {
   request(`/api/auth/login`, {
     method: 'POST',
     data,
   })
-    .then((response: LoginResponseProps) => {
-      localStorage.setItem('access_token', response.token);
-      callback(STATUS_RESPONSE.SUCCESS);
+    .then((response: { data: LoginResponseProps }) => {
+      localStorage.setItem('access_token', response.data.token);
+      callback(STATUS_RESPONSE.SUCCESS, '', [response.data]);
     })
     .catch((error) => {
       callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
@@ -39,15 +40,18 @@ export async function loginMiddleware(
 
 export async function loginByBrandOrDesigner(
   data: LoginInput,
-  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProps) => void,
+  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProps[]) => void,
 ) {
   request(`/api/auth/brand-design/login`, {
     method: 'POST',
     data,
   })
-    .then((response: LoginResponseProps) => {
-      localStorage.setItem('access_token', response.token);
-      callback(STATUS_RESPONSE.SUCCESS, '', response);
+    .then((response: { data: LoginResponseProps[] }) => {
+      if (response.data.length === 1) {
+        localStorage.setItem('access_token', response.data[0].token);
+      }
+
+      callback(STATUS_RESPONSE.SUCCESS, '', response.data);
     })
     .catch((error) => {
       callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
@@ -286,5 +290,18 @@ export async function updateBooking(
       message.error(error?.data?.message);
       hidePageLoading();
       return false;
+    });
+}
+
+export async function switchToWorkspace(id: string) {
+  return request<{ data: { token: string; type: UserType } }>(`/api/workspace/${id}/switch`, {
+    method: 'GET',
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return null;
     });
 }
