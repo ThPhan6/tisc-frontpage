@@ -39,7 +39,7 @@ export const Workspace: FC = () => {
     <CustomModal {...popupStylesProps}>
       <div className={styles.content}>
         <div className={styles.main}>
-          <MainTitle level={2} style={{ paddingBottom: 32 }}>
+          <MainTitle level={2} customClass={styles.title}>
             Select Below Account
           </MainTitle>
 

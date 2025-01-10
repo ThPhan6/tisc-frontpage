@@ -13,6 +13,7 @@ import { useBoolean } from '@/helper/hook';
 import { getFullName, showImageUrl } from '@/helper/utils';
 import { switchToWorkspace } from '@/pages/LandingPage/services/api';
 
+import { UserType } from '@/pages/LandingPage/types';
 import store, { useAppSelector } from '@/reducers';
 
 import { setCustomProductList } from '@/pages/Designer/Products/CustomLibrary/slice';
@@ -24,10 +25,26 @@ import styles from './styles/AvatarDropdown.less';
 
 export const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
-  const workspaces = useAppSelector((state) => state.user.user?.workspaces || []);
-  const showHeaderDropdown = useBoolean();
-
   const { isMobile } = useScreen();
+
+  const userWorkspaces = useAppSelector((state) => state.user.user?.workspaces || []);
+  const iconWidth = isMobile ? 24 : 16;
+
+  const workspaces =
+    initialState?.currentUser?.type === UserType.TISC
+      ? []
+      : [
+          {
+            onClick: () => {},
+            icon: <InternetIcon width={iconWidth} height={iconWidth} />,
+            label: 'User workspaces',
+            containerClass: 'workspace',
+            additionalStyle: {
+              cursor: 'default',
+            },
+          },
+        ];
+  const showHeaderDropdown = useBoolean();
 
   const loginOut = async () => {
     setInitialState((s) => ({ ...s, currentUser: undefined }));
@@ -52,11 +69,7 @@ export const AvatarDropdown = () => {
     return loading;
   }
 
-  console.log('workspaces', workspaces);
-
   const { currentUser } = initialState;
-
-  const iconWidth = isMobile ? 24 : 16;
 
   const menuItems: MenuIconProps[] = [
     {
@@ -67,16 +80,8 @@ export const AvatarDropdown = () => {
       icon: <UserIcon width={iconWidth} height={iconWidth} />,
       label: 'User profiles',
     },
-    {
-      onClick: () => {},
-      icon: <InternetIcon width={iconWidth} height={iconWidth} />,
-      label: 'User workspaces',
-      containerClass: 'workspace',
-      additionalStyle: {
-        cursor: 'default',
-      },
-    },
-    ...workspaces.map((workspace) => ({
+    ...workspaces,
+    ...userWorkspaces.map((workspace) => ({
       onClick: async () => {
         showHeaderDropdown.setValue(false);
         if (!workspace?.id || workspace.id === currentUser?.relation_id) return;
@@ -100,7 +105,7 @@ export const AvatarDropdown = () => {
       label: workspace.name,
       containerClass: 'workspace-item',
       additionalStyle: {
-        backgroundColor: workspace.id === currentUser?.relation_id ? '#FFCDB3' : 'transparent',
+        backgroundColor: workspace.id === currentUser?.relation_id ? '#FFB8E2' : 'transparent',
       },
     })),
     {
@@ -110,7 +115,7 @@ export const AvatarDropdown = () => {
       },
       icon: <LogOutIcon width={iconWidth} height={iconWidth} />,
       label: 'Logout',
-      containerClass: 'logout',
+      containerClass: workspaces.length ? 'logout' : undefined,
     },
   ];
 
