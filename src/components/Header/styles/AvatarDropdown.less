@@ -26,6 +26,12 @@
     box-shadow: none !important;
   }
 
+  :global(.active) {
+    > p {
+      font-weight: 300 !important;
+    }
+  }
+
   :global(.workspace-item) {
     min-height: 36px !important;
     max-height: 36px !important;
@@ -36,7 +42,9 @@
     box-shadow: none;
 
     &:hover {
-      background-color: @tertiary-color-light !important;
+      > p {
+        font-weight: 500;
+      }
     }
   }
 
