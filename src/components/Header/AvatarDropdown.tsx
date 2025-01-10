@@ -79,6 +79,7 @@ export const AvatarDropdown = () => {
       },
       icon: <UserIcon width={iconWidth} height={iconWidth} />,
       label: 'User profiles',
+      containerClass: 'user-profile',
     },
     ...workspaces,
     ...userWorkspaces.map((workspace) => ({
@@ -115,7 +116,7 @@ export const AvatarDropdown = () => {
       },
       icon: <LogOutIcon width={iconWidth} height={iconWidth} />,
       label: 'Logout',
-      containerClass: workspaces.length ? 'logout' : undefined,
+      containerClass: `logout ${workspaces.length ? 'border' : ''}`,
     },
   ];
 
