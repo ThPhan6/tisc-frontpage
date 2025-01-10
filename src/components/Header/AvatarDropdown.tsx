@@ -103,7 +103,7 @@ export const AvatarDropdown = () => {
         />
       ),
       label: workspace.name,
-      containerClass: 'workspace-item',
+      containerClass: `workspace-item ${workspace.id === currentUser?.relation_id ? 'active' : ''}`,
       additionalStyle: {
         backgroundColor: workspace.id === currentUser?.relation_id ? '#FFB8E2' : 'transparent',
       },
