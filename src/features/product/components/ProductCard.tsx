@@ -497,7 +497,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             });
 
       const newData = data.map((item, index: number) => {
-        const temp = uniqBy(flatMap(item.products.map((product: any) => product.labels)), 'id');
+        const temp = uniqBy(
+          flatMap(item.products.map((product: any) => product.labels)),
+          'id',
+        ).filter(Boolean);
         if (index === collapseKey) {
           return {
             ...item,
@@ -505,8 +508,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             labels: temp,
           };
         }
+
         return { ...item, labels: temp };
       });
+
       setGroups(newData);
     }
   }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
