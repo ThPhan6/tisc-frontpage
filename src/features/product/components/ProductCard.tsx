@@ -44,7 +44,7 @@ import {
 import { deleteCollection, updateCollection } from '@/services';
 import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
-import { closeActiveSpecAttributeGroup, resetProductState, setProductList } from '../reducers';
+import { resetProductState, setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
@@ -479,42 +479,28 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
   useEffect(() => {
-    if (data) {
-      const activeProducts =
-        activeLabels.length === 0
-          ? data[collapseKey]?.products
-          : data[collapseKey]?.products.filter((product) => {
-              if (
-                activeLabels
-                  .map((label) => label.id)
-                  .every((label) =>
-                    product.labels.map((activeLabel: any) => activeLabel.id).includes(label),
-                  )
-              )
-                return true;
-              return false;
-            });
+    if (!data) return;
 
-      const newData = data.map((item, index: number) => {
-        const temp = uniqBy(
-          flatMap(item.products.map((product: any) => product.labels)),
-          'id',
-        ).filter(Boolean);
-        if (index === collapseKey) {
-          return {
-            ...item,
-            products: activeProducts,
-            labels: temp,
-          };
-        }
+    const newData = data.map((item, index: number) => {
+      const temp = uniqBy(
+        flatMap(item.products.map((product: any) => product.labels)),
+        'id',
+      ).filter(Boolean);
 
-        return { ...item, labels: temp };
-      });
+      if (index === collapseKey) {
+        return {
+          ...item,
+          labels: temp,
+        };
+      }
 
-      setGroups(newData);
-    }
-  }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
+      return { ...item, labels: temp };
+    });
+
+    setGroups(newData);
+  }, [collapseKey, JSON.stringify(data)]);
 
   const filterByCategory = filter
     ? filter.find((item) => item.name === 'category_id')
@@ -595,6 +581,64 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     setGalleryImages(newImages);
   };
 
+  const handleChangeCollapse = (index: number) => () => {
+    isOpenLabel.setValue(false);
+    isOpenGallery.setValue(false);
+    setActiveLabels([]);
+    setCollapseKey(collapseKey === index ? -1 : index);
+  };
+
+  const getGroupProducts = (labels: any[]) => {
+    if (!data) return;
+
+    const activeProducts =
+      labels.length === 0
+        ? data[collapseKey]?.products
+        : data[collapseKey]?.products.filter((product) => {
+            if (
+              labels
+                .map((label) => label.id)
+                .every((label) =>
+                  product.labels.map((activeLabel) => activeLabel.id).includes(label),
+                )
+            )
+              return true;
+            return false;
+          });
+
+    return data.map((item, index: number) => {
+      const temp = uniqBy(
+        flatMap(item.products.map((product: any) => product.labels)),
+        'id',
+      ).filter(Boolean);
+
+      if (index === collapseKey) {
+        return {
+          ...item,
+          products: activeProducts,
+          labels: temp,
+        };
+      }
+
+      return { ...item, labels: temp };
+    });
+  };
+
+  const handleChangeFilter = (labels: { id: string; name: string }[]) => {
+    setActiveLabels(labels);
+
+    const newData = getGroupProducts(labels);
+    setGroups(newData);
+  };
+
+  const handleRemoveFilter = (label: { id: string; name: string }) => () => {
+    const newLabels = activeLabels.filter((item) => item.id !== label.id);
+    setActiveLabels(newLabels);
+
+    const newData = getGroupProducts(newLabels);
+    setGroups(newData);
+  };
+
   return (
     <>
       {customLoading ? (
@@ -616,12 +660,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           key={index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
           forceOnKeyChange
-          onChange={() => {
-            isOpenLabel.setValue(false);
-            isOpenGallery.setValue(false);
-            setActiveLabels([]);
-            setCollapseKey(collapseKey === index ? -1 : index);
-          }}
+          onChange={handleChangeCollapse(index)}
           header={
             <div style={{ width: '100%' }}>
               <div className="header-text flex-between text-uppercase">
@@ -716,9 +755,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     >
                       <CheckBoxDropDown
                         items={group.labels}
-                        onChange={(values) => {
-                          setActiveLabels(values);
-                        }}
+                        onChange={handleChangeFilter}
                         viewAllTop={true}
                         textCapitalize={false}
                         placement={'bottomLeft'}
@@ -768,13 +805,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                                 </span>
                                 <RemoveIcon
                                   className={styles.removeIcon}
-                                  onClick={() => {
-                                    setActiveLabels(
-                                      activeLabels.filter(
-                                        (item: any) => item.id !== activeLabel.id,
-                                      ),
-                                    );
-                                  }}
+                                  onClick={handleRemoveFilter(activeLabel)}
                                 />
                               </div>
                             </div>
