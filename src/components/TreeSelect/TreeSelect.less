@@ -1,11 +1,22 @@
 .tree_select {
   position: absolute;
+  right: 5.5rem;
   width: 100%;
   max-width: 420px;
   max-height: 500px;
   overflow: auto;
   box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px !important;
   transform: translate(-2.4rem, 2.3rem);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  :global(.ant-dropdown-menu-item) {
+    background: #fff;
+  }
 
   :global(.ant-menu-item) {
     height: 28px !important;
@@ -33,6 +44,11 @@
       color: @primary-color-dark;
       font-weight: 500;
     }
+  }
+
+  &_no_data {
+    padding: 16px;
+    text-align: center;
   }
 
   &_icon {

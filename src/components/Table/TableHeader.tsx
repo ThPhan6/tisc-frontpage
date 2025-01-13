@@ -11,21 +11,23 @@ interface TableHeaderProps {
   customClass?: string;
 }
 
-export const TableHeader: FC<TableHeaderProps> = ({ title, rightAction, customClass = '' }) => {
-  const { isMobile } = useScreen();
-  return (
-    <div className={`${styles.tableHeader} ${customClass}`}>
-      <Title level={7} customClass="text-overflow">
-        {title}
-      </Title>
-      <div
-        className={`${styles.tableHeader__iconWrapper} rightAction`}
-        style={{ width: isMobile && title === ' ' ? '100%' : '' }}
-      >
-        {rightAction}
+export const TableHeader: FC<TableHeaderProps> = memo(
+  ({ title, rightAction, customClass = '' }) => {
+    const { isMobile } = useScreen();
+    return (
+      <div className={`${styles.tableHeader} ${customClass}`}>
+        <Title level={7} customClass="text-overflow">
+          {title}
+        </Title>
+        <div
+          className={`${styles.tableHeader__iconWrapper} rightAction`}
+          style={{ width: isMobile && title === ' ' ? '100%' : '' }}
+        >
+          {rightAction}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+);
 
 export const MemorizeTableHeader = memo(TableHeader);

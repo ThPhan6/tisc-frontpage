@@ -22,6 +22,7 @@ export const REGEX_PHONE_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-
 export const REGEX_EMPTY_SPACE = /^\S*$/;
 export const REGEX_NUMBER_ONLY = /^[0-9]*$/;
 export const REGEX_NUMBER_FLOAT_ONLY = /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
+export const REGEX_HASH_WITH_DIGITS = /#(\d+)/;
 
 export const validateNumber = (text: string, allowEmpty = true) => {
   if (text === '' && allowEmpty) {
@@ -461,7 +462,7 @@ export const uniqueArrayBy = (arr: any[], uniqKeys: string[]) => {
 
 export const findDuplicateBy = (arr: any[], uniqKeys: string[]): any[] => {
   const dup: any = [];
-  const seen = {};
+  const seen: any = {};
 
   arr.forEach((item) => {
     const key = uniqKeys.map((k) => item[k]).join('|');
@@ -608,3 +609,56 @@ export const handleGetCommonPartnerTypeList = (data: CommonPartnerType | null) =
   }
   return null;
 };
+
+export const extractDataBase64 = (src: string): string | null => {
+  if (src) {
+    const base64Prefix = 'base64,';
+    const base64Index = src.indexOf(base64Prefix);
+    if (base64Index !== -1) return src.substring(base64Index + base64Prefix.length);
+  }
+  return null;
+};
+
+export function convertToNegative(input: string) {
+  const number = parseInt(input.replace(/-/g, ''), 10);
+
+  const sign = input.split('').filter((char) => char === '-').length % 2 === 0 ? 1 : -1;
+
+  return number * sign;
+}
+
+export const keepLastObjectOccurrence = (inputObj: Object) => {
+  const result: any = {};
+
+  for (const [key, value] of Object.entries(inputObj)) {
+    // Update the result to keep the current key (the last occurrence)
+    result[value] = key;
+  }
+
+  const finalResult: any = {};
+  for (const [value, key] of Object.entries(result) as any) {
+    finalResult[key] = value;
+  }
+
+  return finalResult;
+};
+
+export const downloadFile = (data: BlobPart[], fileName: string, options?: BlobPropertyBag) => {
+  try {
+    const blob = new Blob(data, options);
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  } catch (error) {
+    console.error('Error converting file to blob:', error);
+  }
+};
+
+export const isNumeric = (value: string) => !isNaN(value) && !isNaN(parseFloat(value));

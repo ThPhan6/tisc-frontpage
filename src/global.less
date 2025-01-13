@@ -182,10 +182,10 @@ button {
 }
 
 .primary-color {
-  color: @primary-color;
+  color: @primary-color !important;
 }
 .primary-color-dark {
-  color: @primary-color-dark;
+  color: @primary-color-dark !important;
 }
 .primary-color-medium {
   color: @primary-color-medium;
@@ -202,11 +202,11 @@ button {
 }
 
 .indigo-dark-variant {
-  color: #2b39d4;
+  color: #2b39d4 !important;
 }
 
 .red-magenta {
-  color: #eb008d;
+  color: #eb008d !important;
 }
 
 .orange {
@@ -274,6 +274,14 @@ button {
   width: 100%;
 }
 
+.w-1-2 {
+  width: 50%;
+}
+
+.w-max {
+  width: max-content;
+}
+
 .h-full {
   height: 100%;
 }
@@ -306,6 +314,10 @@ button {
   margin-bottom: 16px;
 }
 
+.mt-16 {
+  margin-top: 16px;
+}
+
 .mb-10 {
   margin-bottom: 10px;
 }
@@ -314,12 +326,16 @@ button {
   margin-right: 16px;
 }
 
-.mb-4 {
-  margin-bottom: 4px;
+.ml-16 {
+  margin-left: 16px;
 }
 
-.mb-7 {
-  margin-bottom: 7px;
+.mt-4 {
+  margin-top: 4px;
+}
+
+.mb-6 {
+  margin-bottom: 6px;
 }
 
 .mb-24 {
@@ -332,6 +348,10 @@ button {
 
 .mr-8 {
   margin-right: 8px;
+}
+
+.mt-8 {
+  margin-top: 8px;
 }
 
 .mb-8-px {
@@ -354,6 +374,27 @@ button {
   padding-bottom: 12px;
 }
 
+.pl-12 {
+  padding-left: 12px;
+}
+
+.pb-16 {
+  padding-bottom: 16px;
+}
+
+.pr-16 {
+  padding-right: 16px;
+}
+
+.p-16 {
+  padding: 16px;
+}
+
+.px-16 {
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
 .py-10 {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -369,6 +410,10 @@ button {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.block {
+  display: block;
 }
 
 .d-flex {
@@ -768,7 +813,7 @@ li.ant-menu-submenu {
 }
 
 .shadow-none {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .ellipsis {
@@ -783,4 +828,82 @@ li.ant-menu-submenu {
   font-size: 14px;
   line-height: calc(21 / 14);
   letter-spacing: 0.28px;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.gap-12 {
+  gap: 12px;
+}
+
+.border-bottom-black-inset {
+  box-shadow: @border-bottom-black-inset;
+}
+
+.border-right-black-inset {
+  box-shadow: @border-right-black-inset;
+}
+
+.border-top-black-inset {
+  box-shadow: @border-top-black-inset;
+}
+
+.font-light {
+  font-weight: 300 !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.relative {
+  position: relative;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+.overflow-auto {
+  overflow: auto;
 }

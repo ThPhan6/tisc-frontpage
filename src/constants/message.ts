@@ -22,6 +22,7 @@ export const MESSAGE_ERROR = {
   DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
   DISTRIBUTOR_UNAVAILABLE:
     'The product seems not available for the project location, please verify with the Brand company for more information.',
+  READING_FILE: 'Something went wrong while reading the file.',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -53,6 +54,19 @@ export const MESSAGE_NOTIFICATION = {
   GET_LIST_CATEGORY_ERROR: 'Failed to get list category',
   MOVE_CATEGORY_TO_SUB_CATEGORY_SUCCESS: 'Move category successfully',
   MOVE_CATEGORY_TO_SUB_CATEGORY_ERROR: 'Move category unsuccessfully',
+
+  // Inventory
+  CREATE_INVENTORY_SUCCESS: 'Create inventory successfully',
+  CREATE_INVENTORY_ERROR: 'Create inventory error',
+  DELETE_INVENTORY_SUCCESS: 'Delete inventory successfully',
+  DELETE_INVENTORY_ERROR: 'Delete inventory error',
+  UPDATE_INVENTORY_SUCCESS: 'Update inventory successfully',
+  UPDATE_INVENTORY_ERROR: 'Update inventory error',
+  GET_INVENTORY_ERROR: 'Get inventory error',
+  MOVE_INVENTORY_SUCCESS: 'Move inventory successfully',
+  MOVE_INVENTORY_ERROR: 'Move inventory error',
+  IMPORT_INVENTORY_SUCCESS: 'Import inventory successfully',
+  IMPORT_INVENTORY_ERROR: 'Import inventory error',
 
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',
@@ -391,6 +405,14 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PARTNER_CONTACT_ERROR: 'Update partner contact unsuccessfully',
   DELETE_PARTNER_CONTACT_SUCCESS: 'Delete partner contact successfully',
   DELETE_PARTNER_CONTACT_ERROR: 'Delete partner contact unsuccessfully',
+
+  // warehouse
+  CREATE_WAREHOUSE_SUCCESS: 'Create warehouse successfully',
+  CREATE_WAREHOUSE_ERROR: 'Create warehouse unsuccessfully',
+  UPDATE_WAREHOUSE_SUCCESS: 'Update warehouse successfully',
+  UPDATE_WAREHOUSE_ERROR: 'Update warehouse unsuccessfully',
+  DELETE_WAREHOUSE_SUCCESS: 'Delete warehouse successfully',
+  DELETE_WAREHOUSE_ERROR: 'Delete warehouse unsuccessfully',
 
   // company
   GET_COMPANY_SUMMARY_ERROR: 'Get company unsuccessfully',

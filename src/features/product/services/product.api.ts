@@ -317,17 +317,17 @@ export const getProductById = async (
           const quantities = specifiedData?.specification.attribute_groups.find(
             (el) => el.id === attr.id,
           )?.step_selections?.quantities;
-          const newViewSteps = attr.viewSteps.map((viewStep: any) => {
+          const newViewSteps = attr.viewSteps?.map((viewStep: any) => {
             const foundSpecStep = attr.specification_steps.find(
               (specStep: any) => specStep.id === viewStep.id,
             );
             const newOptions = viewStep?.options.map((option: any) => {
-              const foundOption = foundSpecStep.options.find(
+              const foundOption = foundSpecStep?.options.find(
                 (specOption: any) => specOption.id === option.id,
               );
               return {
                 ...option,
-                id_format_type: foundOption.id_format_type,
+                id_format_type: foundOption?.id_format_type,
               };
             });
             return {
@@ -373,7 +373,7 @@ export const updateProductCard = async (productId: string, data: ProductFormData
     method: 'PUT',
     data,
   })
-    .then((res) => {
+    .then((res: any) => {
       hidePageLoading();
       // getProductById(productId);
 

@@ -131,6 +131,9 @@ export const PATH = {
 
   // prices & inventories
   brandPricesInventories: '/brand/prices-and-inventories',
+  brandPricesInventoriesTable: '/brand/prices-and-inventories/categories',
+  brandPricesInventoriesForm: '/brand/prices-and-inventories/create',
+  brandPricesInventoriesFormUpdate: '/brand/prices-and-inventories/:id',
 
   //adminstration
   brandAdministration: '/brand/adminstration',
