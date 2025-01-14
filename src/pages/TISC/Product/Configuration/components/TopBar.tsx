@@ -191,33 +191,43 @@ export const TopBar: React.FC = () => {
   }, [checkedBrand?.value]);
 
   useEffect(() => {
-    if (checkedBrand?.value) {
-      /// set get default product list by collection
-      const params: ProductGetListParameter = {
-        brand_id: checkedBrand.value as string,
-        collection_id: !filter ? 'all' : undefined,
-      };
-      const cateFilter = filter?.find((item) => item.name === 'category_id');
-      const collFilter = filter?.find((item) => item.name === 'collection_id');
-      if (cateFilter) {
-        params.category_id = cateFilter.value === 'all' ? 'all' : cateFilter.value;
-      }
-      if (collFilter) {
-        params.collection_id = collFilter.value === 'all' ? 'all' : collFilter.value;
-      }
-
-      if (
-        (!filter || filter.length == 0) &&
-        firstLoad.value &&
-        (coll_id || cate_id || location.state?.fromMyWorkspace)
-      ) {
-        firstLoad.setValue(false);
-        return;
-      }
-
-      getBrandProductListByBrandId(params);
+    if (
+      !checkedBrand?.value ||
+      !filter ||
+      (filter.length === 0 && firstLoad.value && (cate_id || coll_id))
+    ) {
+      return;
     }
-  }, [filter, checkedBrand?.value, firstLoad.value]);
+
+    if (coll_id || cate_id) {
+      firstLoad.setValue(false);
+    }
+
+    if (filter?.length === 0) {
+      getBrandProductListByBrandId({
+        brand_id: checkedBrand.value as string,
+        collection_id: 'all',
+      });
+      return;
+    }
+
+    /// set get default product list by collection
+    const params: ProductGetListParameter = {
+      brand_id: checkedBrand.value as string,
+      collection_id: !filter ? 'all' : undefined,
+    };
+
+    const cateFilter = filter?.find((item) => item.name === 'category_id');
+    const collFilter = filter?.find((item) => item.name === 'collection_id');
+    if (cateFilter) {
+      params.category_id = cateFilter.value === 'all' ? 'all' : cateFilter.value;
+    }
+    if (collFilter) {
+      params.collection_id = collFilter.value === 'all' ? 'all' : collFilter.value;
+    }
+
+    getBrandProductListByBrandId(params);
+  }, [filter?.[0]?.value, filter?.[0]?.name, checkedBrand?.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
@@ -301,7 +311,11 @@ export const TopBar: React.FC = () => {
                 undefined,
                 { autoHeight: false, borderFirstItem: true },
               )}
-              customClass="left-divider white-space"
+              customClass={`left-divider white-space ${
+                filter?.find((item) => item.name === 'category_id')?.value === 'all'
+                  ? styles.hideDeleteIcon
+                  : ''
+              }`}
             />
             <TopBarItem
               topValue={renderItemTopBar(
