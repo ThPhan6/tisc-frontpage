@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
+import { LoadingOutlined } from '@ant-design/icons';
 import { BackTop, Spin, Tooltip, TooltipProps } from 'antd';
 import { useLocation } from 'umi';
 
@@ -71,6 +72,7 @@ interface CollapseProductListProps {
   showActionMenu?: boolean;
   showInquiryRequest?: boolean;
   hideFavorite?: boolean;
+  isLoadMore?: boolean;
 }
 
 interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo'> {
@@ -448,6 +450,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   showActionMenu = false,
   showInquiryRequest = false,
   hideFavorite = false,
+  isLoadMore,
 }) => {
   const { isMobile } = useScreen();
   const loading = useAppSelector(loadingSelector);
@@ -936,6 +939,20 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             <DoubleupIcon style={{ marginRight: 16 }} /> Back To Top
           </CustomButton>
         </BackTop>
+      )}
+
+      {!isLoadMore ? null : (
+        <Spin
+          indicator={<LoadingOutlined spin={isLoadMore} />}
+          size="large"
+          style={{
+            height: 100,
+            width: 100,
+            position: 'absolute',
+            bottom: 40,
+            left: '50%',
+          }}
+        />
       )}
     </>
   );
