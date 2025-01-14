@@ -44,7 +44,7 @@ import {
 import { deleteCollection, updateCollection } from '@/services';
 import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
-import { closeActiveSpecAttributeGroup, resetProductState, setProductList } from '../reducers';
+import { resetProductState, setCollapseKey, setLabelSelected, setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
@@ -81,7 +81,6 @@ interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo
   showSpecify?: boolean;
   isCustomProduct?: boolean;
   onSpecifyClick?: () => void;
-  setCollapseKey?: (key: number) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -94,7 +93,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showActionMenu,
   isCustomProduct,
   onSpecifyClick,
-  setCollapseKey,
 }) => {
   const { isTablet } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
@@ -156,7 +154,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const reloadProductInformation = () => {
-    setCollapseKey?.(-1);
+    store.dispatch(setLabelSelected([]));
+    store.dispatch(setCollapseKey(-1));
 
     if (isCustomProduct) {
       const filterBy =
@@ -453,11 +452,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const { isMobile } = useScreen();
   const loading = useAppSelector(loadingSelector);
   const { data, allProducts, filter } = useAppSelector((state) => state.product.list);
+  const activeLabels = useAppSelector((state) => state.product.labelSelected);
+  const collapseKey = useAppSelector((state) => state.product.collapseKey);
+
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
-  const [collapseKey, setCollapseKey] = useState<number>(-1);
-  const [activeLabels, setActiveLabels] = useState<{ id: string; name: string }[]>([]);
   const [groups, setGroups] = useState<any>([]);
   const isOpenGallery = useBoolean(false);
   const isOpenLabel = useBoolean(false);
@@ -477,44 +477,32 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      store.dispatch(setLabelSelected([]));
+      store.dispatch(setCollapseKey(-1));
     };
   }, []);
+
   useEffect(() => {
-    if (data) {
-      const activeProducts =
-        activeLabels.length === 0
-          ? data[collapseKey]?.products
-          : data[collapseKey]?.products.filter((product) => {
-              if (
-                activeLabels
-                  .map((label) => label.id)
-                  .every((label) =>
-                    product.labels.map((activeLabel: any) => activeLabel.id).includes(label),
-                  )
-              )
-                return true;
-              return false;
-            });
+    if (!data) return;
 
-      const newData = data.map((item, index: number) => {
-        const temp = uniqBy(
-          flatMap(item.products.map((product: any) => product.labels)),
-          'id',
-        ).filter(Boolean);
-        if (index === collapseKey) {
-          return {
-            ...item,
-            products: activeProducts,
-            labels: temp,
-          };
-        }
+    const newData = data.map((item, index: number) => {
+      const temp = uniqBy(
+        flatMap(item.products.map((product: any) => product.labels)),
+        'id',
+      ).filter(Boolean);
 
-        return { ...item, labels: temp };
-      });
+      if (index === collapseKey) {
+        return {
+          ...item,
+          labels: temp,
+        };
+      }
 
-      setGroups(newData);
-    }
-  }, [JSON.stringify(activeLabels), collapseKey, JSON.stringify(data)]);
+      return { ...item, labels: temp };
+    });
+
+    setGroups(newData);
+  }, [collapseKey, JSON.stringify(data)]);
 
   const filterByCategory = filter
     ? filter.find((item) => item.name === 'category_id')
@@ -594,6 +582,65 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
     });
     setGalleryImages(newImages);
   };
+
+  const handleChangeCollapse = (index: number) => () => {
+    isOpenLabel.setValue(false);
+    isOpenGallery.setValue(false);
+    store.dispatch(setCollapseKey(collapseKey === index ? -1 : index));
+    store.dispatch(setLabelSelected([]));
+  };
+
+  const getGroupProducts = (labels: any[]) => {
+    if (!data) return;
+
+    const activeProducts =
+      labels.length === 0
+        ? data[collapseKey]?.products
+        : data[collapseKey]?.products.filter((product) => {
+            if (
+              labels
+                .map((label) => label.id)
+                .every((label) =>
+                  product.labels.map((activeLabel) => activeLabel.id).includes(label),
+                )
+            )
+              return true;
+            return false;
+          });
+
+    return data.map((item, index: number) => {
+      const temp = uniqBy(
+        flatMap(item.products.map((product: any) => product.labels)),
+        'id',
+      ).filter(Boolean);
+
+      if (index === collapseKey) {
+        return {
+          ...item,
+          products: activeProducts,
+          labels: temp,
+        };
+      }
+
+      return { ...item, labels: temp };
+    });
+  };
+
+  const handleChangeFilter = (labels: { id: string; name: string }[]) => {
+    store.dispatch(setLabelSelected(labels));
+
+    const newData = getGroupProducts(labels);
+    setGroups(newData);
+  };
+
+  const handleRemoveFilter = (label: { id: string; name: string }) => () => {
+    const newLabels = activeLabels.filter((item) => item.id !== label.id);
+    store.dispatch(setLabelSelected(newLabels));
+
+    const newData = getGroupProducts(newLabels);
+    setGroups(newData);
+  };
+
   return (
     <>
       {customLoading ? (
@@ -615,12 +662,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           key={index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
           forceOnKeyChange
-          onChange={() => {
-            isOpenLabel.setValue(false);
-            isOpenGallery.setValue(false);
-            setActiveLabels([]);
-            setCollapseKey(collapseKey === index ? -1 : index);
-          }}
+          onChange={handleChangeCollapse(index)}
           header={
             <div style={{ width: '100%' }}>
               <div className="header-text flex-between text-uppercase">
@@ -715,9 +757,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                     >
                       <CheckBoxDropDown
                         items={group.labels}
-                        onChange={(values) => {
-                          setActiveLabels(values);
-                        }}
+                        onChange={handleChangeFilter}
                         viewAllTop={true}
                         textCapitalize={false}
                         placement={'bottomLeft'}
@@ -767,13 +807,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                                 </span>
                                 <RemoveIcon
                                   className={styles.removeIcon}
-                                  onClick={() => {
-                                    setActiveLabels(
-                                      activeLabels.filter(
-                                        (item: any) => item.id !== activeLabel.id,
-                                      ),
-                                    );
-                                  }}
+                                  onClick={handleRemoveFilter(activeLabel)}
                                 />
                               </div>
                             </div>
@@ -865,7 +899,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 showInquiryRequest={showInquiryRequest}
                 showActionMenu={showActionMenu}
                 hideFavorite={hideFavorite}
-                setCollapseKey={setCollapseKey}
               />
             ))}
           </div>
@@ -880,7 +913,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             showInquiryRequest={showInquiryRequest}
             showActionMenu={showActionMenu}
             hideFavorite={hideFavorite}
-            setCollapseKey={setCollapseKey}
           />
         ))}
       </div>
