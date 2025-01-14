@@ -71,6 +71,7 @@ interface CollapseProductListProps {
   showActionMenu?: boolean;
   showInquiryRequest?: boolean;
   hideFavorite?: boolean;
+  isLoading?: boolean;
 }
 
 interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo'> {
@@ -448,6 +449,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   showActionMenu = false,
   showInquiryRequest = false,
   hideFavorite = false,
+  isLoading,
 }) => {
   const { isMobile } = useScreen();
   const loading = useAppSelector(loadingSelector);
@@ -481,6 +483,10 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
       store.dispatch(setCollapseKey(-1));
     };
   }, []);
+
+  useEffect(() => {
+    setCustomLoading(!!isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
     if (!data) return;
