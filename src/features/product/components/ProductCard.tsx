@@ -44,7 +44,7 @@ import {
 import { deleteCollection, updateCollection } from '@/services';
 import { capitalize, flatMap, truncate, uniqBy } from 'lodash';
 
-import { resetProductState, setProductList } from '../reducers';
+import { resetProductState, setCollapseKey, setLabelSelected, setProductList } from '../reducers';
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
@@ -81,7 +81,6 @@ interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo
   showSpecify?: boolean;
   isCustomProduct?: boolean;
   onSpecifyClick?: () => void;
-  setCollapseKey?: (key: number) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -94,7 +93,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showActionMenu,
   isCustomProduct,
   onSpecifyClick,
-  setCollapseKey,
 }) => {
   const { isTablet } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
@@ -156,7 +154,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const reloadProductInformation = () => {
-    setCollapseKey?.(-1);
+    store.dispatch(setLabelSelected([]));
+    store.dispatch(setCollapseKey(-1));
 
     if (isCustomProduct) {
       const filterBy =
@@ -453,11 +452,12 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const { isMobile } = useScreen();
   const loading = useAppSelector(loadingSelector);
   const { data, allProducts, filter } = useAppSelector((state) => state.product.list);
+  const activeLabels = useAppSelector((state) => state.product.labelSelected);
+  const collapseKey = useAppSelector((state) => state.product.collapseKey);
+
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
-  const [collapseKey, setCollapseKey] = useState<number>(-1);
-  const [activeLabels, setActiveLabels] = useState<{ id: string; name: string }[]>([]);
   const [groups, setGroups] = useState<any>([]);
   const isOpenGallery = useBoolean(false);
   const isOpenLabel = useBoolean(false);
@@ -477,6 +477,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      store.dispatch(setLabelSelected([]));
+      store.dispatch(setCollapseKey(-1));
     };
   }, []);
 
@@ -584,8 +586,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   const handleChangeCollapse = (index: number) => () => {
     isOpenLabel.setValue(false);
     isOpenGallery.setValue(false);
-    setActiveLabels([]);
-    setCollapseKey(collapseKey === index ? -1 : index);
+    store.dispatch(setCollapseKey(collapseKey === index ? -1 : index));
+    store.dispatch(setLabelSelected([]));
   };
 
   const getGroupProducts = (labels: any[]) => {
@@ -625,7 +627,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   };
 
   const handleChangeFilter = (labels: { id: string; name: string }[]) => {
-    setActiveLabels(labels);
+    store.dispatch(setLabelSelected(labels));
 
     const newData = getGroupProducts(labels);
     setGroups(newData);
@@ -633,7 +635,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
 
   const handleRemoveFilter = (label: { id: string; name: string }) => () => {
     const newLabels = activeLabels.filter((item) => item.id !== label.id);
-    setActiveLabels(newLabels);
+    store.dispatch(setLabelSelected(newLabels));
 
     const newData = getGroupProducts(newLabels);
     setGroups(newData);
@@ -897,7 +899,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 showInquiryRequest={showInquiryRequest}
                 showActionMenu={showActionMenu}
                 hideFavorite={hideFavorite}
-                setCollapseKey={setCollapseKey}
               />
             ))}
           </div>
@@ -912,7 +913,6 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             showInquiryRequest={showInquiryRequest}
             showActionMenu={showActionMenu}
             hideFavorite={hideFavorite}
-            setCollapseKey={setCollapseKey}
           />
         ))}
       </div>

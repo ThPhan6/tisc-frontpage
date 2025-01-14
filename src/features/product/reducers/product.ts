@@ -33,9 +33,14 @@ interface ProductState {
   allPreSelectAttributes: SpecificationAttributeGroup[];
 
   attributeList: ProductAttributeWithSubAdditionByType;
+
+  labelSelected: { id: string; name: string }[]; /// label filter on product list
+  collapseKey: number; /// collapse key for product list
 }
 
 const initialState: ProductState = {
+  collapseKey: -1,
+  labelSelected: [],
   attributeList: {
     feature: [],
     general: [],
@@ -258,6 +263,13 @@ const productSlice = createSlice({
       };
     },
 
+    setLabelSelected: (state, action: PayloadAction<{ id: string; name: string }[]>) => {
+      state.labelSelected = action.payload;
+    },
+    setCollapseKey: (state, action: PayloadAction<number>) => {
+      state.collapseKey = action.payload;
+    },
+
     setActualAttributeList: (
       state,
       action: PayloadAction<ProductAttributeWithSubAdditionByType>,
@@ -290,6 +302,8 @@ export const {
   closeActiveSpecAttributeGroup,
   getAllPreSelectAttributes,
   setActualAttributeList,
+  setLabelSelected,
+  setCollapseKey,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
