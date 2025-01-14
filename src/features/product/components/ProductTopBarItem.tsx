@@ -89,7 +89,7 @@ export const FilterItem: React.FC<FilterItemProps> = ({ title, name = '', onDele
           if (onDelete) {
             onDelete();
           } else {
-            onRemove(name);
+            onRemove?.(name);
           }
         }}
       />
