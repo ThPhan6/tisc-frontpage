@@ -309,7 +309,7 @@ const BrandProductListPage: React.FC = () => {
       <CollapseProductList
         // showBrandLogo={filter?.name === 'category_id'}
         showInquiryRequest
-        isLoadMore={isLoading}
+        isLoading={isLoading}
       />
     </PageContainer>
   );
