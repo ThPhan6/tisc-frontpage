@@ -13,7 +13,12 @@ import { useQuery } from '@/helper/hook';
 import { removeUrlParams, setUrlParams, showImageUrl, updateUrlParams } from '@/helper/utils';
 import { onCompanyFilterClick } from '@/pages/Designer/Products/CustomLibrary/hook';
 
-import { setProductList, setProductListSorter } from '../reducers';
+import {
+  setCollapseKey,
+  setLabelSelected,
+  setProductList,
+  setProductListSorter,
+} from '../reducers';
 import { SortOrder } from '../types';
 import { CategoryNestedList } from '@/features/categories/types';
 import store, { useAppSelector } from '@/reducers';
@@ -44,6 +49,8 @@ export const onCategoryFilterClick = (
       filter: [...removeFilter, cateFilter],
     }),
   );
+  store.dispatch(setLabelSelected([]));
+  store.dispatch(setCollapseKey(-1));
 };
 
 export const onBrandFilterClick = (
@@ -90,6 +97,8 @@ export const onCollectionFilterClick = (
       filter: [...removeFilter, collFilter],
     }),
   );
+  store.dispatch(setLabelSelected([]));
+  store.dispatch(setCollapseKey(-1));
 };
 
 export interface FormatFilterForDropDownProps {
@@ -415,6 +424,8 @@ export const useProductListFilterAndSorter = (fetchs: {
     }
 
     dispatch(setProductList({ filter: newFilter, brandSummary: undefined }));
+    dispatch(setLabelSelected([]));
+    dispatch(setCollapseKey(-1));
   };
 
   const renderItemTopBar = (
