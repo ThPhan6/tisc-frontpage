@@ -20,6 +20,8 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
+  setCollapseKey,
+  setLabelSelected,
   setProductList,
   setProductSummary,
 } from '@/features/product/reducers';
@@ -406,6 +408,9 @@ export const SelectBrandModal = () => {
           setViewProductLitsByCollection();
         }
         onChecked(v);
+
+        store.dispatch(setLabelSelected([]));
+        store.dispatch(setCollapseKey(-1));
       }}
     />
   );
