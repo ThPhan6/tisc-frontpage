@@ -71,6 +71,8 @@ export const onBrandFilterClick = (
       filter: [...removeFilter, brandFilter],
     }),
   );
+  store.dispatch(setLabelSelected([]));
+  store.dispatch(setCollapseKey(-1));
 };
 
 export const onCollectionFilterClick = (
