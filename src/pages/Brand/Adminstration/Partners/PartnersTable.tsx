@@ -487,6 +487,7 @@ const PartnersTable = () => {
       </div>
 
       <CustomTable
+        tableClass={styles.partnerTable}
         columns={columns}
         fetchDataFunc={isTabCompany ? getListPartnerCompanies : getListPartnerContacts}
         hasPagination
