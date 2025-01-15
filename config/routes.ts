@@ -680,7 +680,7 @@ const routes = [
         routes: [
           {
             path: PATH.brandPartners,
-            component: './Brand/Adminstration/Partners/PartnersTable',
+            component: './Brand/Adminstration/Partners',
             hideInMenu: true,
           },
           {

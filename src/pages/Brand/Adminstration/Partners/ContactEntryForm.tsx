@@ -29,7 +29,7 @@ import { MemorizeTableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CustomTabs } from '@/components/Tabs';
 import { Title } from '@/components/Typography';
-import { PartnerTabKey } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import { PartnerTabKey } from '@/pages/Brand/Adminstration/Partners';
 import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
 enum Gender {
