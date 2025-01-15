@@ -7,11 +7,9 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import store from '@/reducers';
-import { setCompaniesPage, setContactsPage } from '@/reducers/partner';
 import { Company, CompanyForm, ContactForm } from '@/types';
 
-import { CommonPartnerType } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import { CommonPartnerType } from '@/pages/Brand/Adminstration/Partners';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -32,7 +30,6 @@ export const getListPartnerCompanies = (
   })
     .then((response: PartnerCompanyResponse) => {
       const { partners, pagination } = response.data;
-      store.dispatch(setCompaniesPage(pagination.page));
       callback({
         data: partners,
         pagination: {
@@ -58,7 +55,6 @@ export const getListPartnerContacts = (
   })
     .then((response) => {
       const { partner_contacts, pagination } = response.data;
-      store.dispatch(setContactsPage(pagination.page));
       callback({
         data: partner_contacts,
         pagination: {
