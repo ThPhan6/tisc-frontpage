@@ -10,3 +10,5 @@ export * from './label.api';
 export * from './partner.api';
 export * from './company.api';
 export * from './dynamic-category.api';
+export * from './warehouse.api';
+export * from './inventory.api';

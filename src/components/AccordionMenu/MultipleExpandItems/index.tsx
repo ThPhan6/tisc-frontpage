@@ -1,10 +1,13 @@
 import { ChangeEvent, MouseEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 
+import { PATH } from '@/constants/path';
 import { message } from 'antd';
+import { useHistory } from 'umi';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { sortObjectArray } from '@/helper/utils';
 import { difference, filter, trimStart } from 'lodash';
 
@@ -52,12 +55,14 @@ const AccordionMenuItems = ({
     parent_id: '',
   });
   const [currentMoveToParentList, setCurrentMoveToParentList] = useState('');
-
   const [editStatus, setEditStatus] = useState<{
     [key: string]: { value: string; isEditing: boolean };
   }>({});
 
   const treeSelectRef = useRef<HTMLDivElement>(null);
+  const { isMobile } = useScreen();
+
+  const history = useHistory();
 
   const handleClickOutside = (event: MouseEvent) => {
     if (treeSelectRef.current && !treeSelectRef.current.contains(event.target as Node)) {
@@ -177,6 +182,41 @@ const AccordionMenuItems = ({
     if (success) setExpandedItems([]);
   };
 
+  const getCategoryPath = (item: AccordionItem, items: AccordionItem[]) => {
+    const path = [];
+    let currentItem: AccordionItem | null = item;
+
+    // Traverse upwards through the tree structure to build the full path
+    while (currentItem) {
+      path.unshift(currentItem.name); // Add the current item name at the beginning of the path
+      const parentItem = items.find((parent) => parent.id === currentItem?.parent_id) || null;
+      currentItem = parentItem;
+    }
+
+    return path.join(' / ');
+  };
+
+  const handleItemClick = (clickedItem: AccordionItem, level: number) => () => {
+    const isLastLevel = level === levels;
+
+    if (!isLastLevel) {
+      toggleExpand(clickedItem.id ?? '', level)();
+      return;
+    }
+
+    const fullPath = getCategoryPath(clickedItem, [...accordionItems]);
+    if (!isEditMode) {
+      history.push({
+        pathname: PATH.brandPricesInventoriesTable,
+        search: `?categories=${encodeURIComponent(fullPath)}`,
+        state: {
+          categoryId: clickedItem.id,
+          brandId: clickedItem.relation_id,
+        },
+      });
+    }
+  };
+
   const renderItems = (level: number, parentId: string | null = null) => {
     return sortObjectArray(accordionItems, 'name')
       .filter((item) => item.level === level && item.parent_id === parentId)
@@ -188,7 +228,7 @@ const AccordionMenuItems = ({
           <>
             <li
               key={item.id}
-              onClick={toggleExpand(item.id, level)}
+              onClick={handleItemClick(item, level)}
               className={`${styles.accordion_menu_item_action}`}
             >
               {isEditing ? (
@@ -272,7 +312,11 @@ const AccordionMenuItems = ({
 
             {currentMoveToParentList === item.id && (
               <div ref={treeSelectRef}>
-                <TreeSelect data={groupItems} onItemSelect={handleItemSelect} />
+                <TreeSelect
+                  data={groupItems}
+                  onItemSelect={handleItemSelect}
+                  additionalClassName="pr-16"
+                />
               </div>
             )}
           </>
@@ -288,7 +332,10 @@ const AccordionMenuItems = ({
         : expandedItems.filter((id) => accordionItems.some((item) => item.id === id));
 
     return (
-      <div key={level} className={styles.accordion_menu_items}>
+      <div
+        key={level}
+        className={`${styles.accordion_menu_items} ${!isMobile ? 'border-right-black-inset' : ''}`}
+      >
         <AccordionMenuInput
           data={accordionItems}
           isEditMode={isEditMode}
@@ -307,7 +354,7 @@ const AccordionMenuItems = ({
   };
 
   return (
-    <div className="d-flex w-full">
+    <div className={`d-flex w-full ${isMobile ? 'flex-col overflow-y-scroll' : ''}`}>
       {Array.from({ length: levels }, (_, i) => renderColumn(i + 1))}
     </div>
   );

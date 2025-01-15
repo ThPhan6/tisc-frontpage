@@ -426,8 +426,8 @@ export const useProductListFilterAndSorter = (fetchs: {
     }
 
     dispatch(setProductList({ filter: newFilter, brandSummary: undefined }));
-    store.dispatch(setLabelSelected([]));
-    store.dispatch(setCollapseKey(-1));
+    dispatch(setLabelSelected([]));
+    dispatch(setCollapseKey(-1));
   };
 
   const renderItemTopBar = (

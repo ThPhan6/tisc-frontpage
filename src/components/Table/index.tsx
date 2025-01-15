@@ -7,6 +7,7 @@ import type {
   FilterValue,
   SortOrder,
   SorterResult,
+  TableRowSelection,
 } from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
@@ -97,6 +98,7 @@ type GetComponentProps<DataType> = (
 ) => React.HTMLAttributes<any> | React.TdHTMLAttributes<any>;
 
 export interface CustomTableProps {
+  rowSelection?: TableRowSelection<any>;
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
   expandableConfig?: ExpandableTableConfig;
@@ -124,6 +126,8 @@ export interface CustomTableProps {
   isActiveOnRow?: boolean;
   dynamicPageSize?: boolean;
   hasSummary?: boolean;
+  hoverOnRow?: boolean;
+  callbackFinishApi?: () => void;
 }
 
 /// update order compared to BE
@@ -132,6 +136,7 @@ const converseOrder = (order: SortOrder | undefined) =>
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const {
+    rowSelection,
     expandable,
     fetchDataFunc,
     title,
@@ -150,6 +155,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     onFilterLoad = true,
     dynamicPageSize,
     hasSummary,
+    hoverOnRow = true,
+    callbackFinishApi,
   } = props;
 
   const DEFAULT_TABLE_ROW = 44;
@@ -240,7 +247,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     return paginationParams;
   };
 
-  const fetchData = (params: PaginationParams) => {
+  const fetchData = (params: PaginationParams, newData?: any[]) => {
+    if (newData?.length) {
+      setData(newData);
+      return;
+    }
+
     showPageLoading();
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
@@ -250,6 +262,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       if (response.pagination) {
         setPagination(response.pagination);
       }
+      callbackFinishApi?.();
     });
   };
 
@@ -301,12 +314,17 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         pageSize: getTablePaginationSize(),
       };
       return {
-        reload() {
-          fetchData({
-            pagination: newPagination,
-            sorter: currentSorter,
-            ...extraParams,
-          });
+        data,
+
+        reload(newData: any[] = []) {
+          fetchData(
+            {
+              pagination: newPagination,
+              sorter: currentSorter,
+              ...extraParams,
+            },
+            newData,
+          );
         },
 
         reloadWithFilter(payload?: PaginationRequestParams) {
@@ -323,7 +341,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       };
     },
 
-    [pagination.pageSize, extraParams],
+    [pagination.pageSize, extraParams, JSON.stringify(currentSorter), JSON.stringify(data)],
   );
 
   const renderHeaderTable = () => {
@@ -347,19 +365,22 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       {renderHeaderTable()}
 
       <Table
+        rowSelection={rowSelection}
         className={tableClass}
         columns={columns}
         rowKey={rowKey}
         rowClassName={(record) => {
+          const classes = [];
           if (record[rowKey] === expanded) {
-            return `custom-expanded ${isActiveOnRow ? 'hover-on-row hover-table-on-row' : ''} ${
-              onRow ? 'cursor-pointer hover-on-row' : ''
-            } ` as any;
+            classes.push('custom-expanded');
+            if (isActiveOnRow) classes.push('hover-on-row', 'hover-table-on-row');
           }
-          if (onRow) {
-            return 'cursor-pointer hover-on-row';
-          }
-          return isActiveOnRow ? 'hover-on-row' : '';
+
+          if (onRow) classes.push('cursor-pointer');
+          if (onRow && hoverOnRow) classes.push('hover-on-row');
+          if (isActiveOnRow && record[rowKey] !== expanded) classes.push('hover-on-row');
+
+          return classes.join(' ');
         }}
         onRow={onRow}
         dataSource={data}

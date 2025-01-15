@@ -1,0 +1,55 @@
+.inventory_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 24px;
+  background: #fff;
+
+  &_content {
+    display: flex;
+    align-items: center;
+
+    &_wrapper {
+      padding: 0 12px;
+      box-shadow: -0.5px 0 0 0 rgba(0, 0, 0, 0.3) inset;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        box-shadow: none;
+      }
+    }
+  }
+
+  &_value,
+  &_label {
+    font-weight: 500;
+  }
+
+  &_search_container {
+    padding-left: 12px;
+
+    box-shadow: 0.5px 0 0 0 rgba(0, 0, 0, 0.3) inset;
+
+    &:has(:global(.ant-input-disabled)) {
+      background: #f5f5f5;
+    }
+  }
+
+  :global(.ant-input) {
+    border: none;
+
+    &::placeholder {
+      color: #bfbfbf;
+      font-weight: 300;
+    }
+  }
+
+  @media screen and (max-width: 576px) {
+    &_label {
+      font-size: 9px;
+    }
+  }
+}

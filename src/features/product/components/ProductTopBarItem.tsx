@@ -394,7 +394,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
                   onClick={handleSelect(sub)}
                 >
                   <span
-                    className={`sub-label-name text-hover-medium mb-7 ${
+                    className={`sub-label-name text-hover-medium mb-6${
                       styles['label-name-width']
                     } ${isSubLabelNameSelected(sub.id!) ? styles['color-checked'] : ''}`}
                     style={{
@@ -639,9 +639,13 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         <span {...labelProps} onClick={handleDropdownClick} style={dropDownStyles}>
           {children}
           {hideDropdownIcon ? null : dropdownVisible.value ? (
-            <DropupIcon style={{ marginLeft: 8 }} />
+            <div style={{ width: 20, height: 20, marginLeft: 8 }}>
+              <DropupIcon />
+            </div>
           ) : (
-            <DropdownIcon style={{ marginLeft: 8 }} />
+            <div style={{ width: 20, height: 20, marginLeft: 8 }}>
+              <DropdownIcon />
+            </div>
           )}
         </span>
       </Dropdown>
