@@ -327,7 +327,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           );
         },
 
-        reloadWithFilter() {
+        reloadWithFilter(payload?: PaginationRequestParams) {
           fetchData({
             pagination: {
               ...newPagination,
@@ -335,17 +335,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
             },
             sorter: currentSorter,
             ...extraParams,
-          });
-        },
-
-        reloadWithPage(page: number) {
-          fetchData({
-            pagination: {
-              ...newPagination,
-              current: page,
-            },
-            sorter: currentSorter,
-            ...extraParams,
+            ...payload,
           });
         },
       };
