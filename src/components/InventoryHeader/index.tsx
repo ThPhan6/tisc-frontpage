@@ -7,7 +7,7 @@ import { ReactComponent as MagnifyingGlassIcon } from '@/assets/icons/ic-search.
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { formatCurrencyNumber } from '@/helper/utils';
-import { getSummary } from '@/services';
+import { getBrandCurrencySummary } from '@/services';
 import { debounce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
@@ -33,12 +33,17 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
   const [isShowModal, setIsShowModal] = useState(false);
   const { summaryFinancialRecords, currencySelected } = useAppSelector((state) => state.summary);
 
+  const currencySymbol =
+    summaryFinancialRecords.currencies.find(
+      (cur) => cur.code.toLowerCase() === currencySelected.toLowerCase(),
+    )?.symbol ?? '';
+
   const location = useLocation<{ categoryId: string; brandId: string }>();
 
   useEffect(() => {
     const brandId = location.state?.brandId;
     if (brandId) {
-      const fetchSummary = async () => await getSummary(brandId);
+      const fetchSummary = async () => await getBrandCurrencySummary(brandId);
       fetchSummary();
     }
   }, [location.state?.brandId]);
@@ -49,7 +54,7 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
     {
       id: '1',
       value: currencySelected,
-      label: 'BASE CURRENTCY',
+      label: 'BASE CURRENCY',
       rightAction: <SingleRightFormIcon className="cursor-pointer" width={16} height={16} />,
     },
     {
@@ -59,9 +64,13 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
     },
     {
       id: '3',
-      value: formatCurrencyNumber(Number(summaryFinancialRecords.total_stock || 0), undefined, {
-        maximumFractionDigits: 2,
-      }),
+      value: `${currencySymbol} ${formatCurrencyNumber(
+        Number(summaryFinancialRecords.total_stock || 0),
+        undefined,
+        {
+          maximumFractionDigits: 2,
+        },
+      )}`,
       label: 'TOTAL STOCK VALUE',
     },
   ];
@@ -81,7 +90,12 @@ const InventoryHeader = ({ onSearch, onSaveCurrency, hideSearch }: InventoryHead
       <section className={styles.inventory_header_content}>
         {data.map((item) => (
           <div key={item.id} className={styles.inventory_header_content_wrapper}>
-            <BodyText customClass={styles.inventory_header_value} fontFamily="Roboto" level={6}>
+            <BodyText
+              customClass={styles.inventory_header_value}
+              fontFamily="Roboto"
+              level={5}
+              style={{ height: 22 }}
+            >
               {item.value}
             </BodyText>
             <div

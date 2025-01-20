@@ -8,7 +8,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { PartnerContactStatus } from '@/types';
 
-import { FilterKeys } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import { FilterKeys } from '@/pages/Brand/Adminstration/Partners';
 
 import styles from './index.less';
 

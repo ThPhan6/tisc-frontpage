@@ -24,7 +24,7 @@ const GroupRadioList: React.FC<GroupRadioListProps> = (props) => {
   const { data, selected, onChange } = props;
 
   return (
-    <div className={styles.radioListContainer}>
+    <div className={`${styles.radioListContainer} radio-list-container`}>
       {data.map((item, key) => (
         <div className={styles.radioListItem} key={key}>
           {item.heading && isString(item.heading) ? (

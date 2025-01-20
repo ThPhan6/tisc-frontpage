@@ -1,7 +1,8 @@
 import { Table, TableColumnsType } from 'antd';
 
+import { PriceAndInventoryColumn } from '@/types';
+
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Molecules/WareHouse.less';
-import type { PriceAndInventoryColumn } from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable';
 
 interface WareHouseColumn {
   id: string;

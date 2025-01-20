@@ -89,7 +89,7 @@ export const FilterItem: React.FC<FilterItemProps> = ({ title, name = '', onDele
           if (onDelete) {
             onDelete();
           } else {
-            onRemove(name);
+            onRemove?.(name);
           }
         }}
       />
@@ -164,6 +164,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
       <Menu
         style={{
           width: DEFAULT_WIDTH,
+          maxWidth: 'none',
           position: subLevel ? 'absolute' : 'relative',
           top: subLevel ? 0 : undefined,
           left: getPositionLeftMenu(),
@@ -339,6 +340,7 @@ const CheckboxCascadingMenu: FC<CheckboxMenuProps> = ({
     <Menu
       style={{
         width: DEFAULT_WIDTH,
+        maxWidth: 'none',
         position: subLevel ? 'absolute' : 'relative',
         left: getPositionLeftMenu(),
         boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
@@ -639,9 +641,13 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         <span {...labelProps} onClick={handleDropdownClick} style={dropDownStyles}>
           {children}
           {hideDropdownIcon ? null : dropdownVisible.value ? (
-            <DropupIcon style={{ marginLeft: 8 }} />
+            <div style={{ width: 20, height: 20, marginLeft: 8 }}>
+              <DropupIcon />
+            </div>
           ) : (
-            <DropdownIcon style={{ marginLeft: 8 }} />
+            <div style={{ width: 20, height: 20, marginLeft: 8 }}>
+              <DropdownIcon />
+            </div>
           )}
         </span>
       </Dropdown>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Table, type TableColumnsType, message } from 'antd';
 
@@ -6,10 +6,9 @@ import { ReactComponent as TrashIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useScreen } from '@/helper/common';
-import { useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber } from '@/helper/utils';
 import { fetchUnitType } from '@/services';
-import { filter, isNil, map, sortBy } from 'lodash';
+import { filter, isNil, map } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
 import type { ModalType } from '@/reducers/modal';
@@ -17,8 +16,6 @@ import { IPriceAndInventoryForm, PriceAttribute, type VolumePrice } from '@/type
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import InputGroup, { InputGroupProps } from '@/components/EntryForm/InputGroup';
-import { FormGroup } from '@/components/Form';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import InfoModal from '@/components/Modal/InfoModal';
 import UnitType, { UnitItem } from '@/components/Modal/UnitType';
 import { BodyText, CormorantBodyText, Title } from '@/components/Typography';
@@ -136,30 +133,35 @@ const baseAndVolumePriceInfo = {
 interface PriceFormProps {
   isShowModal: ModalType;
   onToggleModal: (type: ModalType) => () => void;
-  formData: PriceAttribute;
+  formData: IPriceAndInventoryForm;
   setFormData: React.Dispatch<React.SetStateAction<IPriceAndInventoryForm>>;
-  tableData: VolumePrice[];
-  setTableData: React.Dispatch<React.SetStateAction<VolumePrice[]>>;
 }
 
-const PriceForm = ({
-  isShowModal,
-  onToggleModal,
-  formData,
-  setFormData,
-  tableData,
-  setTableData,
-}: PriceFormProps) => {
+const PriceForm = ({ isShowModal, onToggleModal, formData, setFormData }: PriceFormProps) => {
   const { isExtraLarge, isMobile } = useScreen();
 
-  const { currencySelected, unitType } = useAppSelector((state) => state.summary);
+  const { currencySelected, unitType, summaryFinancialRecords } = useAppSelector(
+    (state) => state.summary,
+  );
+
+  const [focusOnField, setFocusOnField] = useState<keyof PriceAttribute | null>(null);
+
+  const currencySymbol =
+    summaryFinancialRecords.currencies.find(
+      (cur) => cur.code.toLowerCase() === currencySelected.toLowerCase(),
+    )?.symbol ?? '';
 
   const disableAddPrice =
     !formData.unit_price ||
     !formData.unit_type ||
+    !formData.min_quantity ||
+    !formData.max_quantity ||
     !formData.discount_rate ||
     Number(formData.discount_rate) > 100 ||
-    Number(formData.discount_rate) < 0;
+    Number(formData.discount_rate) < 0 ||
+    Number(formData.min_quantity) > Number(formData.max_quantity) ||
+    Number(formData.min_quantity) < 0 ||
+    Number(formData.max_quantity) < 0;
 
   const unitTypeCode = useMemo(
     () => unitType.find((item) => item.id === formData.unit_type)?.code,
@@ -171,7 +173,7 @@ const PriceForm = ({
     getUnitType();
   }, []);
 
-  const ensureValidPricesAndQuantities = () => {
+  const ensureValidPricesAndQuantities = (volumePrice: VolumePrice) => {
     const {
       unit_price,
       unit_type,
@@ -198,13 +200,21 @@ const PriceForm = ({
       return false;
     }
 
+    const newVolumePrices = [...(formData.price.volume_prices ?? []), volumePrice];
+    const discountRates = newVolumePrices.map((el) => Number(el.discount_rate));
+    const duplicatedDiscountRates = discountRates.filter(
+      (rate, index) => discountRates.indexOf(rate) !== index,
+    );
+
+    if (duplicatedDiscountRates?.length) {
+      message.warn('Discount rate already exists. Please choose a different rate.');
+      return false;
+    }
+
     return true;
   };
 
   const handleSaveCell = (id: string, columnKey: string, newValue: string) => {
-    setTableData((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [columnKey]: newValue } : item)),
-    );
     setFormData((prev) => ({
       ...prev,
       price: {
@@ -230,7 +240,6 @@ const PriceForm = ({
   };
 
   const handleRemoveRow = (id: string) => () => {
-    setTableData((prev) => prev.filter((item) => item.id !== id));
     setFormData((prev) => ({
       ...prev,
       price: {
@@ -256,7 +265,7 @@ const PriceForm = ({
         width: '20%',
         render: (value: number) => (
           <BodyText fontFamily="Roboto" level={5}>
-            {formatCurrencyNumber(value)}
+            {currencySymbol} {formatCurrencyNumber(value, undefined, { maximumFractionDigits: 2 })}
           </BodyText>
         ),
       },
@@ -298,11 +307,12 @@ const PriceForm = ({
           <TrashIcon
             className="cursor-pointer indigo-dark-variant"
             onClick={handleRemoveRow(item.id ?? '')}
+            style={{ marginTop: 4 }}
           />
         ),
       },
     ],
-    [handleRemoveRow, renderUpdatableCell],
+    [handleRemoveRow, renderUpdatableCell, currencySymbol],
   );
 
   const handleFormChange =
@@ -312,15 +322,15 @@ const PriceForm = ({
 
       setFormData((prev) => ({
         ...prev,
-        [field]: ['sku', 'description'].includes(field)
-          ? value
-          : value === ''
-          ? null
-          : Number(value),
+        [field]: value,
         discount_price:
           field === 'discount_rate' ? (value * Number(prev.unit_price)) / 100 : prev.discount_price,
       }));
     };
+
+  const handleFocusInput = (field: keyof PriceAttribute) => () => {
+    setFocusOnField(field);
+  };
 
   const handleImageChange = (updatedImages: []) =>
     setFormData((prev) => ({ ...prev, image: updatedImages }));
@@ -329,18 +339,16 @@ const PriceForm = ({
     setFormData((prev) => ({ ...prev, [field]: '' }));
 
   const handleAddRow = () => {
-    if (!ensureValidPricesAndQuantities()) return;
-
-    const newRow = {
-      id: `${tableData?.length + 1}`,
-      discount_price: formData?.discount_price ?? null,
-      discount_rate: formData?.discount_rate ?? null,
-      min_quantity: formData?.min_quantity ?? null,
-      max_quantity: formData?.max_quantity ?? null,
+    const newRow: VolumePrice = {
+      id: `${(formData.price.volume_prices?.length ?? 0) + 1}`,
+      discount_price: formData?.discount_price ? Number(formData.discount_price) : null,
+      discount_rate: formData?.discount_rate ? Number(formData.discount_rate) : null,
+      min_quantity: formData?.min_quantity ? Number(formData.min_quantity) : null,
+      max_quantity: formData?.max_quantity ? Number(formData.max_quantity) : null,
       unit_type: formData.unit_type,
     };
 
-    setTableData((prev = []) => [...prev, newRow]);
+    if (!ensureValidPricesAndQuantities(newRow)) return;
 
     setFormData((prev) => ({
       ...prev,
@@ -372,8 +380,8 @@ const PriceForm = ({
   const volumnDiscountInput: InputGroupProps[] = useMemo(
     () => [
       {
-        prefix: currencySelected,
-        value: formData.discount_price ? formData.discount_price : '0.00',
+        prefix: currencySymbol,
+        value: formData.discount_price ? formData.discount_price.toFixed(2) : '0.00',
         customClass: 'discount-price-area',
         readOnly: true,
         label: 'Volume Discount Price/Percentage :',
@@ -391,7 +399,7 @@ const PriceForm = ({
         readOnly: !formData.unit_price,
       },
     ],
-    [formData.discount_price, formData.discount_rate, formData.unit_price, currencySelected],
+    [formData.discount_price, formData.discount_rate, formData.unit_price, currencySymbol],
   );
 
   const minMaxInput: InputGroupProps[] = useMemo(
@@ -450,15 +458,22 @@ const PriceForm = ({
               onChange={handleFormChange('sku')}
               onDelete={handleClearInputValue('sku')}
             />
-            <FormGroup label="Description" layout="vertical">
-              <CustomTextArea
-                maxLength={120}
-                boxShadow
-                value={formData.description}
-                placeholder="type text"
-                onChange={handleFormChange('description')}
-              />
-            </FormGroup>
+
+            <InputGroup
+              label="Description"
+              fontLevel={3}
+              maxLength={120}
+              hasPadding
+              hasHeight
+              hasBoxShadow
+              colorPrimaryDark
+              colorRequired="tertiary"
+              value={formData.description}
+              placeholder="type text"
+              deleteIcon
+              onChange={handleFormChange('description')}
+              onDelete={handleClearInputValue('description')}
+            />
           </div>
 
           <div className={styles.category_form_upload_image_wrapper}>
@@ -477,8 +492,16 @@ const PriceForm = ({
             placeholder="type price"
             required
             fontLevel={3}
-            addonBefore={currencySelected}
-            value={formData?.unit_price ?? undefined}
+            addonBefore={currencySymbol}
+            value={
+              isNil(formData?.unit_price) ||
+              isNaN(formData?.unit_price) ||
+              String(formData?.unit_price) === ''
+                ? undefined
+                : focusOnField === 'unit_price'
+                ? formData.unit_price
+                : Number(formData.unit_price).toFixed(2)
+            }
             hasBoxShadow
             hasPadding
             type="number"
@@ -487,7 +510,12 @@ const PriceForm = ({
             colorRequired="tertiary"
             onChange={handleFormChange('unit_price')}
             onDelete={handleClearInputValue('unit_price')}
+            onFocus={handleFocusInput('unit_price')}
+            onBlur={() => {
+              setFocusOnField(null);
+            }}
             deleteIcon
+            forceDisplayDeleteIcon
           />
           <InputGroup
             label="Unit Type"
@@ -585,11 +613,10 @@ const PriceForm = ({
         </div>
 
         <Table
-          dataSource={sortBy(tableData, 'min_quantity')}
+          dataSource={formData?.price?.volume_prices ?? []}
           columns={priceColumn}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ x: 500, y: 185 }}
         />
       </div>
 

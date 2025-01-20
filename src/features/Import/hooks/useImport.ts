@@ -107,13 +107,17 @@ export const useImport = () => {
   };
 
   const handleDeleteHeader = (fileField: string) => () => {
+    const newError = { ...error };
+
     const newHeaderMatching = { ...headerMatching };
+    delete newError[newHeaderMatching[fileField]];
     delete newHeaderMatching[fileField];
 
     const newHeaders = [...headers].filter((header) => header !== fileField);
 
     store.dispatch(setHeaders(newHeaders));
     store.dispatch(setHeaderMatching(newHeaderMatching));
+    store.dispatch(setErrors(newError));
   };
 
   const handleChangeStep = (current: ImportStep) => {

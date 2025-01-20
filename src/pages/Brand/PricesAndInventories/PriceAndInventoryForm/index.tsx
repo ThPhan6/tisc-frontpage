@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { CompanyFunctionGroup } from '@/constants/util';
+import { CompanyFunctionalGroup } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Switch, message } from 'antd';
 import { useLocation } from 'umi';
@@ -14,17 +14,20 @@ import { extractDataBase64, validateRequiredFields } from '@/helper/utils';
 import {
   createInventory,
   exchangeCurrency,
+  getBrandCurrencySummary,
   getInventory,
   getListWarehouseByInventoryId,
   updateInventory,
 } from '@/services';
 import { isEmpty, isEqual, isNil, omit, pick, reduce, sortBy } from 'lodash';
 
+import { LocationDetail } from '@/features/locations/type';
 import type { ModalType } from '@/reducers/modal';
 import {
   IPriceAndInventoryForm,
   type PriceAttribute,
   type VolumePrice,
+  WarehouseItemMetric,
   initialInventoryFormData,
 } from '@/types';
 
@@ -40,7 +43,7 @@ import PriceForm from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/
 import styles from '@/pages/Brand/PricesAndInventories/PriceAndInventoryForm/PricesAndInentoryForm.less';
 import PriceAndInventoryTableStyle from '@/pages/Brand/PricesAndInventories/PriceAndInventoryTable/Templates/PriceAndInventoryTable.less';
 
-import { getWorkLocations } from '@/features/locations/api';
+import { getLocationPagination } from '@/features/locations/api';
 
 const getRequiredFields = (): {
   field: keyof PriceAttribute;
@@ -57,18 +60,16 @@ const PriceAndInventoryForm = () => {
   const inventoryId = useGetParamId();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('categories');
-  const isExtraLarge = useScreen().isExtraLarge;
+  const { isTablet } = useScreen();
   const entryFormWrapperStyle = {
-    height: 'calc(var(--vh) * 100 - 312px)',
+    height: !isTablet ? 'calc(var(--vh) * 100 - 302px)' : 'calc(var(--vh) * 100 - 278px)',
     padding: 0,
-    overflow: isExtraLarge ? 'unset' : 'auto',
+    overflow: !isTablet ? 'unset' : 'auto',
   };
 
   const [originalData, setOriginalData] =
     useState<IPriceAndInventoryForm>(initialInventoryFormData);
   const [formData, setFormData] = useState<IPriceAndInventoryForm>(initialInventoryFormData);
-
-  const [priceTableData, setPriceTableData] = useState<VolumePrice[]>([]);
 
   const [isShowModal, setIsShowModal] = useState<ModalType>('none');
 
@@ -76,42 +77,48 @@ const PriceAndInventoryForm = () => {
     return () => {
       setFormData(initialInventoryFormData);
       setOriginalData(initialInventoryFormData);
-      setPriceTableData([]);
     };
   }, []);
 
-  useEffect(() => {
-    const fetchLocation = async () => {
-      const res = await getWorkLocations();
-      if (res) {
-        const warehouses: any = res
-          .flatMap((country) =>
-            country.locations.map((el) => ({
-              ...el,
-              location_id: el.id,
-              el_id: el.id,
-              city_name: el.city_name,
-              country_name: el.country_name,
-              name: el.business_name,
-              in_stock: 0,
-              new_in_stock: 0,
-              convert: 0,
-            })),
-          )
-          .filter((item) => item.functional_type.toLowerCase() === CompanyFunctionGroup.warehouse);
+  const getLocationLogistic = async () => {
+    let newWarehouse: WarehouseItemMetric[] = [];
+
+    await getLocationPagination(
+      {
+        sort: 'business_name',
+        order: 'ASC',
+        functional_type: CompanyFunctionalGroup.LOGISTIC,
+      },
+      (res) => {
+        if (!res?.data?.length) return;
+
+        newWarehouse = res.data.map((el: LocationDetail) => ({
+          id: el.id,
+          location_id: el.id,
+          el_id: el.id,
+          city_name: el.city_name,
+          country_name: el.country_name,
+          name: el.business_name,
+          in_stock: 0,
+          new_in_stock: 0,
+          convert: 0,
+        }));
 
         setFormData((prev) => ({
           ...prev,
-          warehouses,
+          warehouses: newWarehouse,
         }));
-      }
-    };
+      },
+    );
 
-    fetchLocation();
-  }, []);
+    return newWarehouse;
+  };
 
   const fetchInventory = async () => {
-    if (!inventoryId) return;
+    if (!inventoryId) {
+      getLocationLogistic();
+      return;
+    }
 
     const res = await getInventory(inventoryId);
 
@@ -130,8 +137,12 @@ const PriceAndInventoryForm = () => {
     const newData: IPriceAndInventoryForm = {
       ...initialInventoryFormData,
       ...res,
+      price: {
+        ...res.price,
+        volume_prices: sortBy(res.price?.volume_prices, 'min_quantity'),
+      },
       image: !isEmpty(res?.image) ? [`/${res.image}`] : [],
-      unit_price: Number(res?.price?.unit_price ?? 0) * rate,
+      unit_price: Number((Number(res?.price?.unit_price ?? 0) * rate).toFixed(2)),
       unit_type: res?.price?.unit_type,
       warehouses:
         warehouse?.warehouses.map((el) => ({ ...el, new_in_stock: el.in_stock, convert: 0 })) ?? [],
@@ -141,7 +152,6 @@ const PriceAndInventoryForm = () => {
 
     setFormData(newData);
     setOriginalData(newData);
-    setPriceTableData(res.price?.volume_prices || []);
   };
 
   useEffect(() => {
@@ -193,13 +203,17 @@ const PriceAndInventoryForm = () => {
       ...pick(
         {
           ...payload,
-          ...((volumePricesChanged || isUnitPriceChanged) && { unit_price: formData.unit_price }),
+          ...((volumePricesChanged || isUnitPriceChanged) && {
+            unit_price: Number(formData.unit_price),
+          }),
           ...((volumePricesChanged || isUnitPriceChanged) && {
             volume_prices: !formData.price.volume_prices?.length
               ? []
-              : formData.price.volume_prices?.map((el) =>
-                  pick(el, ['max_quantity', 'min_quantity', 'discount_rate']),
-                ),
+              : formData.price.volume_prices?.map((el) => ({
+                  discount_rate: Number(el.discount_rate),
+                  min_quantity: Number(el.min_quantity),
+                  max_quantity: Number(el.max_quantity),
+                })),
           }),
           ...(warehousesChanged &&
             ({
@@ -325,24 +339,25 @@ const PriceAndInventoryForm = () => {
     }
 
     fetchInventory();
-    return;
+
+    if ('unit_price' in payload || 'warehouses' in payload) {
+      getBrandCurrencySummary(location.state.brandId);
+    }
   };
 
-  const handleSaveCurrecy = useCallback(
-    async (currency: string) => {
-      if (!currency) {
-        message.error('Please select a currency');
-        return;
-      }
+  const handleSaveCurrency = async (currency: string) => {
+    if (!currency) {
+      message.error('Please select a currency');
+      return;
+    }
 
-      const res = await exchangeCurrency(location.state.brandId, currency);
-      if (res) fetchInventory();
-    },
-    [location.state?.brandId],
-  );
+    const res = await exchangeCurrency(location.state.brandId, currency);
+    getBrandCurrencySummary(location.state.brandId);
+    if (res) fetchInventory();
+  };
 
   const pageHeaderRender = () => (
-    <InventoryHeader onSaveCurrency={handleSaveCurrecy} hideSearch={true} />
+    <InventoryHeader onSaveCurrency={handleSaveCurrency} hideSearch={true} />
   );
 
   return (
@@ -400,7 +415,15 @@ const PriceAndInventoryForm = () => {
 
         <EntryFormWrapper
           customClass={`${styles.category_form_entry_wrapper}`}
-          title={category ?? ''}
+          title={
+            <BodyText
+              fontFamily="Roboto"
+              level={4}
+              customClass="text-capitalize font-medium flex-1"
+            >
+              CATEGORY: {category?.split(' / ').pop()}
+            </BodyText>
+          }
           titleClassName={styles.category_form_heading_group_title}
           handleCancel={navigate({
             path: PATH.brandPricesInventoriesTable,
@@ -414,14 +437,12 @@ const PriceAndInventoryForm = () => {
           footerClass={styles.category_form_footer}
           extraFooterButton={<CustomSaveButton contentButton="Save" onClick={handleSave} />}
         >
-          <div className={`${styles.category_form_wrapper} ${isExtraLarge ? 'd-flex' : ''}`}>
+          <div className={`${styles.category_form_wrapper} ${!isTablet ? 'd-flex' : ''}`}>
             <PriceForm
               isShowModal={isShowModal}
               onToggleModal={handleToggleModal}
               formData={formData}
               setFormData={setFormData}
-              tableData={priceTableData}
-              setTableData={setPriceTableData}
             />
 
             <InventoryForm

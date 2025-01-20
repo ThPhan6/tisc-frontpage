@@ -41,7 +41,7 @@ import AuthorizedCountryModal from '@/features/distributors/components/Authorize
 import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
-import { PartnerTabKey } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import { PartnerTabKey } from '@/pages/Brand/Adminstration/Partners';
 import styles from '@/pages/Brand/Adminstration/Partners/styles/Partners.less';
 
 import { showPageLoading } from '@/features/loading/loading';

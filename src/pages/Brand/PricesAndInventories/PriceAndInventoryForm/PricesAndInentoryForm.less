@@ -25,6 +25,7 @@
 
   &_content {
     padding: 16px;
+    overflow-y: auto;
     background: #fff;
 
     &_title {
@@ -32,6 +33,10 @@
       font-size: 14px;
       line-height: calc(22 / 14);
       letter-spacing: 0.28px;
+    }
+
+    :global(.input-group-content) {
+      margin-bottom: 0;
     }
   }
 
@@ -160,10 +165,14 @@
     background: @primary-color-dark;
   }
 
+  :global(.ant-table-body) {
+    scrollbar-width: thin;
+  }
+
   :global(.ant-table-thead) {
     tr {
       :global(.ant-table-cell) {
-        padding: 8px 16px 4px 18px;
+        padding: 12px 2px 2px 2px;
         background: #fff;
         border: none;
         box-shadow: @border-bottom-black-inset;
@@ -185,6 +194,8 @@
   :global(.ant-table-tbody) {
     tr {
       :global(.ant-table-cell) {
+        height: 36px;
+        padding: 4px 0 0 0;
         border: none;
       }
     }

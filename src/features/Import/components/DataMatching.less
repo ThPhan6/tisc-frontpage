@@ -30,8 +30,8 @@
   :global(.data-matching-content) {
     display: flex;
     flex-direction: column;
+    gap: 4px;
     height: 100%;
-    // padding: 0 16px;
   }
 
   :global(.database-header-dropdown) {
@@ -46,7 +46,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: 28px;
+    height: 32px;
     padding: 0 16px;
 
     &:hover {
@@ -101,7 +101,13 @@
 }
 
 :global(.ant-dropdown) {
+  :global(.ant-dropdown-menu) {
+    min-width: 180px;
+    max-width: 180px;
+  }
+
   :global(.ant-dropdown-menu-item) {
-    min-height: 40px;
+    min-height: 32px;
+    padding: 6px 16px !important;
   }
 }

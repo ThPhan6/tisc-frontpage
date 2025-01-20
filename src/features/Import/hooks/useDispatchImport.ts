@@ -70,6 +70,12 @@ export const useDispatchDataImport = () => {
 
           if (isNumeric(value)) {
             unitPrices.push(value);
+          } else {
+            const unitPrice: string = value?.split(' ')?.[1];
+
+            if (isNumeric(unitPrice)) {
+              unitPrices.push(unitPrice);
+            }
           }
         }
 
@@ -180,9 +186,9 @@ export const useDispatchDataImport = () => {
   };
 
   const getWarehouses = (inventory: any) => {
-    const warehouseMatch: Pick<WarehouseRequest, 'index' | 'quantity'>[] = [];
+    const warehouseMatch: WarehouseRequest[] = [];
 
-    warehouseBusinessNames?.forEach((_warehouseName, wsIdx) => {
+    warehouses?.forEach((_warehouse, wsIdx) => {
       const { key: warehouseKey } = generateWarehouseName(wsIdx + 1);
       const { key: warehouseInStockKey } = generateWarehouseInStock(wsIdx + 1);
 
@@ -202,7 +208,7 @@ export const useDispatchDataImport = () => {
           if (!isNumeric(inventory[inStockKey])) return;
 
           warehouseMatch.push({
-            index: index - 1,
+            location_id: warehouses[index - 1].id,
             quantity: parseInt(inventory[inStockKey], 10),
           });
         });
@@ -217,7 +223,7 @@ export const useDispatchDataImport = () => {
       if (warehouseIndex < 0 || !isNumeric(inventory[warehouseInStockKey])) return;
 
       warehouseMatch.push({
-        index: warehouseIndex,
+        location_id: warehouses[warehouseIndex].id,
         quantity: parseInt(inventory[warehouseInStockKey], 10),
       });
     });
@@ -243,8 +249,14 @@ export const useDispatchDataImport = () => {
             newItem.description = item.description.toString().trim();
           }
 
-          if (isNumeric(item?.unit_price as any)) {
+          if (isNumeric(item?.unit_price)) {
             newItem.unit_price = Number(item.unit_price);
+          } else {
+            const unitPrice: string = item?.unit_price?.split(' ')?.[1];
+
+            if (isNumeric(unitPrice)) {
+              newItem.unit_price = Number(unitPrice);
+            }
           }
 
           if (isNumeric(item?.back_order as any)) {

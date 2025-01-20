@@ -7,7 +7,6 @@ import { getResponseMessage } from '@/helper/common';
 import {
   BrandAlphabet,
   BrandAssignTeamForm,
-  BrandAttributeSummary,
   BrandCard,
   BrandDesignProfile,
   BrandDetail,

@@ -4,7 +4,7 @@ import { Popover, TableColumnProps, TableProps } from 'antd';
 import { useLocation } from 'umi';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
-import { ReactComponent as PhotoIcon } from '@/assets/icons/photo.svg';
+import { ReactComponent as PhotoIcon } from '@/assets/icons/photo-18.svg';
 
 import { formatCurrencyNumber, showImageUrl } from '@/helper/utils';
 import { getGroupCategories, getListInventories } from '@/services';
@@ -40,15 +40,15 @@ const InventoryTable = ({
   onToggleModal,
   callbackFinishApi,
 }: InventoryTableProps) => {
-  const { currencySelected } = useAppSelector((state) => state.summary);
-
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const location = useLocation<{
     categoryId: string;
   }>();
   const [groupItems, setGroupItems] = useState<AccordionItem[]>([]);
 
-  const { unitType: unitTypeData } = useAppSelector((state) => state.summary);
+  const { unitType: unitTypeData, summaryFinancialRecords } = useAppSelector(
+    (state) => state.summary,
+  );
 
   useEffect(() => {
     const fetchGroupCategories = async () => {
@@ -145,13 +145,12 @@ const InventoryTable = ({
       {
         title: 'Image',
         dataIndex: 'image',
+        align: 'center',
         render: (image) => {
           return image ? (
-            <figure className={styles.category_table_figure}>
-              <img src={showImageUrl(`/${image}`)} alt="Image" />
-            </figure>
+            <img src={showImageUrl(`/${image}`)} width={24} height={24} alt="Image" />
           ) : (
-            <PhotoIcon width={35} height={32} />
+            <PhotoIcon style={{ marginTop: 6 }} />
           );
         },
       },
@@ -167,7 +166,7 @@ const InventoryTable = ({
         render: (_, item) => rowSelectedValue(item, item.description),
       },
       {
-        title: 'Unit Price',
+        title: 'Base Price',
         dataIndex: 'unit_price',
         align: 'center',
         render: (_, record) => {
@@ -179,6 +178,16 @@ const InventoryTable = ({
 
           const unitPrice = Number(record?.price?.unit_price ?? 0) * rate;
 
+          const currency =
+            orderBy(record?.price?.exchange_histories || [], 'created_at', 'desc')[0]
+              ?.to_currency ??
+            record?.price?.currency ??
+            '';
+
+          const currencySymbol =
+            summaryFinancialRecords.currencies.find(
+              (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+            )?.symbol ?? '';
           return renderEditableCell(
             {
               ...record,
@@ -188,7 +197,12 @@ const InventoryTable = ({
               },
             },
             'unit_price',
-            isEditMode ? Number(unitPrice.toFixed(2)) : formatCurrencyNumber(unitPrice),
+            isEditMode
+              ? Number(unitPrice.toFixed(2))
+              : `${currencySymbol} ${formatCurrencyNumber(unitPrice, 'en-us', {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                })}`,
           );
         },
       },
@@ -206,6 +220,7 @@ const InventoryTable = ({
             {rowSelectedValue(item, item.total_stock)}
             <div className="relative">
               <Popover
+                overlayClassName={styles.customPopover}
                 content={<WareHouse inventoryItem={item} />}
                 trigger="hover"
                 placement="bottom"
@@ -227,7 +242,11 @@ const InventoryTable = ({
           const onOrder = selectedRows?.[item.id]?.on_order ?? item?.on_order ?? 0;
           const quantity = onOrder - totalStock;
 
-          return <div className="red-magenta">{quantity <= 0 ? 0 : -quantity}</div>;
+          return (
+            <div className={quantity > 0 ? 'red-magenta' : ''}>
+              {quantity <= 0 ? '-' : -quantity}
+            </div>
+          );
         },
       },
       {
@@ -271,12 +290,20 @@ const InventoryTable = ({
         dataIndex: 'stock_value',
         render: (_, item) => {
           const currency =
-            orderBy(item.price.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ||
-            currencySelected;
+            orderBy(item?.price?.exchange_histories || [], 'created_at', 'desc')[0]?.to_currency ??
+            item?.price?.currency ??
+            '';
+
+          const currencySymbol =
+            summaryFinancialRecords.currencies.find(
+              (cur) => cur.code.toLowerCase() === currency.toLowerCase(),
+            )?.symbol ?? '';
+
           return rowSelectedValue(
             item,
-            `${currency} ${formatCurrencyNumber(Number(item.stock_value), undefined, {
+            `${currencySymbol} ${formatCurrencyNumber(Number(item.stock_value), 'en-us', {
               maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
             })}`,
           );
         },
@@ -302,9 +329,9 @@ const InventoryTable = ({
       isEditMode,
       JSON.stringify(selectedRows),
       selectedRowKeys,
-      currencySelected,
       unitTypeData,
       groupItems,
+      JSON.stringify(summaryFinancialRecords),
     ],
   );
 
@@ -332,6 +359,7 @@ const InventoryTable = ({
       }}
       onFilterLoad
       callbackFinishApi={callbackFinishApi}
+      dynamicPageSize
     />
   );
 };

@@ -1,20 +1,26 @@
 .warehouse {
   table {
     width: 420px;
-    padding: 4px 8px;
+    padding: 0;
   }
 
   :global(.ant-table-cell) {
+    padding: 1px 8px;
     border-top: none !important;
   }
 
   :global(.ant-table-thead) {
+    height: 32px;
+
     tr {
+      min-height: 24px;
+
       th {
         background: #fff;
       }
 
       :global(.ant-table-cell) {
+        padding: 0 8px;
         box-shadow: 0 -0.5px 0 0 @mono-color inset;
 
         &::before {
@@ -28,6 +34,11 @@
     tr {
       :global(.ant-table-cell) {
         border-bottom: none !important;
+      }
+
+      td {
+        padding: 4px 8px;
+        font-weight: 300;
       }
     }
   }

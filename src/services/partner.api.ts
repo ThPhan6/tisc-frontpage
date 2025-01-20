@@ -8,11 +8,9 @@ import {
   PaginationResponse,
 } from '@/components/Table/types';
 import { LocationGroupedByCountry } from '@/features/locations/type';
-import store from '@/reducers';
-import { setCompaniesPage, setContactsPage } from '@/reducers/partner';
-import { Company, CompanyForm, ContactRequest } from '@/types';
+import { Company, CompanyForm, ContactForm } from '@/types';
 
-import { CommonPartnerType } from '@/pages/Brand/Adminstration/Partners/PartnersTable';
+import { CommonPartnerType } from '@/pages/Brand/Adminstration/Partners';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -33,7 +31,6 @@ export const getListPartnerCompanies = (
   })
     .then((response: PartnerCompanyResponse) => {
       const { partners, pagination } = response.data;
-      store.dispatch(setCompaniesPage(pagination.page));
       callback({
         data: partners,
         pagination: {
@@ -59,7 +56,6 @@ export const getListPartnerContacts = (
   })
     .then((response) => {
       const { partner_contacts, pagination } = response.data;
-      store.dispatch(setContactsPage(pagination.page));
       callback({
         data: partner_contacts,
         pagination: {
@@ -96,7 +92,7 @@ export const getPartner = async (id: string) => {
 };
 
 export const getPartnerContact = async (id: string) => {
-  return request<{ data: ContactRequest }>(`/api/partner-contact/get-one/${id}`)
+  return request<{ data: ContactForm }>(`/api/partner-contact/get-one/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_PARTNER_ERROR);
@@ -121,10 +117,10 @@ export const createPartner = async (data: CompanyForm) => {
     });
 };
 
-export const createPartnerContact = async (data: ContactRequest) => {
+export const createPartnerContact = async (data: ContactForm) => {
   showPageLoading();
 
-  return request<{ data: ContactRequest }>(`/api/partner-contact/create`, {
+  return request<{ data: ContactForm }>(`/api/partner-contact/create`, {
     method: 'POST',
     data,
   })
@@ -154,10 +150,10 @@ export async function updatePartner(id: string, data: CompanyForm) {
     });
 }
 
-export async function updatePartnerContact(id: string, data: ContactRequest) {
+export async function updatePartnerContact(id: string, data: ContactForm) {
   showPageLoading();
 
-  return request<{ data: ContactRequest }>(`/api/partner-contact/update/${id}`, {
+  return request<{ data: ContactForm }>(`/api/partner-contact/update/${id}`, {
     method: 'PUT',
     data,
   })
@@ -209,19 +205,5 @@ export async function getPartnerGroupByCountry(brandId: string) {
     .catch((error) => {
       message.error(error?.data?.message ?? 'Get partner group by country failed');
       return [];
-    });
-}
-
-export async function inviteUser(userId: string) {
-  return request(`/api/partner-contact/invite/${userId}`, {
-    method: 'POST',
-  })
-    .then(() => {
-      message.success(MESSAGE_NOTIFICATION.SEND_INVITE_SUCCESS);
-      return true;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SEND_INVITE_ERROR);
-      return false;
     });
 }

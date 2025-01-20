@@ -205,26 +205,25 @@ const InventoryForm = ({
     {
       title: 'WareHouse Name',
       dataIndex: 'name',
-      width: '20%',
-      ellipsis: true,
+      width: '40%',
     },
     {
       title: 'City',
       dataIndex: 'city_name',
-      width: '15%',
+      width: '20%',
       ellipsis: true,
     },
     {
       title: 'Country',
       dataIndex: 'country_name',
-      width: '40%',
+      width: '20%',
       ellipsis: true,
     },
     {
       title: 'In stock',
       dataIndex: 'in_stock',
       align: 'center',
-      width: '20%',
+      width: '15%',
       render: (_, record: WarehouseItemMetric) => {
         const inStockValue =
           formData.warehouses?.find((ws) => ws.id === record.id)?.new_in_stock ?? 0;
@@ -359,13 +358,14 @@ const InventoryForm = ({
             onChange={handleInventoryFormChange('total_stock')}
             readOnly
             inputClass="pure-black"
+            customClass="my-0"
           />
           <InputGroup
             label="Out of Stock :"
             fontLevel={3}
             placeholder="-"
             forceDisplayDeleteIcon
-            value={!isNil(formData.out_of_stock) ? formData.out_of_stock : '-'}
+            value={formData.out_of_stock ? formData.out_of_stock : '-'}
             hasBoxShadow
             hasPadding
             hasHeight
@@ -373,8 +373,9 @@ const InventoryForm = ({
             onChange={handleInventoryFormChange('out_of_stock')}
             readOnly
             inputClass={`${styles.category_form_input} ${
-              formData.out_of_stock ? 'red-magenta' : 'pure-black'
+              formData.out_of_stock < 0 ? 'red-magenta' : 'pure-black'
             }`}
+            customClass="my-0"
           />
           <div className={styles.category_form_on_order_input_wrapper}>
             <InputGroup
@@ -398,6 +399,7 @@ const InventoryForm = ({
                   : undefined
               }
               messageType={formData.on_order && formData.on_order <= 0 ? 'error' : undefined}
+              customClass="my-0"
             />
           </div>
 
@@ -458,7 +460,6 @@ const InventoryForm = ({
           columns={warehouseColumns}
           pagination={false}
           className={`${styles.category_form_table}`}
-          scroll={{ x: 600, y: 380 }}
         />
       </div>
 

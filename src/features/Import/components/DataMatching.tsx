@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
 import { getDatabaseHeader } from '../constants';
-import { CompanyFunctionGroup } from '@/constants/util';
 
 import { ReactComponent as MinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/accessable-tick-icon.svg';
@@ -30,28 +29,19 @@ export const DataMatching = () => {
 
   const getWarehouseHeaders = (fileField: string) =>
     warehouses
-      .filter(
-        (warehouse) => warehouse.functional_type.toLowerCase() === CompanyFunctionGroup.warehouse,
-      )
       .map((warehouse, wsIdx) => {
-        // const { key: warehouseKey, label: warehouseLabel } = generateWarehouseName(wsIdx + 1);
         const { key: warehouseInStockKey } = generateWarehouseInStock(wsIdx + 1);
 
         return [
-          // {
-          //   key: warehouseKey,
-          //   label: `${warehouse.business_name} ${warehouse.city_name}, ${warehouse.country_name} + in stock`,
-          //   onClick: () => {
-          //     handleSelectDatabaseHeader(fileField, warehouseKey as ImportDatabaseHeader);
-          //   },
-          // },
           {
             key: warehouseInStockKey,
             label: (
-              <>
-                <span className="block">{warehouse.business_name}</span>
-                {`${warehouse.city_name}, ${warehouse.country_name} in stock`}
-              </>
+              <span>
+                <span className={`${headerMatching?.[fileField] ? '' : 'block'}`}>
+                  {warehouse.business_name}
+                </span>
+                {warehouse.city_name}, {warehouse.country_name}
+              </span>
             ),
             onClick: () => {
               handleSelectDatabaseHeader(fileField, warehouseInStockKey as ImportDatabaseHeader);
@@ -119,7 +109,7 @@ export const DataMatching = () => {
                   fontFamily="Roboto"
                   level={6}
                   color={headerSelected ? 'mono-color' : 'mono-color-medium'}
-                  customClass="header-selected"
+                  customClass="header-selected ellipsis"
                 >
                   {headerSelected || 'Select from the list'}
                 </BodyText>

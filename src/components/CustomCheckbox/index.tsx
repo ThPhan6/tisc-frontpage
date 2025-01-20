@@ -347,6 +347,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   } item-wrapper-custom text-capitalize`}
                   style={{ minHeight: heightItem }}
                   htmlFor={`${option.value}_${index}_${randomId}`}
+                  onClick={() => {
+                    if (onCollClick) onCollClick(option.value as string);
+                  }}
                 >
                   <div
                     style={{

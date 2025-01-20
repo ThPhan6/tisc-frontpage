@@ -17,46 +17,48 @@ export const FileUpload: FC<FileUploadProps> = ({ ...props }) => {
   const { fileUploaded, handleBeforeUpload, handleChangeUpload, handleCustomRequest } = useImport();
 
   return (
-    <Dragger
-      accept=".csv"
-      multiple={false}
-      maxCount={1}
-      showUploadList={false}
-      {...props}
-      beforeUpload={handleBeforeUpload}
-      onChange={handleChangeUpload}
-      customRequest={handleCustomRequest}
-    >
-      <div className="d-flex flex-col items-center" style={{ gap: 32 }}>
-        <UploadIcon />
+    <div className="d-flex flex-col items-center">
+      <Dragger
+        accept=".csv"
+        multiple={false}
+        maxCount={1}
+        showUploadList={false}
+        {...props}
+        beforeUpload={handleBeforeUpload}
+        onChange={handleChangeUpload}
+        customRequest={handleCustomRequest}
+      >
+        <div className="d-flex flex-col items-center" style={{ gap: 32, padding: '36px 0' }}>
+          <UploadIcon />
 
-        <div className="d-flex flex-col">
-          <BodyText fontFamily="Roboto" level={2} customClass="font-medium">
-            Drag and drop the file here
-          </BodyText>
-          <BodyText fontFamily="Roboto" level={5}>
-            Support only CSV files
-          </BodyText>
+          <div className="d-flex flex-col">
+            <BodyText fontFamily="Roboto" level={2} customClass="font-medium">
+              Drag and drop the file here
+            </BodyText>
+            <BodyText fontFamily="Roboto" level={5}>
+              Support only CSV files
+            </BodyText>
+          </div>
+
+          <CustomButton
+            style={{
+              width: 'fit-content',
+              padding: '4px 16px',
+              height: 32,
+            }}
+          >
+            Choose file
+          </CustomButton>
         </div>
+      </Dragger>
 
-        {fileUploaded?.name ? (
-          <BodyText fontFamily="Roboto" level={5}>
-            {fileUploaded.name}
-          </BodyText>
-        ) : null}
+      {fileUploaded?.name ? (
+        <BodyText fontFamily="Roboto" level={5} style={{ margin: '0 0 16px 0' }}>
+          {fileUploaded.name}
+        </BodyText>
+      ) : null}
 
-        <CustomButton
-          style={{
-            width: 'fit-content',
-            padding: '4px 16px',
-            height: 32,
-          }}
-        >
-          Choose file
-        </CustomButton>
-      </div>
-
-      <div style={{ transform: 'translateY(150px)' }}>
+      <div style={{ textAlign: 'center' }}>
         <RobotoBodyText level={4} customClass="font-medium red-magenta">
           Warning Instruction
         </RobotoBodyText>
@@ -71,6 +73,6 @@ export const FileUpload: FC<FileUploadProps> = ({ ...props }) => {
           4. If not sure, please consult Team TISC at hello@tisc.global.
         </RobotoBodyText>
       </div>
-    </Dragger>
+    </div>
   );
 };
